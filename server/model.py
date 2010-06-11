@@ -97,7 +97,7 @@ class Meeting(YarnBaseType):
 class User(YarnBaseType):
     """Store meeting-related information."""
     
-    def __init__(self, name, userUUID=None):
+    def __init__(self, name=None, userUUID=None, isTable=False, localUsers = []):
         self.uuid = userUUID
         
         YarnBaseType.__init__(self)
@@ -106,6 +106,21 @@ class User(YarnBaseType):
         self.inMeeting = None
         self.loggedIn = False
         self.status = None
+        
+        # this flag sets of this user represents an iPad being logged
+        # in, and localUsers tracks what users are known to be local
+        # to that iPad.
+        self.isTablet = isTable
+        self.localUsers = localUsers
+        
+        # Users have some connection tracking components, too. If we want
+        # to send a message to a specific user, we need a way to reach them.
+        # We'll keep track of the latest connection from that user here,
+        # plus we'll keep a queue of events that this user should be notified
+        # of so while we're waiting for them to connect again we don't lose
+        # events. When they do reconnect, we'll flush that queue.
+        self.connection = None
+        self.eventQueue = []
         
     def getDict(self):
         d = YarnBaseType.getDict(self)
