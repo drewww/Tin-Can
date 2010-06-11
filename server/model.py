@@ -17,13 +17,10 @@ Copyright (c) 2010 MIT Media Lab. All rights reserved.
 import uuid
 import time
 import simplejson as json
+import logging
 
+import state
 
-# This dictionary stores all known major types. This is used primarily so 
-# we can cheaply bridge UUIDs into objects. When any of these major types
-# is created, it's automatically registered here (via the YarnBaseType
-# constructor). 
-db = {}
 
 class YarnBaseType(object):
     """Identify object with a UUID and register it with the store."""
@@ -35,7 +32,7 @@ class YarnBaseType(object):
             self.uuid = str(uuid.uuid4())
         
         # Register the new object with the main object store.
-        db[self.uuid] = self
+        state.db[self.uuid] = self
         
     def getDict(self):
         return {"uuid":self.uuid}
@@ -121,6 +118,25 @@ class User(YarnBaseType):
         # events. When they do reconnect, we'll flush that queue.
         self.connection = None
         self.eventQueue = []
+        
+    def setConnection(self, connection):
+        
+        # if we're already holding onto a connection, release it
+        if(self.connection != None):
+            self.connection.finish()
+            
+        # set the new connection
+        self.connection = connection
+        
+        # mark ourselves as logged in.
+        # TODO figure out how to mark a user as logged out. 
+        self.loggedIn = True
+        
+        # TODO check to see if we have anything in the event queue. If we do,
+        # flush the queue and close the connection.
+        
+        logging.debug("Set connection for %s to %s"%(self.name, connection))
+        
         
     def getDict(self):
         d = YarnBaseType.getDict(self)

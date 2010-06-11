@@ -10,6 +10,12 @@ Copyright (c) 2010 MIT Media Lab. All rights reserved.
 import model
 import simplejson as json
 
+# This dictionary stores all known major types. This is used primarily so 
+# we can cheaply bridge UUIDs into objects. When any of these major types
+# is created, it's automatically registered here (via the YarnBaseType
+# constructor). 
+db = {}
+
 # Stores all the users that we've ever seen.
 users = []
 
@@ -23,10 +29,8 @@ def init():
 def init_test():
     """Initialize the internal state using test data."""
     drew = model.User("Drew")
-    drew.loggedIn = True
     
     paula = model.User("Paula")
-    paula.loggedIn = True
     
     users.append(drew)
     users.append(paula)
@@ -46,6 +50,14 @@ def get_logged_in_users():
     """Returns only users that are currently logged in."""
     return [user for user in users if user.loggedIn]
     pass
+
+def send_event_to_users(users, event):
+    
+    for user in users:
+        user.connection.write(event.getJSON())
+        user.connection.finish()
+    
+
 
 if __name__ == '__main__':
     init_test()
