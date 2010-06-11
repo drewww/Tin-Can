@@ -56,8 +56,8 @@ class Room(YarnBaseType):
         
         self.name = name
         
-        if(currentMeeting != None)
-            self.currentMeeting = obj[  currentMeeting]
+        if(currentMeeting != None):
+            self.currentMeeting = obj[currentMeeting]
     
     def getDict(self):
         d = YarnBaseType.getDict(self)

@@ -8,6 +8,7 @@ Copyright (c) 2010 MIT Media Lab. All rights reserved.
 """
 
 import model
+import simplejson as json
 
 # Stores all the users that we've ever seen.
 users = []
@@ -21,8 +22,15 @@ def init():
 
 def init_test():
     """Initialize the internal state using test data."""
-    users.append(model.User("Drew"))
-    users.append(model.User("Paula"))
+    drew = model.User("Drew")
+    drew.loggedIn = True
+    
+    paula = model.User("Paula")
+    paula.loggedIn = True
+    
+    users.append(drew)
+    users.append(paula)
+    
     users.append(model.User("Stephanie"))
     users.append(model.User("Ariel"))
     
@@ -31,10 +39,12 @@ def init_test():
 
 def get_logged_out_users():
     """Returns only users that are not currently logged in."""
+    return [user for user in users if not user.loggedIn]
     pass
     
 def get_logged_in_users():
     """Returns only users that are currently logged in."""
+    return [user for user in users if user.loggedIn]
     pass
 
 if __name__ == '__main__':
@@ -42,4 +52,5 @@ if __name__ == '__main__':
     
     print "users: " + str(users)
     print "rooms: " + str(rooms)
+    print "users json: " + json.dumps(get_logged_in_users(), cls=model.YarnModelJSONEncoder)
 
