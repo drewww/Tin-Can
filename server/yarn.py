@@ -38,14 +38,14 @@ class YarnApplication(tornado.web.Application):
             (r"/users/disconnected", DisconnectedUsersHandler),
             (r"/users/", AllUsersHandler),
             (r"/connect/", ConnectionHandler),
-            (r"/ping/", PingHandler)
+            (r"/ping/", PingHandler),
+            (r"/connect/test", ConnectTestHandler)
             ]
         
         settings = dict(
             # using the chatdemo secret for now - this really should be
             # loaded out of a configuration file, so we don't have to check
             # it into the repository. Don't trust this for ANYTHING.
-            cookie_secret="43oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
         )
@@ -70,7 +70,15 @@ class ConnectedUsersHandler(tornado.web.RequestHandler):
 
 class DisconnectedUsersHandler(tornado.web.RequestHandler):
     def get(self):
-        self.write(json.dumps(state.get_logged_out_users(), cls=YarnModelJSONEncoder))
+        result = json.dumps(state.get_logged_out_users(), cls=YarnModelJSONEncoder)
+        logging.info("writing result: " + str(result))
+        self.write(result)
+        logging.info("After writing to page.")
+        self.finish()
+
+class ConnectTestHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("connect.html", users=state.get_logged_out_users())
 
 class ConnectionHandler(tornado.web.RequestHandler):
     """Manage the persistent connections that all clients have."""

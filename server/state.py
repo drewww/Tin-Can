@@ -9,6 +9,7 @@ Copyright (c) 2010 MIT Media Lab. All rights reserved.
 
 import model
 import simplejson as json
+import logging
 
 # This dictionary stores all known major types. This is used primarily so 
 # we can cheaply bridge UUIDs into objects. When any of these major types
@@ -43,13 +44,13 @@ def init_test():
 
 def get_logged_out_users():
     """Returns only users that are not currently logged in."""
-    return [user for user in users if not user.loggedIn]
+    logged_out = [user for user in users if not user.loggedIn]
+    return logged_out
     pass
     
 def get_logged_in_users():
     """Returns only users that are currently logged in."""
     return [user for user in users if user.loggedIn]
-    pass
 
 def send_event_to_users(users, event):
     

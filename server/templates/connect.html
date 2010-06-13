@@ -1,0 +1,23 @@
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Yarn Connection Test</title>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.js"></script>
+
+	<script type="text/javascript" charset="utf-8">
+		
+	</script>
+</head>
+<body id="connection_test" onload="init()">
+<div id="messages">
+<h1>Yarn Connection Test</h1>
+<label for="user">Select User</label>
+<select name="user" id="user" onchange="" size="1">
+	{% for user in users %}
+	<option value="{{user.uuid}}">{{user.name}}</option>
+	{% end %}
+</select>
+
+</div>
+</body>
+</html>
