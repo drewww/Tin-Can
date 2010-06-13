@@ -78,7 +78,7 @@ class DisconnectedUsersHandler(tornado.web.RequestHandler):
 
 class ConnectTestHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("connect.html", users=state.get_logged_out_users())
+        self.render("connect.html", users=state.get_logged_out_users(), rooms=state.rooms)
 
 class ConnectionHandler(tornado.web.RequestHandler):
     """Manage the persistent connections that all clients have."""

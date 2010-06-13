@@ -5,10 +5,14 @@
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.js"></script>
 
 	<script type="text/javascript" charset="utf-8">
-		
+		function connect() {
+			userUUID = $('#user')[0].value;
+			roomUUID = $('#room')[0].value;
+			
+		}
 	</script>
 </head>
-<body id="connection_test" onload="init()">
+<body id="connection_test" onload="">
 <div id="messages">
 <h1>Yarn Connection Test</h1>
 <label for="user">Select User</label>
@@ -17,6 +21,14 @@
 	<option value="{{user.uuid}}">{{user.name}}</option>
 	{% end %}
 </select>
+
+<label for="room">Select Room</label>
+<select name="room" id="room" onchange="" size="1">
+	{% for room in rooms %}
+	<option value="{{room.uuid}}">{{room.name}}</option>
+	{% end %}
+</select>
+<button id="connect" onclick="connect()">Connect</button>
 
 </div>
 </body>
