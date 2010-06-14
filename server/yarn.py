@@ -38,7 +38,7 @@ class YarnApplication(tornado.web.Application):
             (r"/users/disconnected", DisconnectedUsersHandler),
             (r"/users/", AllUsersHandler),
             (r"/connect/", ConnectionHandler),
-            (r"/ping/", PingHandler),
+            (r"/connect/ping/", PingHandler),
             (r"/connect/test", ConnectTestHandler)
             ]
         

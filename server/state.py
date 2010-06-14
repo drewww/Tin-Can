@@ -55,8 +55,15 @@ def get_logged_in_users():
 def send_event_to_users(users, event):
     
     for user in users:
-        user.connection.write(event.getJSON())
-        user.connection.finish()
+        if(user.connection != None):
+            user.connection.write(event.getJSON())
+            user.connection.finish()
+            user.connection = None
+        else:
+            # this is where we put the event queing stuff.
+            logging.warning("No connection for user %s, and no queue yet."
+                %user.name)
+            pass
     
 
 

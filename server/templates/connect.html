@@ -5,10 +5,48 @@
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.js"></script>
 
 	<script type="text/javascript" charset="utf-8">
-		function connect() {
+	
+		var userUUID;
+		var roomUUID;
+	
+		function newConnection() {
+			
 			userUUID = $('#user')[0].value;
 			roomUUID = $('#room')[0].value;
+			console.log("user: " + userUUID + "; room: " + roomUUID);
+			// Make the first connection to the server.
+			connect(userUUID, roomUUID);
+		}
+		
+		function connect(user, room) {
+			console.log("Connect to /connect/ for " + user + "@" + room);
 			
+			$.ajax({url:"http://localhost:8888/connect/",
+					method: "GET",
+					dataType: "json",
+					data: {"user":user, "room":room},
+					success: responseReceived,
+					error: connectionFailed,
+					cache: false,
+				});
+		}
+		
+		function responseReceived(response) {
+			console.log("response: " + response.eventType);
+			
+			connect(userUUID, roomUUID);
+		}
+		
+		function connectionFailed(request, status, error) {
+			console.log("Connection failed: " + error);
+			
+			// Try again. We can trust the server to hold stuff in a queue
+			// for us. (Although, are we worried about the server sending
+			// something that the client doesn't receive? Do we need ACKs?
+			// We'll need to build somethign into the connect request that
+			// contains the most recent key that it saw and use THAT to flush
+			// the event queue.)
+			connect(userUUID, roomUUID);
 		}
 	</script>
 </head>
@@ -28,8 +66,12 @@
 	<option value="{{room.uuid}}">{{room.name}}</option>
 	{% end %}
 </select>
-<button id="connect" onclick="connect()">Connect</button>
+<button id="connect" onclick="newConnection()">Connect</button>
 
+<div id="response">
+	
 </div>
+
+
 </body>
 </html>
