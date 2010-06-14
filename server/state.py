@@ -42,6 +42,42 @@ def init_test():
     rooms.append(model.Room("Garden"))
     rooms.append(model.Room("Orange + Green"))
 
+
+def get_obj(key, type=None):
+    """Returns the object of 'type' with that UUID from the object store.
+    
+    If the type doesn't match the object with that key, or there is no object
+    with that key in the database, returns None."""
+    
+    try:
+        obj = db[key];
+    except KeyError:
+        logging.warning("No object for UUID: %s"%key)
+        return None
+    
+    # If no type is specified, assume we don't care what the type of the
+    # return is. This is bad form, though - we should ALWAYS be enforcing
+    # proper types out of this method.
+    if type==None:
+        logging.warning("No type specified in get_obj. This is dangerous. Key:%s"%key)
+        return obj
+    
+    # Otherwise, check that it's the right type. If it is, return it.
+    # If it's not the right type, return None and throw a warning.
+    if(isinstance(obj, type)):
+        return obj
+    else:
+        logging.warning("Object with UUID %s not instance of %s" %(key, type))
+        return None
+
+def put_obj(key, value):
+    """Adds an object to the main database."""
+    
+    # I'm not sure if we're going to need to do anything else in here, but
+    # for the sake of symmetry, it makes sense to have both get and put
+    # methods. 
+    db[key] = value
+
 def get_logged_out_users():
     """Returns only users that are not currently logged in."""
     logged_out = [user for user in users if not user.loggedIn]

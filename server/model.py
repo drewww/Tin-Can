@@ -32,7 +32,7 @@ class YarnBaseType(object):
             self.uuid = str(uuid.uuid4())
         
         # Register the new object with the main object store.
-        state.db[self.uuid] = self
+        state.put_obj(self.uuid, self)
         
     def getDict(self):
         return {"uuid":self.uuid}
