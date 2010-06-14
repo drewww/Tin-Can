@@ -8,9 +8,11 @@
 	
 		var userUUID;
 		var roomUUID;
+		
+		var stopConnection = false;
 	
 		function newConnection() {
-			
+			stopConnection = false;
 			userUUID = $('#user')[0].value;
 			roomUUID = $('#room')[0].value;
 			console.log("user: " + userUUID + "; room: " + roomUUID);
@@ -19,16 +21,21 @@
 		}
 		
 		function connect(user, room) {
-			console.log("Connect to /connect/ for " + user + "@" + room);
+			// Check and see if the stop connection flag has been thrown.
+			if(!stopConnection) {
+				console.log("Connect to /connect/ for " + user + "@" + room);
 			
-			$.ajax({url:"http://localhost:8888/connect/",
-					method: "GET",
-					dataType: "json",
-					data: {"user":user, "room":room},
-					success: responseReceived,
-					error: connectionFailed,
-					cache: false,
-				});
+				$.ajax({url:"http://localhost:8888/connect/",
+						method: "GET",
+						dataType: "json",
+						data: {"user":user, "room":room},
+						success: responseReceived,
+						error: connectionFailed,
+						cache: false,
+					});
+			} else {
+				console.log("Was going to reconnect, but got stopped.");
+			}
 		}
 		
 		function responseReceived(response) {
@@ -48,6 +55,13 @@
 			// the event queue.)
 			connect(userUUID, roomUUID);
 		}
+		
+		function setStopConnection() {
+			// This should also end the current outstanding request,
+			// but I'm not sure exactly how to do that yet.
+			stopConnection = true;
+		}
+		
 	</script>
 </head>
 <body id="connection_test" onload="">
@@ -67,6 +81,7 @@
 	{% end %}
 </select>
 <button id="connect" onclick="newConnection()">Connect</button>
+<button id="stop" onclick="setStopConnection()">Stop</button>
 
 <div id="response">
 	
