@@ -2,6 +2,11 @@
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Yarn Connection Test</title>
+	<style type="text/css" media="screen">
+		#response {
+			font-family: Helvetica;
+		}
+	</style>
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.js"></script>
 
 	<script type="text/javascript" charset="utf-8">
@@ -41,7 +46,17 @@
 		function responseReceived(response) {
 			console.log("response: " + response.eventType);
 			
+			var message = "" + new Date().getTime() + " - ";
+			$("#response").append(message + dumpDict(response) + "<br/>");
 			connect(userUUID, roomUUID);
+		}
+		
+		function dumpDict(dict) {
+			response = "{"
+			for(key in dict) {
+				response = response + key + ":" + dict[key] + ", ";
+			}
+			return response + "}";
 		}
 		
 		function connectionFailed(request, status, error) {
