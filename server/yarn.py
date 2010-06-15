@@ -153,7 +153,7 @@ class ConnectionHandler(tornado.web.RequestHandler):
                             # THIS UUID CREATION IS CHEATING. TODO FIX IT.
                             newMeetingUUID = uuid.uuid4()
                             newMeetingEvent = Event("NEW_MEETING",
-                                user.uuid, newMeetingUUID, {"room":room.uuid})
+                                user.uuid, newMeetingUUID, {"room":room})
                             newMeetingEvent.dispatch()
                             
                             # Can't do this until we have events changing

@@ -58,10 +58,25 @@ class Room(YarnBaseType):
         else:
             self.currentMeeting = None
     
+    def set_meeting(self, meeting):
+        if(self.currentMeeting!=None):
+            logging.error("Meeting was just set on this room (%s) but a \
+            meeting was already in progress: %s" %(self.name,
+            self.currentMeeting))
+            
+        self.currentMeeting = meeting
+        logging.info("%s is now home to a new meeting starting now %s"
+            %(self.name, meeting))
+    
     def getDict(self):
         d = YarnBaseType.getDict(self)
         d["name"] = self.name
-        d["currentMeeting"] = self.currentMeeting.uuid
+        
+        if(self.currentMeeting!=None):
+            d["currentMeeting"] = self.currentMeeting.uuid
+        else:
+            d["currentMeeting"] = None
+            
         return d
         
 class Meeting(YarnBaseType):
