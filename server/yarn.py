@@ -43,7 +43,8 @@ class YarnApplication(tornado.web.Application):
             (r"/connect/", ConnectionHandler),
             (r"/connect/ping/", PingHandler),
             (r"/connect/test", ConnectTestHandler),
-            (r"/users/choose", ChooseUsersHandler)
+            (r"/users/choose", ChooseUsersHandler),
+            (r"/agenda/", AgendaHandler)
             ]
         
         settings = dict(
@@ -214,6 +215,10 @@ class PingHandler(tornado.web.RequestHandler):
         event = Event("PING", None, None)
         
         state.send_event_to_users(state.get_logged_in_users(), event)
+
+class AgendaHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("agenda_edit.html")
         
 class ChooseUsersHandler(tornado.web.RequestHandler):
     def get(self):
