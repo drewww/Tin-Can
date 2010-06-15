@@ -42,7 +42,8 @@ class YarnApplication(tornado.web.Application):
             (r"/users/", AllUsersHandler),
             (r"/connect/", ConnectionHandler),
             (r"/connect/ping/", PingHandler),
-            (r"/connect/test", ConnectTestHandler)
+            (r"/connect/test", ConnectTestHandler),
+            (r"/users/choose", ChooseUsersHandler)
             ]
         
         settings = dict(
@@ -214,6 +215,9 @@ class PingHandler(tornado.web.RequestHandler):
         
         state.send_event_to_users(state.get_logged_in_users(), event)
         
+class ChooseUsersHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("login.html")
 
 # Set up the routing tables for the application.
 # For now, they're really simple - one for getting information about rooms,
