@@ -54,7 +54,9 @@ class Room(YarnBaseType):
         self.name = name
         
         if(currentMeeting != None):
-            self.currentMeeting = obj[currentMeeting]
+            self.currentMeeting = get_obj(currentMeeting, Meeting)
+        else:
+            self.currentMeeting = None
     
     def getDict(self):
         d = YarnBaseType.getDict(self)
@@ -65,7 +67,7 @@ class Room(YarnBaseType):
 class Meeting(YarnBaseType):
     """Store meeting-related information."""
 
-    def __init__(self, meetingUUID=None, roomUUID=None, title=None, startedAt=None):
+    def __init__(self, roomUUID, title=None, meetingUUID=None, startedAt=None):
         self.uuid = meetingUUID
         YarnBaseType.__init__(self)
         self.room = roomUUID
@@ -130,6 +132,11 @@ class User(YarnBaseType):
         
         # mark ourselves as logged in.
         # TODO figure out how to mark a user as logged out. 
+        #      (A: flip this when the event queue gets too long,
+        #          or just use that as the cue to check how long
+        #          it's been since they connected. 5 seconds is
+        #          enough to call it, since it really should be
+        #          ms between connections.)
         self.loggedIn = True
         
         # TODO check to see if we have anything in the event queue. If we do,

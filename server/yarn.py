@@ -12,6 +12,7 @@ Copyright (c) 2010 MIT Media Lab. All rights reserved.
 
 import logging
 import os.path
+import uuid
 
 import tornado.httpserver
 import tornado.ioloop
@@ -27,7 +28,9 @@ from event import *
 
 define("port", default=8888, help="run on the given port", type=int)
 
-
+# TODO We need to load this out of a file somewhere so it's consistent
+#      across reboots.
+SERVER_UUID = uuid.uuid4()
 
 class YarnApplication(tornado.web.Application):
     def __init__(self):
@@ -100,6 +103,16 @@ class ConnectionHandler(tornado.web.RequestHandler):
         # I guess it's mostly in the background? We'll roll with it for now.
         # Most of this will get pushed into cookies anyway, I think? We'll
         # have to figure out the multiple-connections-at-once case later. 
+        #
+        # We ALWAYS require userUUIDs and either a roomUUID OR a meetingUUID
+        # if we get a roomUUID, it's because there's no meeting there and
+        # we need to make one. So roomUUID is  valid if the room is empty.
+        # Otherwise, the client should specify a meetingUUID (which should be
+        # available in the room choosing interface in a hidden way). If we
+        # get a room ID that's for a room that has a meeting, just deal with
+        # it transparently. This would happen if two people join at about the 
+        # same time, and a meeting gets created in a room that another client
+        # thought was empty.
         
         # because arguments get treated as UTF-8 inputs, we need to 
         # re-encode back down to ASCII so we can compare. We can trust that
@@ -108,9 +121,86 @@ class ConnectionHandler(tornado.web.RequestHandler):
         userUUID = self.get_argument("user").encode('ascii')
         user = state.get_obj(userUUID, User)
         
+        # first, check and see if this is a NEW connection for the user,
+        # or if that user has an existing connection
+        # 
+        # we'll start with the isConnected flag.
+        
         if user != None:
-            logging.debug("Found a user '%s' for id (%s)"% (user.name, userUUID))
-            user.setConnection(self)            
+            if(not user.loggedIn):
+                roomUUID = self.get_argument("room", None)
+                if(roomUUID != None):
+                    
+                    room = state.get_obj(roomUUID, Room)
+                    
+                    if room != None:
+                        # check and see if the room is empty. If it is, create
+                        # a new meeting there and put this user in it. get the
+                        # meeting id of the new meeting and set it for moving 
+                        # forward.
+                        if(room.currentMeeting==None):
+                            # make a new meeting!
+                            logging.info("""Initiating a new meeting in room
+                            %s for user %s"""%(room.name, user.name))
+                            
+                            # For a discussion of why we're not just making
+                            # the object here and adding the user to the 
+                            # meeting by directly manipulating the objects,
+                            # you can read up on the Event Model here:
+                            # http://wiki.github.com/drewww/Tin-Can/eventmodel
+                            
+                            # THIS UUID CREATION IS CHEATING. TODO FIX IT.
+                            newMeetingUUID = uuid.uuid4()
+                            newMeetingEvent = Event("NEW_MEETING",
+                                user.uuid, newMeetingUUID, {"room":room.uuid})
+                            newMeetingEvent.dispatch()
+                            
+                            # Can't do this until we have events changing
+                            # the internal state of the server, because
+                            # the meeting with that UUID doesn't actually
+                            # exist yet. Going to check this in without
+                            # that chunk. The earlier stuff is working great.
+                            # userJoinedEvent = Event("JOINED", user.uuid,
+                            #                                 newMeetingUUID)
+                            #                             userJoinedEvent.dispatch()
+                        else:
+                            # pull the existing meeting.
+                            meeting = room.currentMeeting
+                          
+                        # temporarily disabled - turn this back on when
+                        # the above problem with events not actually
+                        # getting executed is fixed. Right now, the meeting
+                        # object isn't created yet.  
+                        # logging.debug("Setting meeting to %s."%meeting.uuid)
+                        
+                    else: 
+                        raise HTTPError("400", """Specified room UUID %s
+                        didn't exist or wasn't a valid room."""%roomUUID)
+                    
+                    # if it's not, get the meeting id from the existing
+                    # meeting and move on.
+                    pass
+                elif(self.get_argument("meeting", None)!=None):
+                    # if we've got a meeting specified, we need to issue
+                    # a user joined event.
+                    pass
+                else:
+                    raise HTTPError("400", "Lacked either 'room' or 'meeting' parameter. You must include one of the two.")
+                    
+                # at this point, we KNOW we have a valid meeting object.
+                # We also know this user wasn't logged in already, so
+                # we can trigger a JOIN event. We'll also want to trigger
+                # a STATE response. 
+                
+            else:
+                # if the user is already logged in, we don't really care - 
+                # just update their connection to match. Don't need to 
+                # trigger any events. We don't even particularly care if
+                # they have the other parameters; we already know what they're
+                # connected to. (TODO figure out how to deal with a smooth
+                # switch between meetings. Can you do that without forcing
+                # a log out event from the previous one? Deal with this later)
+                user.setConnection(self)            
         else:
             raise HTTPError("400", "Specified user UUID (%s), is not a known user id." % userUUID)
         
@@ -144,5 +234,6 @@ if __name__ == '__main__':
     
     # defaults to 8888
     http_server.listen(options.port)
+    logging.info("YARN LOADED, INITIALIZED AND STARTING...")
     tornado.ioloop.IOLoop.instance().start()
 

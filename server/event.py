@@ -16,20 +16,23 @@ import time
 import uuid
 import simplejson as json
 
+from model import *
 
-EVENT_TYPES = ["JOINED", "LEFT", "NEW_TASK", "UPDATE_TASK", "NEW_TOPIC", "UPDATE_TOPIC", "PING"]
+EVENT_TYPES = ["NEW_MEETING", "JOINED", "LEFT", "NEW_TASK", "UPDATE_TASK",
+                "NEW_TOPIC", "UPDATE_TOPIC", "PING"]
 
 # Stores the required paramters for each event type. We'll use this
 # to enforce complete intialization of events, and also to remind ourselves
 # what's required for each event.
-EVENT_PARAMS = {"JOINED":["user"],
-                "LEFT":["user"]
+EVENT_PARAMS = {"NEW_MEETING":["room"],
+                "JOINED":[],            # these events have no extra params.
+                "LEFT":[]
                 }
 
 class Event:
     
     
-    def __init__(self, eventType, meetingUUID, userUUID, params):
+    def __init__(self, eventType, userUUID, meetingUUID=None, params={}):
         
         # these are the only required fields for an event.
         # all other paramters (like the text of a new topic, or new owner
@@ -38,7 +41,8 @@ class Event:
         # Which arguments are valid is specified for a given event type
         # is (nominally) on the wiki.
         if(eventType not in EVENT_TYPES):
-            logging.error("Attempted to create event with unknown type %s"%eventType)
+            logging.error("""Attempted to create event with
+                            unknown type %s"""%eventType)
         
         self.eventType = eventType
         
@@ -53,13 +57,27 @@ class Event:
         # Eventually we'll be rigorous about checking these, but for now
         # if we get key errors, just eat them and set them to None. Too hard
         # to test without this for now.
-        try:
-            self.meeting = state.db[meetingUUID]
-            self.user = state.db[userUUID]
-        except:
-            self.meeting = None
-            self.users = None
-            
+        self.user = state.get_obj(userUUID, User)
+        if(self.user==None):
+            logging.error("""Tried to create an event with
+                            invalid userUUID %s"""%userUUID)
+            return None
+
+        # TODO Think about changing this. Makes returning the UUID
+        # of the new object easier if we just say that new meetings REQUIRE
+        # UUIDs too, and it's the job of the person creating a new meeting
+        # event to create the UUID at that point and pass it down the chain.
+        if(self.eventType!="NEW_MEETING"):
+            # any event other than NEW MEETING needs to have a meeting param
+            self.meeting = state.get_obj(meetingUUID, Meeting)
+            if(self.meeting==None):
+                # TODO We need to raise an exception here, not return none.
+                # Returning None doesn't seem to do anything except end
+                # the constructor. 
+                logging.error("""Tried to create an event with invalid 
+                                meetingUUID %s"""%meetingUUID)
+                return None
+        
         # now, cycle through the params. These are the bonus event options
         # that aren't shared by all events. The list of expected params is in
         # event.EVENT_PARAMS. We're going to store them as a dict locally,
@@ -74,10 +92,11 @@ class Event:
         
         # if we're missing a param, fail with a descriptive error message.
         # otherwise, store the params and finish the constructor happily.
-        if(not hasAllParams):
+        if(not hasAllRequiredParams):
             logging.error("Tried to create event of type %s without param %s. Expects: %s"%(self.eventType, missingParam, expectedParams))
             return None
         else:
+            logging.info("Setting event params: " + str(params))
             self.params = params
         
         
@@ -111,6 +130,20 @@ class Event:
             d["user"] = None
             
         return json.dumps(d)
+        
+    def dispatch(self):
+        """Triggers an event dispatch process.
+        
+        Depending on the event, calls the appropriate methods to change
+        internal state and do other EVENT-related stuff. Also sends
+        the event to the appropriate clients."""
+        
+        # Steps:
+        #   - Write to disk (TODO)
+        #   - Dispatch / change internal state (TODO)
+        #   - Send on to appropriate clients. (TODO)
+        logging.info("Dispatching event: " + str(self.getJSON()))
+        
 
 if __name__ == '__main__':
     main()
