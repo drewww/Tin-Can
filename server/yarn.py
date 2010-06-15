@@ -17,6 +17,7 @@ import uuid
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
+from tornado.web import HTTPError
 from tornado.options import define, options
 
 import simplejson as json
@@ -56,7 +57,12 @@ class YarnApplication(tornado.web.Application):
             static_path=os.path.join(os.path.dirname(__file__), "static"),
         )
         
+        # TODO make this depend on a startup option like -v
+        # options.logging="debug"
+        #logging.basicConfig(level=logging.DEBUG)
+        
         tornado.web.Application.__init__(self, handlers, **settings)
+
 
 # TODO Is there a way to make json.dump default to using YarnModelJSONEncoder?
 # It's really annoying to have to specify it every time I need to dump
@@ -133,18 +139,29 @@ class ConnectionHandler(tornado.web.RequestHandler):
         # we'll start with the isConnected flag.
         
         if user != None:
+            
+            # start by saving the connection for this user.
+            
             if(not user.loggedIn):
+                logging.debug("received a connect request from a non-logged-\
+                in user: %s"%user.name)
+                
+                # need to do this after checking for logged-in status, 
+                # otherwise loggedIn is always true because this side-effects
+                # and sets 
+                user.setConnection(self)
                 roomUUID = self.get_argument("room", None)
                 if(roomUUID != None):
-                    
+                    logging.debug("request has a roomUUID: %s"%roomUUID)
                     room = state.get_obj(roomUUID, Room)
-                    
                     if room != None:
                         # check and see if the room is empty. If it is, create
                         # a new meeting there and put this user in it. get the
                         # meeting id of the new meeting and set it for moving 
                         # forward.
                         if(room.currentMeeting==None):
+                            logging.debug("Room %s has no meeting in it."%
+                                room.name)
                             # make a new meeting!
                             logging.info("Initiating a new meeting in room\
                             %s for user %s"%(room.name, user.name))
@@ -155,7 +172,6 @@ class ConnectionHandler(tornado.web.RequestHandler):
                             # you can read up on the Event Model here:
                             # http://wiki.github.com/drewww/Tin-Can/eventmodel
                             
-                            # THIS UUID CREATION IS CHEATING. TODO FIX IT.
                             newMeetingEvent = Event("NEW_MEETING",
                                 user.uuid, None, {"room":room})
                             newMeetingEvent = newMeetingEvent.dispatch()
@@ -172,6 +188,13 @@ class ConnectionHandler(tornado.web.RequestHandler):
                         else:
                             # pull the existing meeting.
                             meeting = room.currentMeeting
+                            
+                            # we need to mark this user as joining this
+                            # meeting TODO TODO TODO
+                            userJoinedEvent = Event("JOINED", user.uuid,
+                                meeting.uuid)
+                            userJoinedEvent.dispatch()
+                            
                           
                         # temporarily disabled - turn this back on when
                         # the above problem with events not actually
@@ -207,6 +230,8 @@ class ConnectionHandler(tornado.web.RequestHandler):
                 # connected to. (TODO figure out how to deal with a smooth
                 # switch between meetings. Can you do that without forcing
                 # a log out event from the previous one? Deal with this later)
+                logging.info("User %s already logged in. Connection saved."%
+                    user.name)
                 user.setConnection(self)            
         else:
             raise HTTPError("400", "Specified user UUID (%s), is not a known\

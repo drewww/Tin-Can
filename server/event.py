@@ -184,7 +184,10 @@ class Event:
         event = handler(self)
         
         # SEND EVENT TO APPROPRIATE CLIENTS
-        
+        if(self.eventType == "NEW_MEETING"):
+            state.send_event_to_users(state.get_logged_in_users(), event)
+        else:
+            state.send_event_to_meeting(event)
         
         # RETURN THE RESULT
         # Handlers can return something - usually the new instance of an obj
