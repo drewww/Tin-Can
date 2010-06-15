@@ -52,20 +52,53 @@
 
 <body>
 	<table id = "heading">
-		<tr><td id = "new"><img src = "add.png"></td><td id = "title">Users</td><td id = "search"><img src = "search.png"></td>
+		<tr><td id = "new"><img src ="{{ static_url("images/add.png")}}"></td><td id = "title">Users</td><td id = "search"><img src ="{{ static_url("images/search.png")}}"></td>
 	</table>
 	<table cellpadding="5">
-		<tr><td class = "status"><img src ="online.png"></td><td class = "username">a21countrygal</td><td class = "icon"><img src ="icon.png"></td><td class = "select"><img src ="next.png"></td></tr>
-		<tr><td class = "status"><img src ="online.png"></td><td class = "username">coffee_breath</td><td class = "icon"><img src ="icon.png"></td><td class = "select"><img src ="next.png"></td></tr>
-		<tr><td class = "status"><img src ="online.png"></td><td class = "username">dandystrawberry</td><td class = "icon"><img src ="icon.png"></td><td class = "select"><img src ="next.png"></td></tr>
-		<tr><td class = "status"><img src ="online.png"></td><td class = "username">gamer_nuts</td><td class = "icon"><img src ="icon.png"></td><td class = "select"><img src ="next.png"></td></tr>
-		<tr><td class = "status"><img src ="online.png"></td><td class = "username">jackrabbit</td><td class = "icon"><img src ="icon.png"></td><td class = "select"><img src ="next.png"></td></tr>
-		<tr><td class = "status"><img src ="online.png"></td><td class = "username">mooncake15</td><td class = "icon"><img src ="icon.png"></td><td class = "select"><img src ="next.png"></td></tr>
-		<tr><td class = "status"><img src ="offline.png"></td><td class = "username">pinkladyx</td><td class = "icon"><img src ="icon.png"></td><td class = "select"><img src ="next.png"></td></tr>
-		<tr><td class = "status"><img src ="offline.png"></td><td class = "username">rollingstar</td><td class = "icon"><img src ="icon.png"></td><td class = "select"><img src ="next.png"></td></tr>
-		<tr><td class = "status"><img src ="offline.png"></td><td class = "username">sockshoes</td><td class = "icon"><img src ="icon.png"></td><td class = "select"><img src ="next.png"></td></tr>
-		<tr><td class = "status"><img src ="offline.png"></td><td class = "username">tadpole</td><td class = "icon"><img src ="icon.png"></td><td class = "select"><img src ="next.png"></td></tr>
-		<tr><td class = "status"><img src ="offline.png"></td><td class = "username">yummy_hamburgers</td><td class = "icon"><img src ="icon.png"></td><td class = "select"><img src ="next.png"></td></tr>
+		<tr><td class = "status"><img src ="{{ static_url("images/online.png")}}"></td>
+			<td class = "username">a21countrygal</td>
+			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
+			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
+		<tr><td class = "status"><img src ="{{ static_url("images/online.png")}}"></td>
+			<td class = "username">coffee_breath</td>
+			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
+			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
+		<tr><td class = "status"><img src ="{{ static_url("images/online.png")}}"></td>
+			<td class = "username">dandystrawberry</td>
+			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
+			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
+		<tr><td class = "status"><img src ="{{ static_url("images/online.png")}}"></td>
+			<td class = "username">gamer_nuts</td>
+			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
+			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
+		<tr><td class = "status"><img src ="{{ static_url("images/online.png")}}"></td>
+			<td class = "username">jackrabbit</td>
+			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
+			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
+		<tr><td class = "status"><img src ="{{ static_url("images/online.png")}}"></td>
+			<td class = "username">mooncake15</td>
+			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
+			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
+		<tr><td class = "status"><img src ="{{ static_url("images/offline.png")}}"></td>
+			<td class = "username">pinkladyx</td>
+			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
+			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
+		<tr><td class = "status"><img src ="{{ static_url("images/offline.png")}}"></td>
+			<td class = "username">rollingstar</td>
+			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
+			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
+		<tr><td class = "status"><img src ="{{ static_url("images/offline.png")}}"></td>
+			<td class = "username">sockshoes</td>
+			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
+			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
+		<tr><td class = "status"><img src ="{{ static_url("images/offline.png")}}"></td>
+			<td class = "username">tadpole</td>
+			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
+			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
+		<tr><td class = "status"><img src ="{{ static_url("images/offline.png")}}"></td>
+			<td class = "username">yummy_hamburgers</td>
+			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
+			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
 		</table>
 
 </body>
