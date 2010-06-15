@@ -115,10 +115,9 @@ class Event:
         d["timestamp"] = self.timestamp
         d["uuid"] = self.uuid
         
-        # load in the params. Should they be in a separate namespace? 
-        # Going to go with same namespace for now. 
-        for key in self.params.keys():
-            d[key] = self.params[key]
+        # load in the params. Put them in a separate namespace to avoid
+        # collisions.
+        d["params"] = self.params
             
         # as above, this is just a temporary work around. Later, we'll enforce
         # these objects' existence
@@ -142,7 +141,7 @@ class Event:
         #   - Write to disk (TODO)
         #   - Dispatch / change internal state (TODO)
         #   - Send on to appropriate clients. (TODO)
-        logging.info("Dispatching event: " + str(self.getJSON()))
+        
         
         
         # WRITE EVENT TO DISK
@@ -163,7 +162,7 @@ class Event:
             return None
         
         # invoke the handler on this event.
-        result = handler(self)
+        event = handler(self)
         
         # SEND EVENT TO APPROPRIATE CLIENTS
         
@@ -173,7 +172,9 @@ class Event:
         # that the event creates. This gets passed all the way back up the
         # dispatch chain, so the person who dispatched the event can see
         # the uuid/properties of the new object if they need it.
-        return result
+        
+        logging.info("Done dispatching event: " + str(self.getJSON()))
+        return event
 
 
 # DISPATCH METHODS
@@ -183,10 +184,18 @@ class Event:
 def _handleNewMeeting(event):
     newMeeting = Meeting(event.params["room"].uuid)
     
+    # once we have the meeting, push it back into the event object.
+    # pushing it into params because the outer meeting value is
+    # just for specifying which meeting an event is taking place in, 
+    # and this event type happens outside of a meeting context.
+    event.params["meeting"] = newMeeting
+    
     # now register that meeting with the room.
     event.params["room"].set_meeting(newMeeting)
     
-    return newMeeting
+    
+    
+    return event
 
 def _handleJoined(event):
     return None

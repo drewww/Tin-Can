@@ -71,11 +71,13 @@ class AllUsersHandler(tornado.web.RequestHandler):
 
 class ConnectedUsersHandler(tornado.web.RequestHandler):
     def get(self):
-        self.write(json.dumps(state.get_logged_in_users(), cls=YarnModelJSONEncoder))
+        self.write(json.dumps(state.get_logged_in_users(),
+            cls=YarnModelJSONEncoder))
 
 class DisconnectedUsersHandler(tornado.web.RequestHandler):
     def get(self):
-        result = json.dumps(state.get_logged_out_users(), cls=YarnModelJSONEncoder)
+        result = json.dumps(state.get_logged_out_users(),
+            cls=YarnModelJSONEncoder)
         logging.info("writing result: " + str(result))
         self.write(result)
         logging.info("After writing to page.")
@@ -83,7 +85,8 @@ class DisconnectedUsersHandler(tornado.web.RequestHandler):
 
 class ConnectTestHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("connect.html", users=state.get_logged_out_users(), rooms=state.rooms)
+        self.render("connect.html", users=state.get_logged_out_users(),
+            rooms=state.rooms)
 
 class ConnectionHandler(tornado.web.RequestHandler):
     """Manage the persistent connections that all clients have."""
@@ -152,19 +155,19 @@ class ConnectionHandler(tornado.web.RequestHandler):
                             # http://wiki.github.com/drewww/Tin-Can/eventmodel
                             
                             # THIS UUID CREATION IS CHEATING. TODO FIX IT.
-                            newMeetingUUID = uuid.uuid4()
                             newMeetingEvent = Event("NEW_MEETING",
-                                user.uuid, newMeetingUUID, {"room":room})
-                            newMeetingEvent.dispatch()
+                                user.uuid, None, {"room":room})
+                            newMeetingEvent = newMeetingEvent.dispatch()
                             
                             # Can't do this until we have events changing
                             # the internal state of the server, because
                             # the meeting with that UUID doesn't actually
                             # exist yet. Going to check this in without
                             # that chunk. The earlier stuff is working great.
-                            # userJoinedEvent = Event("JOINED", user.uuid,
-                            #                                 newMeetingUUID)
-                            #                             userJoinedEvent.dispatch()
+                            userJoinedEvent = Event("JOINED", user.uuid,
+                                newMeetingEvent.params["meeting"].uuid)
+                            userJoinedEvent.dispatch()
+                            
                         else:
                             # pull the existing meeting.
                             meeting = room.currentMeeting
@@ -176,8 +179,8 @@ class ConnectionHandler(tornado.web.RequestHandler):
                         # logging.debug("Setting meeting to %s."%meeting.uuid)
                         
                     else: 
-                        raise HTTPError("400", """Specified room UUID %s
-                        didn't exist or wasn't a valid room."""%roomUUID)
+                        raise HTTPError("400", "Specified room UUID %s \
+                        didn't exist or wasn't a valid room."%roomUUID)
                     
                     # if it's not, get the meeting id from the existing
                     # meeting and move on.
@@ -187,7 +190,8 @@ class ConnectionHandler(tornado.web.RequestHandler):
                     # a user joined event.
                     pass
                 else:
-                    raise HTTPError("400", "Lacked either 'room' or 'meeting' parameter. You must include one of the two.")
+                    raise HTTPError("400", "Lacked either 'room' or 'meeting'\
+                        parameter. You must include one of the two.")
                     
                 # at this point, we KNOW we have a valid meeting object.
                 # We also know this user wasn't logged in already, so
@@ -204,7 +208,8 @@ class ConnectionHandler(tornado.web.RequestHandler):
                 # a log out event from the previous one? Deal with this later)
                 user.setConnection(self)            
         else:
-            raise HTTPError("400", "Specified user UUID (%s), is not a known user id." % userUUID)
+            raise HTTPError("400", "Specified user UUID (%s), is not a known\
+                user id." % userUUID)
         
 
 class PingHandler(tornado.web.RequestHandler):
