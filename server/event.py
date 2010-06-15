@@ -129,7 +129,7 @@ class Event:
             d["meeting"] = None
             d["user"] = None
             
-        return json.dumps(d)
+        return json.dumps(d, cls=YarnModelJSONEncoder)
         
     def dispatch(self):
         """Triggers an event dispatch process.
@@ -144,6 +144,64 @@ class Event:
         #   - Send on to appropriate clients. (TODO)
         logging.info("Dispatching event: " + str(self.getJSON()))
         
+        
+        # WRITE EVENT TO DISK
+        # (not going to do this for a bit)
+        
+        # MODIFY INTERNAL STATE
+        # python has no switch/case statement (ugh) so we're going
+        # to dispatch by a dictionary with function pointers.
+        #
+        # Depending on the event type,
+        # we're going to something different with it.
+        
+        try:
+            handler = DISPATCH[self.eventType]
+        except KeyError:
+            logging.error("Tried to dispatch event type %s but no handler\
+                was found."%self.eventType)
+            return None
+        
+        # invoke the handler on this event.
+        result = handler(self)
+        
+        # SEND EVENT TO APPROPRIATE CLIENTS
+        
+        
+        # RETURN THE RESULT
+        # Handlers can return something - usually the new instance of an obj
+        # that the event creates. This gets passed all the way back up the
+        # dispatch chain, so the person who dispatched the event can see
+        # the uuid/properties of the new object if they need it.
+        return result
+
+
+# DISPATCH METHODS
+# These methods will not be called by anyone other than the event dispatch
+# method. They determine what happens to internal state based on the event.
+
+def _handleNewMeeting(event):
+    newMeeting = Meeting(event.params["room"].uuid)
+    
+    # now register that meeting with the room.
+    event.params["room"].set_meeting(newMeeting)
+    
+    return newMeeting
+
+def _handleJoined(event):
+    return None
+    
+def _handleLeft(event):
+    return None
+
+# Maps EVENT_TYPES to the functions that handle those events. Used in 
+# Event.dispatch. 
+DISPATCH = {"NEW_MEETING":_handleNewMeeting,
+            "JOINED":_handleJoined,
+            "LEFT":_handleLeft
+            }
+
+
 
 if __name__ == '__main__':
     main()

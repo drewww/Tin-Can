@@ -43,7 +43,8 @@ class YarnApplication(tornado.web.Application):
             (r"/connect/", ConnectionHandler),
             (r"/connect/ping/", PingHandler),
             (r"/connect/test", ConnectTestHandler),
-            (r"/users/choose", ChooseUsersHandler)
+            (r"/users/choose", ChooseUsersHandler),
+            (r"/agenda/", AgendaHandler)
             ]
         
         settings = dict(
@@ -153,7 +154,7 @@ class ConnectionHandler(tornado.web.RequestHandler):
                             # THIS UUID CREATION IS CHEATING. TODO FIX IT.
                             newMeetingUUID = uuid.uuid4()
                             newMeetingEvent = Event("NEW_MEETING",
-                                user.uuid, newMeetingUUID, {"room":room.uuid})
+                                user.uuid, newMeetingUUID, {"room":room})
                             newMeetingEvent.dispatch()
                             
                             # Can't do this until we have events changing
@@ -214,6 +215,10 @@ class PingHandler(tornado.web.RequestHandler):
         event = Event("PING", None, None)
         
         state.send_event_to_users(state.get_logged_in_users(), event)
+
+class AgendaHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("agenda_edit.html")
         
 class ChooseUsersHandler(tornado.web.RequestHandler):
     def get(self):
