@@ -73,19 +73,20 @@ class Room(YarnBaseType):
         d["name"] = self.name
         
         if(self.currentMeeting!=None):
-            d["currentMeeting"] = self.currentMeeting.uuid
+            d["currentMeetingUUID"] = self.currentMeeting.uuid
         else:
-            d["currentMeeting"] = None
+            d["currentMeetingUUID"] = None
             
         return d
         
 class Meeting(YarnBaseType):
     """Store meeting-related information."""
 
-    def __init__(self, roomUUID, title=None, meetingUUID=None, startedAt=None):
+    def __init__(self, roomUUID, title=None, meetingUUID=None,
+        startedAt=None):
         self.uuid = meetingUUID
         YarnBaseType.__init__(self)
-        self.room = roomUUID
+        self.room = state.get_obj(roomUUID, Room)
         self.title = title
         
         if startedAt==None:
@@ -98,11 +99,25 @@ class Meeting(YarnBaseType):
         self.allParticipants = []
         self.currentParticipants = []
         
+    def participantJoined(self, user):
+        logging.info("User %s joined meeting %s in room %s"%(user.name,
+            self.title, self.room.name))
+        
+        self.allParticipants.append(user)
+        self.currentParticipants.append(user)
+    
+    def participantLeft(self, user):
+        logging.info("User %s left meeting %s in room %s"%(user.name,
+            self.title, self.room.name))
+        self.currentParticipants.remove(user)
     
     def getDict(self):
         d = YarnBaseType.getDict(self)
         d["endedAt"] = self.endedAt
         d["isLive"] = self.isLive
+        
+        # Should these be just UUIDs of participants? Doing everything about
+        # them, for now.
         d["allParticipants"] = self.allParticipants
         d["currentParticipants"] = self.currentParticipants
         return d
@@ -111,7 +126,8 @@ class Meeting(YarnBaseType):
 class User(YarnBaseType):
     """Store meeting-related information."""
     
-    def __init__(self, name=None, userUUID=None, isTable=False, localUsers = []):
+    def __init__(self, name=None, userUUID=None, isTable=False,
+        localUsers = []):
         self.uuid = userUUID
         
         YarnBaseType.__init__(self)
@@ -163,7 +179,11 @@ class User(YarnBaseType):
     def getDict(self):
         d = YarnBaseType.getDict(self)
         d["name"] = self.name
-        d["inMeeting"] = self.inMeeting
+        if(self.inMeeting!=None):
+            d["inMeetingUUID"] = self.inMeeting.uuid
+        else:
+            d["inMeetingUUID"] = None
+            
         d["loggedIn"] = self.loggedIn
         d["status"] = self.status
         return d
@@ -210,7 +230,8 @@ class Task(MeetingObjectType):
 class Topic(MeetingObjectType):
     """Store information about a topic."""
 
-    def __init__(self, meetingUUID, creatorUUID, text, timeStarted=None, timeEnded=None):
+    def __init__(self, meetingUUID, creatorUUID, text, timeStarted=None,
+        timeEnded=None):
         self.uuid=None
 
         MeetingObjectType.__init__(self, creatorUUID, meetingUUID)

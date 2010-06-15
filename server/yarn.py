@@ -51,7 +51,8 @@ class YarnApplication(tornado.web.Application):
             # using the chatdemo secret for now - this really should be
             # loaded out of a configuration file, so we don't have to check
             # it into the repository. Don't trust this for ANYTHING.
-            template_path=os.path.join(os.path.dirname(__file__), "templates"),
+            template_path=os.path.join(os.path.dirname(__file__),
+                "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
         )
         
@@ -145,8 +146,8 @@ class ConnectionHandler(tornado.web.RequestHandler):
                         # forward.
                         if(room.currentMeeting==None):
                             # make a new meeting!
-                            logging.info("""Initiating a new meeting in room
-                            %s for user %s"""%(room.name, user.name))
+                            logging.info("Initiating a new meeting in room\
+                            %s for user %s"%(room.name, user.name))
                             
                             # For a discussion of why we're not just making
                             # the object here and adding the user to the 
@@ -165,7 +166,7 @@ class ConnectionHandler(tornado.web.RequestHandler):
                             # exist yet. Going to check this in without
                             # that chunk. The earlier stuff is working great.
                             userJoinedEvent = Event("JOINED", user.uuid,
-                                newMeetingEvent.params["meeting"].uuid)
+                                newMeetingEvent.results["meeting"].uuid)
                             userJoinedEvent.dispatch()
                             
                         else:

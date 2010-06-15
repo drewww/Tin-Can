@@ -46,6 +46,10 @@ class Event:
         
         self.eventType = eventType
         
+        
+        # For a discussion of what this is for, check self.addResult
+        self.results = {}
+        
         # log the time the event was created on the server.
         self.timestamp = time.time()
         
@@ -96,11 +100,23 @@ class Event:
             logging.error("Tried to create event of type %s without param %s. Expects: %s"%(self.eventType, missingParam, expectedParams))
             return None
         else:
-            logging.info("Setting event params: " + str(params))
             self.params = params
         
         
+    
+    def addResult(self, key, value):
+        """Stores a result object. 
         
+        This is used when the event generates some new object on the server
+        that needs to be included in the object. For instance, a NEW_TASK
+        event doesn't (when created) contain the actual Task object in it.
+        For the sake of clarity, we'll put all these objects into a dict
+        separate from the params dict so it's clear why they're there and
+        what they're for."""
+        self.results[key] = value
+        
+        # TODO add a check to make sure we're not overwriting a result?
+    
     # TODO need to do some fancy stuff here to override the blah.foo operator so
     # we can keep track of what stuff has been set so we can write JSON
     # out properly including all the arguments that have been set on us. 
@@ -118,15 +134,18 @@ class Event:
         # load in the params. Put them in a separate namespace to avoid
         # collisions.
         d["params"] = self.params
+        
+        # ibid.
+        d["results"] = self.results
             
         # as above, this is just a temporary work around. Later, we'll enforce
         # these objects' existence
         try:
-            d["meeting"] = self.meeting.uuid
-            d["user"] = self.user.uuid
+            d["meetingUUID"] = self.meeting.uuid
+            d["userUUID"] = self.user.uuid
         except:
-            d["meeting"] = None
-            d["user"] = None
+            d["meetingUUID"] = None
+            d["userUUID"] = None
             
         return json.dumps(d, cls=YarnModelJSONEncoder)
         
@@ -188,7 +207,7 @@ def _handleNewMeeting(event):
     # pushing it into params because the outer meeting value is
     # just for specifying which meeting an event is taking place in, 
     # and this event type happens outside of a meeting context.
-    event.params["meeting"] = newMeeting
+    event.addResult("meeting", newMeeting)
     
     # now register that meeting with the room.
     event.params["room"].set_meeting(newMeeting)
@@ -198,10 +217,23 @@ def _handleNewMeeting(event):
     return event
 
 def _handleJoined(event):
-    return None
+    event.meeting.participantJoined(event.user)
+    
+    # this is a little wonky, but the way the event system works, it doesn't
+    # include the full user object (ie event.user) in every event because
+    # most of the time all we need to know is what their UUID is. But in this
+    # case it's a new user, so we need to give clients all the info they need
+    # to create a new local user object. 
+    event.addResult("user", event.user)
+    return event
     
 def _handleLeft(event):
-    return None
+    event.meeting.participantLeft(event.user)
+    
+    # We DON'T need to include the user in the result object (as above)
+    # because clients will already know about this user, so the UUID in the
+    # event itself is enough.
+    return event
 
 # Maps EVENT_TYPES to the functions that handle those events. Used in 
 # Event.dispatch. 
