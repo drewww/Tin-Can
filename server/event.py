@@ -16,7 +16,7 @@ import time
 import uuid
 import simplejson as json
 
-from model import *
+import model
 
 EVENT_TYPES = ["NEW_MEETING", "JOINED", "LEFT", "NEW_TASK", "UPDATE_TASK",
                 "NEW_TOPIC", "UPDATE_TOPIC", "PING"]
@@ -61,7 +61,7 @@ class Event:
         # Eventually we'll be rigorous about checking these, but for now
         # if we get key errors, just eat them and set them to None. Too hard
         # to test without this for now.
-        self.user = state.get_obj(userUUID, User)
+        self.user = state.get_obj(userUUID, model.User)
         if(self.user==None):
             logging.error("""Tried to create an event with
                             invalid userUUID %s"""%userUUID)
@@ -73,7 +73,7 @@ class Event:
         # event to create the UUID at that point and pass it down the chain.
         if(self.eventType!="NEW_MEETING"):
             # any event other than NEW MEETING needs to have a meeting param
-            self.meeting = state.get_obj(meetingUUID, Meeting)
+            self.meeting = state.get_obj(meetingUUID, model.Meeting)
             if(self.meeting==None):
                 # TODO We need to raise an exception here, not return none.
                 # Returning None doesn't seem to do anything except end
@@ -97,7 +97,9 @@ class Event:
         # if we're missing a param, fail with a descriptive error message.
         # otherwise, store the params and finish the constructor happily.
         if(not hasAllRequiredParams):
-            logging.error("Tried to create event of type %s without param %s. Expects: %s"%(self.eventType, missingParam, expectedParams))
+            logging.error("Tried to create event of type %s without param\
+                %s. Expects: %s"%(self.eventType, missingParam,
+                expectedParams))
             return None
         else:
             self.params = params
@@ -121,7 +123,7 @@ class Event:
     # we can keep track of what stuff has been set so we can write JSON
     # out properly including all the arguments that have been set on us. 
     
-    def getJSON(self):
+    def getDict(self):
         d = {}
         
         # I think I could some fancy self-referential loop-through-own-keys
@@ -147,7 +149,7 @@ class Event:
             d["meetingUUID"] = None
             d["userUUID"] = None
             
-        return json.dumps(d, cls=YarnModelJSONEncoder)
+        return d
         
     def dispatch(self):
         """Triggers an event dispatch process.
@@ -185,9 +187,9 @@ class Event:
         
         # SEND EVENT TO APPROPRIATE CLIENTS
         if(self.eventType == "NEW_MEETING"):
-            state.send_event_to_users(state.get_logged_in_users(), event)
+            sendEventsToUsers(state.get_logged_in_users(), [event])
         else:
-            state.send_event_to_meeting(event)
+            event.meeting.sendEvent(event)
         
         # RETURN THE RESULT
         # Handlers can return something - usually the new instance of an obj
@@ -195,8 +197,27 @@ class Event:
         # dispatch chain, so the person who dispatched the event can see
         # the uuid/properties of the new object if they need it.
         
-        logging.info("Done dispatching event: " + str(self.getJSON()))
+        logging.info("Done dispatching event: " + str(self.getDict()))
         return event
+
+def sendEventsToUsers(users, events):
+    
+    # TODO do assertionerrors here if they're not both arrays?
+    # or find some nice way to detect non-arrayness and wrap them?
+    
+    # had some trouble with names here: can't use 'user' and 'event' because
+    # they're module names.
+    # try:
+    #     for curUser in users:
+    #         for curEvent in events:
+    #             curUser.enqueueEvent(curEvent)
+    # except Exception, e:
+    #     logging.error("sendEventsToUsers requires lists for both parameters,\
+    #         and one of the parameters wasn't a list.")
+    #     raise e
+    for curUser in users:
+        for curEvent in events:
+            curUser.enqueueEvent(curEvent)
 
 
 # DISPATCH METHODS
@@ -204,7 +225,7 @@ class Event:
 # method. They determine what happens to internal state based on the event.
 
 def _handleNewMeeting(event):
-    newMeeting = Meeting(event.params["room"].uuid)
+    newMeeting = model.Meeting(event.params["room"].uuid)
     
     # once we have the meeting, push it back into the event object.
     # pushing it into params because the outer meeting value is

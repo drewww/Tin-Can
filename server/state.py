@@ -88,26 +88,6 @@ def get_logged_in_users():
     """Returns only users that are currently logged in."""
     return [user for user in users if user.loggedIn]
 
-def send_event_to_users(users, event):
-    
-    for user in users:
-        if(user.connection != None):
-            logging.debug("Sending event to: " + user.name)
-            user.connection.write(event.getJSON())
-            user.connection.finish()
-            user.connection = None
-        else:
-            # this is where we put the event queing stuff.
-            logging.warning("No connection for user %s, and no queue yet."
-                %user.name)
-            pass
-    
-def send_event_to_meeting(event):
-    """Sends the 'event' to all participants in 'meeting'."""
-    logging.info("About to send to all users in meeting: %s"
-        %event.meeting.currentParticipants)
-    send_event_to_users(event.meeting.currentParticipants, event)
-
 if __name__ == '__main__':
     init_test()
     

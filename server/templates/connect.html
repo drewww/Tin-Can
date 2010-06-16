@@ -44,10 +44,14 @@
 		}
 		
 		function responseReceived(response) {
-			console.log("response: " + response.eventType);
+			console.log("events: " + response.length);
 			
-			var message = "" + new Date().getTime() + " - ";
-			$("#response").append(message + dumpDict(response) + "<br/>");
+			for(var key in response) {
+				var ev = response[key];
+			// var message = "" + new Date().getTime() + " - ";
+			console.log("  type: " + ev.eventType);
+				$("#response").append(dumpDict(ev) + "<br/>");
+			}
 			connect(userUUID, roomUUID);
 		}
 		
