@@ -6,6 +6,18 @@
 <head>
 	<meta name="viewport" content="width=320, user-scalable=yes">
 	<title>login</title>
+<script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
+<script type="text/javascript" charset="utf-8">
+	function addUser(){
+		addname=$("#newuser")[0];
+		if (addname.style.display!="block"){
+			addname.style.display="block";
+		}
+		else{
+			addname.style.display="none";
+		}
+	}
+</script>
 <style type="text/css" media="screen">
 	body{
 		margin:0px;
@@ -102,16 +114,37 @@
 		border-left:solid;
 		border-right:solid;
 	}
+	#newname{
+		height:25px;
+		margin-top:7px;
+		margin-bottom:7px;
+		margin-left:5px;
+		width:260px;
+		font-size:17px;
+	}
+	#newuser{
+		display:none;
+	}
+	#addbutton{
+		margin:0px;
+		padding:0px;
+		height:35px;
+		font-size:15px;
+	}
 </style>
 </head>
 
 <body>
 	<div id="header">
-		<div id = "add"><img src ="{{ static_url("images/add.png")}}"></div>
+		<div id = "add"><button id="addbutton" onclick = "addUser();">Add</button></div>
 		<div id ="title">Users</div>
 		<div id ="search"><img src ="{{ static_url("images/search.png")}}"></div>
 	</div>
 	<ul>
+		<li id = "newuser" class = "line">
+			<label for="name"></label><input type="text" name="name" value="" id="newname">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+		</li>
 		<li class="line">
 			<div class="line">
 			<img class = "status" src = "{{ static_url("images/online.png")}}">
