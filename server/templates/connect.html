@@ -15,25 +15,24 @@
 		var roomUUID;
 		
 		var stopConnection = false;
-	
+		
 		function newConnection() {
 			stopConnection = false;
 			userUUID = $('#user')[0].value;
-			roomUUID = $('#room')[0].value;
-			console.log("user: " + userUUID + "; room: " + roomUUID);
+			console.log("user: " + userUUID + " about to connect.");
 			// Make the first connection to the server.
-			connect(userUUID, roomUUID);
+			connect(userUUID);
 		}
 		
-		function connect(user, room) {
+		function connect(user) {
 			// Check and see if the stop connection flag has been thrown.
 			if(!stopConnection) {
-				console.log("Connect to /connect/ for " + user + "@" + room);
+				console.log("Connect to /connect/ for " + user);
 			
 				$.ajax({url:"http://localhost:8888/connect/",
 						method: "GET",
 						dataType: "json",
-						data: {"user":user, "room":room},
+						data: {"user":user},
 						success: responseReceived,
 						error: connectionFailed,
 						cache: false,
@@ -41,6 +40,29 @@
 			} else {
 				console.log("Was going to reconnect, but got stopped.");
 			}
+		}
+		
+		function joinRoom() {
+			userUUID = $('#user')[0].value;
+			roomUUID = $('#room')[0].value;
+			
+			console.log("About to join room: " + roomUUID);
+			$.ajax({url:"http://localhost:8888/rooms/join",
+				method: "POST",
+				dataType: "json",
+				data: {"userUUID":userUUID, "roomUUID":roomUUID},
+				success: joinRoomResponse,
+				error: joinRoomFailed,
+				cache: false,
+			});
+		}
+		
+		function joinRoomResponse(response) {
+			console.log("ROOM JOINED");
+		}
+		
+		function joinRoomFailed(request, status, error) {
+			console.log("ROOM JOIN FAILED");
 		}
 		
 		function responseReceived(response) {
@@ -100,6 +122,7 @@
 	{% end %}
 </select>
 <button id="connect" onclick="newConnection()">Connect</button>
+<button id="join" onclick="joinRoom()">Join</button>
 <button id="stop" onclick="setStopConnection()">Stop</button>
 
 <div id="response">

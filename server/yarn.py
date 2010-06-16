@@ -38,6 +38,7 @@ class YarnApplication(tornado.web.Application):
         
         handlers = [
             (r"/rooms/list", RoomsHandler),
+            (r"/rooms/join", JoinRoomHandler),
             (r"/users/connected", ConnectedUsersHandler),
             (r"/users/disconnected", DisconnectedUsersHandler),
             (r"/users/", AllUsersHandler),
@@ -150,77 +151,6 @@ class ConnectionHandler(tornado.web.RequestHandler):
                 # otherwise loggedIn is always true because this side-effects
                 # and sets 
                 user.setConnection(self)
-                roomUUID = self.get_argument("room", None)
-                if(roomUUID != None):
-                    logging.debug("request has a roomUUID: %s"%roomUUID)
-                    room = state.get_obj(roomUUID, Room)
-                    if room != None:
-                        # check and see if the room is empty. If it is, create
-                        # a new meeting there and put this user in it. get the
-                        # meeting id of the new meeting and set it for moving 
-                        # forward.
-                        if(room.currentMeeting==None):
-                            logging.debug("Room %s has no meeting in it."%
-                                room.name)
-                            # make a new meeting!
-                            logging.info("Initiating a new meeting in room\
-                            %s for user %s"%(room.name, user.name))
-                            
-                            # For a discussion of why we're not just making
-                            # the object here and adding the user to the 
-                            # meeting by directly manipulating the objects,
-                            # you can read up on the Event Model here:
-                            # http://wiki.github.com/drewww/Tin-Can/eventmodel
-                            
-                            newMeetingEvent = Event("NEW_MEETING",
-                                user.uuid, None, {"room":room})
-                            newMeetingEvent = newMeetingEvent.dispatch()
-                            
-                            # Can't do this until we have events changing
-                            # the internal state of the server, because
-                            # the meeting with that UUID doesn't actually
-                            # exist yet. Going to check this in without
-                            # that chunk. The earlier stuff is working great.
-                            userJoinedEvent = Event("JOINED", user.uuid,
-                                newMeetingEvent.results["meeting"].uuid)
-                            userJoinedEvent.dispatch()
-                            
-                        else:
-                            # pull the existing meeting.
-                            meeting = room.currentMeeting
-                            
-                            # we need to mark this user as joining this
-                            # meeting TODO TODO TODO
-                            userJoinedEvent = Event("JOINED", user.uuid,
-                                meeting.uuid)
-                            userJoinedEvent.dispatch()
-                            
-                          
-                        # temporarily disabled - turn this back on when
-                        # the above problem with events not actually
-                        # getting executed is fixed. Right now, the meeting
-                        # object isn't created yet.  
-                        # logging.debug("Setting meeting to %s."%meeting.uuid)
-                        
-                    else: 
-                        raise HTTPError("400", "Specified room UUID %s \
-                        didn't exist or wasn't a valid room."%roomUUID)
-                    
-                    # if it's not, get the meeting id from the existing
-                    # meeting and move on.
-                    pass
-                elif(self.get_argument("meeting", None)!=None):
-                    # if we've got a meeting specified, we need to issue
-                    # a user joined event.
-                    pass
-                else:
-                    raise HTTPError("400", "Lacked either 'room' or 'meeting'\
-                        parameter. You must include one of the two.")
-                    
-                # at this point, we KNOW we have a valid meeting object.
-                # We also know this user wasn't logged in already, so
-                # we can trigger a JOIN event. We'll also want to trigger
-                # a STATE response. 
                 
             else:
                 # if the user is already logged in, we don't really care - 
@@ -237,6 +167,73 @@ class ConnectionHandler(tornado.web.RequestHandler):
             raise HTTPError("400", "Specified user UUID (%s), is not a known\
                 user id." % userUUID)
         
+
+class JoinRoomHandler(tornado.web.RequestHandler):
+    def get(self):
+        roomUUID = self.get_argument("roomUUID")
+        userUUID = self.get_argument("userUUID")
+        
+        
+        user = state.get_obj(userUUID, User)
+        if(user==None):
+            raise HTTPError("400", "Specified user UUID %s\
+            didn't exist or wasn't a valid user."%userUUID)
+            return
+        
+        logging.debug("request has a roomUUID: %s"%roomUUID)
+        room = state.get_obj(roomUUID, Room)
+        if room != None:
+            # check and see if the room is empty. If it is, create
+            # a new meeting there and put this user in it. get the
+            # meeting id of the new meeting and set it for moving 
+            # forward.
+            if(room.currentMeeting==None):
+                logging.debug("Room %s has no meeting in it."%
+                    room.name)
+                # make a new meeting!
+                logging.info("Initiating a new meeting in room\
+                %s for user %s"%(room.name, user.name))
+                
+                # For a discussion of why we're not just making
+                # the object here and adding the user to the 
+                # meeting by directly manipulating the objects,
+                # you can read up on the Event Model here:
+                # http://wiki.github.com/drewww/Tin-Can/eventmodel
+                
+                newMeetingEvent = Event("NEW_MEETING",
+                    user.uuid, None, {"room":room})
+                newMeetingEvent = newMeetingEvent.dispatch()
+                
+                # Can't do this until we have events changing
+                # the internal state of the server, because
+                # the meeting with that UUID doesn't actually
+                # exist yet. Going to check this in without
+                # that chunk. The earlier stuff is working great.
+                userJoinedEvent = Event("JOINED", user.uuid,
+                    newMeetingEvent.results["meeting"].uuid)
+                userJoinedEvent.dispatch()
+                
+            else:
+                # pull the existing meeting.
+                meeting = room.currentMeeting
+                
+                # we need to mark this user as joining this
+                # meeting TODO TODO TODO
+                userJoinedEvent = Event("JOINED", user.uuid,
+                    meeting.uuid)
+                userJoinedEvent.dispatch()
+                
+              
+            # temporarily disabled - turn this back on when
+            # the above problem with events not actually
+            # getting executed is fixed. Right now, the meeting
+            # object isn't created yet.  
+            # logging.debug("Setting meeting to %s."%meeting.uuid)
+            
+        else: 
+            raise HTTPError("400", "Specified room UUID %s \
+            didn't exist or wasn't a valid room."%roomUUID)
+            return
 
 class PingHandler(tornado.web.RequestHandler):
     """A testing handler to test connection management issue."""
