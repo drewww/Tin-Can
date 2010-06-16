@@ -7,14 +7,17 @@
 	<meta name="viewport" content="width=320, user-scalable=yes">
 	<title>login</title>
 <style type="text/css" media="screen">
+	body{
+		margin:0px;
+	}
+	div{
+		margin:0px;
+	}
 	table{
 		margin:none;
 		width: 320px;
 		border: 3px solid;
 		border-collapse:collapse;
-	}
-	#heading{
-		border-bottom:none;
 	}
 	tr{
 		height:50px;
@@ -23,83 +26,181 @@
 		border-bottom: 1px solid black;
 		font-family:"Arial",sans-serif;
 	}
-	td.status{
-		width:15px;
+	ul{
+		border:solid;
+		width:320px;
+		list-style-type:none;
+		padding:0px;
+		margin:0px;
 	}
-	td.select{
-		width:15px;
+	li{
+		border-bottom: 1px solid black;
 	}
-	td.icon{
+	.line{
+		width:320px;
+		height:50px;
+		margin:none;
+		padding:none;
+		clear:both;
+		position:relative;
+	}
+	.status{
 		width:25px;
+		float:left;
+		padding-top:12px;
+		padding-bottom:12px;
 	}
-	td.username{
-		width:225px;
+	.next{
+		width:25px;
+		float:right;
+		padding-top:11px;
+		padding-bottom:11px;
 	}
-	#new{
+	.icon{
+		width:40px;
+		float:left;
+		padding-top:5px;
+		padding-bottom:5px;
+	}
+	.username{
+		width:230px;
+		float:left;
+		font-family:"Arial",sans-serif;
+		padding-top:15px;
+		padding-bottom:15px;
+	}
+	#add{
 		width:100px;
 		text-align:right;
+		float:left;
+		padding-top:10px;
+		padding-bottom:10px;
 	}
 	#title{
 		width:120px;
 		text-align:center;
 		font-size:20px;
+		float:left;
+		font-family:"Arial",sans-serif;
+		padding-top:15px;
+		padding-bottom:15px;
 	}
 	#search{
 		width:100px;
+		float:right;
+		padding-top:10px;
+		padding-bottom:10px;
+	}
+	#header{
+		width:320px;
+		height:50px;
+		margin:none;
+		padding:none;
+		clear:both;
+		position:relative;
+		border-top:solid;
+		border-left:solid;
+		border-right:solid;
 	}
 </style>
 </head>
 
 <body>
-	<table id = "heading">
-		<tr><td id = "new"><img src ="{{ static_url("images/add.png")}}"></td><td id = "title">Users</td><td id = "search"><img src ="{{ static_url("images/search.png")}}"></td>
-	</table>
-	<table cellpadding="5">
-		<tr><td class = "status"><img src ="{{ static_url("images/online.png")}}"></td>
-			<td class = "username">a21countrygal</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/online.png")}}"></td>
-			<td class = "username">coffee_breath</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/online.png")}}"></td>
-			<td class = "username">dandystrawberry</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/online.png")}}"></td>
-			<td class = "username">gamer_nuts</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/online.png")}}"></td>
-			<td class = "username">jackrabbit</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/online.png")}}"></td>
-			<td class = "username">mooncake15</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/offline.png")}}"></td>
-			<td class = "username">pinkladyx</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/offline.png")}}"></td>
-			<td class = "username">rollingstar</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/offline.png")}}"></td>
-			<td class = "username">sockshoes</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/offline.png")}}"></td>
-			<td class = "username">tadpole</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/offline.png")}}"></td>
-			<td class = "username">yummy_hamburgers</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		</table>
+	<div id="header">
+		<div id = "add"><img src ="{{ static_url("images/add.png")}}"></div>
+		<div id ="title">Users</div>
+		<div id ="search"><img src ="{{ static_url("images/search.png")}}"></div>
+	</div>
+	<ul>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/online.png")}}">
+			<div class = "username">a21countrygal</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/online.png")}}">
+			<div class = "username">coffee_break</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/online.png")}}">
+			<div class = "username">dandystrawberry</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/online.png")}}">
+			<div class = "username">gamer_nuts</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/online.png")}}">
+			<div class = "username">jackrabbit</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/offline.png")}}">
+			<div class = "username">mooncake15</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/offline.png")}}">
+			<div class = "username">piinkladyx</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/offline.png")}}">
+			<div class = "username">rollingstar</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/offline.png")}}">
+			<div class = "username">sockshoes</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/offline.png")}}">
+			<div class = "username">tadpole</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/offline.png")}}">
+			<div class = "username">yummy_hamburgers</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+	</ul>
 
 </body>
 </html>
