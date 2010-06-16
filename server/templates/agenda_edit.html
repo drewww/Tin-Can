@@ -1,19 +1,111 @@
 <html>
 <head>
+	<script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
 	<meta name="viewport" content="width=300" />
-	</head>
-<table border="1" width="320" height=480>
-	<tr height=8.3%><th>Edit</th></tr>
-	<tr height=8.3%><th></th> <th><img src="accept.png" height="27"/></th> <th width="70%">Item 1 </th> <th></th> </tr>
-	<tr height=8.3%><th></th> <th><img src="accept.png" height="27"/></th> <th width="70%">Item 2 </th> <th></th> </tr>
-	<tr height=8.3%><th></th> <th><img src="accept.png" height="27"/></th> <th width="70%">Item 3 </th> <th></th> </tr>
-	<tr height=8.3%><th><img src="delete.png" /></th> <th>-></th> <th width="70%">Item 4 </th> <th><img src="drag.png"></th> </tr>
-	<tr height=8.3%><th><img src="delete.png" /></th> <th></th> <th width="70%">Item 5 </th> <th><img src="drag.png"></th> </tr>
-	<tr height=8.3%><th><img src="delete.png" /></th> <th></th> <th width="70%">Item 6 </th> <th><img src="drag.png"></th> </tr>
-	<tr height=8.3%><th><img src="delete.png" /></th> <th></th> <th width="70%">Item 7 </th> <th><img src="drag.png"></th> </tr>
-	<tr height=8.3%><th><img src="delete.png" /></th> <th></th> <th width="70%">Item 8 </th> <th><img src="drag.png"></th> </tr>
-	<tr height=8.3%><th><img src="delete.png" /></th> <th></th> <th width="70%">Item 9 </th> <th><img src="drag.png"></th> </tr>
-	<tr height=8.3%><th><img src="delete.png" /></th> <th></th> <th width="70%">Item 10 </th> <th><img src="drag.png"></th> </tr>
-	<tr height=8.3%><th>Done</th></tr>
-</table>
+	<script>
+$('.templateDone').clone().appendTo('.item2');
+$('.templateDone').clone().appendTo('.item3');
+
+$('.templateFuture').clone().appendTo('.item6');
+$('.templateFuture').clone().appendTo('.item7');
+$('.templateFuture').clone().appendTo('.item8');
+$('.templateFuture').clone().appendTo('.item9');
+		</script>	
+	<style type="text/css">
+
+		
+	li{
+		display: inline;
+		margin: auto;
+	}
+	
+	ul{
+		font-family: Helvetica, sans-serif;
+		margin: 0px;
+		padding: 0px;
+	}
+	
+	#border{
+		border:1px solid;
+		margin: 0px;
+		padding: 0px;
+		height: 480px;
+		width: 320px;
+	}
+	ul div{
+		height: 8.75%;
+		border: 1px solid;
+		margin: .07em;
+		padding: 0px;
+	}
+	
+	.delete{
+		float: left;
+		margin-top: 2px;
+	}
+	
+	.check{
+		height: 30px;
+		width: 30px;
+		margin-top: 5px;
+		margin-right: 5px;
+
+	}
+	
+	.drag{
+		float: right;
+	}
+	
+	.templateDone .delete{
+		visibility: hidden;
+	}
+	
+	.templateDone .drag{
+		visibility: hidden;
+	}
+	
+	.templateFuture .check{
+		visibility: hidden;
+	}
+	
+	</style>
+</head>
+<body>
+<div id="border">
+<ul>
+	<div><li>Edit</li></div>
+	<div class="templateDone">
+		<img src ="{{ static_url("images/delete.png")}}" class="delete">
+		<img src ="{{ static_url("images/accept.png")}}" class="check">
+		<li>Item 1</li>
+		<img src ="{{ static_url("images/drag.png")}}" class="drag">
+	</div>
+	
+	<div class="item2" display="inline"></div>
+	<div class="item3" display="inline"></div>
+	
+	<div class="templateCurrent">
+		<img src="{{ static_url("images/delete.png")}}" class="delete">
+		<li>---></li>
+		<li>Item 4</li>
+		<img src ="{{ static_url("images/drag.png")}}" class="drag">		
+	</div>
+	
+	<div class="templateFuture">
+		<img src="{{ static_url("images/delete.png")}}" class="delete">
+		<img src ="{{ static_url("images/accept.png")}}" class="check">
+		<li>Item 5</li>
+		<img src ="{{ static_url("images/drag.png")}}" class="drag">		
+	</div>
+
+	<div class="item6" display="inline"></div>	
+	<div class="item7" display="inline"></div>	
+	<div class="item8" display="inline"></div>	
+	<div class="item9" display="inline"></div>	
+	
+	<div><li>Done</li></div>
+</ul>
+
+</div>
+</body>
 </html>
