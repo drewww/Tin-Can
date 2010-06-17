@@ -29,7 +29,12 @@
 
     // Now, drop the MeetingTimer in the middle of the screen.
     // Add the timer first, so it's underneath everything.
-    meetingTimerView = [[MeetingTimerView alloc] initWithFrame:CGRectMake(200, 200, 400, 400)];
+    
+    NSDate *startingTime = [NSDate date];
+    NSLog(@"starting time in seconds: %f", [startingTime timeIntervalSince1970]);
+    NSTimeInterval startingTimeInSeconds = [startingTime timeIntervalSince1970]-1800;
+    
+    meetingTimerView = [[MeetingTimerView alloc] initWithFrame:CGRectMake(200, 200, 400, 400) withStartTime:[NSDate dateWithTimeIntervalSince1970:startingTimeInSeconds]];
     [meetingTimerView retain];
     [self.view addSubview:meetingTimerView];
     
@@ -44,6 +49,7 @@
     [[DragManager sharedInstance] initWithRootView:self.view withParticipantsContainer:participantsContainer];
 
     [self.view bringSubviewToFront:participantsContainer];
+	[self.view bringSubviewToFront:meetingTimerView];
     
     queue = [[[NSOperationQueue alloc] init] retain];
 
@@ -127,7 +133,7 @@
     [names addObject:@"Jaewoo"];
     [names addObject:@"Charlie"];
     [names addObject:@"Chris"];
-    [names addObject:@"Drew"];
+    [names addObject:@"Paula"];
     [names addObject:@"Ig-Jae"];
     [names addObject:@"Trevor"];
     [names addObject:@"Paulina"];

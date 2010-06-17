@@ -107,11 +107,18 @@ class Meeting(YarnBaseType):
         
         self.allParticipants.append(user)
         self.currentParticipants.append(user)
+        
+        user.inMeeting = self
+        
+        
     
     def participantLeft(self, user):
         logging.info("User %s left meeting %s in room %s"%(user.name,
             self.title, self.room.name))
+                
         self.currentParticipants.remove(user)
+        
+        user.inMeeting = None
     
     def getDict(self):
         d = YarnBaseType.getDict(self)
@@ -355,5 +362,4 @@ if __name__ == "__main__":
     print "room 1: " + str(room1)
     print "room 1 json: " + str(room1.getJSON())
     print "obj store: " + str(db)
-    
     
