@@ -8,6 +8,20 @@
 	<title>login</title>
 <script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
 <script type="text/javascript" charset="utf-8">
+	var namelist;
+	var nametemplate;
+	var temp = ["asdf", "asdf325", "omgomgomg"];
+	
+	function start(){
+		namelist = $("#usernamelist");
+		nametemplate = $("#template");
+		for (var x in temp){
+			newname = nametemplate.clone();
+			newname.find("div").html(temp[x]);
+			newname.show();
+			namelist.append(newname);
+		}
+	}
 	function addUser(){
 		addname=$("#newuser")[0];
 		if (addname.style.display!="block"){
@@ -17,6 +31,7 @@
 			addname.style.display="none";
 		}
 	}
+	
 </script>
 <style type="text/css" media="screen">
 	body{
@@ -131,29 +146,30 @@
 		height:35px;
 		font-size:15px;
 	}
+	#template{
+		display:none;
+	}
 </style>
 </head>
 
-<body>
+<body onload = "start();">
 	<div id="header">
 		<div id = "add"><button id="addbutton" onclick = "addUser();">Add</button></div>
 		<div id ="title">Users</div>
 		<div id ="search"><img src ="{{ static_url("images/search.png")}}"></div>
 	</div>
-	<ul>
+	<ul id = "usernamelist">
 		<li id = "newuser" class = "line">
 			<label for="name"></label><input type="text" name="name" value="" id="newname">
 			<img class = "next" src = "{{ static_url("images/next.png")}}">
 		</li>
-		<li class="line">
-			<div class="line">
+		<li id ="template" class="line">
 			<img class = "status" src = "{{ static_url("images/online.png")}}">
-			<div class = "username">a21countrygal</div>
+			<div class = "username"></div>
 			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
 			<img class = "next" src = "{{ static_url("images/next.png")}}">
-			</div>
 		</li>
-		<li class="line">
+	<!--	<li class="line">
 			<div class="line">
 			<img class = "status" src = "{{ static_url("images/online.png")}}">
 			<div class = "username">coffee_break</div>
@@ -232,7 +248,7 @@
 			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
 			<img class = "next" src = "{{ static_url("images/next.png")}}">
 			</div>
-		</li>
+		</li>-->
 	</ul>
 
 </body>
