@@ -39,6 +39,7 @@ class YarnApplication(tornado.web.Application):
         handlers = [
             (r"/rooms/list", RoomsHandler),
             (r"/rooms/join", JoinRoomHandler),
+            (r"/rooms/leave", LeaveRoomHandler),
             (r"/users/connected", ConnectedUsersHandler),
             (r"/users/disconnected", DisconnectedUsersHandler),
             (r"/users/", AllUsersHandler),
@@ -169,7 +170,7 @@ class ConnectionHandler(tornado.web.RequestHandler):
         
 
 class JoinRoomHandler(tornado.web.RequestHandler):
-    def get(self):
+    def post(self):
         roomUUID = self.get_argument("roomUUID")
         userUUID = self.get_argument("userUUID")
         
@@ -234,6 +235,36 @@ class JoinRoomHandler(tornado.web.RequestHandler):
             raise HTTPError("400", "Specified room UUID %s \
             didn't exist or wasn't a valid room."%roomUUID)
             return
+
+class LeaveRoomHandler(tornado.web.RequestHandler):
+    def post(self):
+        roomUUID = self.get_argument("roomUUID")
+        userUUID = self.get_argument("userUUID")
+        
+        user = state.get_obj(userUUID, User)
+        room = state.get_obj(roomUUID, Room)
+        
+        if(room==None):
+            raise HTTPError("400", "Specified room UUID %s \
+            didn't exist or wasn't a valid room."%roomUUID)
+            return 
+
+        if(user==None):
+            raise HTTPError("400", "Specified user UUID %s\
+            didn't exist or wasn't a valid user."%userUUID)
+            return
+            
+        if(user.inMeeting==None or user.inMeeting.room != room):
+            raise HTTPError("400", "Specified user %s was either not in\
+            a meeting, or the meeting didn't match the specified room."%
+            user.name)
+            return
+        
+        # if all this passes, make a leave event.
+        leaveEvent = Event("LEFT", user.uuid, user.inMeeting.uuid)
+        leaveEvent.dispatch()
+        
+        pass
 
 class PingHandler(tornado.web.RequestHandler):
     """A testing handler to test connection management issue."""
