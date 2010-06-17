@@ -294,4 +294,3 @@ if __name__ == '__main__':
     http_server.listen(options.port)
     logging.info("YARN LOADED, INITIALIZED AND STARTING...")
     tornado.ioloop.IOLoop.instance().start()
-

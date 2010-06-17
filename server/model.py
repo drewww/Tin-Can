@@ -363,4 +363,3 @@ if __name__ == "__main__":
     print "room 1 json: " + str(room1.getJSON())
     print "obj store: " + str(db)
     
-    
