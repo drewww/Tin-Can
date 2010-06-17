@@ -15,21 +15,64 @@
 	function start(){
 		namelist = $("#usernamelist");
 		nametemplate = $("#template");
-		for (var x in temp){
+		displayList(temp)
+	}
+	
+	function displayList(list){
+		for (var x in list){
 			newname = nametemplate.clone();
-			newname.find("div").html(temp[x]);
+			newname.find("div").html(list[x]);
 			newname.show();
 			namelist.append(newname);
 		}
 	}
+	
+	function editList(list){
+		console.log(list);
+		$("li").hide();
+		$("#searchtype").show();
+		displayList(list);
+	}
 	function addUser(){
 		addname=$("#newuser")[0];
+		$("#searchtype").hide();
 		if (addname.style.display!="block"){
 			addname.style.display="block";
 		}
 		else{
 			addname.style.display="none";
 		}
+	}
+	
+	function toggleSearch(){
+		search=$("#searchtype")[0];
+		$("#newuser").hide();
+		if (search.style.display!="block"){
+			search.style.display="block";
+		}
+		else{
+			search.style.display="none";
+		}
+	}
+	
+	function searchUsers(){
+		searchname=$("#searchname")[0].value;
+		var newlist = new Array();
+		for (var x in temp){
+			if (temp[x].substring(0,searchname.length)==searchname){
+				newlist.push(temp[x]);
+			}
+		}
+		editList(newlist);
+		$("#submitsearch").hide();
+		$("#clearsearch").show();
+	}
+	
+	function cancelSearch(){
+		$("#searchname").value="";
+		$("#submitsearch").show();
+		$("#clearsearch").hide();
+		editList(temp);
 	}
 	
 </script>
@@ -130,12 +173,12 @@
 		border-left:solid;
 		border-right:solid;
 	}
-	#newname{
+	.textbox{
 		height:25px;
 		margin-top:7px;
 		margin-bottom:7px;
 		margin-left:5px;
-		width:260px;
+		width:200px;
 		font-size:17px;
 	}
 	#newuser{
@@ -150,6 +193,12 @@
 	#template{
 		display:none;
 	}
+	#searchtype{
+		display:none;
+	}
+	#clearsearch{
+		display:none;
+	}
 </style>
 </head>
 
@@ -157,12 +206,17 @@
 	<div id="header">
 		<div id = "add"><button id="addbutton" onclick = "addUser();">Add</button></div>
 		<div id ="title">Users</div>
-		<div id ="search"><img src ="{{ static_url("images/search.png")}}"></div>
+		<div id ="search"><button id="searchbutton" onclick = "toggleSearch();">Find</button></div>
 	</div>
 	<ul id = "usernamelist">
 		<li id = "newuser" class = "line">
-			<label for="name"></label><input type="text" name="name" value="" id="newname">
-			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			<label for="name"></label><input type="text" name="name" value="" id="newname" class="textbox">
+			<button type = "submit">Submit!</button>
+		</li>
+		<li id = "searchtype" class = "line">
+			<label for="name"></label><input type="text" name="name" value="" id="searchname" class="textbox" onkeypress="searchUsers();">
+			<button id = "submitsearch" onclick="searchUsers();">Search!</button>
+			<button id = "clearsearch" onclick="cancelSearch();">Cancel</button>
 		</li>
 		<li id ="template" class="line">
 			<img class = "status" src = "{{ static_url("images/online.png")}}">
