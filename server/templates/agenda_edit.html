@@ -1,25 +1,24 @@
 <html>
 <head>
-	<script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
-	<meta name="viewport" content="width=300" />
-	<script>
-$('.templateDone').clone().appendTo('.item2');
-$('.templateDone').clone().appendTo('.item3');
-
-$('.templateFuture').clone().appendTo('.item6');
-$('.templateFuture').clone().appendTo('.item7');
-$('.templateFuture').clone().appendTo('.item8');
-$('.templateFuture').clone().appendTo('.item9');
-		</script>	
-	<style type="text/css">
-
+	<script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js">
+		var template;
+		var clone;
+		var itemList;
 		
-	li{
-		display: inline;
-		margin: auto;
-	}
+		function start(){
+			template = $("#template");
+			itemList = $("#header")
+			clone = template.clone();
+			clone.show();
+			itemList.append(clone);
+			
+		}
+	</script>
+	<meta name="viewport" content="width=300" />
+
+	<style type="text/css">
 	
-	ul{
+	#container{
 		font-family: Helvetica, sans-serif;
 		margin: 0px;
 		padding: 0px;
@@ -32,7 +31,7 @@ $('.templateFuture').clone().appendTo('.item9');
 		height: 480px;
 		width: 320px;
 	}
-	ul div{
+	#container div{
 		height: 8.75%;
 		border: 1px solid;
 		margin: .07em;
@@ -56,55 +55,31 @@ $('.templateFuture').clone().appendTo('.item9');
 		float: right;
 	}
 	
-	.templateDone .delete{
-		visibility: hidden;
+	#header{
+		text-align: center;
 	}
 	
-	.templateDone .drag{
-		visibility: hidden;
+	#template{
+		display: none;
 	}
-	
-	.templateFuture .check{
-		visibility: hidden;
-	}
-	
 	</style>
 </head>
-<body>
+<body onload = "start();">
 <div id="border">
-<ul>
-	<div><li>Edit</li></div>
-	<div class="templateDone">
-		<img src ="{{ static_url("images/delete.png")}}" class="delete">
-		<img src ="{{ static_url("images/accept.png")}}" class="check">
-		<li>Item 1</li>
-		<img src ="{{ static_url("images/drag.png")}}" class="drag">
-	</div>
+<div id="container">
+	<div id="header">Edit</div>
 	
-	<div class="item2" display="inline"></div>
-	<div class="item3" display="inline"></div>
-	
-	<div class="templateCurrent">
+	<div id="template">
 		<img src="{{ static_url("images/delete.png")}}" class="delete">
-		<li>---></li>
-		<li>Item 4</li>
+		--->
+		Item 4
 		<img src ="{{ static_url("images/drag.png")}}" class="drag">		
 	</div>
 	
-	<div class="templateFuture">
-		<img src="{{ static_url("images/delete.png")}}" class="delete">
-		<img src ="{{ static_url("images/accept.png")}}" class="check">
-		<li>Item 5</li>
-		<img src ="{{ static_url("images/drag.png")}}" class="drag">		
-	</div>
 
-	<div class="item6" display="inline"></div>	
-	<div class="item7" display="inline"></div>	
-	<div class="item8" display="inline"></div>	
-	<div class="item9" display="inline"></div>	
 	
-	<div><li>Done</li></div>
-</ul>
+	<div>Done</div>
+</div>
 
 </div>
 </body>
