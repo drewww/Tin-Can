@@ -24,15 +24,15 @@
 			connect(userUUID);
 		}
 		
-		function connect(user) {
+		function connect(userUUID) {
 			// Check and see if the stop connection flag has been thrown.
 			if(!stopConnection) {
-				console.log("Connect to /connect/ for " + user);
+				console.log("Connect to /connect/ for " + userUUID);
 			
 				$.ajax({url:"http://localhost:8888/connect/",
 						type: "GET",
 						dataType: "json",
-						data: {"user":user},
+						data: {"userUUID":userUUID},
 						success: responseReceived,
 						error: connectionFailed,
 						cache: false,

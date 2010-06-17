@@ -236,6 +236,9 @@ def _handleNewMeeting(event):
     # now register that meeting with the room.
     event.params["room"].set_meeting(newMeeting)
     
+    # add this event to the meeting, so it's included at the beginning of
+    # every meeting history.
+    newMeeting.eventHistory.append(event)
     
     
     return event
