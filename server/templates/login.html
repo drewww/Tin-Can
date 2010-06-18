@@ -16,7 +16,7 @@
 		namelist = $("#usernamelist");
 		nametemplate = $("#template");
 		displayList(temp)
-		$("#searchname").keypress(function(e){console.log(e.which); searchUsers(e);});
+		$("#searchname").keyup(function(e){console.log(e.which); searchUsers(e);});
 	});
 	
 	function displayList(list){
@@ -58,12 +58,12 @@
 	
 	function searchUsers(e){
 		searchname=$("#searchname")[0].value;
-		if (e.which>=32){
+	/*	if (e.which>=32){
 			searchname+=String.fromCharCode(e.which);
 		}
 		if (e.which==8){
 			searchname=searchname.substring(0,searchname.length-1);
-		}
+		}*/
 		console.log(searchname);
 		var newlist = new Array();
 		for (var x in temp){
