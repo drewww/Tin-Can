@@ -165,7 +165,7 @@ class Meeting(YarnBaseType):
 class User(YarnBaseType):
     """Store meeting-related information."""
     
-    def __init__(self, name=None, userUUID=None, isTable=False,
+    def __init__(self, name=None, userUUID=None, isTablet=False,
         localUsers = []):
         self.uuid = userUUID
         
@@ -179,7 +179,7 @@ class User(YarnBaseType):
         # this flag sets of this user represents an iPad being logged
         # in, and localUsers tracks what users are known to be local
         # to that iPad.
-        self.isTablet = isTable
+        self.isTablet = isTablet
         self.localUsers = localUsers
         
         # Users have some connection tracking components, too. If we want
@@ -196,6 +196,8 @@ class User(YarnBaseType):
         # if we're already holding onto a connection, release it
         if(self.connection != None):
             try:
+                logging.debug("Shutting down pre-existing connection from %s"%
+                    self.name)
                 self.connection.finish()
             except:
                 logging.warning("Tried to double-close a connection \

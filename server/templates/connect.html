@@ -126,6 +126,18 @@
 			stopConnection = true;
 		}
 		
+		function login() {
+			userUUID = $('#user')[0].value;
+			
+			console.log("About to login user: " + userUUID);
+			$.ajax({url:"http://localhost:8888/users/login",
+				type: "POST",
+				dataType: "json",
+				data: {"userUUID":userUUID},
+				cache: false,
+			});
+		}
+		
 	</script>
 </head>
 <body id="connection_test" onload="">
@@ -144,6 +156,7 @@
 	<option value="{{room.uuid}}">{{room.name}}</option>
 	{% end %}
 </select>
+<button id="login" onclick="login()">Login</button>
 <button id="connect" onclick="newConnection()">Connect</button>
 <button id="join" onclick="joinRoom()">Join</button>
 <button id="leave" onclick="leaveRoom()">Leave</button>
