@@ -1,25 +1,31 @@
 <html>
 <head>
 	<script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
+  <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 
 	<script type ="text/javascript">
 		var template;
 		var clone;
 		var itemList;
 		
-		$(document).ready(function () {
-			template = $("#template");
-			itemList = $("#header");
+		function makeCurrentItem() {
+			template = $("#currentTemplate");
+			itemList = $("#container");
 			clone = template.clone();
-			itemList.after(clone);
+			itemList.append(clone);
 			clone.show();
-		});
+			clone.draggable({axis:'y', snap:true, snapMode:'outer'});			
+		}
+		
 		function makeDoneItem() {
 			template = $("#doneTemplate");
 			itemList = $("#container");
 			clone = template.clone();
 			itemList.append(clone);
 			clone.show();
+			clone.draggable({axis:'y', snap:true, snapMode:'outer'});
 		}
 		
 		function makeFutureItem() {
@@ -30,6 +36,7 @@
 			clone = template.clone();
 			itemList.append(clone);
 			clone.show();
+			clone.draggable({axis:'y', snap:true, snapMode:'outer'});
 		}
 		
 	</script>
@@ -86,9 +93,12 @@
 <body>
 <div id="border">
 <div id="container">
-	<div id="header">Edit <input type="button" value="Done" onclick="makeDoneItem()"><input type="button" value="Future" onclick="makeFutureItem()"> </div>
+	<div id="header">Edit 
+		<input type="button" value="Done" onclick="makeDoneItem()">
+		<input type="button" value="Current" onclick="makeCurrentItem()">
+		<input type="button" value="Future" onclick="makeFutureItem()"> </div>
 	
-	<div id="template" class="template">
+	<div id="currentTemplate" class="template">
 		<img src="{{ static_url("images/delete.png")}}" class="delete">
 		--->
 		Item 4
@@ -112,6 +122,7 @@
 
 </div>
 Done
+
 </div>
 </body>
 </html>
