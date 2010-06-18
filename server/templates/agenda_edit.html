@@ -10,13 +10,18 @@
 		var clone;
 		var itemList;
 		
+		$(function() {
+			$("#container").sortable({placeholder: 'ui-state-highlight',
+			axis: 'y'});
+
+		});
+		
 		function makeCurrentItem() {
 			template = $("#currentTemplate");
 			itemList = $("#container");
 			clone = template.clone();
 			itemList.append(clone);
-			clone.show();
-			clone.draggable({axis:'y', snap:true, snapMode:'outer'});			
+			clone.show();		
 		}
 		
 		function makeDoneItem() {
@@ -25,7 +30,6 @@
 			clone = template.clone();
 			itemList.append(clone);
 			clone.show();
-			clone.draggable({axis:'y', snap:true, snapMode:'outer'});
 		}
 		
 		function makeFutureItem() {
@@ -36,7 +40,6 @@
 			clone = template.clone();
 			itemList.append(clone);
 			clone.show();
-			clone.draggable({axis:'y', snap:true, snapMode:'outer'});
 		}
 		
 	</script>
