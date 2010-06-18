@@ -59,8 +59,8 @@
 			search.style.display="block";
 		}
 		else{
-			cancelSearch();
-			search.style.display="none";
+			$("#searchname")[0].value="";
+			displayList(temp);
 		}
 	}
 	
@@ -84,14 +84,16 @@
 				}
 			}
 			displayList(newlist);
-			$("#searchtype").show();
+			search=$("#searchtype")[0];
+			search.style.display="block";
 		}
 	}
 	
 	function cancelSearch(){
 		$("#searchname")[0].value="";
 		displayList(temp);
-		$("#searchtype").show();
+		search=$("#searchtype")[0];
+		search.style.display="block";
 	}
 	
 </script>
