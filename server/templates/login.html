@@ -16,10 +16,11 @@
 		namelist = $("#usernamelist");
 		nametemplate = $("#template");
 		displayList(temp)
-		$("#searchname").keypress(function(e){console.log(e.which); searchUsers(e);});
+		$("#searchname").keyup(function(e){console.log(e.which); searchUsers(e);});
 	});
 	
 	function displayList(list){
+		$("li").hide();
 		for (var x in list){
 			newname = nametemplate.clone();
 			newname.find("div").html(list[x]);
@@ -28,12 +29,6 @@
 		}
 	}
 	
-	function editList(list){
-		console.log(list);
-		$("li").hide();
-		$("#searchtype").show();
-		displayList(list);
-	}
 	function addUser(){
 		addname=$("#newuser")[0];
 		$("#searchtype").hide();
@@ -41,8 +36,20 @@
 			addname.style.display="block";
 		}
 		else{
+			$("#newname")[0].value="";
 			addname.style.display="none";
 		}
+	}
+	
+	function submitNewUser(){
+		newname=$("#newname")[0].value;
+		var x=0;
+		while (newname>temp[x]){
+			x++;
+		}
+		temp.splice(x,0,newname);
+		$("#newname")[0].value="";
+		displayList(temp);
 	}
 	
 	function toggleSearch(){
@@ -52,35 +59,39 @@
 			search.style.display="block";
 		}
 		else{
+			cancelSearch();
 			search.style.display="none";
 		}
 	}
 	
 	function searchUsers(e){
 		searchname=$("#searchname")[0].value;
-		if (e.which>=32){
+	/*	if (e.which>=32){
 			searchname+=String.fromCharCode(e.which);
 		}
 		if (e.which==8){
 			searchname=searchname.substring(0,searchname.length-1);
-		}
+		}*/
 		console.log(searchname);
-		var newlist = new Array();
-		for (var x in temp){
-			if (temp[x].substring(0,searchname.length)==searchname){
-				newlist.push(temp[x]);
-			}
+		if (searchname==""){
+			cancelSearch();
 		}
-		editList(newlist);
-		$("#submitsearch").hide();
-		$("#clearsearch").show();
+		else{
+			var newlist = new Array();
+			for (var x in temp){
+				if (temp[x].substring(0,searchname.length)==searchname){
+					newlist.push(temp[x]);
+				}
+			}
+			displayList(newlist);
+			$("#searchtype").show();
+		}
 	}
 	
 	function cancelSearch(){
-		$("#searchname").value="";
-		$("#submitsearch").show();
-		$("#clearsearch").hide();
-		editList(temp);
+		$("#searchname")[0].value="";
+		displayList(temp);
+		$("#searchtype").show();
 	}
 	
 </script>
@@ -192,19 +203,10 @@
 	#newuser{
 		display:none;
 	}
-	#addbutton{
-		margin:0px;
-		padding:0px;
-		height:35px;
-		font-size:15px;
-	}
 	#template{
 		display:none;
 	}
 	#searchtype{
-		display:none;
-	}
-	#clearsearch{
 		display:none;
 	}
 </style>
@@ -219,11 +221,10 @@
 	<ul id = "usernamelist">
 		<li id = "newuser" class = "line">
 			<label for="name"></label><input type="text" name="name" value="" id="newname" class="textbox">
-			<button type = "submit">Submit!</button>
+			<button type = "submit" onclick="submitNewUser();">Create!</button>
 		</li>
 		<li id = "searchtype" class = "line">
 			<label for="name"></label><input type="text" name="name" value="" id="searchname" class="textbox">
-			<button id = "submitsearch" onclick="searchUsers();">Search!</button>
 			<button id = "clearsearch" onclick="cancelSearch();">Cancel</button>
 		</li>
 		<li id ="template" class="line">
