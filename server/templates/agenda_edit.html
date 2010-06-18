@@ -1,18 +1,38 @@
 <html>
 <head>
-	<script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js">
+	<script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
+
+	<script type ="text/javascript">
 		var template;
 		var clone;
 		var itemList;
 		
-		function start(){
+		$(document).ready(function () {
 			template = $("#template");
-			itemList = $("#header")
+			itemList = $("#header");
 			clone = template.clone();
+			itemList.after(clone);
 			clone.show();
+		});
+
+		function makeDoneItem() {
+			template = $("#doneTemplate");
+			itemList = $("#container");
+			clone = template.clone();
 			itemList.append(clone);
-			
+			clone.show();
 		}
+		
+		function makeFutureItem() {
+			var check = document.getElementById("futureCheck");
+			template = $("#futureTemplate");
+			itemList = $("#container");
+			check.style.visibility = "hidden";
+			clone = template.clone();
+			itemList.append(clone);
+			clone.show();
+		}
+		
 	</script>
 	<meta name="viewport" content="width=300" />
 
@@ -59,28 +79,40 @@
 		text-align: center;
 	}
 	
-	#template{
+	.template{
 		display: none;
 	}
 	</style>
 </head>
-<body onload = "start();">
+<body>
 <div id="border">
 <div id="container">
-	<div id="header">Edit</div>
+	<div id="header">Edit <input type="button" value="Done" onclick="makeDoneItem()"><input type="button" value="Future" onclick="makeFutureItem()"> </div>
 	
-	<div id="template">
+	<div id="template" class="template">
 		<img src="{{ static_url("images/delete.png")}}" class="delete">
 		--->
 		Item 4
 		<img src ="{{ static_url("images/drag.png")}}" class="drag">		
 	</div>
+
+	<div id="doneTemplate" class="template">
+		<img src="{{ static_url("images/delete.png")}}" class="delete">
+		<img src="{{ static_url("images/accept.png")}}" class="check">
+		Item 4
+		<img src ="{{ static_url("images/drag.png")}}" class="drag">		
+	</div>	
+
+	<div id="futureTemplate" class="template">
+		<img src="{{ static_url("images/delete.png")}}" class="delete">
+		<img src="{{ static_url("images/accept.png")}}" class="check" id="futureCheck">
+		Item 4
+		<img src ="{{ static_url("images/drag.png")}}" class="drag">		
+	</div>
 	
 
-	
-	<div>Done</div>
 </div>
-
+Done
 </div>
 </body>
 </html>
