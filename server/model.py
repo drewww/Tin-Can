@@ -20,7 +20,7 @@ import simplejson as json
 import logging
 
 import state
-
+import event
 
 class YarnBaseType(object):
     """Identify object with a UUID and register it with the store."""
@@ -99,22 +99,34 @@ class Meeting(YarnBaseType):
         self.allParticipants = []
         self.currentParticipants = []
         
+        self.eventHistory = []
+        
     def participantJoined(self, user):
         logging.info("User %s joined meeting %s in room %s"%(user.name,
             self.title, self.room.name))
         
         self.allParticipants.append(user)
         self.currentParticipants.append(user)
+        
+        user.inMeeting = self
+        
+        
     
     def participantLeft(self, user):
         logging.info("User %s left meeting %s in room %s"%(user.name,
             self.title, self.room.name))
+                
         self.currentParticipants.remove(user)
+        
+        user.inMeeting = None
     
     def getDict(self):
         d = YarnBaseType.getDict(self)
         d["endedAt"] = self.endedAt
         d["isLive"] = self.isLive
+        
+        # We are pointedly NOT including eventHistory in here. It's 
+        # duplicating information that will live in the on-disk caches anyway.
         
         # Should these be just UUIDs of participants? Doing everything about
         # them, for now.
@@ -122,11 +134,38 @@ class Meeting(YarnBaseType):
         d["currentParticipants"] = self.currentParticipants
         return d
     
+    def sendEvent(self, eventToSend):
+        """Sends the 'event' to all participants in 'meeting'."""
+        
+        logging.info("About to send to all users in meeting: %s"
+            %eventToSend.meeting.currentParticipants)
+            
+        
+        if(eventToSend.eventType == "JOINED"):
+            # This is tricky - we want to (in the JOINED event message)
+            # include the history of everything that's happened in the meeting
+            # so they can get up to speed. 
+            
+            # first, throw all past events onto that user's queue first.
+            logging.debug("Putting all past meeting events into the new\
+            user's queue. Total events: %d"%len(self.eventHistory))
+            event.sendEventsToUsers([eventToSend.user], self.eventHistory)
+            
+            # then send everyone (including the new user) a normal JOINED
+            # event.
+            event.sendEventsToUsers(self.currentParticipants, [eventToSend])
+        else:
+            # This is the normal path for all other event types.
+            event.sendEventsToUsers(self.currentParticipants, [eventToSend])
+
+        # Save the event in the meeting history.
+        self.eventHistory.append(eventToSend)
+        
 
 class User(YarnBaseType):
     """Store meeting-related information."""
     
-    def __init__(self, name=None, userUUID=None, isTable=False,
+    def __init__(self, name=None, userUUID=None, isTablet=False,
         localUsers = []):
         self.uuid = userUUID
         
@@ -140,7 +179,7 @@ class User(YarnBaseType):
         # this flag sets of this user represents an iPad being logged
         # in, and localUsers tracks what users are known to be local
         # to that iPad.
-        self.isTablet = isTable
+        self.isTablet = isTablet
         self.localUsers = localUsers
         
         # Users have some connection tracking components, too. If we want
@@ -156,7 +195,19 @@ class User(YarnBaseType):
         
         # if we're already holding onto a connection, release it
         if(self.connection != None):
-            self.connection.finish()
+            try:
+                logging.debug("Shutting down pre-existing connection from %s"%
+                    self.name)
+                self.connection.finish()
+            except:
+                logging.warning("Tried to double-close a connection \
+                 in setConnection  user:%s"%
+                    self.name)
+            finally:
+                # don't strictly need to do this because it's about to be
+                # set again, but it's good form to pair every .finish
+                # with a None-ing of the connection object.
+                self.connection = None
             
         # set the new connection
         self.connection = connection
@@ -175,7 +226,56 @@ class User(YarnBaseType):
         
         logging.debug("Set connection for %s to %s"%(self.name, connection))
         
+        # check to see if events have queued up during our absence of a
+        # connection. 
+        if(len(self.eventQueue) > 0):
+            logging.debug("Flushing existing event queue into new\
+                connection.")
+            self.flushQueue()
         
+        
+    
+    def enqueueEvent(self, event):
+        """Enqueue the specified event for transmission to this user.
+        
+        Queued events will be sent to the user immediately if they have
+        a current connection, otherwise they'll be bundled and sent to
+        the user when they next reconnect."""
+        
+        self.eventQueue.append(event)
+        logging.debug("Enqueued event. Queue length now %d"%
+            len(self.eventQueue))
+        
+        if(self.connection!=None):
+            self.flushQueue()
+    
+    def flushQueue(self):
+        """Dumps the contents of the queue onto the current connection.
+        
+        Most of the time this is just going to be one event, but there are
+        a few situations when it might be more. If there's network latency
+        and a client doesn't have a connection for a few seconds, a few events
+        might happen at once, and we want to make sure they make it to all 
+        clients. The other situation is when a user joins an existing meeting:
+        the system will then dump the entire event history of that meeting
+        into the new users' queue so they can resimulate the meeting process
+        all the way up to the present."""
+        
+        if(self.connection==None):
+            logging.error("Tried to flush queue on %s but there was no \
+                open connection for the user."%self.name)
+            return
+        
+        logging.debug("Flushing queue of %d events on %s"%
+            (len(self.eventQueue),self.name))
+        self.connection.write(json.dumps(self.eventQueue,
+            cls=YarnModelJSONEncoder))
+        self.connection.finish()
+        self.connection = None
+        
+        # TODO wait for ACK from the client that it received these events.
+        self.eventQueue = []
+    
     def getDict(self):
         d = YarnBaseType.getDict(self)
         d["name"] = self.name
@@ -250,7 +350,7 @@ class Topic(MeetingObjectType):
 class YarnModelJSONEncoder(json.JSONEncoder):
     """JSON Encoder for Yarn model objects."""
     def default(self, obj):
-        if isinstance(obj, YarnBaseType):
+        if isinstance(obj, YarnBaseType) or isinstance(obj, event.Event):
             # use the getDict method for model objects, since we can't
             # encode python objects to JSON directly.
             return obj.getDict()
@@ -264,5 +364,4 @@ if __name__ == "__main__":
     print "room 1: " + str(room1)
     print "room 1 json: " + str(room1.getJSON())
     print "obj store: " + str(db)
-    
     

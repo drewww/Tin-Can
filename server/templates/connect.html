@@ -15,25 +15,24 @@
 		var roomUUID;
 		
 		var stopConnection = false;
-	
+		
 		function newConnection() {
 			stopConnection = false;
 			userUUID = $('#user')[0].value;
-			roomUUID = $('#room')[0].value;
-			console.log("user: " + userUUID + "; room: " + roomUUID);
+			console.log("user: " + userUUID + " about to connect.");
 			// Make the first connection to the server.
-			connect(userUUID, roomUUID);
+			connect(userUUID);
 		}
 		
-		function connect(user, room) {
+		function connect(userUUID) {
 			// Check and see if the stop connection flag has been thrown.
 			if(!stopConnection) {
-				console.log("Connect to /connect/ for " + user + "@" + room);
+				console.log("Connect to /connect/ for " + userUUID);
 			
 				$.ajax({url:"http://localhost:8888/connect/",
-						method: "GET",
+						type: "GET",
 						dataType: "json",
-						data: {"user":user, "room":room},
+						data: {"userUUID":userUUID},
 						success: responseReceived,
 						error: connectionFailed,
 						cache: false,
@@ -43,11 +42,61 @@
 			}
 		}
 		
-		function responseReceived(response) {
-			console.log("response: " + response.eventType);
+		function joinRoom() {
+			userUUID = $('#user')[0].value;
+			roomUUID = $('#room')[0].value;
 			
-			var message = "" + new Date().getTime() + " - ";
-			$("#response").append(message + dumpDict(response) + "<br/>");
+			console.log("About to join room: " + roomUUID);
+			$.ajax({url:"http://localhost:8888/rooms/join",
+				type: "POST",
+				dataType: "json",
+				data: {"userUUID":userUUID, "roomUUID":roomUUID},
+				success: joinRoomResponse,
+				error: joinRoomFailed,
+				cache: false,
+			});
+		}
+		
+		function joinRoomResponse(response) {
+			console.log("ROOM JOINED");
+		}
+		
+		function joinRoomFailed(request, status, error) {
+			console.log("ROOM JOIN FAILED");
+		}
+		
+		function leaveRoom() {
+			userUUID = $('#user')[0].value;
+			roomUUID = $('#room')[0].value;
+			
+			console.log("About to leave room: " + roomUUID);
+			$.ajax({url:"http://localhost:8888/rooms/leave",
+				type: "POST",
+				dataType: "json",
+				data: {"userUUID":userUUID, "roomUUID":roomUUID},
+				success: leaveRoomResponse,
+				error: leaveRoomFailed,
+				cache: false,
+			});
+		}
+		
+		function leaveRoomResponse(response) {
+			console.log("ROOM LEFT");
+		}
+		
+		function leaveRoomFailed(request, status, error) {
+			console.log("ROOM LEFT FAILED");
+		}
+		
+		function responseReceived(response) {
+			console.log("events: " + response.length);
+			
+			for(var key in response) {
+				var ev = response[key];
+			// var message = "" + new Date().getTime() + " - ";
+			console.log("  type: " + ev.eventType);
+				$("#response").append(dumpDict(ev) + "<br/>");
+			}
 			connect(userUUID, roomUUID);
 		}
 		
@@ -77,6 +126,18 @@
 			stopConnection = true;
 		}
 		
+		function login() {
+			userUUID = $('#user')[0].value;
+			
+			console.log("About to login user: " + userUUID);
+			$.ajax({url:"http://localhost:8888/users/login",
+				type: "POST",
+				dataType: "json",
+				data: {"userUUID":userUUID},
+				cache: false,
+			});
+		}
+		
 	</script>
 </head>
 <body id="connection_test" onload="">
@@ -95,7 +156,10 @@
 	<option value="{{room.uuid}}">{{room.name}}</option>
 	{% end %}
 </select>
+<button id="login" onclick="login()">Login</button>
 <button id="connect" onclick="newConnection()">Connect</button>
+<button id="join" onclick="joinRoom()">Join</button>
+<button id="leave" onclick="leaveRoom()">Leave</button>
 <button id="stop" onclick="setStopConnection()">Stop</button>
 
 <div id="response">

@@ -6,15 +6,97 @@
 <head>
 	<meta name="viewport" content="width=320, user-scalable=yes">
 	<title>login</title>
+<script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
+<script type="text/javascript" charset="utf-8">
+	var namelist;
+	var nametemplate;
+	var temp = ["asdf", "asdf325", "omgomgomg"];
+	
+	$(document).ready(function(){
+		namelist = $("#usernamelist");
+		nametemplate = $("#template");
+		displayList(temp)
+		$("#searchname").keypress(function(e){console.log(e.which); searchUsers(e);});
+	});
+	
+	function displayList(list){
+		for (var x in list){
+			newname = nametemplate.clone();
+			newname.find("div").html(list[x]);
+			newname.show();
+			namelist.append(newname);
+		}
+	}
+	
+	function editList(list){
+		console.log(list);
+		$("li").hide();
+		$("#searchtype").show();
+		displayList(list);
+	}
+	function addUser(){
+		addname=$("#newuser")[0];
+		$("#searchtype").hide();
+		if (addname.style.display!="block"){
+			addname.style.display="block";
+		}
+		else{
+			addname.style.display="none";
+		}
+	}
+	
+	function toggleSearch(){
+		search=$("#searchtype")[0];
+		$("#newuser").hide();
+		if (search.style.display!="block"){
+			search.style.display="block";
+		}
+		else{
+			search.style.display="none";
+		}
+	}
+	
+	function searchUsers(e){
+		searchname=$("#searchname")[0].value;
+		if (e.which>=32){
+			searchname+=String.fromCharCode(e.which);
+		}
+		if (e.which==8){
+			searchname=searchname.substring(0,searchname.length-1);
+		}
+		console.log(searchname);
+		var newlist = new Array();
+		for (var x in temp){
+			if (temp[x].substring(0,searchname.length)==searchname){
+				newlist.push(temp[x]);
+			}
+		}
+		editList(newlist);
+		$("#submitsearch").hide();
+		$("#clearsearch").show();
+	}
+	
+	function cancelSearch(){
+		$("#searchname").value="";
+		$("#submitsearch").show();
+		$("#clearsearch").hide();
+		editList(temp);
+	}
+	
+</script>
+
 <style type="text/css" media="screen">
+	body{
+		margin:0px;
+	}
+	div{
+		margin:0px;
+	}
 	table{
 		margin:none;
 		width: 320px;
 		border: 3px solid;
 		border-collapse:collapse;
-	}
-	#heading{
-		border-bottom:none;
 	}
 	tr{
 		height:50px;
@@ -23,83 +105,214 @@
 		border-bottom: 1px solid black;
 		font-family:"Arial",sans-serif;
 	}
-	td.status{
-		width:15px;
+	ul{
+		border:solid;
+		width:320px;
+		list-style-type:none;
+		padding:0px;
+		margin:0px;
 	}
-	td.select{
-		width:15px;
+	li{
+		border-bottom: 1px solid black;
 	}
-	td.icon{
+	.line{
+		width:320px;
+		height:50px;
+		margin:none;
+		padding:none;
+		clear:both;
+		position:relative;
+	}
+	.status{
 		width:25px;
+		float:left;
+		padding-top:12px;
+		padding-bottom:12px;
 	}
-	td.username{
-		width:225px;
+	.next{
+		width:25px;
+		float:right;
+		padding-top:11px;
+		padding-bottom:11px;
 	}
-	#new{
+	.icon{
+		width:40px;
+		float:left;
+		padding-top:5px;
+		padding-bottom:5px;
+	}
+	.username{
+		width:230px;
+		float:left;
+		font-family:"Arial",sans-serif;
+		padding-top:15px;
+		padding-bottom:15px;
+	}
+	#add{
 		width:100px;
 		text-align:right;
+		float:left;
+		padding-top:10px;
+		padding-bottom:10px;
 	}
 	#title{
 		width:120px;
 		text-align:center;
 		font-size:20px;
+		float:left;
+		font-family:"Arial",sans-serif;
+		padding-top:15px;
+		padding-bottom:15px;
 	}
 	#search{
 		width:100px;
+		float:right;
+		padding-top:10px;
+		padding-bottom:10px;
+	}
+	#header{
+		width:320px;
+		height:50px;
+		margin:none;
+		padding:none;
+		clear:both;
+		position:relative;
+		border-top:solid;
+		border-left:solid;
+		border-right:solid;
+	}
+	.textbox{
+		height:25px;
+		margin-top:7px;
+		margin-bottom:7px;
+		margin-left:5px;
+		width:200px;
+		font-size:17px;
+	}
+	#newuser{
+		display:none;
+	}
+	#addbutton{
+		margin:0px;
+		padding:0px;
+		height:35px;
+		font-size:15px;
+	}
+	#template{
+		display:none;
+	}
+	#searchtype{
+		display:none;
+	}
+	#clearsearch{
+		display:none;
 	}
 </style>
 </head>
 
 <body>
-	<table id = "heading">
-		<tr><td id = "new"><img src ="{{ static_url("images/add.png")}}"></td><td id = "title">Users</td><td id = "search"><img src ="{{ static_url("images/search.png")}}"></td>
-	</table>
-	<table cellpadding="5">
-		<tr><td class = "status"><img src ="{{ static_url("images/online.png")}}"></td>
-			<td class = "username">a21countrygal</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/online.png")}}"></td>
-			<td class = "username">coffee_breath</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/online.png")}}"></td>
-			<td class = "username">dandystrawberry</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/online.png")}}"></td>
-			<td class = "username">gamer_nuts</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/online.png")}}"></td>
-			<td class = "username">jackrabbit</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/online.png")}}"></td>
-			<td class = "username">mooncake15</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/offline.png")}}"></td>
-			<td class = "username">pinkladyx</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/offline.png")}}"></td>
-			<td class = "username">rollingstar</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/offline.png")}}"></td>
-			<td class = "username">sockshoes</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/offline.png")}}"></td>
-			<td class = "username">tadpole</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		<tr><td class = "status"><img src ="{{ static_url("images/offline.png")}}"></td>
-			<td class = "username">yummy_hamburgers</td>
-			<td class = "icon"><img src ="{{ static_url("images/icon.png")}}"></td>
-			<td class = "select"><img src ="{{ static_url("images/next.png")}}"></td></tr>
-		</table>
+	<div id="header">
+		<div id = "add"><button id="addbutton" onclick = "addUser();">Add</button></div>
+		<div id ="title">Users</div>
+		<div id ="search"><button id="searchbutton" onclick = "toggleSearch();">Find</button></div>
+	</div>
+	<ul id = "usernamelist">
+		<li id = "newuser" class = "line">
+			<label for="name"></label><input type="text" name="name" value="" id="newname" class="textbox">
+			<button type = "submit">Submit!</button>
+		</li>
+		<li id = "searchtype" class = "line">
+			<label for="name"></label><input type="text" name="name" value="" id="searchname" class="textbox">
+			<button id = "submitsearch" onclick="searchUsers();">Search!</button>
+			<button id = "clearsearch" onclick="cancelSearch();">Cancel</button>
+		</li>
+		<li id ="template" class="line">
+			<img class = "status" src = "{{ static_url("images/online.png")}}">
+			<div class = "username"></div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+		</li>
+	<!--	<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/online.png")}}">
+			<div class = "username">coffee_break</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/online.png")}}">
+			<div class = "username">dandystrawberry</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/online.png")}}">
+			<div class = "username">gamer_nuts</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/online.png")}}">
+			<div class = "username">jackrabbit</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/offline.png")}}">
+			<div class = "username">mooncake15</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/offline.png")}}">
+			<div class = "username">piinkladyx</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/offline.png")}}">
+			<div class = "username">rollingstar</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/offline.png")}}">
+			<div class = "username">sockshoes</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/offline.png")}}">
+			<div class = "username">tadpole</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>
+		<li class="line">
+			<div class="line">
+			<img class = "status" src = "{{ static_url("images/offline.png")}}">
+			<div class = "username">yummy_hamburgers</div>
+			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			</div>
+		</li>-->
+	</ul>
 
 </body>
 </html>
