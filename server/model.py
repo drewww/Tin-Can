@@ -226,11 +226,11 @@ class Device(YarnBaseType):
 
         if(self.connection==None):
             logging.error("Tried to flush queue on %s but there was no \
-                open connection for the user."%self.name)
+                open connection for the device."%self.uuid)
             return
 
-        logging.debug("Flushing queue of %d events on %s"%
-            (len(self.eventQueue),self.name))
+        logging.debug("Flushing queue of %d events on device %s"%
+            (len(self.eventQueue),self.uuid))
         self.connection.write(json.dumps(self.eventQueue,
             cls=YarnModelJSONEncoder))
         self.connection.finish()
@@ -314,7 +314,7 @@ class Actor(YarnBaseType):
         return d
         
     def isLoggedIn(self):
-        return len(self.devices) > 0
+        return len(self._devices) > 0
     
     def isInMeeting(self):
         return self.meeting != None
