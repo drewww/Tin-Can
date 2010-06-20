@@ -186,12 +186,11 @@ class Device(YarnBaseType):
     """
     
     def __init__(self):
-        YarnBaseType.__init__()
+        self.uuid = None
+        YarnBaseType.__init__(self)
         self.connection = None
         self.actor = None
         self.eventQueue = []
-    
-    
     
     def isConnected(self):
         # I wish we could inspect connection._finished to double-check...

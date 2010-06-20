@@ -98,7 +98,7 @@ class Event:
         # Eventually we'll be rigorous about checking these, but for now
         # if we get key errors, just eat them and set them to None. Too hard
         # to test without this for now.
-        self.actor = state.get_obj(actor, model.Actor)
+        self.actor = state.get_obj(actorUUID, model.Actor)
         if(self.actor==None):
             logging.error("""Tried to create an event with
                             invalid actorUUID %s"""%actorUUID)
@@ -108,7 +108,7 @@ class Event:
         # of the new object easier if we just say that new meetings REQUIRE
         # UUIDs too, and it's the job of the person creating a new meeting
         # event to create the UUID at that point and pass it down the chain.
-        if(self.eventType!="NEW_MEETING"):
+        if(not self.eventType in["NEW_MEETING", "ADD_ACTOR_DEVICE"]):
             # any event other than NEW MEETING needs to have a meeting param
             self.meeting = state.get_obj(meetingUUID, model.Meeting)
             if(self.meeting==None):
@@ -202,7 +202,8 @@ class Event:
         event = handler(self)
         
         # SEND EVENT TO APPROPRIATE CLIENTS
-        if(self.eventType in ["NEW_MEETING","NEW_USER","NEW_DEVICE"]):
+        if(self.eventType in ["NEW_MEETING","NEW_USER","NEW_DEVICE",
+            "ADD_ACTOR_DEVICE"]):
             sendEventsToDevices(state.get_devices(), [event])
         else:
             event.meeting.sendEvent(event)

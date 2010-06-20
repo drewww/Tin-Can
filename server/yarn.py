@@ -50,7 +50,6 @@ class YarnApplication(tornado.web.Application):
             
             (r"/connect/", ConnectionHandler),
             (r"/connect/test", ConnectTestHandler),
-            (r"/connect/device", NewDeviceHandler),
             (r"/connect/login", LoginHandler),
 
             
@@ -249,16 +248,6 @@ class AddUserHandler(tornado.web.RequestHandler):
     
     
 
-class NewDeviceHandler(tornado.web.RequestHandler):
-    def get(self):
-        # Create a new Device object and set an appropriate cookie.
-        addDeviceEvent = Event("NEW_DEVICE")
-        addDeviceEvent = addDeviceEvent.dispatch()
-        newDeviceUUID = addDeviceEvent.results["device"].uuid
-        logging.info("Set up new device with UUID %s"%newDeviceUUID)
-        self.set_secure_cookie("deviceUUID", newDeviceUUID)
-        self.redirect("/connect/login")
-
 class LoginHandler(BaseHandler):
     
     def post(self):
@@ -272,27 +261,29 @@ class LoginHandler(BaseHandler):
         if(device==None):
             # redirect to /connect/device
             logging.debug("Received a connection that didn't have a device\
-            cookie yet. Redirecting to /connect/device.")
-            self.redirect("/connect/device")
-            return
+            cookie yet.")
+            addDeviceEvent = Event("NEW_DEVICE")
+            addDeviceEvent = addDeviceEvent.dispatch()
+            device = addDeviceEvent.results["device"]
+            logging.info("Set up new device with UUID %s"%device.uuid)
+            self.set_secure_cookie("deviceUUID", device.uuid)
         
-        # otherwise, we can take the actorUUID and associate the specified
-        # device with it. 
+        # take the actorUUID and associate the specified device with it. 
         actorUUID = self.get_argument("actorUUID")
 
-        actor = state.get_obj(userUUID, Actor)
-        if(user==None):
+        actor = state.get_obj(actorUUID, Actor)
+        if(actor==None):
             raise HTTPError("400", "Specified actor UUID %s\
-            didn't exist or wasn't a valid user."%actorUUID)
+            didn't exist or wasn't a valid actor."%actorUUID)
             return None
 
-        addActorDeviceEvent = Event("ADD_ACTOR_DEVICE", params={"actor":actor,
+        addActorDeviceEvent = Event("ADD_ACTOR_DEVICE", actor.uuid, params={"actor":actor,
         "device":device})
         addActorDeviceEvent.dispatch()
         
         # otherwise, set the secure cookie for the user ID.
-        logging.info("Associated device (%s) with actor '%s'."%device.uuid,
-        actor.name)
+        logging.info("Associated device (%s) with actor '%s'."%(device.uuid,
+        actor.name))
 
 class LocationsHandler(tornado.web.RequestHandler):
     def get(self):

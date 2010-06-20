@@ -56,7 +56,7 @@ def get_obj(key, type=None):
     try:
         obj = db[key];
     except KeyError:
-        logging.warning("No object for UUID: %s"%key)
+        logging.warning("No object for UUID: %s (class: %s)"%(key, type))
         return None
     
     # If no type is specified, assume we don't care what the type of the
