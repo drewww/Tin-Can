@@ -186,6 +186,7 @@ class Device(YarnBaseType):
     """
     
     def __init__(self):
+        YarnBaseType.__init__()
         self.connection = None
         self.actor = None
         self.eventQueue = []
