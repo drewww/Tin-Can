@@ -18,21 +18,28 @@ import simplejson as json
 
 import model
 
-EVENT_TYPES = ["NEW_MEETING", "JOINED", "LEFT", "NEW_TASK", "UPDATE_TASK",
-                "NEW_TOPIC", "UPDATE_TOPIC", "PING"]
+EVENT_TYPES = ["NEW_MEETING", "JOINED_MEETING", "LEFT_ROOM",
+    "JOINED_LOCATION", "LEFT_LOCATION", "NEW_USER", "LOCATION_JOINED_MEETING",
+    "LOCATION_LEFT_ROOM", "NEW_DEVICE", "ADD_ACTOR_DEVICE"
+    ]
 
 # Stores the required paramters for each event type. We'll use this
 # to enforce complete intialization of events, and also to remind ourselves
 # what's required for each event.
 EVENT_PARAMS = {"NEW_MEETING":["room"],
-                "JOINED":[],            # these events have no extra params.
-                "LEFT":[]
+                "JOINED_MEETING":[],            # these events have no extra params.
+                "LEFT_ROOM":[],              # these events have no extra params.
+                "NEW_USER":["name"],
+                "JOINED_LOCATION":["location"],
+                "LEFT_LOCATION": ["location"],
+                "LOCATION_JOINED_MEETING": ["location"],
+                "LOCATION_LEFT_ROOM": ["location"],
+                "NEW_DEVICE": [],
+                "ADD_ACTOR_DEVICE": ["actor", "device"]
                 }
 
-class Event:
-    
-    
-    def __init__(self, eventType, userUUID, meetingUUID=None, params={}):
+class Event:    
+    def __init__(self, eventType, actorUUID=None, meetingUUID=None, params={}):
         
         # these are the only required fields for an event.
         # all other paramters (like the text of a new topic, or new owner
@@ -58,13 +65,43 @@ class Event:
         # client. 
         self.uuid = str(uuid.uuid4())
         
+        # now, cycle through the params. These are the bonus event options
+        # that aren't shared by all events. The list of expected params is in
+        # event.EVENT_PARAMS. We're going to store them as a dict locally,
+        # but first we'll validate that we have at least the minimum expected
+        # for our event type.
+        expectedParams = EVENT_PARAMS[self.eventType]
+        hasAllRequiredParams = True
+        for param in expectedParams:
+            if(param not in params.keys()):
+                hasAllRequiredParams = False
+                missingParam = param
+
+        # if we're missing a param, fail with a descriptive error message.
+        # otherwise, store the params and finish the constructor happily.
+        if(not hasAllRequiredParams):
+            logging.error("Tried to create event of type %s without param\
+                %s. Expects: %s"%(self.eventType, missingParam,
+                expectedParams))
+            return None
+        else:
+            self.params = params
+        
+        
+        # If this is a NEW_DEVICE event, we're not going to have any actor
+        # information yet, so ditch out of the constructor now instead of 
+        # failing on that stuff later. 
+        if(self.eventType=="NEW_DEVICE"):
+            self.meeting = None
+            return
+            
         # Eventually we'll be rigorous about checking these, but for now
         # if we get key errors, just eat them and set them to None. Too hard
         # to test without this for now.
-        self.user = state.get_obj(userUUID, model.User)
-        if(self.user==None):
+        self.actor = state.get_obj(actor, model.Actor)
+        if(self.actor==None):
             logging.error("""Tried to create an event with
-                            invalid userUUID %s"""%userUUID)
+                            invalid actorUUID %s"""%actorUUID)
             return None
 
         # TODO Think about changing this. Makes returning the UUID
@@ -80,29 +117,8 @@ class Event:
                 # the constructor. 
                 logging.error("""Tried to create an event with invalid 
                                 meetingUUID %s"""%meetingUUID)
-                return None
-        
-        # now, cycle through the params. These are the bonus event options
-        # that aren't shared by all events. The list of expected params is in
-        # event.EVENT_PARAMS. We're going to store them as a dict locally,
-        # but first we'll validate that we have at least the minimum expected
-        # for our event type.
-        expectedParams = EVENT_PARAMS[self.eventType]
-        hasAllRequiredParams = True
-        for param in expectedParams:
-            if(param not in params.keys()):
-                hasAllRequiredParams = False
-                missingParam = param
-        
-        # if we're missing a param, fail with a descriptive error message.
-        # otherwise, store the params and finish the constructor happily.
-        if(not hasAllRequiredParams):
-            logging.error("Tried to create event of type %s without param\
-                %s. Expects: %s"%(self.eventType, missingParam,
-                expectedParams))
-            return None
-        else:
-            self.params = params
+                return None        
+       
         
         
     
@@ -144,10 +160,10 @@ class Event:
         # these objects' existence
         try:
             d["meetingUUID"] = self.meeting.uuid
-            d["userUUID"] = self.user.uuid
+            d["actorUUID"] = self.actor.uuid
         except:
             d["meetingUUID"] = None
-            d["userUUID"] = None
+            d["actorUUID"] = None
             
         return d
         
@@ -186,8 +202,8 @@ class Event:
         event = handler(self)
         
         # SEND EVENT TO APPROPRIATE CLIENTS
-        if(self.eventType == "NEW_MEETING"):
-            sendEventsToUsers(state.get_logged_in_users(), [event])
+        if(self.eventType in ["NEW_MEETING","NEW_USER","NEW_DEVICE"]):
+            sendEventsToDevices(state.get_devices(), [event])
         else:
             event.meeting.sendEvent(event)
         
@@ -200,7 +216,7 @@ class Event:
         logging.info("Done dispatching event: " + str(self.getDict()))
         return event
 
-def sendEventsToUsers(users, events):
+def sendEventsToDevices(devices, events):
     
     # TODO do assertionerrors here if they're not both arrays?
     # or find some nice way to detect non-arrayness and wrap them?
@@ -215,9 +231,9 @@ def sendEventsToUsers(users, events):
     #     logging.error("sendEventsToUsers requires lists for both parameters,\
     #         and one of the parameters wasn't a list.")
     #     raise e
-    for curUser in users:
+    for device in devices:
         for curEvent in events:
-            curUser.enqueueEvent(curEvent)
+            device.enqueueEvent(curEvent)
 
 
 # DISPATCH METHODS
@@ -243,7 +259,7 @@ def _handleNewMeeting(event):
     
     return event
 
-def _handleJoined(event):
+def _handleJoinedRoom(event):
     event.meeting.participantJoined(event.user)
     
     # this is a little wonky, but the way the event system works, it doesn't
@@ -254,19 +270,103 @@ def _handleJoined(event):
     event.addResult("user", event.user)
     return event
     
-def _handleLeft(event):
+def _handleLeftRoom(event):
     event.meeting.participantLeft(event.user)
     
     # We DON'T need to include the user in the result object (as above)
     # because clients will already know about this user, so the UUID in the
     # event itself is enough.
     return event
+    
+def _handleNewUser(event):
+    newUser = model.User(event.params["name"])
+    
+    event.addResult("user", newUser)
+    return event
+
+def _handleNewDevice(event):
+    device = model.Device()
+
+    event.addResult("device", device)
+
+    return event
+
+def _handleAddActorDevice(event):
+    # connects devices with their actors.
+    actor = event.params["actor"]
+    device = event.params["device"]
+    
+    actor.addDevice(device)
+    
+    return event
+    
+
+def _handleJoinedLocation(event):
+    location = event.params["location"]
+    location.userJoined(event.user)
+    event.addResult("user", event.user)
+    
+    # if this location is in a meeting, we want to trigger a JoinedRoom
+    # event for this person, too. 
+    if location.isInMeeting():
+        userJoinedEvent = Event("JOINED_MEETING", event.user.uuid,
+            location.meeting.uuid)
+
+        # TODO Need to do something about dispatch order here. This joined
+        # event is going to finish dispatching before the joined_location
+        # event does, which might cause some trouble. Need a way for events
+        # to dispatch in the order they're created, not the order they're 
+        # executed. 
+        userJoinedEvent.dispatch()
+    
+    return event
+
+def _handleLeftLocation(event):
+    location = event.params["location"]
+    location.userLeft(event.user)
+    
+    if location.isInMeeting():
+        userLeftEvent = Event("LEFT_ROOM", event.user.uuid,
+            location.meeting.uuid)
+
+        # TODO Need to do something about dispatch order here. This joined
+        # event is going to finish dispatching before the joined_location
+        # event does, which might cause some trouble. Need a way for events
+        # to dispatch in the order they're created, not the order they're 
+        # executed. 
+        userLeftEvent.dispatch()
+    
+    return event
+
+
+def _handleLocationJoinedMeeting(event):
+    # For all the users in this location, fire joined messages
+    location = event.params["location"]
+    meeting = event.meeting
+    
+    location.joinedMeeting(meeting)
+    return event
+
+def _handleLocationLeftMeeting(event):
+    location = event.params["location"]
+    meeting = event.meeting
+
+    location.leftMeeting(meeting)
+    return event
+
+
+    
 
 # Maps EVENT_TYPES to the functions that handle those events. Used in 
 # Event.dispatch. 
 DISPATCH = {"NEW_MEETING":_handleNewMeeting,
-            "JOINED":_handleJoined,
-            "LEFT":_handleLeft
+            "JOINED_MEETING":_handleJoinedRoom,
+            "LEFT_ROOM":_handleLeftRoom,
+            "NEW_USER":_handleNewUser,
+            "JOINED_LOCATION":_handleJoinedLocation,
+            "LEFT_LOCATION":_handleLeftLocation,
+            "NEW_DEVICE":_handleNewDevice,
+            "ADD_ACTOR_DEVICE":_handleAddActorDevice
             }
 
 

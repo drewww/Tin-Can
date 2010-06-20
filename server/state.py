@@ -17,11 +17,11 @@ import logging
 # constructor). 
 db = {}
 
-# Stores all the users that we've ever seen.
-users = []
+# Stores all the actors that we've ever seen.
+actors = set()
 
 # Stores all the rooms.
-rooms = []
+rooms = set()
 
 def init():
     """Initialize the internal state, loading from disk."""
@@ -29,18 +29,22 @@ def init():
 
 def init_test():
     """Initialize the internal state using test data."""
-    drew = model.User("Drew")
+
+    actors.add(model.User("Drew"))
+    actors.add(model.User("Paula"))    
+    actors.add(model.User("Stephanie"))
+    actors.add(model.User("Ariel"))
     
-    paula = model.User("Paula")
+    actors.add(model.Location("Garden"))
+    actors.add(model.Location("Orange+Green"))
+    actors.add(model.Location("Garden"))
+    actors.add(model.Location("E14-395"))
     
-    users.append(drew)
-    users.append(paula)
+    rooms.add(model.Room("Mars"))
+    rooms.add(model.Room("Jupiter"))
+    rooms.add(model.Room("Venus"))
+    rooms.add(model.Room("Saturn"))
     
-    users.append(model.User("Stephanie"))
-    users.append(model.User("Ariel"))
-    
-    rooms.append(model.Room("Garden"))
-    rooms.append(model.Room("Orange + Green"))
 
 
 def get_obj(key, type=None):
@@ -78,15 +82,26 @@ def put_obj(key, value):
     # methods. 
     db[key] = value
 
-def get_logged_out_users():
-    """Returns only users that are not currently logged in."""
-    logged_out = [user for user in users if not user.loggedIn]
-    return logged_out
-    pass
+
+def get_users():
+    return [actor for actor in actors if isinstance(actor, model.User)]
     
-def get_logged_in_users():
-    """Returns only users that are currently logged in."""
-    return [user for user in users if user.loggedIn]
+def get_devices():
+    """Return all current known devices. 
+    
+    Doesn't maintain this in memory, constructs it from scratch based
+    on the list of known actors."""
+    
+    allDevices = set()
+    
+    for actor in actors:
+        allDevices = allDevices | actor.getDevices()
+    
+    return allDevices
+    
+def get_locations():
+    return [actor for actor in actors if isinstance(actor, model.Location)]
+
 
 if __name__ == '__main__':
     init_test()
