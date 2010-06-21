@@ -37,7 +37,7 @@ def init_test():
     
     actors.add(model.Location("Garden"))
     actors.add(model.Location("Orange+Green"))
-    actors.add(model.Location("Garden"))
+    actors.add(model.Location("S+M Group Area"))
     actors.add(model.Location("E14-395"))
     
     rooms.add(model.Room("Mars"))
@@ -83,8 +83,15 @@ def put_obj(key, value):
     db[key] = value
 
 
+def add_actor(actor):
+    self.actors.add(actor)
+
 def get_users():
     return [actor for actor in actors if isinstance(actor, model.User)]
+
+def get_locations():
+    return [actor for actor in actors if isinstance(actor, model.Location)]
+
     
 def get_devices():
     """Return all current known devices. 

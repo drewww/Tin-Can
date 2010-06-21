@@ -57,6 +57,18 @@
 			});
 		}
 		
+		function joinLocation() {
+			locationUUID = $('#location')[0].value;
+			
+			console.log("About to join location: " + locationUUID);
+			$.ajax({url:"http://localhost:8888/locations/join",
+				type: "POST",
+				dataType: "json",
+				data: {"locationUUID":locationUUID},
+				cache: false,
+			});
+		}
+		
 		function joinRoomResponse(response) {
 			console.log("ROOM JOINED");
 		}
@@ -162,15 +174,26 @@
 	{% end %}
 </select>
 
+<label for="location">Select Location</label>
+<select name="location" id="location" onchange="" size="1">
+	{% for location in locations %}
+	<option value="{{location.uuid}}">{{location.name}}</option>
+	{% end %}
+</select>
+
 <label for="room">Select Room</label>
 <select name="room" id="room" onchange="" size="1">
 	{% for room in rooms %}
 	<option value="{{room.uuid}}">{{room.name}}</option>
 	{% end %}
 </select>
+
+
+
 <button id="login" onclick="login()">Login</button>
 <button id="connect" onclick="newConnection()">Connect</button>
-<button id="join" onclick="joinRoom()">Join</button>
+<button id="join_room" onclick="joinRoom()">Join Room</button>
+<button id="join_location" onclick="joinLocation()">Join Location</button>
 <button id="leave" onclick="leaveRoom()">Leave</button>
 <button id="stop" onclick="setStopConnection()">Stop</button>
 <label for="new_user">New User</label><input type="text" name="new_user" value="" id="new_user">

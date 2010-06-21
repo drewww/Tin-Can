@@ -128,6 +128,14 @@ class Meeting(YarnBaseType):
         
         user.meeting = None
     
+    def getDevices(self):
+        devices = set()
+        
+        for location in self.locations:
+            devices.add(location.getDevices())
+        
+        return devices
+    
     def getDict(self):
         d = YarnBaseType.getDict(self)
         d["endedAt"] = self.endedAt
@@ -156,14 +164,14 @@ class Meeting(YarnBaseType):
             # first, throw all past events onto that user's queue first.
             logging.debug("Putting all past meeting events into the new\
             user's queue. Total events: %d"%len(self.eventHistory))
-            event.sendEventsToUsers([eventToSend.user], self.eventHistory)
+            event.sendEventsToDevices([eventToSend.user.getDevices()], self.eventHistory)
             
             # then send everyone (including the new user) a normal JOINED
             # event.
-            event.sendEventsToUsers(self.currentParticipants, [eventToSend])
+            event.sendEventsToDevices(self.getDevices(), [eventToSend])
         else:
             # This is the normal path for all other event types.
-            event.sendEventsToUsers(self.currentParticipants, [eventToSend])
+            event.sendEventsToDevices(self.getDevices(), [eventToSend])
 
         # Save the event in the meeting history.
         self.eventHistory.append(eventToSend)
@@ -296,6 +304,7 @@ class Actor(YarnBaseType):
         self._devices = set()
         self.meeting = None
         self.name = name
+        
         
     def getDict(self):
         d = YarnBaseType.getDict(self)

@@ -126,7 +126,7 @@ class AllUsersHandler(tornado.web.RequestHandler):
 class ConnectTestHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("connect.html", users=state.get_users(),
-            rooms=state.rooms)
+            rooms=state.rooms, locations=state.get_locations())
 
 class ConnectionHandler(BaseHandler):
     """Manage the persistent connections that all clients have."""
@@ -184,8 +184,12 @@ class JoinRoomHandler(BaseHandler):
     
     @tornado.web.authenticated
     def post(self):
+        
+        # TODO Check if the current actor has a location set yet. If not, 
+        # do we want to reject the query? I think so...
+        
         roomUUID = self.get_argument("roomUUID")
-
+        
         actor = self.get_current_actor()
         
         logging.debug("request has a roomUUID: %s"%roomUUID)
@@ -200,7 +204,7 @@ class JoinRoomHandler(BaseHandler):
                     room.name)
                 # make a new meeting!
                 logging.info("Initiating a new meeting in room\
-                %s for user %s"%(room.name, actor.name))
+                %s for actor %s"%(room.name, actor.name))
                 
                 # For a discussion of why we're not just making
                 # the object here and adding the user to the 
@@ -209,7 +213,7 @@ class JoinRoomHandler(BaseHandler):
                 # http://wiki.github.com/drewww/Tin-Can/eventmodel
                 
                 newMeetingEvent = Event("NEW_MEETING",
-                    user.uuid, None, {"room":room})
+                    actor.uuid, None, {"room":room})
                 newMeetingEvent = newMeetingEvent.dispatch()
                 
                 # Can't do this until we have events changing
@@ -227,7 +231,7 @@ class JoinRoomHandler(BaseHandler):
                 
                 # we need to mark this user as joining this
                 # meeting TODO TODO TODO
-                userJoinedEvent = Event("JOINED", user.uuid,
+                userJoinedEvent = Event("JOINED_ROOM", actor.uuid,
                     meeting.uuid)
                 userJoinedEvent.dispatch()
               

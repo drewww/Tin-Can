@@ -261,28 +261,31 @@ def _handleNewMeeting(event):
     return event
 
 def _handleJoinedRoom(event):
-    event.meeting.participantJoined(event.user)
+    event.meeting.participantJoined(event.actor)
     
     # this is a little wonky, but the way the event system works, it doesn't
     # include the full user object (ie event.user) in every event because
     # most of the time all we need to know is what their UUID is. But in this
     # case it's a new user, so we need to give clients all the info they need
     # to create a new local user object. 
-    event.addResult("user", event.user)
+    event.addResult("actor", event.actor)
     return event
     
 def _handleLeftRoom(event):
-    event.meeting.participantLeft(event.user)
+    event.meeting.participantLeft(event.actor)
     
-    # We DON'T need to include the user in the result object (as above)
-    # because clients will already know about this user, so the UUID in the
+    # We DON'T need to include the actor in the result object (as above)
+    # because clients will already know about this actor, so the UUID in the
     # event itself is enough.
     return event
     
 def _handleNewUser(event):
     newUser = model.User(event.params["name"])
+
+    # Make sure to do this for new locations, too. 
+    state.add_actor(newUser)
     
-    event.addResult("user", newUser)
+    event.addResult("actor", newUser)
     return event
 
 def _handleNewDevice(event):
@@ -304,13 +307,13 @@ def _handleAddActorDevice(event):
 
 def _handleJoinedLocation(event):
     location = event.params["location"]
-    location.userJoined(event.user)
-    event.addResult("user", event.user)
+    location.userJoined(event.actor)
+    event.addResult("user", event.actor)
     
     # if this location is in a meeting, we want to trigger a JoinedRoom
     # event for this person, too. 
     if location.isInMeeting():
-        userJoinedEvent = Event("JOINED_MEETING", event.user.uuid,
+        actorJoinedEvent = Event("JOINED_MEETING", event.actor.uuid,
             location.meeting.uuid)
 
         # TODO Need to do something about dispatch order here. This joined
@@ -318,13 +321,13 @@ def _handleJoinedLocation(event):
         # event does, which might cause some trouble. Need a way for events
         # to dispatch in the order they're created, not the order they're 
         # executed. 
-        userJoinedEvent.dispatch()
+        actorJoinedEvent.dispatch()
     
     return event
 
 def _handleLeftLocation(event):
     location = event.params["location"]
-    location.userLeft(event.user)
+    location.userLeft(event.actor)
     
     if location.isInMeeting():
         userLeftEvent = Event("LEFT_ROOM", event.user.uuid,
@@ -356,8 +359,6 @@ def _handleLocationLeftMeeting(event):
     return event
 
 
-    
-
 # Maps EVENT_TYPES to the functions that handle those events. Used in 
 # Event.dispatch. 
 DISPATCH = {"NEW_MEETING":_handleNewMeeting,
@@ -369,8 +370,6 @@ DISPATCH = {"NEW_MEETING":_handleNewMeeting,
             "NEW_DEVICE":_handleNewDevice,
             "ADD_ACTOR_DEVICE":_handleAddActorDevice
             }
-
-
 
 if __name__ == '__main__':
     main()
