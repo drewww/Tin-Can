@@ -301,11 +301,11 @@ class LocationsHandler(tornado.web.RequestHandler):
         self.write(json.puts(state.get_locations, cls=YarnModelJSONEncoder))
 
 
-class JoinLocationHandler(tornado.web.RequestHandler):
+class JoinLocationHandler(BaseHandler):
     
     @tornado.web.authenticated
     def post(self):
-        user = self.get_current_user()
+        actor = self.get_current_actor()
         
         locationUUID = self.get_argument("locationUUID")
         location = state.get_obj(locationUUID, Location)
@@ -313,6 +313,11 @@ class JoinLocationHandler(tornado.web.RequestHandler):
             raise HTTPError("400", "Specified location UUID %s\
             didn't exist or wasn't a valid location."%locationUUID)
             return None
+        
+        # Trigger the actual event.
+        joinLocationEvent = Event("JOINED_LOCATION", actor.uuid,
+            params={"location":location})
+        joinLocationEvent.dispatch()
 
 class LeaveLocationHandler(tornado.web.RequestHandler):
     def get(self):

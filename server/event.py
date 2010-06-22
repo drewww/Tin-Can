@@ -108,7 +108,8 @@ class Event:
         # of the new object easier if we just say that new meetings REQUIRE
         # UUIDs too, and it's the job of the person creating a new meeting
         # event to create the UUID at that point and pass it down the chain.
-        if(not self.eventType in["NEW_MEETING", "ADD_ACTOR_DEVICE"]):
+        if(not self.eventType in["NEW_MEETING", "ADD_ACTOR_DEVICE",
+            "JOINED_LOCATION", "LEFT_LOCATION"]):
             # any event other than NEW MEETING needs to have a meeting param
             self.meeting = state.get_obj(meetingUUID, model.Meeting)
             if(self.meeting==None):
@@ -203,10 +204,17 @@ class Event:
         
         # SEND EVENT TO APPROPRIATE CLIENTS
         if(self.eventType in ["NEW_MEETING","NEW_USER","NEW_DEVICE",
-            "ADD_ACTOR_DEVICE"]):
+            "ADD_ACTOR_DEVICE", "JOINED_LOCATION", "LEFT_LOCATION"]):
             sendEventsToDevices(state.get_devices(), [event])
         else:
-            event.meeting.sendEvent(event)
+            try:
+                event.meeting.sendEvent(event)
+            except:
+                logging.error("Tried to send event to a meeting, but this\
+                event didn't have a meeting set. Falling back to sending\
+                to all devices.")
+                sendEventsToDevices(state.get_devices(), [event])
+                
         
         # RETURN THE RESULT
         # Handlers can return something - usually the new instance of an obj
