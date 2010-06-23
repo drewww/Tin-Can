@@ -6,8 +6,32 @@
 	<title>Yarn Server State  @{{curTime}}</title>
 	
 	<style type="text/css" media="screen">
+		body {
+			font-family: Helvetica, Arial, sans-serif;
+		}
+	
 		.user {
 			border: 1px solid black;
+			margin: 10px;
+			
+			width: 350px;
+			float: left;
+		}
+		
+		.user .name {
+			margin: 3px;
+		}
+		
+		.logged-in {
+			background-color: #99ff99;
+		}
+		
+		.logged-out {
+			background-color: #ff9999;
+		}
+		
+		br.clear {
+			clear: both;
 		}
 	</style>
 </head>
@@ -17,9 +41,16 @@
 <h1>Users</h1>
 
 {% for user in users %}
-<div class="user">
+{% if user.isLoggedIn() %}
+<div class="user logged-in">
+{% else %}	
+<div class="user logged-out">
+{% end %}
+
 <span class="name">{{user.name}}</span>
+
 <span class="devices">
+
 	devices:
 	{% for device in user.getDevices() %}
 		{{str(device) + ","}}
@@ -27,6 +58,8 @@
 </span>
 </div>
 {% end %}
+
+<br class="clear"/>
 </div>
 
 
