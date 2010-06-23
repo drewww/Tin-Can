@@ -357,8 +357,11 @@ class User(Actor):
         
         Actor.__init__(self, name, userUUID)
         
-        self.status = None
+        self._status = None
+        self.location = None
         
+    def isInLocation(self):
+        return self.location != None
 
     def getDict(self):
         d = Actor.getDict(self)
@@ -386,11 +389,13 @@ class Location(Actor):
         """Adds the specified user to this location."""
         
         self.users.add(user)
+        user.location = self
         
     def userLeft(self, user):
         """Removes the specified user from this location."""
         
         self.users.remove(user)
+        user.location = None
     
     def joinedMeeting(self, meeting):
         Actor.joinedMeeting(self, meeting)

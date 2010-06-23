@@ -188,10 +188,34 @@ class JoinRoomHandler(BaseHandler):
         # TODO Check if the current actor has a location set yet. If not, 
         # do we want to reject the query? I think so...
         
-        roomUUID = self.get_argument("roomUUID")
-        
         actor = self.get_current_actor()
         
+        location = None
+        if isinstance(actor, model.User):
+            # If we've got a user, make sure they have a location set alrady.
+            # If they don't, reject the request outright.
+            user = actor
+            if user.location == None:
+                raise HTTPError("400", "Specified user %s \
+                isn't yet in a location, so can not join a room."%user.name)
+                return
+            
+            location = user.location
+            logging.debug("User %s is trying to join a room on their behalf\
+            of their location %s", (user.name, location.name))
+        else:
+            location = actor
+            logging.debug("Actor is a location: " + location.name)
+        
+        
+        # from this point forward, we're telling the location what to join,
+        # not the user. the location is the user's location
+        if(location.isInMeeting()):
+            logging.warning("About to change rooms of a location that is\
+            already in a meeting: %s. This is bad! Leave first!",
+            location.meeting)
+        
+        roomUUID = self.get_argument("roomUUID")
         logging.debug("request has a roomUUID: %s"%roomUUID)
         room = state.get_obj(roomUUID, Room)
         if room != None:
@@ -244,6 +268,8 @@ class LeaveRoomHandler(BaseHandler):
 
     @tornado.web.authenticated
     def post(self):
+        logging.warning("THIS IS DEPRECATED - need to switch to leave\
+        location (for users) and leave room (for locations)")
         user = self.get_current_user()
         meeting = user.inMeeting
         
