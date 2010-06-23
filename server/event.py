@@ -27,8 +27,8 @@ EVENT_TYPES = ["NEW_MEETING", "JOINED_MEETING", "LEFT_ROOM",
 # to enforce complete intialization of events, and also to remind ourselves
 # what's required for each event.
 EVENT_PARAMS = {"NEW_MEETING":["room"],
-                "JOINED_MEETING":[],            # these events have no extra params.
-                "LEFT_ROOM":[],              # these events have no extra params.
+                "JOINED_MEETING":[],     # these events have no extra params.
+                "LEFT_ROOM":[],          # TODO Fix this name.
                 "NEW_USER":["name"],
                 "JOINED_LOCATION":["location"],
                 "LEFT_LOCATION": ["location"],

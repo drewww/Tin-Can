@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Yarn Server State  @{{curTime}}</title>
+	
+	<style type="text/css" media="screen">
+		.user {
+			border: 1px solid black;
+		}
+	</style>
+</head>
+<body id="state" onload="">
+
+<div id="users">
+<h1>Users</h1>
+
+{% for user in users %}
+<div class="user">
+<span class="name">{{user.name}}</span>
+<span class="devices">
+	devices:
+	{% for device in user.getDevices() %}
+		{{str(device) + ","}}
+	{% end %}
+</span>
+</div>
+{% end %}
+</div>
+
+
+<div id="locations">
+<h1>Locations</h1>
+{% for location in locations %}
+<div class="location">
+{{location}}
+</div>
+{% end %}
+</div>
+
+<div id="rooms">
+<h1>Meetings</h1>
+{% for room in rooms %}
+<div class="room">
+{{room}}
+</div>
+{% end %}
+
+</div>
+
+
+</body>
+</html>

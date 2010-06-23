@@ -13,6 +13,7 @@ Copyright (c) 2010 MIT Media Lab. All rights reserved.
 import logging
 import os.path
 import uuid
+import time
 
 import tornado.httpserver
 import tornado.ioloop
@@ -55,7 +56,9 @@ class YarnApplication(tornado.web.Application):
             
             (r"/users/choose", ChooseUsersHandler),
             
-            (r"/agenda/", AgendaHandler)
+            (r"/agenda/", AgendaHandler),
+            
+            (r"/state/", StateHandler)
             ]
         
         settings = dict(
@@ -110,6 +113,25 @@ class BaseHandler(tornado.web.RequestHandler):
         
         return device
 
+
+class StateHandler(tornado.web.RequestHandler):
+    # TODO Figure out a way to protect this. It's useful for debugging,
+    # but I don't want to push something that exposes the entire internal
+    # state to a production machine. Do some kind of simple admin login
+    # cookie trick.
+    def get(self):
+        users = state.get_users()
+        locations = state.get_locations()
+        rooms = state.rooms
+        curTime = time.time()
+        logging.debug("rooms: " + str(rooms) + " len: " + str(len(rooms)))
+        logging.info("Providing state @%f on: %d users, %d locations, and %d\
+         rooms."%(curTime, len(users), len(locations), len(rooms)))
+        
+        self.render("state.html", users=users,
+            rooms=state.rooms, locations=locations,
+            curTime=curTime)
+        
 
 # TODO Is there a way to make json.dump default to using YarnModelJSONEncoder?
 # It's really annoying to have to specify it every time I need to dump

@@ -54,6 +54,8 @@ class Room(YarnBaseType):
         
         self.name = name
         
+        # currentMeeting? Erm. why not just meeting like the pattern
+        # everywhere else? TODO think about changing this over for consistency
         if(currentMeeting != None):
             self.currentMeeting = get_obj(currentMeeting, Meeting)
         else:
@@ -80,6 +82,10 @@ class Room(YarnBaseType):
             
         return d
         
+    def __str__(self):
+        return "[room.%s %s meet:%s]"%(self.uuid[0:6], self.name,
+            str(self.currentMeeting))
+        
 class Meeting(YarnBaseType):
     """Store meeting-related information."""
 
@@ -105,6 +111,24 @@ class Meeting(YarnBaseType):
         
         self.eventHistory = []
         
+        
+    #############################################
+    # There's a bit of a conundrum here - meeting membership is
+    # fundamentally decided by locations; a user can't join a meeting
+    # directly, they must join a location that then joins a meeting.
+    # I feel like this is a necessary indirection, even though it's feeling
+    # cumbersome right now. But it does suggest the question: should we 
+    # track participants separate from tracking locations? It seems like
+    # duplication and poses some (small) risks.
+    #
+    # I think the bottom line here is that we don't want to track this stuff
+    # internally. Events should be semantic; we should fire a user joined
+    # location event, and the only people who get that event are people
+    # in a meeting with that location present. We might as well trigger events
+    # on the meeting object itself, but we shouldn't be maintaining a current
+    # list, only the allParticipants list, which provides a service locations
+    # can't. Not going to do this now (on the plane), but need to change this
+    # over sooner rather than later and fix up the semantics of these events.
     def participantJoined(self, user):
         logging.info("User %s joined meeting %s in room %s"%(user.name,
             self.title, self.room.name))
@@ -117,8 +141,7 @@ class Meeting(YarnBaseType):
     def getCurrentParticipants(self):
         """Returns a list of the current list of Users in this meeting."""
         
-        # grab this info by looping through our locations. 
-        
+        return self.currentParticipants
     
     def participantLeft(self, user):
         logging.info("User %s left meeting %s in room %s"%(user.name,
@@ -127,6 +150,8 @@ class Meeting(YarnBaseType):
         self.currentParticipants.remove(user)
         
         user.meeting = None
+    ################################################
+    
     
     def getDevices(self):
         devices = set()
@@ -176,6 +201,11 @@ class Meeting(YarnBaseType):
         # Save the event in the meeting history.
         self.eventHistory.append(eventToSend)
         
+    def __str__(self):
+        return "[meet.%s@%s %s locs:%d users:%d events:%d]"%(self.uuid[0:6], 
+            self.room.name, self.name, len(self.locations),
+            len(self.currentParticipants), len(self.eventHistory))
+            
 
 class Device(YarnBaseType):
     """Holds just the connection-related stuff. Devices are the actual
@@ -288,6 +318,16 @@ class Device(YarnBaseType):
             logging.debug("Flushing existing event queue into new\
                 connection.")
             self.flushQueue()
+        
+    def __str__(self):
+        # What are the important elements of this user?
+        # - uuid
+        # - has active connection
+        # - has queued items
+        # - actor associated
+        
+        return "[dev.%s live:%s q:%d act:%s]"%(self.uuid[0:6],
+            self.isConnected(),len(self.eventQueue), self.actor.name)
 
 class Actor(YarnBaseType):
     """An abstract base class that can represent either a Location or a User.
@@ -344,7 +384,7 @@ class Actor(YarnBaseType):
         Used for communication purposes, so Events can be enqueued on those 
         Device's connections."""
         return self._devices
-        
+    
 
 class User(Actor):
     """Users are the people that are participating in the meeting.
@@ -367,6 +407,19 @@ class User(Actor):
         d = Actor.getDict(self)
         d["status"] = self.status
         return d
+        
+    def __str__(self):
+        if(self.isInLocation()):
+            return "[user.%s %s loc:%s devs:%d]"%(self.uuid[0:6],
+                self.name, self.location.name + "@" +
+                self.location.meeting.room.name,
+                len(self.getDevices()))
+        else:
+            return "[user.%s %s loc:NONE devs:%d]"%(self.uuid[0:6],
+                self.name, self.location.name + "@" +
+                self.location.meeting.room.name,
+                len(self.getDevices()))
+    
 
 class Location(Actor):
     """
@@ -431,6 +484,16 @@ class Location(Actor):
         d = Actor.getDict(self)
         d["users"] = self.users
         return d
+
+    def __str__(self):
+        if(self.isInMeeting()):
+            return "[loc.%s %s meet:%s users:%d devs:%d]"%(self.uuid[0:6],
+                self.name, self.meeting.name + "@" + self.meeting.room.name,
+                len(self.users), len(self.getDevices()))
+        else:
+            return "[loc.%s %s meet:NONE users:%d devs:%d]"%(self.uuid[0:6],
+                self.name, len(self.users), len(self.getDevices()))
+            
 
 
 class MeetingObjectType(YarnBaseType):
