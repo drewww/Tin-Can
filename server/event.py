@@ -316,35 +316,39 @@ def _handleJoinedLocation(event):
     location.userJoined(event.actor)
     event.addResult("user", event.actor)
     
-    # if this location is in a meeting, we want to trigger a JoinedRoom
-    # event for this person, too. 
-    if location.isInMeeting():
-        actorJoinedEvent = Event("JOINED_MEETING", event.actor.uuid,
-            location.meeting.uuid)
-
-        # TODO Need to do something about dispatch order here. This joined
-        # event is going to finish dispatching before the joined_location
-        # event does, which might cause some trouble. Need a way for events
-        # to dispatch in the order they're created, not the order they're 
-        # executed. 
-        actorJoinedEvent.dispatch()
+    # Turning this off for now - I think we can live without it.
+    # The USER_JOINED_LOCATION event will fire, and clients should be able
+    # to imply the rest. 
+    # if location.isInMeeting():
+    #      actorJoinedEvent = Event("JOINED_MEETING", event.actor.uuid,
+    #          location.meeting.uuid)
+    # 
+    #      # TODO Need to do something about dispatch order here. This joined
+    #      # event is going to finish dispatching before the joined_location
+    #      # event does, which might cause some trouble. Need a way for events
+    #      # to dispatch in the order they're created, not the order they're 
+    #      # executed. 
+    #      actorJoinedEvent.dispatch()
     
     return event
 
 def _handleLeftLocation(event):
     location = event.params["location"]
     location.userLeft(event.actor)
-    
-    if location.isInMeeting():
-        userLeftEvent = Event("LEFT_ROOM", event.user.uuid,
-            location.meeting.uuid)
 
-        # TODO Need to do something about dispatch order here. This joined
-        # event is going to finish dispatching before the joined_location
-        # event does, which might cause some trouble. Need a way for events
-        # to dispatch in the order they're created, not the order they're 
-        # executed. 
-        userLeftEvent.dispatch()
+    # Turning this off for now - I think we can live without it.
+    # The USER_JOINED_LOCATION event will fire, and clients should be able
+    # to imply the rest.
+    # if location.isInMeeting():
+    #     userLeftEvent = Event("LEFT_ROOM", event.user.uuid,
+    #         location.meeting.uuid)
+    # 
+    #     # TODO Need to do something about dispatch order here. This joined
+    #     # event is going to finish dispatching before the joined_location
+    #     # event does, which might cause some trouble. Need a way for events
+    #     # to dispatch in the order they're created, not the order they're 
+    #     # executed. 
+    #     userLeftEvent.dispatch()
     
     return event
 

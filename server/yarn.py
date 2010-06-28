@@ -52,7 +52,6 @@ class YarnApplication(tornado.web.Application):
             (r"/connect/", ConnectionHandler),
             (r"/connect/test", ConnectTestHandler),
             (r"/connect/login", LoginHandler),
-
             
             (r"/users/choose", ChooseUsersHandler),
             
