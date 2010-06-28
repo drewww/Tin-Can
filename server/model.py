@@ -103,55 +103,44 @@ class Meeting(YarnBaseType):
             
         self.endedAt = None
         self.isLive = False
-        self.allParticipants = []
+        self.allParticipants = set()
         
-        self.locations = []
-        
-        self.currentParticipants = []
-        
+        self.locations = set()
+                
         self.eventHistory = []
         
         
-    #############################################
-    # There's a bit of a conundrum here - meeting membership is
-    # fundamentally decided by locations; a user can't join a meeting
-    # directly, they must join a location that then joins a meeting.
-    # I feel like this is a necessary indirection, even though it's feeling
-    # cumbersome right now. But it does suggest the question: should we 
-    # track participants separate from tracking locations? It seems like
-    # duplication and poses some (small) risks.
-    #
-    # I think the bottom line here is that we don't want to track this stuff
-    # internally. Events should be semantic; we should fire a user joined
-    # location event, and the only people who get that event are people
-    # in a meeting with that location present. We might as well trigger events
-    # on the meeting object itself, but we shouldn't be maintaining a current
-    # list, only the allParticipants list, which provides a service locations
-    # can't. Not going to do this now (on the plane), but need to change this
-    # over sooner rather than later and fix up the semantics of these events.
-    def participantJoined(self, user):
+    def userJoined(self, user):
         logging.info("User %s joined meeting %s in room %s"%(user.name,
             self.title, self.room.name))
         
-        self.allParticipants.append(user)
-        self.currentParticipants.append(user)
+        self.allParticipants.add(user)
+
+    def userLeft(self, user):
+        logging.info("User %s left meeting %s in room %s"%(user.name,
+            self.title, self.room.name))
+
+    def locationJoined(self, location):
+        logging.info("Location %s JOINED %s@%s with %d users"%(location.name,
+        self.title, self.room.name, len(location.users)))
         
-        user.meeting = self
+        self.locations.add(location)
+    
+    def locationLeft(self, location):
+        logging.info("Location %s LEFT %s@%s with %d users"%(location.name,
+        self.title, self.room.name, len(location.users)))
+
+        self.locations.remove(location)
         
     def getCurrentParticipants(self):
         """Returns a list of the current list of Users in this meeting."""
         
-        return self.currentParticipants
-    
-    def participantLeft(self, user):
-        logging.info("User %s left meeting %s in room %s"%(user.name,
-            self.title, self.room.name))
-                
-        self.currentParticipants.remove(user)
+        currentParticipants = set()
+        for location in self.locations:
+            currentParticipants = currentParticipants.union(
+                location.getUsers())
         
-        user.meeting = None
-    ################################################
-    
+        return currentParticipants
     
     def getDevices(self):
         devices = set()
@@ -169,10 +158,12 @@ class Meeting(YarnBaseType):
         # We are pointedly NOT including eventHistory in here. It's 
         # duplicating information that will live in the on-disk caches anyway.
         
+        d["locations"] = list(self.locations)
+        
         # Should these be just UUIDs of participants? Doing everything about
         # them, for now.
-        d["allParticipants"] = self.allParticipants
-        d["currentParticipants"] = self.currentParticipants
+        d["allParticipants"] = list(self.allParticipants)
+        d["currentParticipants"] = list(self.getCurrentParticipants())
         return d
     
     def sendEvent(self, eventToSend):
@@ -204,7 +195,7 @@ class Meeting(YarnBaseType):
     def __str__(self):
         return "[meet.%s@%s %s locs:%d users:%d events:%d]"%(self.uuid[0:6], 
             self.room.name, self.title, len(self.locations),
-            len(self.currentParticipants), len(self.eventHistory))
+            len(self.getCurrentParticipants()), len(self.eventHistory))
             
 
 class Device(YarnBaseType):
@@ -342,7 +333,6 @@ class Actor(YarnBaseType):
         YarnBaseType.__init__(self)
         
         self._devices = set()
-        self.meeting = None
         self.name = name
         
         
@@ -355,24 +345,11 @@ class Actor(YarnBaseType):
         # Leaving this whole structure in here for now because we might need
         # to plug into it later. But for now it's just a passthrough.
         d["name"] = self.name
-        if(self.meeting!=None):
-            d["meetingUUID"] = self.meeting.uuid
-        else:
-            d["meetingUUID"] = None
         
         return d
         
     def isLoggedIn(self):
         return len(self._devices) > 0
-    
-    def isInMeeting(self):
-        return self.meeting != None
-
-    def joinedMeeting(self, meeting):
-        self.meeting = meeting
-    
-    def leftMeeting(self):
-        self.meeting = None
     
     def addDevice(self, device):
         self._devices.add(device)
@@ -384,7 +361,6 @@ class Actor(YarnBaseType):
         Used for communication purposes, so Events can be enqueued on those 
         Device's connections."""
         return self._devices
-    
 
 class User(Actor):
     """Users are the people that are participating in the meeting.
@@ -407,6 +383,9 @@ class User(Actor):
         d = Actor.getDict(self)
         d["status"] = self._status
         return d
+    
+    def isInMeeting(self):
+        return self.location.isInMeeting()
         
     def __str__(self):
         if(self.isInLocation()):
@@ -435,7 +414,7 @@ class Location(Actor):
     
     def __init__(self, name=None, actorUUID=None):
         Actor.__init__(self, name, actorUUID)
-        
+        self.meeting = None
         self.users = set()
     
     def userJoined(self, user):
@@ -444,31 +423,37 @@ class Location(Actor):
         self.users.add(user)
         user.location = self
         
+        if(self.isInMeeting()):
+            self.meeting.userJoined(user)
+        
     def userLeft(self, user):
         """Removes the specified user from this location."""
         
         self.users.remove(user)
         user.location = None
+        
+        if(self.isInMeeting()):
+            self.meeting.userLeft(user)
+        
     
     def getUsers(self):
         return list(self.users)
     
+    def isInMeeting(self):
+        return self.meeting != None
+
     def joinedMeeting(self, meeting):
-        Actor.joinedMeeting(self, meeting)
+        logging.debug("Location joined meeting.")
+        meeting.locationJoined(self)
+
         
         # create events for all our users to set them up as joining
         # the meeting.
-        for user in self.users:
-            userJoinedEvent = Event("JOINED_MEETING", user.uuid, meeting.uuid)
-            userJoinedEvent.dispatch()
     
     def leftMeeting(self):
-        Actor.leftMeeting(self, meeting)
+        meeting.locationLeft(self)
         
-        for user in self.users:
-            userLeftEvent = Event("LEFT_MEETING", user.uuid)
-            userLeftEvent.dispatch()
-    
+            
     def getDevices(self):
         
         # Get devices specific to this location, plus all the devices that
@@ -570,7 +555,8 @@ class YarnModelJSONEncoder(json.JSONEncoder):
         elif isinstance(obj, set):
             # for some reason the default encoder can't handle set objects,
             # so just convert them to lists.
-            logging.debug("found set, converting to list: %s"%list(obj))
+            logging.warning("found set. can't figure out how to make sets\
+            work yet.")
             return self.default(list(obj))
         else:
             return json.JSONEncoder.default(self, obj)

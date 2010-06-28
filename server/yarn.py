@@ -269,8 +269,9 @@ class JoinRoomHandler(BaseHandler):
                 # the meeting with that UUID doesn't actually
                 # exist yet. Going to check this in without
                 # that chunk. The earlier stuff is working great.
-                locationJoinedEvent = Event("JOINED_MEETING", location.uuid,
-                    newMeetingEvent.results["meeting"].uuid)
+                locationJoinedEvent = Event("LOCATION_JOINED_MEETING",
+                location.uuid, newMeetingEvent.results["meeting"].uuid,
+                {"location":location})
                 locationJoinedEvent.dispatch()
                 
             else:
@@ -365,7 +366,7 @@ class JoinLocationHandler(BaseHandler):
             return None
         
         # Trigger the actual event.
-        joinLocationEvent = Event("JOINED_LOCATION", actor.uuid,
+        joinLocationEvent = Event("USER_JOINED_LOCATION", actor.uuid,
             params={"location":location})
         joinLocationEvent.dispatch()
 

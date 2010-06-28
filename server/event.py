@@ -19,7 +19,7 @@ import simplejson as json
 import model
 
 EVENT_TYPES = ["NEW_MEETING", "JOINED_MEETING", "LEFT_ROOM",
-    "JOINED_LOCATION", "LEFT_LOCATION", "NEW_USER", "LOCATION_JOINED_MEETING",
+    "USER_JOINED_LOCATION", "USER_LEFT_LOCATION", "NEW_USER", "LOCATION_JOINED_MEETING",
     "LOCATION_LEFT_ROOM", "NEW_DEVICE", "ADD_ACTOR_DEVICE"
     ]
 
@@ -27,13 +27,11 @@ EVENT_TYPES = ["NEW_MEETING", "JOINED_MEETING", "LEFT_ROOM",
 # to enforce complete intialization of events, and also to remind ourselves
 # what's required for each event.
 EVENT_PARAMS = {"NEW_MEETING":["room"],
-                "JOINED_MEETING":[],     # these events have no extra params.
-                "LEFT_ROOM":[],          # TODO Fix this name.
                 "NEW_USER":["name"],
-                "JOINED_LOCATION":["location"],
-                "LEFT_LOCATION": ["location"],
+                "USER_JOINED_LOCATION":["location"],
+                "USER_LEFT_LOCATION": ["location"],
                 "LOCATION_JOINED_MEETING": ["location"],
-                "LOCATION_LEFT_ROOM": ["location"],
+                "LOCATION_LEFT_MEETING": ["location"],
                 "NEW_DEVICE": [],
                 "ADD_ACTOR_DEVICE": ["actor", "device"]
                 }
@@ -109,7 +107,7 @@ class Event:
         # UUIDs too, and it's the job of the person creating a new meeting
         # event to create the UUID at that point and pass it down the chain.
         if(not self.eventType in["NEW_MEETING", "ADD_ACTOR_DEVICE",
-            "JOINED_LOCATION", "LEFT_LOCATION"]):
+            "USER_JOINED_LOCATION", "USER_LEFT_LOCATION"]):
             # any event other than NEW MEETING needs to have a meeting param
             self.meeting = state.get_obj(meetingUUID, model.Meeting)
             if(self.meeting==None):
@@ -204,7 +202,7 @@ class Event:
         
         # SEND EVENT TO APPROPRIATE CLIENTS
         if(self.eventType in ["NEW_MEETING","NEW_USER","NEW_DEVICE",
-            "ADD_ACTOR_DEVICE", "JOINED_LOCATION", "LEFT_LOCATION"]):
+            "ADD_ACTOR_DEVICE", "USER_JOINED_LOCATION", "USER_LEFT_LOCATION"]):
             sendEventsToDevices(state.get_devices(), [event])
         else:
             try:
@@ -268,19 +266,19 @@ def _handleNewMeeting(event):
     
     return event
 
-def _handleJoinedRoom(event):
-    event.meeting.participantJoined(event.actor)
-    
-    # this is a little wonky, but the way the event system works, it doesn't
-    # include the full user object (ie event.user) in every event because
-    # most of the time all we need to know is what their UUID is. But in this
-    # case it's a new user, so we need to give clients all the info they need
-    # to create a new local user object. 
-    event.addResult("actor", event.actor)
-    return event
+# def _handleJoinedRoom(event):
+#     event.meeting.userJoined(event.actor)
+#     
+#     # this is a little wonky, but the way the event system works, it doesn't
+#     # include the full user object (ie event.user) in every event because
+#     # most of the time all we need to know is what their UUID is. But in this
+#     # case it's a new user, so we need to give clients all the info they need
+#     # to create a new local user object. 
+#     event.addResult("actor", event.actor)
+#     return event
     
 def _handleLeftRoom(event):
-    event.meeting.participantLeft(event.actor)
+    event.meeting.userLeft(event.actor)
     
     # We DON'T need to include the actor in the result object (as above)
     # because clients will already know about this actor, so the UUID in the
@@ -366,17 +364,16 @@ def _handleLocationLeftMeeting(event):
     location.leftMeeting(meeting)
     return event
 
-
 # Maps EVENT_TYPES to the functions that handle those events. Used in 
 # Event.dispatch. 
 DISPATCH = {"NEW_MEETING":_handleNewMeeting,
-            "JOINED_MEETING":_handleJoinedRoom,
-            "LEFT_ROOM":_handleLeftRoom,
             "NEW_USER":_handleNewUser,
-            "JOINED_LOCATION":_handleJoinedLocation,
-            "LEFT_LOCATION":_handleLeftLocation,
-            "NEW_DEVICE":_handleNewDevice,
-            "ADD_ACTOR_DEVICE":_handleAddActorDevice
+            "USER_JOINED_LOCATION":_handleJoinedLocation,
+            "USER_LEFT_LOCATION": _handleLeftLocation,
+            "LOCATION_JOINED_MEETING": _handleLocationJoinedMeeting,
+            "LOCATION_LEFT_MEETING": None,
+            "NEW_DEVICE": _handleNewDevice,
+            "ADD_ACTOR_DEVICE": _handleAddActorDevice
             }
 
 if __name__ == '__main__':
