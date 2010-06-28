@@ -1,0 +1,81 @@
+<html>
+	<head>
+		<script src="jqtouch/jquery.1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="jqtouch/jqtouch.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="jqtouch/jqtouch.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<link rel="stylesheet" href="themes/apple/theme.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>		
+		<script type="text/javascript" charset="utf-8">
+			$.jQTouch({
+				statusBar: 'black'
+			}); 
+			
+			
+			
+			var template;
+			var clone;
+			var itemList;
+
+			$(function() {
+				$("#container").sortable({placeholder: 'ui-state-highlight',
+				axis: 'y'});
+			});
+
+			function makeCurrentItem() {
+				template = $("#currentTemplate");
+				itemList = $("#container");
+				clone = template.clone();
+				itemList.append(clone);
+				clone.show();		
+			}
+
+			function makeDoneItem() {
+				template = $("#doneTemplate");
+				itemList = $("#container");
+				clone = template.clone();
+				itemList.append(clone);
+				clone.show();
+			}
+
+			function makeFutureItem() {
+				var check = document.getElementById("futureCheck");
+				template = $("#futureTemplate");
+				itemList = $("#container");
+				check.style.visibility = "hidden";
+				clone = template.clone();
+				itemList.append(clone);
+				clone.show();
+			}
+			
+		</script>
+
+<style type="text/css">
+	.template{display:none;}
+</style>
+	</head>
+	<body>
+		<div id="edit">
+			<div class="toolbar">
+				<input type="button" value="Done" onclick="makeDoneItem()">
+				<h1>Edit</h1>
+				<a class="button flip" href="#main">Main</a>
+			</div>
+				<ul id="container" class="plastic">
+
+				</ul>
+
+		</div>
+		<div id="main">
+		</div>
+		
+		<div id="doneTemplate" class="template">
+			<li>
+			<img src="themes/apple/img/cancel.png" width="20" height="20" alt="Cancel">
+			<img src="themes/jqt/img/chevron_circle.png" width="35" height="26" alt="Chevron Circle">
+			Item nth
+			</li>
+		</div>
+	</body>
+	
+</html>
