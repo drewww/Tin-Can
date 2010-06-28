@@ -326,7 +326,7 @@ class Device(YarnBaseType):
         # - has queued items
         # - actor associated
         
-        return "[dev.%s live:%s q:%d act:%s]"%(self.uuid[0:6],
+        return "[dev.%s conn:%s q:%d act:%s]"%(self.uuid[0:6],
             self.isConnected(),len(self.eventQueue), self.actor.name)
 
 class Actor(YarnBaseType):
@@ -405,7 +405,7 @@ class User(Actor):
 
     def getDict(self):
         d = Actor.getDict(self)
-        d["status"] = self.status
+        d["status"] = self._status
         return d
         
     def __str__(self):
@@ -450,6 +450,11 @@ class Location(Actor):
         self.users.remove(user)
         user.location = None
     
+    def getUsers(self):
+        # this is stupid, but I can't figure out how to get JSONEncoder
+        # to take sets, so we have to convert to lists on the way out.
+        return list(self.users)
+    
     def joinedMeeting(self, meeting):
         Actor.joinedMeeting(self, meeting)
         
@@ -482,7 +487,7 @@ class Location(Actor):
 
     def getDict(self):
         d = Actor.getDict(self)
-        d["users"] = self.users
+        d["users"] = list(self.users)
         return d
 
     def __str__(self):
@@ -561,7 +566,13 @@ class YarnModelJSONEncoder(json.JSONEncoder):
             # use the getDict method for model objects, since we can't
             # encode python objects to JSON directly.
             return obj.getDict()
-        return json.JSONEncoder.default(self, obj)
+        elif isinstance(obj, set):
+            # for some reason the default encoder can't handle set objects,
+            # so just convert them to lists.
+            logging.debug("found set, converting to list: %s"%list(obj))
+            return self.default(list(obj))
+        else:
+            return json.JSONEncoder.default(self, obj)
 
 if __name__ == "__main__":
     # try making some new things and spitting them back out again.
