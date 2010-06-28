@@ -203,7 +203,7 @@ class Meeting(YarnBaseType):
         
     def __str__(self):
         return "[meet.%s@%s %s locs:%d users:%d events:%d]"%(self.uuid[0:6], 
-            self.room.name, self.name, len(self.locations),
+            self.room.name, self.title, len(self.locations),
             len(self.currentParticipants), len(self.eventHistory))
             
 
@@ -283,12 +283,12 @@ class Device(YarnBaseType):
         if(self.connection != None):
             try:
                 logging.debug("Shutting down pre-existing connection from %s"%
-                    self.name)
+                    self.actor.name)
                 self.connection.finish()
             except:
                 logging.warning("Tried to double-close a connection \
-                 in setConnection  user:%s"%
-                    self.name)
+                 in setConnection actor:%s"%
+                    self.actor.name)
             finally:
                 # don't strictly need to do this because it's about to be
                 # set again, but it's good form to pair every .finish
@@ -451,8 +451,6 @@ class Location(Actor):
         user.location = None
     
     def getUsers(self):
-        # this is stupid, but I can't figure out how to get JSONEncoder
-        # to take sets, so we have to convert to lists on the way out.
         return list(self.users)
     
     def joinedMeeting(self, meeting):
@@ -487,13 +485,16 @@ class Location(Actor):
 
     def getDict(self):
         d = Actor.getDict(self)
+        
+        # this is stupid, but I can't figure out how to get JSONEncoder
+        # to take sets, so we have to convert to lists on the way out.
         d["users"] = list(self.users)
         return d
 
     def __str__(self):
         if(self.isInMeeting()):
             return "[loc.%s %s meet:%s users:%d devs:%d]"%(self.uuid[0:6],
-                self.name, self.meeting.name + "@" + self.meeting.room.name,
+                self.name, str(self.meeting.title) + "@" + self.meeting.room.name,
                 len(self.users), len(self.getDevices()))
         else:
             return "[loc.%s %s meet:NONE users:%d devs:%d]"%(self.uuid[0:6],

@@ -94,7 +94,7 @@ class BaseHandler(tornado.web.RequestHandler):
         # now, map that device back to an actor.
         actor = device.actor
         if (actor==None):
-            raise HTTPError("400", "Specified device %s doesn't have an \
+            raise HTTPError(400, "Specified device %s doesn't have an \
             associated actor. It must set a User or Location first."
             %device.uuid)
             return None
@@ -107,7 +107,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
         device = state.get_obj(deviceUUID, Device)
         if(device==None):
-            raise HTTPError("400", "Specified device UUID %s\
+            raise HTTPError(400, "Specified device UUID %s\
             didn't exist or wasn't a valid device."%deviceUUID)
             return None
         
@@ -218,8 +218,8 @@ class JoinRoomHandler(BaseHandler):
             # If they don't, reject the request outright.
             user = actor
             if user.location == None:
-                raise HTTPError("400", "Specified user %s \
-                isn't yet in a location, so can not join a room."%user.name)
+                raise HTTPError(400, "Specified user " + user.name + 
+                " isn't yet in a location, so can not join a room.")
                 return
             
             location = user.location
@@ -262,14 +262,16 @@ class JoinRoomHandler(BaseHandler):
                     actor.uuid, None, {"room":room})
                 newMeetingEvent = newMeetingEvent.dispatch()
                 
+                logging.debug("New meeting created, now joining people to\
+                the meeting.")
                 # Can't do this until we have events changing
                 # the internal state of the server, because
                 # the meeting with that UUID doesn't actually
                 # exist yet. Going to check this in without
                 # that chunk. The earlier stuff is working great.
-                userJoinedEvent = Event("JOINED_MEETING", actor.uuid,
+                locationJoinedEvent = Event("JOINED_MEETING", location.uuid,
                     newMeetingEvent.results["meeting"].uuid)
-                userJoinedEvent.dispatch()
+                locationJoinedEvent.dispatch()
                 
             else:
                 # pull the existing meeting.
@@ -282,7 +284,7 @@ class JoinRoomHandler(BaseHandler):
                 userJoinedEvent.dispatch()
               
         else: 
-            raise HTTPError("400", "Specified room UUID %s \
+            raise HTTPError(400, "Specified room UUID %s \
             didn't exist or wasn't a valid room."%roomUUID)
             return
 
@@ -332,7 +334,7 @@ class LoginHandler(BaseHandler):
 
         actor = state.get_obj(actorUUID, Actor)
         if(actor==None):
-            raise HTTPError("400", "Specified actor UUID %s\
+            raise HTTPError(400, "Specified actor UUID %s\
             didn't exist or wasn't a valid actor."%actorUUID)
             return None
 
@@ -358,7 +360,7 @@ class JoinLocationHandler(BaseHandler):
         locationUUID = self.get_argument("locationUUID")
         location = state.get_obj(locationUUID, Location)
         if(location==None):
-            raise HTTPError("400", "Specified location UUID %s\
+            raise HTTPError(400, "Specified location UUID %s\
             didn't exist or wasn't a valid location."%locationUUID)
             return None
         
