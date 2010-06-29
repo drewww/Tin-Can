@@ -308,7 +308,7 @@ def _handleAddActorDevice(event):
     
     actor.addDevice(device)
     
-    returnurn event
+    return event
     
 
 def _handleJoinedLocation(event):

@@ -55,7 +55,7 @@ class YarnApplication(tornado.web.Application):
             
             (r"/users/choose", ChooseUsersHandler),
             (r"/agenda/", AgendaHandler),
-            (r"/agendajqt/", AgendaJQTHandler)
+            (r"/agendajqt/", AgendaJQTHandler),
             (r"/state/", StateHandler)
             ]
         

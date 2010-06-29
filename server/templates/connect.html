@@ -7,160 +7,176 @@
 			font-family: Helvetica;
 		}
 	</style>
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.js"></script>
+ 	<script type="text/javascript" src="{{static_url('sencha/ext-touch.js')}}"></script>
+ 	<script type="text/javascript" src="{{static_url('js/ConnectionManager.js')}}"></script>
 
 	<script type="text/javascript" charset="utf-8">
-	
-		var userUUID;
-		var roomUUID;
+		Ext.ns("tincan");
+		var conn = null;
 		
-		var stopConnection = false;
-		
-		function newConnection() {
-			stopConnection = false;
-			userUUID = $('#user')[0].value;
-			console.log("user: " + userUUID + " about to connect.");
-			// Make the first connection to the server.
-			connect(userUUID);
-		}
-		
-		function connect(userUUID) {
-			// Check and see if the stop connection flag has been thrown.
-			if(!stopConnection) {
-				console.log("Connect to /connect/ for " + userUUID);
+		Ext.onReady(function() {
+			conn = tincan.connection;
 			
-				$.ajax({url:"http://localhost:8888/connect/",
-						type: "GET",
-						dataType: "json",
-						data: {"userUUID":userUUID},
-						success: responseReceived,
-						error: connectionFailed,
-						cache: false,
-					});
-			} else {
-				console.log("Was going to reconnect, but got stopped.");
-			}
-		}
-		
-		function joinRoom() {
-			userUUID = $('#user')[0].value;
-			roomUUID = $('#room')[0].value;
-			
-			console.log("About to join room: " + roomUUID);
-			$.ajax({url:"http://localhost:8888/rooms/join",
-				type: "POST",
-				dataType: "json",
-				data: {"userUUID":userUUID, "roomUUID":roomUUID},
-				success: joinRoomResponse,
-				error: joinRoomFailed,
-				cache: false,
+			// Setup the button actions.
+			Ext.get('login').on('click', function() {
+				conn.setUser(Ext.get('user').getValue());
+				conn.connect();
 			});
-		}
+		});
 		
-		function joinLocation() {
-			locationUUID = $('#location')[0].value;
-			
-			console.log("About to join location: " + locationUUID);
-			$.ajax({url:"http://localhost:8888/locations/join",
-				type: "POST",
-				dataType: "json",
-				data: {"locationUUID":locationUUID},
-				cache: false,
-			});
-		}
+
 		
-		function joinRoomResponse(response) {
-			console.log("ROOM JOINED");
-		}
 		
-		function joinRoomFailed(request, status, error) {
-			console.log("ROOM JOIN FAILED");
-		}
-		
-		function leaveRoom() {
-			userUUID = $('#user')[0].value;
-			roomUUID = $('#room')[0].value;
-			
-			console.log("About to leave room: " + roomUUID);
-			$.ajax({url:"http://localhost:8888/rooms/leave",
-				type: "POST",
-				dataType: "json",
-				data: {"userUUID":userUUID, "roomUUID":roomUUID},
-				success: leaveRoomResponse,
-				error: leaveRoomFailed,
-				cache: false,
-			});
-		}
-		
-		function leaveRoomResponse(response) {
-			console.log("ROOM LEFT");
-		}
-		
-		function leaveRoomFailed(request, status, error) {
-			console.log("ROOM LEFT FAILED");
-		}
-		
-		function responseReceived(response) {
-			console.log("events: " + response.length);
-			
-			for(var key in response) {
-				var ev = response[key];
-			// var message = "" + new Date().getTime() + " - ";
-			console.log("  type: " + ev.eventType);
-				$("#response").append(dumpDict(ev) + "<br/>");
-			}
-			connect(userUUID, roomUUID);
-		}
-		
-		function dumpDict(dict) {
-			response = "{"
-			for(key in dict) {
-				response = response + key + ":" + dict[key] + ", ";
-			}
-			return response + "}";
-		}
-		
-		function connectionFailed(request, status, error) {
-			console.log("Connection failed: " + error);
-			
-			// Try again. We can trust the server to hold stuff in a queue
-			// for us. (Although, are we worried about the server sending
-			// something that the client doesn't receive? Do we need ACKs?
-			// We'll need to build somethign into the connect request that
-			// contains the most recent key that it saw and use THAT to flush
-			// the event queue.)
-			connect(userUUID, roomUUID);
-		}
-		
-		function setStopConnection() {
-			// This should also end the current outstanding request,
-			// but I'm not sure exactly how to do that yet.
-			stopConnection = true;
-		}
-		
-		function login() {
-			userUUID = $('#user')[0].value;
-			
-			console.log("About to login user: " + userUUID);
-			$.ajax({url:"http://localhost:8888/connect/login",
-				type: "POST",
-				dataType: "json",
-				data: {"actorUUID":userUUID},
-				cache: false,
-			});
-		}
-		
-		function createNewUser() {
-			newUserName = $('#new_user')[0].value;
-			
-			console.log("About to create user: " + newUserName);
-			$.ajax({url:"http://localhost:8888/users/add",
-				type: "POST",
-				dataType: "json",
-				data: {"name":newUserName},
-				cache: false,
-			});
-		}
+		// var userUUID;
+		// var roomUUID;
+		// 
+		// var stopConnection = false;
+		// 
+		// function newConnection() {
+		// 	stopConnection = false;
+		// 	userUUID = $('#user')[0].value;
+		// 	console.log("user: " + userUUID + " about to connect.");
+		// 	// Make the first connection to the server.
+		// 	connect(userUUID);
+		// }
+		// 
+		// function connect(userUUID) {
+		// 	// Check and see if the stop connection flag has been thrown.
+		// 	if(!stopConnection) {
+		// 		console.log("Connect to /connect/ for " + userUUID);
+		// 	
+		// 		$.ajax({url:"http://localhost:8888/connect/",
+		// 				type: "GET",
+		// 				dataType: "json",
+		// 				data: {"userUUID":userUUID},
+		// 				success: responseReceived,
+		// 				error: connectionFailed,
+		// 				cache: false,
+		// 			});
+		// 	} else {
+		// 		console.log("Was going to reconnect, but got stopped.");
+		// 	}
+		// }
+		// 
+		// function joinRoom() {
+		// 	userUUID = $('#user')[0].value;
+		// 	roomUUID = $('#room')[0].value;
+		// 	
+		// 	console.log("About to join room: " + roomUUID);
+		// 	$.ajax({url:"http://localhost:8888/rooms/join",
+		// 		type: "POST",
+		// 		dataType: "json",
+		// 		data: {"userUUID":userUUID, "roomUUID":roomUUID},
+		// 		success: joinRoomResponse,
+		// 		error: joinRoomFailed,
+		// 		cache: false,
+		// 	});
+		// }
+		// 
+		// function joinLocation() {
+		// 	locationUUID = $('#location')[0].value;
+		// 	
+		// 	console.log("About to join location: " + locationUUID);
+		// 	$.ajax({url:"http://localhost:8888/locations/join",
+		// 		type: "POST",
+		// 		dataType: "json",
+		// 		data: {"locationUUID":locationUUID},
+		// 		cache: false,
+		// 	});
+		// }
+		// 
+		// function joinRoomResponse(response) {
+		// 	console.log("ROOM JOINED");
+		// }
+		// 
+		// function joinRoomFailed(request, status, error) {
+		// 	console.log("ROOM JOIN FAILED");
+		// }
+		// 
+		// function leaveRoom() {
+		// 	userUUID = $('#user')[0].value;
+		// 	roomUUID = $('#room')[0].value;
+		// 	
+		// 	console.log("About to leave room: " + roomUUID);
+		// 	$.ajax({url:"http://localhost:8888/rooms/leave",
+		// 		type: "POST",
+		// 		dataType: "json",
+		// 		data: {"userUUID":userUUID, "roomUUID":roomUUID},
+		// 		success: leaveRoomResponse,
+		// 		error: leaveRoomFailed,
+		// 		cache: false,
+		// 	});
+		// }
+		// 
+		// function leaveRoomResponse(response) {
+		// 	console.log("ROOM LEFT");
+		// }
+		// 
+		// function leaveRoomFailed(request, status, error) {
+		// 	console.log("ROOM LEFT FAILED");
+		// }
+		// 
+		// function responseReceived(response) {
+		// 	console.log("events: " + response.length);
+		// 	
+		// 	for(var key in response) {
+		// 		var ev = response[key];
+		// 	// var message = "" + new Date().getTime() + " - ";
+		// 	console.log("  type: " + ev.eventType);
+		// 		$("#response").append(dumpDict(ev) + "<br/>");
+		// 	}
+		// 	connect(userUUID, roomUUID);
+		// }
+		// 
+		// function dumpDict(dict) {
+		// 	response = "{"
+		// 	for(key in dict) {
+		// 		response = response + key + ":" + dict[key] + ", ";
+		// 	}
+		// 	return response + "}";
+		// }
+		// 
+		// function connectionFailed(request, status, error) {
+		// 	console.log("Connection failed: " + error);
+		// 	
+		// 	// Try again. We can trust the server to hold stuff in a queue
+		// 	// for us. (Although, are we worried about the server sending
+		// 	// something that the client doesn't receive? Do we need ACKs?
+		// 	// We'll need to build somethign into the connect request that
+		// 	// contains the most recent key that it saw and use THAT to flush
+		// 	// the event queue.)
+		// 	connect(userUUID, roomUUID);
+		// }
+		// 
+		// function setStopConnection() {
+		// 	// This should also end the current outstanding request,
+		// 	// but I'm not sure exactly how to do that yet.
+		// 	stopConnection = true;
+		// }
+		// 
+		// function login() {
+		// 	userUUID = $('#user')[0].value;
+		// 	
+		// 	console.log("About to login user: " + userUUID);
+		// 	$.ajax({url:"http://localhost:8888/connect/login",
+		// 		type: "POST",
+		// 		dataType: "json",
+		// 		data: {"actorUUID":userUUID},
+		// 		cache: false,
+		// 	});
+		// }
+		// 
+		// function createNewUser() {
+		// 	newUserName = $('#new_user')[0].value;
+		// 	
+		// 	console.log("About to create user: " + newUserName);
+		// 	$.ajax({url:"http://localhost:8888/users/add",
+		// 		type: "POST",
+		// 		dataType: "json",
+		// 		data: {"name":newUserName},
+		// 		cache: false,
+		// 	});
+		// }
 		
 	</script>
 </head>
@@ -190,8 +206,8 @@
 
 
 
-<button id="login" onclick="login()">Login</button>
-<button id="connect" onclick="newConnection()">Connect</button>
+<button id="login" >Login</button>
+<!-- <button id="connect" onclick="newConnection()">Connect</button> -->
 <button id="join_room" onclick="joinRoom()">Join Room</button>
 <button id="join_location" onclick="joinLocation()">Join Location</button>
 <button id="leave" onclick="leaveRoom()">Leave Room</button>
