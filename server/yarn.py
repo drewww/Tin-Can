@@ -49,7 +49,8 @@ class YarnApplication(tornado.web.Application):
             (r"/connect/ping/", PingHandler),
             (r"/connect/test", ConnectTestHandler),
             (r"/users/choose", ChooseUsersHandler),
-            (r"/agenda/", AgendaHandler)
+            (r"/agenda/", AgendaHandler),
+            (r"/agendajqt/", AgendaJQTHandler)
             ]
         
         settings = dict(
@@ -279,6 +280,12 @@ class AgendaHandler(tornado.web.RequestHandler):
 class ChooseUsersHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("login.html")
+
+class AgendaJQTHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("agenda_jqtouch.html")
+
+
 
 # Set up the routing tables for the application.
 # For now, they're really simple - one for getting information about rooms,
