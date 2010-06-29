@@ -220,7 +220,7 @@
 //    CGAffineTransform transform = CGAffineTransformMakeRotation(M_PI/2);
     CGAffineTransform transform = participant.view.transform;
     transform = CGAffineTransformScale(transform, 0.4, 0.4);
-    [self setTransform:transform];
+    [self setTransform:transform];  
     
     // Now set the callback. 
     [UIView setAnimationDelegate:self];

@@ -152,7 +152,7 @@
 
 - (void)drawRect:(CGRect)rect {
 	// for testing
-	testDate= [[ testDate addTimeInterval:120] retain];
+	testDate= [[ testDate addTimeInterval:1] retain];
 	
 
 	
