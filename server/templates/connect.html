@@ -22,6 +22,10 @@
 				conn.setUser(Ext.get('user').getValue());
 				conn.connect();
 			});
+			
+			Ext.get('connect').on('click', function() {
+				conn.startPersistentConnection();
+			});
 		});
 		
 
@@ -207,7 +211,7 @@
 
 
 <button id="login" >Login</button>
-<!-- <button id="connect" onclick="newConnection()">Connect</button> -->
+<button id="connect">Connect</button>
 <button id="join_room" onclick="joinRoom()">Join Room</button>
 <button id="join_location" onclick="joinLocation()">Join Location</button>
 <button id="leave" onclick="leaveRoom()">Leave Room</button>

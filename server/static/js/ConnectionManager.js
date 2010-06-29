@@ -1,7 +1,9 @@
 Ext.namespace("tincan");
 
 tincan.ConnectionManager = Ext.extend(Object, {
+   
    userUUID: null,
+   currentConnectRequest: null,
    
     constructor: function() {
         console.log("Constructing a new connection manager.");
@@ -26,7 +28,26 @@ tincan.ConnectionManager = Ext.extend(Object, {
            failure: function () { console.log("FAIL (login)");},
            params: { "actorUUID": this.userUUID }
         });
-    }
+    },
+    
+    startPersistentConnection: function() {
+        
+        this.currentConnectRequest = Ext.Ajax.request({
+            url: '/connect/',
+            method: "GET",
+            success: function () {
+                console.log("/connect/ closed sucessfully, reconnecting.");
+                this.currentConnectRequest=this.startPersistentConnection.defer(0, this);
+                },
+            failure: function () {
+                console.log("/connect/ failed. reconnecting.");
+                this.currentConnectRequest=this.startPersistentConnection.defer(0, this);
+                },
+            params: { "actorUUID": this.userUUID },
+            scope: this,
+            timeout: 3600   // should be as high as possible - does -1 work?
+        });
+    },
     
 });
 
