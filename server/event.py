@@ -18,21 +18,26 @@ import simplejson as json
 
 import model
 
-EVENT_TYPES = ["NEW_MEETING", "JOINED", "LEFT", "NEW_TASK", "UPDATE_TASK",
-                "NEW_TOPIC", "UPDATE_TOPIC", "PING"]
+EVENT_TYPES = ["NEW_MEETING", "JOINED_MEETING", "LEFT_ROOM",
+    "USER_JOINED_LOCATION", "USER_LEFT_LOCATION", "NEW_USER", "LOCATION_JOINED_MEETING",
+    "LOCATION_LEFT_ROOM", "NEW_DEVICE", "ADD_ACTOR_DEVICE"
+    ]
 
 # Stores the required paramters for each event type. We'll use this
 # to enforce complete intialization of events, and also to remind ourselves
 # what's required for each event.
 EVENT_PARAMS = {"NEW_MEETING":["room"],
-                "JOINED":[],            # these events have no extra params.
-                "LEFT":[]
+                "NEW_USER":["name"],
+                "USER_JOINED_LOCATION":["location"],
+                "USER_LEFT_LOCATION": ["location"],
+                "LOCATION_JOINED_MEETING": ["location"],
+                "LOCATION_LEFT_MEETING": ["location"],
+                "NEW_DEVICE": [],
+                "ADD_ACTOR_DEVICE": ["actor", "device"]
                 }
 
-class Event:
-    
-    
-    def __init__(self, eventType, userUUID, meetingUUID=None, params={}):
+class Event:    
+    def __init__(self, eventType, actorUUID=None, meetingUUID=None, params={}):
         
         # these are the only required fields for an event.
         # all other paramters (like the text of a new topic, or new owner
@@ -58,30 +63,6 @@ class Event:
         # client. 
         self.uuid = str(uuid.uuid4())
         
-        # Eventually we'll be rigorous about checking these, but for now
-        # if we get key errors, just eat them and set them to None. Too hard
-        # to test without this for now.
-        self.user = state.get_obj(userUUID, model.User)
-        if(self.user==None):
-            logging.error("""Tried to create an event with
-                            invalid userUUID %s"""%userUUID)
-            return None
-
-        # TODO Think about changing this. Makes returning the UUID
-        # of the new object easier if we just say that new meetings REQUIRE
-        # UUIDs too, and it's the job of the person creating a new meeting
-        # event to create the UUID at that point and pass it down the chain.
-        if(self.eventType!="NEW_MEETING"):
-            # any event other than NEW MEETING needs to have a meeting param
-            self.meeting = state.get_obj(meetingUUID, model.Meeting)
-            if(self.meeting==None):
-                # TODO We need to raise an exception here, not return none.
-                # Returning None doesn't seem to do anything except end
-                # the constructor. 
-                logging.error("""Tried to create an event with invalid 
-                                meetingUUID %s"""%meetingUUID)
-                return None
-        
         # now, cycle through the params. These are the bonus event options
         # that aren't shared by all events. The list of expected params is in
         # event.EVENT_PARAMS. We're going to store them as a dict locally,
@@ -93,7 +74,7 @@ class Event:
             if(param not in params.keys()):
                 hasAllRequiredParams = False
                 missingParam = param
-        
+
         # if we're missing a param, fail with a descriptive error message.
         # otherwise, store the params and finish the constructor happily.
         if(not hasAllRequiredParams):
@@ -103,6 +84,40 @@ class Event:
             return None
         else:
             self.params = params
+        
+        
+        # If this is a NEW_DEVICE event, we're not going to have any actor
+        # information yet, so ditch out of the constructor now instead of 
+        # failing on that stuff later. 
+        if(self.eventType=="NEW_DEVICE"):
+            self.meeting = None
+            return
+            
+        # Eventually we'll be rigorous about checking these, but for now
+        # if we get key errors, just eat them and set them to None. Too hard
+        # to test without this for now.
+        self.actor = state.get_obj(actorUUID, model.Actor)
+        if(self.actor==None):
+            logging.error("""Tried to create an event with
+                            invalid actorUUID %s"""%actorUUID)
+            return None
+
+        # TODO Think about changing this. Makes returning the UUID
+        # of the new object easier if we just say that new meetings REQUIRE
+        # UUIDs too, and it's the job of the person creating a new meeting
+        # event to create the UUID at that point and pass it down the chain.
+        if(not self.eventType in["NEW_MEETING", "ADD_ACTOR_DEVICE",
+            "USER_JOINED_LOCATION", "USER_LEFT_LOCATION"]):
+            # any event other than NEW MEETING needs to have a meeting param
+            self.meeting = state.get_obj(meetingUUID, model.Meeting)
+            if(self.meeting==None):
+                # TODO We need to raise an exception here, not return none.
+                # Returning None doesn't seem to do anything except end
+                # the constructor. 
+                logging.error("""Tried to create an event with invalid 
+                                meetingUUID %s"""%meetingUUID)
+                return None        
+       
         
         
     
@@ -144,10 +159,10 @@ class Event:
         # these objects' existence
         try:
             d["meetingUUID"] = self.meeting.uuid
-            d["userUUID"] = self.user.uuid
+            d["actorUUID"] = self.actor.uuid
         except:
             d["meetingUUID"] = None
-            d["userUUID"] = None
+            d["actorUUID"] = None
             
         return d
         
@@ -186,10 +201,18 @@ class Event:
         event = handler(self)
         
         # SEND EVENT TO APPROPRIATE CLIENTS
-        if(self.eventType == "NEW_MEETING"):
-            sendEventsToUsers(state.get_logged_in_users(), [event])
+        if(self.eventType in ["NEW_MEETING","NEW_USER","NEW_DEVICE",
+            "ADD_ACTOR_DEVICE", "USER_JOINED_LOCATION", "USER_LEFT_LOCATION"]):
+            sendEventsToDevices(state.get_devices(), [event])
         else:
-            event.meeting.sendEvent(event)
+            try:
+                event.meeting.sendEvent(event)
+            except:
+                logging.error("Tried to send event to a meeting, but this\
+                event didn't have a meeting set. Falling back to sending\
+                to all devices.")
+                sendEventsToDevices(state.get_devices(), [event])
+                
         
         # RETURN THE RESULT
         # Handlers can return something - usually the new instance of an obj
@@ -200,7 +223,7 @@ class Event:
         logging.info("Done dispatching event: " + str(self.getDict()))
         return event
 
-def sendEventsToUsers(users, events):
+def sendEventsToDevices(devices, events):
     
     # TODO do assertionerrors here if they're not both arrays?
     # or find some nice way to detect non-arrayness and wrap them?
@@ -215,9 +238,9 @@ def sendEventsToUsers(users, events):
     #     logging.error("sendEventsToUsers requires lists for both parameters,\
     #         and one of the parameters wasn't a list.")
     #     raise e
-    for curUser in users:
+    for device in devices:
         for curEvent in events:
-            curUser.enqueueEvent(curEvent)
+            device.enqueueEvent(curEvent)
 
 
 # DISPATCH METHODS
@@ -243,33 +266,119 @@ def _handleNewMeeting(event):
     
     return event
 
-def _handleJoined(event):
-    event.meeting.participantJoined(event.user)
+# def _handleJoinedRoom(event):
+#     event.meeting.userJoined(event.actor)
+#     
+#     # this is a little wonky, but the way the event system works, it doesn't
+#     # include the full user object (ie event.user) in every event because
+#     # most of the time all we need to know is what their UUID is. But in this
+#     # case it's a new user, so we need to give clients all the info they need
+#     # to create a new local user object. 
+#     event.addResult("actor", event.actor)
+#     return event
     
-    # this is a little wonky, but the way the event system works, it doesn't
-    # include the full user object (ie event.user) in every event because
-    # most of the time all we need to know is what their UUID is. But in this
-    # case it's a new user, so we need to give clients all the info they need
-    # to create a new local user object. 
-    event.addResult("user", event.user)
+def _handleLeftRoom(event):
+    event.meeting.userLeft(event.actor)
+    
+    # We DON'T need to include the actor in the result object (as above)
+    # because clients will already know about this actor, so the UUID in the
+    # event itself is enough.
     return event
     
-def _handleLeft(event):
-    event.meeting.participantLeft(event.user)
+def _handleNewUser(event):
+    newUser = model.User(event.params["name"])
+
+    # Make sure to do this for new locations, too. 
+    state.add_actor(newUser)
     
-    # We DON'T need to include the user in the result object (as above)
-    # because clients will already know about this user, so the UUID in the
-    # event itself is enough.
+    event.addResult("actor", newUser)
+    return event
+
+def _handleNewDevice(event):
+    device = model.Device()
+
+    event.addResult("device", device)
+
+    return event
+
+def _handleAddActorDevice(event):
+    # connects devices with their actors.
+    actor = event.params["actor"]
+    device = event.params["device"]
+    
+    actor.addDevice(device)
+    
+    return event
+    
+
+def _handleJoinedLocation(event):
+    location = event.params["location"]
+    location.userJoined(event.actor)
+    event.addResult("user", event.actor)
+    
+    # Turning this off for now - I think we can live without it.
+    # The USER_JOINED_LOCATION event will fire, and clients should be able
+    # to imply the rest. 
+    # if location.isInMeeting():
+    #      actorJoinedEvent = Event("JOINED_MEETING", event.actor.uuid,
+    #          location.meeting.uuid)
+    # 
+    #      # TODO Need to do something about dispatch order here. This joined
+    #      # event is going to finish dispatching before the joined_location
+    #      # event does, which might cause some trouble. Need a way for events
+    #      # to dispatch in the order they're created, not the order they're 
+    #      # executed. 
+    #      actorJoinedEvent.dispatch()
+    
+    return event
+
+def _handleLeftLocation(event):
+    location = event.params["location"]
+    location.userLeft(event.actor)
+
+    # Turning this off for now - I think we can live without it.
+    # The USER_JOINED_LOCATION event will fire, and clients should be able
+    # to imply the rest.
+    # if location.isInMeeting():
+    #     userLeftEvent = Event("LEFT_ROOM", event.user.uuid,
+    #         location.meeting.uuid)
+    # 
+    #     # TODO Need to do something about dispatch order here. This joined
+    #     # event is going to finish dispatching before the joined_location
+    #     # event does, which might cause some trouble. Need a way for events
+    #     # to dispatch in the order they're created, not the order they're 
+    #     # executed. 
+    #     userLeftEvent.dispatch()
+    
+    return event
+
+
+def _handleLocationJoinedMeeting(event):
+    # For all the users in this location, fire joined messages
+    location = event.params["location"]
+    meeting = event.meeting
+    
+    location.joinedMeeting(meeting)
+    return event
+
+def _handleLocationLeftMeeting(event):
+    location = event.params["location"]
+    meeting = event.meeting
+
+    location.leftMeeting(meeting)
     return event
 
 # Maps EVENT_TYPES to the functions that handle those events. Used in 
 # Event.dispatch. 
 DISPATCH = {"NEW_MEETING":_handleNewMeeting,
-            "JOINED":_handleJoined,
-            "LEFT":_handleLeft
+            "NEW_USER":_handleNewUser,
+            "USER_JOINED_LOCATION":_handleJoinedLocation,
+            "USER_LEFT_LOCATION": _handleLeftLocation,
+            "LOCATION_JOINED_MEETING": _handleLocationJoinedMeeting,
+            "LOCATION_LEFT_MEETING": None,
+            "NEW_DEVICE": _handleNewDevice,
+            "ADD_ACTOR_DEVICE": _handleAddActorDevice
             }
-
-
 
 if __name__ == '__main__':
     main()

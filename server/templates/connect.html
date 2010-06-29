@@ -57,6 +57,18 @@
 			});
 		}
 		
+		function joinLocation() {
+			locationUUID = $('#location')[0].value;
+			
+			console.log("About to join location: " + locationUUID);
+			$.ajax({url:"http://localhost:8888/locations/join",
+				type: "POST",
+				dataType: "json",
+				data: {"locationUUID":locationUUID},
+				cache: false,
+			});
+		}
+		
 		function joinRoomResponse(response) {
 			console.log("ROOM JOINED");
 		}
@@ -130,10 +142,22 @@
 			userUUID = $('#user')[0].value;
 			
 			console.log("About to login user: " + userUUID);
-			$.ajax({url:"http://localhost:8888/users/login",
+			$.ajax({url:"http://localhost:8888/connect/login",
 				type: "POST",
 				dataType: "json",
-				data: {"userUUID":userUUID},
+				data: {"actorUUID":userUUID},
+				cache: false,
+			});
+		}
+		
+		function createNewUser() {
+			newUserName = $('#new_user')[0].value;
+			
+			console.log("About to create user: " + newUserName);
+			$.ajax({url:"http://localhost:8888/users/add",
+				type: "POST",
+				dataType: "json",
+				data: {"name":newUserName},
 				cache: false,
 			});
 		}
@@ -150,17 +174,32 @@
 	{% end %}
 </select>
 
+<label for="location">Select Location</label>
+<select name="location" id="location" onchange="" size="1">
+	{% for location in locations %}
+	<option value="{{location.uuid}}">{{location.name}}</option>
+	{% end %}
+</select>
+
 <label for="room">Select Room</label>
 <select name="room" id="room" onchange="" size="1">
 	{% for room in rooms %}
 	<option value="{{room.uuid}}">{{room.name}}</option>
 	{% end %}
 </select>
+
+
+
 <button id="login" onclick="login()">Login</button>
 <button id="connect" onclick="newConnection()">Connect</button>
-<button id="join" onclick="joinRoom()">Join</button>
-<button id="leave" onclick="leaveRoom()">Leave</button>
+<button id="join_room" onclick="joinRoom()">Join Room</button>
+<button id="join_location" onclick="joinLocation()">Join Location</button>
+<button id="leave" onclick="leaveRoom()">Leave Room</button>
 <button id="stop" onclick="setStopConnection()">Stop</button>
+<label for="new_user">New User</label><input type="text" name="new_user" value="" id="new_user">
+<button id="new_user_button" onclick="createNewUser()">New User</button>
+
+
 
 <div id="response">
 	

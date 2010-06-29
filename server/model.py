@@ -18,6 +18,7 @@ import uuid
 import time
 import simplejson as json
 import logging
+import copy
 
 import state
 import event
@@ -53,6 +54,8 @@ class Room(YarnBaseType):
         
         self.name = name
         
+        # currentMeeting? Erm. why not just meeting like the pattern
+        # everywhere else? TODO think about changing this over for consistency
         if(currentMeeting != None):
             self.currentMeeting = get_obj(currentMeeting, Meeting)
         else:
@@ -79,6 +82,10 @@ class Room(YarnBaseType):
             
         return d
         
+    def __str__(self):
+        return "[room.%s %s meet:%s]"%(self.uuid[0:6], self.name,
+            str(self.currentMeeting))
+        
 class Meeting(YarnBaseType):
     """Store meeting-related information."""
 
@@ -96,29 +103,52 @@ class Meeting(YarnBaseType):
             
         self.endedAt = None
         self.isLive = False
-        self.allParticipants = []
-        self.currentParticipants = []
+        self.allParticipants = set()
         
+        self.locations = set()
+                
         self.eventHistory = []
         
-    def participantJoined(self, user):
+        
+    def userJoined(self, user):
         logging.info("User %s joined meeting %s in room %s"%(user.name,
             self.title, self.room.name))
         
-        self.allParticipants.append(user)
-        self.currentParticipants.append(user)
-        
-        user.inMeeting = self
-        
-        
-    
-    def participantLeft(self, user):
+        self.allParticipants.add(user)
+
+    def userLeft(self, user):
         logging.info("User %s left meeting %s in room %s"%(user.name,
             self.title, self.room.name))
-                
-        self.currentParticipants.remove(user)
+
+    def locationJoined(self, location):
+        logging.info("Location %s JOINED %s@%s with %d users"%(location.name,
+        self.title, self.room.name, len(location.users)))
         
-        user.inMeeting = None
+        self.locations.add(location)
+    
+    def locationLeft(self, location):
+        logging.info("Location %s LEFT %s@%s with %d users"%(location.name,
+        self.title, self.room.name, len(location.users)))
+
+        self.locations.remove(location)
+        
+    def getCurrentParticipants(self):
+        """Returns a list of the current list of Users in this meeting."""
+        
+        currentParticipants = set()
+        for location in self.locations:
+            currentParticipants = currentParticipants.union(
+                location.getUsers())
+        
+        return currentParticipants
+    
+    def getDevices(self):
+        devices = set()
+        
+        for location in self.locations:
+            devices.add(location.getDevices())
+        
+        return devices
     
     def getDict(self):
         d = YarnBaseType.getDict(self)
@@ -128,10 +158,12 @@ class Meeting(YarnBaseType):
         # We are pointedly NOT including eventHistory in here. It's 
         # duplicating information that will live in the on-disk caches anyway.
         
+        d["locations"] = list(self.locations)
+        
         # Should these be just UUIDs of participants? Doing everything about
         # them, for now.
-        d["allParticipants"] = self.allParticipants
-        d["currentParticipants"] = self.currentParticipants
+        d["allParticipants"] = list(self.allParticipants)
+        d["currentParticipants"] = list(self.getCurrentParticipants())
         return d
     
     def sendEvent(self, eventToSend):
@@ -140,7 +172,6 @@ class Meeting(YarnBaseType):
         logging.info("About to send to all users in meeting: %s"
             %eventToSend.meeting.currentParticipants)
             
-        
         if(eventToSend.eventType == "JOINED"):
             # This is tricky - we want to (in the JOINED event message)
             # include the history of everything that's happened in the meeting
@@ -149,109 +180,70 @@ class Meeting(YarnBaseType):
             # first, throw all past events onto that user's queue first.
             logging.debug("Putting all past meeting events into the new\
             user's queue. Total events: %d"%len(self.eventHistory))
-            event.sendEventsToUsers([eventToSend.user], self.eventHistory)
+            event.sendEventsToDevices([eventToSend.user.getDevices()], self.eventHistory)
             
             # then send everyone (including the new user) a normal JOINED
             # event.
-            event.sendEventsToUsers(self.currentParticipants, [eventToSend])
+            event.sendEventsToDevices(self.getDevices(), [eventToSend])
         else:
             # This is the normal path for all other event types.
-            event.sendEventsToUsers(self.currentParticipants, [eventToSend])
+            event.sendEventsToDevices(self.getDevices(), [eventToSend])
 
         # Save the event in the meeting history.
         self.eventHistory.append(eventToSend)
         
-
-class User(YarnBaseType):
-    """Store meeting-related information."""
-    
-    def __init__(self, name=None, userUUID=None, isTablet=False,
-        localUsers = []):
-        self.uuid = userUUID
-        
-        YarnBaseType.__init__(self)
-        
-        self.name = name
-        self.inMeeting = None
-        self.loggedIn = False
-        self.status = None
-        
-        # this flag sets of this user represents an iPad being logged
-        # in, and localUsers tracks what users are known to be local
-        # to that iPad.
-        self.isTablet = isTablet
-        self.localUsers = localUsers
-        
-        # Users have some connection tracking components, too. If we want
-        # to send a message to a specific user, we need a way to reach them.
-        # We'll keep track of the latest connection from that user here,
-        # plus we'll keep a queue of events that this user should be notified
-        # of so while we're waiting for them to connect again we don't lose
-        # events. When they do reconnect, we'll flush that queue.
-        self.connection = None
-        self.eventQueue = []
-        
-    def setConnection(self, connection):
-        
-        # if we're already holding onto a connection, release it
-        if(self.connection != None):
-            try:
-                logging.debug("Shutting down pre-existing connection from %s"%
-                    self.name)
-                self.connection.finish()
-            except:
-                logging.warning("Tried to double-close a connection \
-                 in setConnection  user:%s"%
-                    self.name)
-            finally:
-                # don't strictly need to do this because it's about to be
-                # set again, but it's good form to pair every .finish
-                # with a None-ing of the connection object.
-                self.connection = None
+    def __str__(self):
+        return "[meet.%s@%s %s locs:%d users:%d events:%d]"%(self.uuid[0:6], 
+            self.room.name, self.title, len(self.locations),
+            len(self.getCurrentParticipants()), len(self.eventHistory))
             
-        # set the new connection
-        self.connection = connection
-        
-        # mark ourselves as logged in.
-        # TODO figure out how to mark a user as logged out. 
-        #      (A: flip this when the event queue gets too long,
-        #          or just use that as the cue to check how long
-        #          it's been since they connected. 5 seconds is
-        #          enough to call it, since it really should be
-        #          ms between connections.)
-        self.loggedIn = True
-        
-        # TODO check to see if we have anything in the event queue. If we do,
-        # flush the queue and close the connection.
-        
-        logging.debug("Set connection for %s to %s"%(self.name, connection))
-        
-        # check to see if events have queued up during our absence of a
-        # connection. 
-        if(len(self.eventQueue) > 0):
-            logging.debug("Flushing existing event queue into new\
-                connection.")
-            self.flushQueue()
-        
-        
+
+class Device(YarnBaseType):
+    """Holds just the connection-related stuff. Devices are the actual
+    physical objects that are used by people to interact with the system. We
+    keep them as a separate class because when want to send a message, we 
+    can only address devices, not individual users. This split is important
+    because users can be interacting with multiple devices at once. 
+    
+    Devices are owned by actors, and actors can have one or more devices
+    associatd with them. Devices maintain a link back to their actor (of which
+    they can have only one) so that when a new connection comes in, we know
+    who to attribute it to.
+    
+    Devices maintain all the connection-management-related stuff like queues,
+    connection timeouts, etc.
+    """
+    
+    def __init__(self):
+        self.uuid = None
+        YarnBaseType.__init__(self)
+        self.connection = None
+        self.actor = None
+        self.eventQueue = []
+    
+    def isConnected(self):
+        # I wish we could inspect connection._finished to double-check...
+        # There's a risk here because if we forget to set the connection to
+        # None when it's gone, this is going to be wrong.
+        return self.connection != None
     
     def enqueueEvent(self, event):
         """Enqueue the specified event for transmission to this user.
-        
+
         Queued events will be sent to the user immediately if they have
         a current connection, otherwise they'll be bundled and sent to
         the user when they next reconnect."""
-        
+
         self.eventQueue.append(event)
         logging.debug("Enqueued event. Queue length now %d"%
             len(self.eventQueue))
-        
+
         if(self.connection!=None):
             self.flushQueue()
-    
+
     def flushQueue(self):
         """Dumps the contents of the queue onto the current connection.
-        
+
         Most of the time this is just going to be one event, but there are
         a few situations when it might be more. If there's network latency
         and a client doesn't have a connection for a few seconds, a few events
@@ -260,33 +252,239 @@ class User(YarnBaseType):
         the system will then dump the entire event history of that meeting
         into the new users' queue so they can resimulate the meeting process
         all the way up to the present."""
-        
+
         if(self.connection==None):
             logging.error("Tried to flush queue on %s but there was no \
-                open connection for the user."%self.name)
+                open connection for the device."%self.uuid)
             return
-        
-        logging.debug("Flushing queue of %d events on %s"%
-            (len(self.eventQueue),self.name))
+
+        logging.debug("Flushing queue of %d events on device %s"%
+            (len(self.eventQueue),self.uuid))
         self.connection.write(json.dumps(self.eventQueue,
             cls=YarnModelJSONEncoder))
         self.connection.finish()
         self.connection = None
-        
+
         # TODO wait for ACK from the client that it received these events.
         self.eventQueue = []
     
+    def setConnection(self, connection):
+
+        # if we're already holding onto a connection, release it
+        if(self.connection != None):
+            try:
+                logging.debug("Shutting down pre-existing connection from %s"%
+                    self.actor.name)
+                self.connection.finish()
+            except:
+                logging.warning("Tried to double-close a connection \
+                 in setConnection actor:%s"%
+                    self.actor.name)
+            finally:
+                # don't strictly need to do this because it's about to be
+                # set again, but it's good form to pair every .finish
+                # with a None-ing of the connection object.
+                self.connection = None
+
+        # set the new connection
+        self.connection = connection
+
+        # mark ourselves as logged in.
+        # TODO figure out how to mark a user as logged out. 
+        #      (A: flip this when the event queue gets too long,
+        #          or just use that as the cue to check how long
+        #          it's been since they connected. 5 seconds is
+        #          enough to call it, since it really should be
+        #          ms between connections.)
+        self.loggedIn = True
+
+        # TODO check to see if we have anything in the event queue. If we do,
+        # flush the queue and close the connection.
+
+        logging.debug("Updated connection for device %s"%self)
+
+        # check to see if events have queued up during our absence of a
+        # connection. 
+        if(len(self.eventQueue) > 0):
+            logging.debug("Flushing existing event queue into new\
+                connection.")
+            self.flushQueue()
+        
+    def __str__(self):
+        # What are the important elements of this user?
+        # - uuid
+        # - has active connection
+        # - has queued items
+        # - actor associated
+        
+        return "[dev.%s conn:%s q:%d act:%s]"%(self.uuid[0:6],
+            self.isConnected(),len(self.eventQueue), self.actor.name)
+
+class Actor(YarnBaseType):
+    """An abstract base class that can represent either a Location or a User.
+    
+    Actors are the objects that are responsible for originating Events,
+    and share a number of important features that both Locations and Users
+    have. """
+    
+    def __init__(self, name=None, actorUUID=None):
+        self.uuid = actorUUID
+        
+        YarnBaseType.__init__(self)
+        
+        self._devices = set()
+        self.name = name
+        
+        
     def getDict(self):
         d = YarnBaseType.getDict(self)
+        
+        # devices are NOT serialized and sent to clients because they're
+        # server-only representations for packaging connections. 
+        #
+        # Leaving this whole structure in here for now because we might need
+        # to plug into it later. But for now it's just a passthrough.
         d["name"] = self.name
-        if(self.inMeeting!=None):
-            d["inMeetingUUID"] = self.inMeeting.uuid
-        else:
-            d["inMeetingUUID"] = None
-            
-        d["loggedIn"] = self.loggedIn
-        d["status"] = self.status
+        
         return d
+        
+    def isLoggedIn(self):
+        return len(self._devices) > 0
+    
+    def addDevice(self, device):
+        self._devices.add(device)
+        device.actor = self
+    
+    def getDevices(self):
+        """Returns all the devices present at this location.
+        
+        Used for communication purposes, so Events can be enqueued on those 
+        Device's connections."""
+        return self._devices
+
+class User(Actor):
+    """Users are the people that are participating in the meeting.
+    
+    Users are not directly included in meetings - only locations can be
+    part of a meeting, and users are part of a location by virtue of being
+    connected to a device that's in a location."""
+    
+    def __init__(self, name=None, userUUID=None):
+        
+        Actor.__init__(self, name, userUUID)
+        
+        self._status = None
+        self.location = None
+        
+    def isInLocation(self):
+        return self.location != None
+
+    def getDict(self):
+        d = Actor.getDict(self)
+        d["status"] = self._status
+        return d
+    
+    def isInMeeting(self):
+        return self.location.isInMeeting()
+        
+    def __str__(self):
+        if(self.isInLocation()):
+            return "[user.%s %s loc:%s devs:%d]"%(self.uuid[0:6],
+                self.name, self.location.name + "@" +
+                self.location.meeting.room.name,
+                len(self.getDevices()))
+        else:
+            return "[user.%s %s loc:NONE devs:%d]"%(self.uuid[0:6],
+                self.name, self.location.name + "@" +
+                self.location.meeting.room.name,
+                len(self.getDevices()))
+    
+
+class Location(Actor):
+    """
+    Locations define a specific physical location, which contains a set of
+    users and devices. 
+    
+    Meetings are made up of participating locations, which are in turn made
+    up of users and devices. Depending on what you care about, you'll 
+    look at those lists differently. For communication, get the device list
+    and send a message to all devices present in a Location. For display,
+    Users are often the important distinction. 
+    """
+    
+    def __init__(self, name=None, actorUUID=None):
+        Actor.__init__(self, name, actorUUID)
+        self.meeting = None
+        self.users = set()
+    
+    def userJoined(self, user):
+        """Adds the specified user to this location."""
+        
+        self.users.add(user)
+        user.location = self
+        
+        if(self.isInMeeting()):
+            self.meeting.userJoined(user)
+        
+    def userLeft(self, user):
+        """Removes the specified user from this location."""
+        
+        self.users.remove(user)
+        user.location = None
+        
+        if(self.isInMeeting()):
+            self.meeting.userLeft(user)
+        
+    
+    def getUsers(self):
+        return list(self.users)
+    
+    def isInMeeting(self):
+        return self.meeting != None
+
+    def joinedMeeting(self, meeting):
+        logging.debug("Location joined meeting.")
+        meeting.locationJoined(self)
+
+        
+        # create events for all our users to set them up as joining
+        # the meeting.
+    
+    def leftMeeting(self):
+        meeting.locationLeft(self)
+        
+            
+    def getDevices(self):
+        
+        # Get devices specific to this location, plus all the devices that
+        # all connected users have that are specific to them.
+        # (copying so we don't accidentlly add these users' devices to the
+        # main device list, although that wouldn't actually be the end of the
+        # world.)
+        allDevices = copy.copy(self._devices)
+        
+        for user in self.users:
+            allDevices |= user.getDevices()
+        
+        return allDevices
+
+    def getDict(self):
+        d = Actor.getDict(self)
+        
+        # this is stupid, but I can't figure out how to get JSONEncoder
+        # to take sets, so we have to convert to lists on the way out.
+        d["users"] = list(self.users)
+        return d
+
+    def __str__(self):
+        if(self.isInMeeting()):
+            return "[loc.%s %s meet:%s users:%d devs:%d]"%(self.uuid[0:6],
+                self.name, str(self.meeting.title) + "@" + self.meeting.room.name,
+                len(self.users), len(self.getDevices()))
+        else:
+            return "[loc.%s %s meet:NONE users:%d devs:%d]"%(self.uuid[0:6],
+                self.name, len(self.users), len(self.getDevices()))
+            
 
 
 class MeetingObjectType(YarnBaseType):
@@ -354,7 +552,14 @@ class YarnModelJSONEncoder(json.JSONEncoder):
             # use the getDict method for model objects, since we can't
             # encode python objects to JSON directly.
             return obj.getDict()
-        return json.JSONEncoder.default(self, obj)
+        elif isinstance(obj, set):
+            # for some reason the default encoder can't handle set objects,
+            # so just convert them to lists.
+            logging.warning("found set. can't figure out how to make sets\
+            work yet.")
+            return self.default(list(obj))
+        else:
+            return json.JSONEncoder.default(self, obj)
 
 if __name__ == "__main__":
     # try making some new things and spitting them back out again.

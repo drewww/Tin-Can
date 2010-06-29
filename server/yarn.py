@@ -13,6 +13,7 @@ Copyright (c) 2010 MIT Media Lab. All rights reserved.
 import logging
 import os.path
 import uuid
+import time
 
 import tornado.httpserver
 import tornado.ioloop
@@ -40,17 +41,22 @@ class YarnApplication(tornado.web.Application):
             (r"/rooms/list", RoomsHandler),
             (r"/rooms/join", JoinRoomHandler),
             (r"/rooms/leave", LeaveRoomHandler),
-            (r"/users/connected", ConnectedUsersHandler),
-            (r"/users/disconnected", DisconnectedUsersHandler),
+            
+            (r"/locations/list", LocationsHandler),
+            (r"/locations/join", JoinLocationHandler),
+            (r"/locations/leave", LeaveLocationHandler),
+            
             (r"/users/", AllUsersHandler),
             (r"/users/add", AddUserHandler),
-            (r"/users/login", LoginHandler),
+            
             (r"/connect/", ConnectionHandler),
-            (r"/connect/ping/", PingHandler),
             (r"/connect/test", ConnectTestHandler),
+            (r"/connect/login", LoginHandler),
+            
             (r"/users/choose", ChooseUsersHandler),
             (r"/agenda/", AgendaHandler),
             (r"/agendajqt/", AgendaJQTHandler)
+            (r"/state/", StateHandler)
             ]
         
         settings = dict(
@@ -61,7 +67,7 @@ class YarnApplication(tornado.web.Application):
             template_path=os.path.join(os.path.dirname(__file__),
                 "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
-            login_url="/users/login"
+            login_url="/connect/login"
         )
         
         # TODO make this depend on a startup option like -v
@@ -73,15 +79,57 @@ class YarnApplication(tornado.web.Application):
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
-        userUUID = self.get_secure_cookie("userUUID")
-
-        user = state.get_obj(userUUID, User)
-        if(user==None):
-            raise HTTPError("400", "Specified user UUID %s\
-            didn't exist or wasn't a valid user."%userUUID)
+        # To avoid confusion, I want to use get_current_actor, but I think
+        # I need this for compatibility with what tornado expects.
+        # TODO Test that assumption.
+        return self.get_current_actor()
+        
+        
+    def get_current_actor(self):
+        
+        device = self.get_current_device()
+        
+        # now, map that device back to an actor.
+        actor = device.actor
+        if (actor==None):
+            raise HTTPError(400, "Specified device %s doesn't have an \
+            associated actor. It must set a User or Location first."
+            %device.uuid)
             return None
-        return user
 
+        return actor
+    
+    def get_current_device(self):
+        # All logged-in users should have a deviceUUID.
+        deviceUUID = self.get_secure_cookie("deviceUUID")
+
+        device = state.get_obj(deviceUUID, Device)
+        if(device==None):
+            raise HTTPError(400, "Specified device UUID %s\
+            didn't exist or wasn't a valid device."%deviceUUID)
+            return None
+        
+        return device
+
+
+class StateHandler(tornado.web.RequestHandler):
+    # TODO Figure out a way to protect this. It's useful for debugging,
+    # but I don't want to push something that exposes the entire internal
+    # state to a production machine. Do some kind of simple admin login
+    # cookie trick.
+    def get(self):
+        users = state.get_users()
+        locations = state.get_locations()
+        rooms = state.rooms
+        curTime = time.time()
+        logging.debug("rooms: " + str(rooms) + " len: " + str(len(rooms)))
+        logging.info("Providing state @%f on: %d users, %d locations, and %d\
+         rooms."%(curTime, len(users), len(locations), len(rooms)))
+        
+        self.render("state.html", users=users,
+            rooms=state.rooms, locations=locations,
+            curTime=curTime)
+        
 
 # TODO Is there a way to make json.dump default to using YarnModelJSONEncoder?
 # It's really annoying to have to specify it every time I need to dump
@@ -93,26 +141,12 @@ class RoomsHandler(tornado.web.RequestHandler):
 
 class AllUsersHandler(tornado.web.RequestHandler):
     def get(self):
-        self.write(json.dumps(state.users, cls=YarnModelJSONEncoder))
-
-class ConnectedUsersHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.write(json.dumps(state.get_logged_in_users(),
-            cls=YarnModelJSONEncoder))
-
-class DisconnectedUsersHandler(tornado.web.RequestHandler):
-    def get(self):
-        result = json.dumps(state.get_logged_out_users(),
-            cls=YarnModelJSONEncoder)
-        logging.info("writing result: " + str(result))
-        self.write(result)
-        logging.info("After writing to page.")
-        self.finish()
+        self.write(json.dumps(state.get_users(), cls=YarnModelJSONEncoder))
 
 class ConnectTestHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("connect.html", users=state.get_logged_out_users(),
-            rooms=state.rooms)
+        self.render("connect.html", users=state.get_users(),
+            rooms=state.rooms, locations=state.get_locations())
 
 class ConnectionHandler(BaseHandler):
     """Manage the persistent connections that all clients have."""
@@ -141,16 +175,18 @@ class ConnectionHandler(BaseHandler):
         # re-encode back down to ASCII so we can compare. We can trust that
         # these are fundamentally ASCII to begin with because they're IDs
         # generated by the client, not user-entered text.
-        user = self.get_current_user()
-                    
-        if(not user.loggedIn):
+        actor = self.get_current_actor()
+        device = self.get_current_device()
+        
+        # TODO Figure out if we ever actually hit this code anymore.
+        if(not actor.isLoggedIn()):
             logging.debug("received a connect request from a non-logged-\
-            in user: %s"%user.name)
+            in actor: %s"%actor.name)
             
             # need to do this after checking for logged-in status, 
             # otherwise loggedIn is always true because this side-effects
             # and sets 
-            user.setConnection(self)
+            device.setConnection(self)
         else:
             # if the user is already logged in, we don't really care - 
             # just update their connection to match. Don't need to 
@@ -159,19 +195,47 @@ class ConnectionHandler(BaseHandler):
             # connected to. (TODO figure out how to deal with a smooth
             # switch between meetings. Can you do that without forcing
             # a log out event from the previous one? Deal with this later)
-            logging.info("User %s already logged in. Connection saved."%
-                user.name)
-            user.setConnection(self)            
+            logging.info("Actor %s already logged in. Connection saved."%
+                actor.name)
+            device.setConnection(self)            
         
 
 class JoinRoomHandler(BaseHandler):
     
     @tornado.web.authenticated
     def post(self):
-        roomUUID = self.get_argument("roomUUID")
-
-        user = self.get_current_user()
         
+        # TODO Check if the current actor has a location set yet. If not, 
+        # do we want to reject the query? I think so...
+        
+        actor = self.get_current_actor()
+        
+        location = None
+        if isinstance(actor, model.User):
+            # If we've got a user, make sure they have a location set alrady.
+            # If they don't, reject the request outright.
+            user = actor
+            if user.location == None:
+                raise HTTPError(400, "Specified user " + user.name + 
+                " isn't yet in a location, so can not join a room.")
+                return
+            
+            location = user.location
+            logging.debug("User %s is trying to join a room on their behalf\
+            of their location %s", (user.name, location.name))
+        else:
+            location = actor
+            logging.debug("Actor is a location: " + location.name)
+        
+        
+        # from this point forward, we're telling the location what to join,
+        # not the user. the location is the user's location
+        if(location.isInMeeting()):
+            logging.warning("About to change rooms of a location that is\
+            already in a meeting: %s. This is bad! Leave first!",
+            location.meeting)
+        
+        roomUUID = self.get_argument("roomUUID")
         logging.debug("request has a roomUUID: %s"%roomUUID)
         room = state.get_obj(roomUUID, Room)
         if room != None:
@@ -184,7 +248,7 @@ class JoinRoomHandler(BaseHandler):
                     room.name)
                 # make a new meeting!
                 logging.info("Initiating a new meeting in room\
-                %s for user %s"%(room.name, user.name))
+                %s for actor %s"%(room.name, actor.name))
                 
                 # For a discussion of why we're not just making
                 # the object here and adding the user to the 
@@ -193,17 +257,20 @@ class JoinRoomHandler(BaseHandler):
                 # http://wiki.github.com/drewww/Tin-Can/eventmodel
                 
                 newMeetingEvent = Event("NEW_MEETING",
-                    user.uuid, None, {"room":room})
+                    actor.uuid, None, {"room":room})
                 newMeetingEvent = newMeetingEvent.dispatch()
                 
+                logging.debug("New meeting created, now joining people to\
+                the meeting.")
                 # Can't do this until we have events changing
                 # the internal state of the server, because
                 # the meeting with that UUID doesn't actually
                 # exist yet. Going to check this in without
                 # that chunk. The earlier stuff is working great.
-                userJoinedEvent = Event("JOINED", user.uuid,
-                    newMeetingEvent.results["meeting"].uuid)
-                userJoinedEvent.dispatch()
+                locationJoinedEvent = Event("LOCATION_JOINED_MEETING",
+                location.uuid, newMeetingEvent.results["meeting"].uuid,
+                {"location":location})
+                locationJoinedEvent.dispatch()
                 
             else:
                 # pull the existing meeting.
@@ -211,12 +278,12 @@ class JoinRoomHandler(BaseHandler):
                 
                 # we need to mark this user as joining this
                 # meeting TODO TODO TODO
-                userJoinedEvent = Event("JOINED", user.uuid,
+                userJoinedEvent = Event("JOINED_ROOM", actor.uuid,
                     meeting.uuid)
                 userJoinedEvent.dispatch()
               
         else: 
-            raise HTTPError("400", "Specified room UUID %s \
+            raise HTTPError(400, "Specified room UUID %s \
             didn't exist or wasn't a valid room."%roomUUID)
             return
 
@@ -224,6 +291,8 @@ class LeaveRoomHandler(BaseHandler):
 
     @tornado.web.authenticated
     def post(self):
+        logging.warning("THIS IS DEPRECATED - need to switch to leave\
+        location (for users) and leave room (for locations)")
         user = self.get_current_user()
         meeting = user.inMeeting
         
@@ -233,27 +302,75 @@ class LeaveRoomHandler(BaseHandler):
 class AddUserHandler(tornado.web.RequestHandler):
     
     def post(self):
-        pass
-        # All we need to make a new user is a namexxx
+        userName = self.get_argument()
+        
+        # 
     
     
-class LoginHandler(tornado.web.RequestHandler):
+
+class LoginHandler(BaseHandler):
     
     def post(self):
-        # this is just a placeholder for now until Stephanie's login stuff
-        # is all online. 
-        userUUID = self.get_argument("userUUID")
+        # first, check and see if the connection included a device cookie
+        # to identify itself. This is very similar to get_current_actor in
+        # BaseHandler, but slightly different because if they don't have one,
+        # we bounce them to the resource where they can get on.
+        deviceUUID = self.get_secure_cookie("deviceUUID")
 
-        user = state.get_obj(userUUID, User)
-        if(user==None):
-            raise HTTPError("400", "Specified user UUID %s\
-            didn't exist or wasn't a valid user."%userUUID)
+        device = state.get_obj(deviceUUID, Device)
+        if(device==None):
+            # redirect to /connect/device
+            logging.debug("Received a connection that didn't have a device\
+            cookie yet.")
+            addDeviceEvent = Event("NEW_DEVICE")
+            addDeviceEvent = addDeviceEvent.dispatch()
+            device = addDeviceEvent.results["device"]
+            logging.info("Set up new device with UUID %s"%device.uuid)
+            self.set_secure_cookie("deviceUUID", device.uuid)
+        
+        # take the actorUUID and associate the specified device with it. 
+        actorUUID = self.get_argument("actorUUID")
+
+        actor = state.get_obj(actorUUID, Actor)
+        if(actor==None):
+            raise HTTPError(400, "Specified actor UUID %s\
+            didn't exist or wasn't a valid actor."%actorUUID)
             return None
+
+        addActorDeviceEvent = Event("ADD_ACTOR_DEVICE", actor.uuid, params={"actor":actor,
+        "device":device})
+        addActorDeviceEvent.dispatch()
         
         # otherwise, set the secure cookie for the user ID.
-        logging.info("Logged in user %s, set cookie."%user.name)
-        self.set_secure_cookie("userUUID", user.uuid)
+        logging.info("Associated device (%s) with actor '%s'."%(device.uuid,
+        actor.name))
+
+class LocationsHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.write(json.puts(state.get_locations, cls=YarnModelJSONEncoder))
+
+
+class JoinLocationHandler(BaseHandler):
+    
+    @tornado.web.authenticated
+    def post(self):
+        actor = self.get_current_actor()
         
+        locationUUID = self.get_argument("locationUUID")
+        location = state.get_obj(locationUUID, Location)
+        if(location==None):
+            raise HTTPError(400, "Specified location UUID %s\
+            didn't exist or wasn't a valid location."%locationUUID)
+            return None
+        
+        # Trigger the actual event.
+        joinLocationEvent = Event("USER_JOINED_LOCATION", actor.uuid,
+            params={"location":location})
+        joinLocationEvent.dispatch()
+
+class LeaveLocationHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.write(json.puts(state.get_locations, cls=YarnModelJSONEncoder))
 
 
 class AddTopicHandler(tornado.web.RequestHandler):
@@ -262,16 +379,6 @@ class AddTopicHandler(tornado.web.RequestHandler):
         meetingUUID = self.get_argument("")
         topic = self.get_argument("topic")
         
-        
-
-class PingHandler(tornado.web.RequestHandler):
-    """A testing handler to test connection management issue."""
-    
-    def get(self):
-        # make a trivial ping event. 
-        event = Event("PING", None, None)
-        
-        state.send_event_to_users(state.get_logged_in_users(), event)
 
 class AgendaHandler(tornado.web.RequestHandler):
     def get(self):
