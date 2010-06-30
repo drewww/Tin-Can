@@ -1,0 +1,66 @@
+// StateManager
+//
+// Keeps track of the state of the system. This includes certain global 
+// information and meeting specific information. All queries about remote
+// information are routed through here. When the ConnectionManager receives
+// events, those events trigger changes in the StateManager.
+// 
+// Global data:
+//  - user list and status
+//  - room status
+//
+// Meeting data:
+//  - current participants
+//  - tasks related stuff
+//  - agenda related stuff
+//  - etc.
+// 
+// When the StateManager starts, it will request global state data from 
+// the server, so it can initialize its various info. From that point forward,
+// events will update it. 
+//
+// This class closely mirrors state.py on the server (and will have a
+// matching obj-c version eventually, too.)
+
+
+function StateManager() {
+    // Setup the major data structures.
+    this.db = {};
+    
+    // I'd really like this to be a set, but what can you do.
+    this.actors = [];
+    
+    this.rooms = [];
+}
+
+StateManager.prototype = {
+    
+    // Gets the object for that UUID from the database.
+    getObj: function(uuid, type) {
+        try {
+            obj = db[uuid];
+        } catch(err) {
+            console.log("Error getting object with uuid " + uuid + ": "
+                + err);
+            return null;
+        }
+        
+        if(type==null) {
+            console.log("No type specified in getObj. This is dangerous.");
+            return obj;
+        }
+        
+        if(obj instanceof type) {
+            return obj;
+        } else {
+            console.log("Object with UUID " + uuid + " not instance of type"+
+            type + ".");
+            return null;
+        }
+    },
+    
+    putObj: function(key, value) {
+        this.db[key] = value;
+    }
+    
+}

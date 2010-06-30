@@ -1,3 +1,8 @@
+// ConnectionManager
+//
+// Handles all communication between Tin Can web clients and the server.
+// Given a userUUID, connects and manages device authentication, etc. Keeps
+// a persistent connection open to the server at all times to receive events.
 
 function ConnectionManager() {
     console.log("Constructing a new connection manager.");
@@ -26,8 +31,6 @@ ConnectionManager.prototype = {
            url: '/connect/login',
            type: "POST",
            success: function () {
-               console.log("WIN (login)");
-               console.log("cookie (post): " + document.cookie);
                this.isConnected = true;
                
                var self = this;
@@ -60,13 +63,10 @@ ConnectionManager.prototype = {
             success: function (data) {
                 events = $.parseJSON(data);
                 console.log(events);
-                console.log("Received " + events.length + " events.");
-
                 var self = this;
                 this.currentConnectRequest=setTimeout(
                     function() {self.startPersistentConnection();}, 10);
                     
-                console.log("dispatching:");
                 for(var i=0; i<events.length; i++) {
                     this.dispatchEvent(events[i]);
                 }
@@ -79,7 +79,6 @@ ConnectionManager.prototype = {
                 this.currentConnectRequest=setTimeout(
                     function() {self.startPersistentConnection();}, 500);
                     
-                console.log("Kicked off next request, with delay.");
                 },
             data: { "actorUUID": this.userUUID },
             context: this,
@@ -98,7 +97,18 @@ ConnectionManager.prototype = {
     },
         
     dispatchEvent: function(ev) {
-      console.log(ev);
+        
+        // Depending on the event type, update the internal state
+        // appropriately
+        switch(ev.eventType) {
+            case "ADD_ACTOR_DEVICE":
+                
+                break;
+            
+            
+        }
+        
+      console.log("EVENT: <" + ev.eventType + ">");
     },
     
     joinLocation: function(locationUUID) {
