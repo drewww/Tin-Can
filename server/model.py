@@ -309,16 +309,22 @@ class Device(YarnBaseType):
             logging.debug("Flushing existing event queue into new\
                 connection.")
             self.flushQueue()
-        
+    
+    def __repr__(self):
+        return self.__str__()
+    
     def __str__(self):
         # What are the important elements of this user?
         # - uuid
         # - has active connection
         # - has queued items
         # - actor associated
-        
-        return "[dev.%s conn:%s q:%d act:%s]"%(self.uuid[0:6],
+        if(self.actor!=None):
+            return "[dev.%s conn:%s q:%d act:%s]"%(self.uuid[0:6],
             self.isConnected(),len(self.eventQueue), self.actor.name)
+        else:
+            return "[dev.%s conn:%s q:%d act:None]"%(self.uuid[0:6],
+            self.isConnected(),len(self.eventQueue))
 
 class Actor(YarnBaseType):
     """An abstract base class that can represent either a Location or a User.

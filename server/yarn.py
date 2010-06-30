@@ -63,7 +63,7 @@ class YarnApplication(tornado.web.Application):
             # using a throw-away secret for now - this really should be
             # loaded out of a configuration file, so we don't have to check
             # it into the repository. Don't trust this for ANYTHING.
-            cookie_secret="61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",
+            # cookie_secret="61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",
             template_path=os.path.join(os.path.dirname(__file__),
                 "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
@@ -101,8 +101,8 @@ class BaseHandler(tornado.web.RequestHandler):
     
     def get_current_device(self):
         # All logged-in users should have a deviceUUID.
-        deviceUUID = self.get_secure_cookie("deviceUUID")
-
+        deviceUUID = self.get_cookie("deviceUUID")
+        
         device = state.get_obj(deviceUUID, Device)
         if(device==None):
             raise HTTPError(400, "Specified device UUID %s\
@@ -315,18 +315,17 @@ class LoginHandler(BaseHandler):
         # to identify itself. This is very similar to get_current_actor in
         # BaseHandler, but slightly different because if they don't have one,
         # we bounce them to the resource where they can get on.
-        deviceUUID = self.get_secure_cookie("deviceUUID")
+        deviceUUID = self.get_cookie("deviceUUID")
 
         device = state.get_obj(deviceUUID, Device)
         if(device==None):
-            # redirect to /connect/device
             logging.debug("Received a connection that didn't have a device\
             cookie yet.")
             addDeviceEvent = Event("NEW_DEVICE")
             addDeviceEvent = addDeviceEvent.dispatch()
             device = addDeviceEvent.results["device"]
             logging.info("Set up new device with UUID %s"%device.uuid)
-            self.set_secure_cookie("deviceUUID", device.uuid)
+            self.set_cookie("deviceUUID", device.uuid)
         
         # take the actorUUID and associate the specified device with it. 
         actorUUID = self.get_argument("actorUUID")

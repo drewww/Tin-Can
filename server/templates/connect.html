@@ -7,21 +7,40 @@
 			font-family: Helvetica;
 		}
 	</style>
- 	<script type="text/javascript" src="{{static_url('sencha/ext-touch.js')}}"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
  	<script type="text/javascript" src="{{static_url('js/ConnectionManager.js')}}"></script>
+ 	<script type="text/javascript" src="{{static_url('js/StateManager.js')}}"></script>
+ 	<script type="text/javascript" src="{{static_url('js/model.js')}}"></script>
+
 
 	<script type="text/javascript" charset="utf-8">
-		Ext.ns("tincan");
 		var conn = null;
 		
-		Ext.onReady(function() {
-			conn = tincan.connection;
+		$("document").ready(function() {
+			conn = connection;
 			
 			// Setup the button actions.
-			Ext.get('login').on('click', function() {
-				conn.setUser(Ext.get('user').getValue());
+			$("#login").click(function() {
+				conn.setUser($('#user')[0].value);
 				conn.connect();
 			});
+			
+			$('#stop').click(function() {
+				conn.stopPersistentConnection();
+			});
+			
+			$('#join_location').click(function() {
+				conn.joinLocation($('#location')[0].value);
+			});
+			
+			$('#join_room').click(function() {
+				conn.joinRoom($('#room')[0].value);
+			});
+			
+			// $('leave_room').on('click', function() {
+			// 	conn.leaveRoom($('room').getValue());
+			// });
+			
 		});
 		
 
@@ -207,11 +226,10 @@
 
 
 <button id="login" >Login</button>
-<!-- <button id="connect" onclick="newConnection()">Connect</button> -->
-<button id="join_room" onclick="joinRoom()">Join Room</button>
-<button id="join_location" onclick="joinLocation()">Join Location</button>
-<button id="leave" onclick="leaveRoom()">Leave Room</button>
-<button id="stop" onclick="setStopConnection()">Stop</button>
+<button id="join_room">Join Room</button>
+<button id="join_location">Join Location</button>
+<button id="leave_room">Leave Room</button>
+<button id="stop">Stop</button>
 <label for="new_user">New User</label><input type="text" name="new_user" value="" id="new_user">
 <button id="new_user_button" onclick="createNewUser()">New User</button>
 
