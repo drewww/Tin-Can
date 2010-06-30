@@ -11,18 +11,21 @@
 	var namelist;
 	var nametemplate;
 	var temp = ["asdf", "asdf325", "omgomgomg"];
+	var lilist = new Array();
 	
 	$(document).ready(function(){
 		namelist = $("#usernamelist");
 		nametemplate = $("#template");
 		$("#newuser").hide();
 		$("#searchtype").hide();
-		displayList(temp);
-
+		$(".name").hide();
+		for (var x in temp){
+			createNewItem(temp[x]);
+		}
 		$("#searchname").keyup(function(e){searchUsers(e);});
 	});
 	
-	function displayList(list){
+/*	function displayList(list){
 		$(".name").hide();
 		for (var x in list){
 			newname = nametemplate.clone();
@@ -30,16 +33,34 @@
 			newname.show();
 			namelist.append(newname);
 		}
+	}*/
+	
+	function createNewItem(name){
+		newname = nametemplate.clone();
+		newname.find("div").html(name);
+		newname.show();
+		namelist.append(newname);
+		lilist.push(newname);
 	}
 	
-/*	function displayList(list){
+	function createList(){
+		for (var x in temp){
+			newname = nametemplate.clone();
+			newname.find("div").html(temp[x]);
+			newname.show();
+			namelist.append(newname);
+			lilist.push(newname);
+		}
+	}
+	
+	function displayList(list){
 		$(".name").hide();
 		for (var x in temp){
-			if (temp[x] in list){
-				
+			if ($.inArray(temp[x],list)>=0){
+				lilist[x].show();
 			}
 		}
-	}*/
+	}
 	
 	function addUser(){
 		addname=$("#newuser")[0];
@@ -55,12 +76,14 @@
 	
 	function submitNewUser(){
 		newname=$("#newname")[0].value;
-		var x=0;
+	/*	var x=0;
 		while (newname>temp[x]){
 			x++;
 		}
 		temp.splice(x,0,newname);
-		$("#newname")[0].value="";
+		$("#newname")[0].value="";*/
+		temp.push(newname);
+		createNewItem(newname);
 		displayList(temp);
 	}
 	
