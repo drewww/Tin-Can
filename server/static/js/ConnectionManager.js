@@ -1,21 +1,20 @@
-Ext.namespace("tincan");
 
-tincan.ConnectionManager = Ext.extend(Object, {
+function ConnectionManager() {
+    console.log("Constructing a new connection manager.");
+}
+
+ConnectionManager.prototype = {
    
    userUUID: null,
    currentConnectRequest: null,
    isConnected: false,
    
-    constructor: function() {
-        console.log("Constructing a new connection manager.");
-    },
-    
-    setUser: function(userUUID) {
+   setUser: function(userUUID) {
         console.log("Setting userUUID: " + userUUID);
         this.userUUID = userUUID;
-    },
-    
-    connect: function () {
+   },
+   
+   connect: function () {
         if(this.userUUID==null) {
             console.log("Must call setUser on the " + 
         "ConnectionManager before connecting.");
@@ -23,18 +22,22 @@ tincan.ConnectionManager = Ext.extend(Object, {
         }
         
         console.log("cookie (pre): " + document.cookie);
-        Ext.Ajax.request({
+        $.ajax({
            url: '/connect/login',
-           method: "POST",
+           type: "POST",
            success: function () {
                console.log("WIN (login)");
                console.log("cookie (post): " + document.cookie);
                this.isConnected = true;
-               this.startPersistentConnection.defer(50, this);
+               
+               var self = this;
+               this.currentConnectRequest=setTimeout(
+                   function() {self.startPersistentConnection();}, 10);
+                   
                },
-           failure: function () { console.log("FAIL (login)");},
-           scope: this,
-           params: { "actorUUID": this.userUUID }
+           error: function () { console.log("FAIL (login)");},
+           context: this,
+           data: { "actorUUID": this.userUUID }
         });
         
     },
@@ -50,92 +53,109 @@ tincan.ConnectionManager = Ext.extend(Object, {
     
     startPersistentConnection: function() {
         console.log("cookie: " + document.cookie);
-        this.currentConnectRequest = Ext.Ajax.request({
+        this.currentConnectRequest = $.ajax({
             url: '/connect/',
-            method: "GET",
-            success: function () {
-                console.log("/connect/ closed sucessfully, reconnecting.");
-                this.currentConnectRequest=this.startPersistentConnection.defer(10, this);
-                console.log("Kicked off next request.");
+            type: "GET",
+            dataType: "JSON",
+            success: function (data) {
+                events = $.parseJSON(data);
+                console.log(events);
+                console.log("Received " + events.length + " events.");
+
+                var self = this;
+                this.currentConnectRequest=setTimeout(
+                    function() {self.startPersistentConnection();}, 10);
+                    
+                console.log("dispatching:");
+                for(var i=0; i<events.length; i++) {
+                    this.dispatchEvent(events[i]);
+                }
+                
                 },
-            failure: function () {
+            error: function () {
                 console.log("/connect/ failed. reconnecting.");
                 
-                this.currentConnectRequest=this.startPersistentConnection.defer(500, this);
+                var self = this;
+                this.currentConnectRequest=setTimeout(
+                    function() {self.startPersistentConnection();}, 500);
+                    
                 console.log("Kicked off next request, with delay.");
                 },
-            params: { "actorUUID": this.userUUID },
-            scope: this,
+            data: { "actorUUID": this.userUUID },
+            context: this,
             timeout: 3600000   // 60 minute timeout. Ludicrous - there will
                                // definitely be responses faster than this, 
                                // but there doesn't seem to be a nice way to
                                // respond to timeouts. FF just throws an error
-                               // and doesn't call the failure callback, so
+                               // and doesn't call the error callback, so
                                // we need to be quite sure it never happens.
         });
     },
     
     stopPersistentConnection: function() {
-        Ext.Ajax.abort(this.currentConnectRequest);
+        this.currentConnectRequest.abort();
         Console.log("Aborted current connection.");
     },
-    
+        
+    dispatchEvent: function(ev) {
+      console.log(ev);
+    },
     
     joinLocation: function(locationUUID) {
-        if(!this.validateConnected()) {return}
+        if(!this.validateConnected()) {return;}
         
         console.log("Joining location: " + locationUUID);
         
-        Ext.Ajax.request({
+        $.ajax({
            url: '/locations/join',
-           method: "POST",
+           type: "POST",
            success: function () {
                console.log("Joined location successfully.");
                },
-           failure: function () { console.log("Failed to join location.");},
-           scope: this,
-           params: { "locationUUID": locationUUID }
+           error: function () { console.log("Failed to join location.");},
+           context: this,
+           data: { "locationUUID": locationUUID }
         });
     },
     
     joinRoom: function(roomUUID) {
-        if(!this.validateConnected()) {return}
+        if(!this.validateConnected()) {return''}
         
         console.log("Joining room: " + roomUUID);
         
-        Ext.Ajax.request({
+        $.ajax({
            url: '/rooms/join',
-           method: "POST",
+           type: "POST",
            success: function () {
                console.log("Joined room successfully.");
                },
-           failure: function () { console.log("Failed to join room.");},
-           scope: this,
-           params: { "roomUUID": roomUUID}
+           error: function () { console.log("Failed to join room.");},
+           context: this,
+           data: { "roomUUID": roomUUID}
         });
     },
     
     leaveRoom: function(roomUUID) {
-        if(!this.validateConnected()) {return}
+        if(!this.validateConnected()) {return;}
         
         console.log("Leaving room: " + roomUUID);
         
-        Ext.Ajax.request({
+        $.ajax({
            url: '/rooms/leave',
-           method: "POST",
+           type: "POST",
            success: function () {
                console.log("Left room successfully.");
                },
-           failure: function () { console.log("Failed to leave room.");},
-           scope: this,
-           params: { "roomUUID": roomUUID}
+           error: function () { console.log("Failed to leave room.");},
+           context: this,
+           data: { "roomUUID": roomUUID}
         });
-    },
-});
+    }
+};
 
 // This really should be a singleton, but I'm not really in the mood to slog
 // through all this crap:
 // http://stackoverflow.com/questions/1783317/singleton-pattern-and-abstraction-in-js
 // 
 // Faking it for now this way.
-tincan.connection = new tincan.ConnectionManager();
+connection = new ConnectionManager();

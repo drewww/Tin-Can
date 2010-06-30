@@ -7,36 +7,35 @@
 			font-family: Helvetica;
 		}
 	</style>
- 	<script type="text/javascript" src="{{static_url('sencha/ext-touch.js')}}"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
  	<script type="text/javascript" src="{{static_url('js/ConnectionManager.js')}}"></script>
 
 	<script type="text/javascript" charset="utf-8">
-		Ext.ns("tincan");
 		var conn = null;
 		
-		Ext.onReady(function() {
-			conn = tincan.connection;
+		$("document").ready(function() {
+			conn = connection;
 			
 			// Setup the button actions.
-			Ext.get('login').on('click', function() {
-				conn.setUser(Ext.get('user').getValue());
+			$("#login").click(function() {
+				conn.setUser($('#user')[0].value);
 				conn.connect();
 			});
 			
-			Ext.get('stop').on('click', function() {
+			$('#stop').click(function() {
 				conn.stopPersistentConnection();
 			});
 			
-			Ext.get('join_location').on('click', function() {
-				conn.joinLocation(Ext.get('location').getValue());
+			$('#join_location').click(function() {
+				conn.joinLocation($('#location')[0].value);
 			});
 			
-			Ext.get('join_room').on('click', function() {
-				conn.joinRoom(Ext.get('room').getValue());
+			$('#join_room').click(function() {
+				conn.joinRoom($('#room')[0].value);
 			});
 			
-			// Ext.get('leave_room').on('click', function() {
-			// 	conn.leaveRoom(Ext.get('room').getValue());
+			// $('leave_room').on('click', function() {
+			// 	conn.leaveRoom($('room').getValue());
 			// });
 			
 		});
