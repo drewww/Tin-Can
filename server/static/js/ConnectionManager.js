@@ -16,38 +16,57 @@ tincan.ConnectionManager = Ext.extend(Object, {
     
     connect: function () {
         if(this.userUUID==null) {
-            console.log("Must call setUser on the" + 
+            console.log("Must call setUser on the " + 
         "ConnectionManager before connecting.");
             return;
         }
         
+        console.log("cookie (pre): " + document.cookie);
         Ext.Ajax.request({
            url: '/connect/login',
            method: "POST",
-           success: function () { console.log("WIN (login)");},
+           success: function () {
+               console.log("WIN (login)");
+               console.log("cookie (post): " + document.cookie);
+               this.startPersistentConnection.defer(50, this);
+               },
            failure: function () { console.log("FAIL (login)");},
+           scope: this,
            params: { "actorUUID": this.userUUID }
         });
+        
     },
     
     startPersistentConnection: function() {
-        
+        console.log("cookie: " + document.cookie);
         this.currentConnectRequest = Ext.Ajax.request({
             url: '/connect/',
             method: "GET",
             success: function () {
                 console.log("/connect/ closed sucessfully, reconnecting.");
-                this.currentConnectRequest=this.startPersistentConnection.defer(0, this);
+                this.currentConnectRequest=this.startPersistentConnection.defer(10, this);
+                console.log("Kicked off next request.");
                 },
             failure: function () {
                 console.log("/connect/ failed. reconnecting.");
-                this.currentConnectRequest=this.startPersistentConnection.defer(0, this);
+                
+                this.currentConnectRequest=this.startPersistentConnection.defer(500, this);
+                console.log("Kicked off next request, with delay.");
                 },
             params: { "actorUUID": this.userUUID },
             scope: this,
-            timeout: 3600   // should be as high as possible - does -1 work?
+            timeout: 3600000   // 60 minute timeout. Ludicrous - there will
+                               // definitely be responses faster than this, 
+                               // but there doesn't seem to be a nice way to
+                               // respond to timeouts. FF just throws an error
+                               // and doesn't call the failure callback, so
+                               // we need to be quite sure it never happens.
         });
     },
+    
+    stopPersistentConnection: function() {
+        
+    }
     
 });
 

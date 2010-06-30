@@ -103,8 +103,6 @@ class BaseHandler(tornado.web.RequestHandler):
         # All logged-in users should have a deviceUUID.
         deviceUUID = self.get_cookie("deviceUUID")
         
-        logging.debug("deviceUUID: %s"%deviceUUID)
-
         device = state.get_obj(deviceUUID, Device)
         if(device==None):
             raise HTTPError(400, "Specified device UUID %s\
