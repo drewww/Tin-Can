@@ -15,12 +15,15 @@
 	$(document).ready(function(){
 		namelist = $("#usernamelist");
 		nametemplate = $("#template");
-		displayList(temp)
-		$("#searchname").keyup(function(e){console.log(e.which); searchUsers(e);});
+		$("#newuser").hide();
+		$("#searchtype").hide();
+		displayList(temp);
+
+		$("#searchname").keyup(function(e){searchUsers(e);});
 	});
 	
 	function displayList(list){
-		$("li").hide();
+		$(".name").hide();
 		for (var x in list){
 			newname = nametemplate.clone();
 			newname.find("div").html(list[x]);
@@ -28,6 +31,15 @@
 			namelist.append(newname);
 		}
 	}
+	
+/*	function displayList(list){
+		$(".name").hide();
+		for (var x in temp){
+			if (temp[x] in list){
+				
+			}
+		}
+	}*/
 	
 	function addUser(){
 		addname=$("#newuser")[0];
@@ -66,13 +78,6 @@
 	
 	function searchUsers(e){
 		searchname=$("#searchname")[0].value;
-	/*	if (e.which>=32){
-			searchname+=String.fromCharCode(e.which);
-		}
-		if (e.which==8){
-			searchname=searchname.substring(0,searchname.length-1);
-		}*/
-		console.log(searchname);
 		if (searchname==""){
 			cancelSearch();
 		}
@@ -84,8 +89,8 @@
 				}
 			}
 			displayList(newlist);
-			search=$("#searchtype")[0];
-			search.style.display="block";
+		//	search=$("#searchtype")[0];
+		//	search.style.display="block";
 		}
 	}
 	
@@ -104,19 +109,6 @@
 	}
 	div{
 		margin:0px;
-	}
-	table{
-		margin:none;
-		width: 320px;
-		border: 3px solid;
-		border-collapse:collapse;
-	}
-	tr{
-		height:50px;
-	}
-	td{
-		border-bottom: 1px solid black;
-		font-family:"Arial",sans-serif;
 	}
 	ul{
 		border:solid;
@@ -205,9 +197,6 @@
 	#newuser{
 		display:none;
 	}
-	#template{
-		display:none;
-	}
 	#searchtype{
 		display:none;
 	}
@@ -215,6 +204,7 @@
 </head>
 
 <body>
+	<div>
 	<div id="header">
 		<div id = "add"><button id="addbutton" onclick = "addUser();">Add</button></div>
 		<div id ="title">Users</div>
@@ -229,19 +219,17 @@
 			<label for="name"></label><input type="text" name="name" value="" id="searchname" class="textbox">
 			<button id = "clearsearch" onclick="cancelSearch();">Cancel</button>
 		</li>
-		<li id ="template" class="line">
+		<li id ="template" class="line name">
 			<img class = "status" src = "{{ static_url("images/online.png")}}">
 			<div class = "username"></div>
 			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
 			<img class = "next" src = "{{ static_url("images/next.png")}}">
 		</li>
-	<!--	<li class="line">
-			<div class="line">
+		<!--<li class="line">
 			<img class = "status" src = "{{ static_url("images/online.png")}}">
 			<div class = "username">coffee_break</div>
 			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
 			<img class = "next" src = "{{ static_url("images/next.png")}}">
-			</div>
 		</li>
 		<li class="line">
 			<div class="line">
@@ -316,6 +304,6 @@
 			</div>
 		</li>-->
 	</ul>
-
+	</div>
 </body>
 </html>
