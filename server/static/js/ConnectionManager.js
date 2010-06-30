@@ -4,6 +4,7 @@ tincan.ConnectionManager = Ext.extend(Object, {
    
    userUUID: null,
    currentConnectRequest: null,
+   isConnected: false,
    
     constructor: function() {
         console.log("Constructing a new connection manager.");
@@ -28,6 +29,7 @@ tincan.ConnectionManager = Ext.extend(Object, {
            success: function () {
                console.log("WIN (login)");
                console.log("cookie (post): " + document.cookie);
+               this.isConnected = true;
                this.startPersistentConnection.defer(50, this);
                },
            failure: function () { console.log("FAIL (login)");},
@@ -35,6 +37,15 @@ tincan.ConnectionManager = Ext.extend(Object, {
            params: { "actorUUID": this.userUUID }
         });
         
+    },
+    
+    validateConnected: function () {
+        if(this.isConnected == false) {
+            console.log("WARNING: You must call connected before interacting"
+            +" with other server commands.");
+            return false;
+        }
+        return true;
     },
     
     startPersistentConnection: function() {
@@ -65,9 +76,61 @@ tincan.ConnectionManager = Ext.extend(Object, {
     },
     
     stopPersistentConnection: function() {
-        
-    }
+        Ext.Ajax.abort(this.currentConnectRequest);
+        Console.log("Aborted current connection.");
+    },
     
+    
+    joinLocation: function(locationUUID) {
+        if(!this.validateConnected()) {return}
+        
+        console.log("Joining location: " + locationUUID);
+        
+        Ext.Ajax.request({
+           url: '/locations/join',
+           method: "POST",
+           success: function () {
+               console.log("Joined location successfully.");
+               },
+           failure: function () { console.log("Failed to join location.");},
+           scope: this,
+           params: { "locationUUID": locationUUID }
+        });
+    },
+    
+    joinRoom: function(roomUUID) {
+        if(!this.validateConnected()) {return}
+        
+        console.log("Joining room: " + roomUUID);
+        
+        Ext.Ajax.request({
+           url: '/rooms/join',
+           method: "POST",
+           success: function () {
+               console.log("Joined room successfully.");
+               },
+           failure: function () { console.log("Failed to join room.");},
+           scope: this,
+           params: { "roomUUID": roomUUID}
+        });
+    },
+    
+    leaveRoom: function(roomUUID) {
+        if(!this.validateConnected()) {return}
+        
+        console.log("Leaving room: " + roomUUID);
+        
+        Ext.Ajax.request({
+           url: '/rooms/leave',
+           method: "POST",
+           success: function () {
+               console.log("Left room successfully.");
+               },
+           failure: function () { console.log("Failed to leave room.");},
+           scope: this,
+           params: { "roomUUID": roomUUID}
+        });
+    },
 });
 
 // This really should be a singleton, but I'm not really in the mood to slog

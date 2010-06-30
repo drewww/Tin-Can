@@ -23,9 +23,22 @@
 				conn.connect();
 			});
 			
-			// Ext.get('connect').on('click', function() {
-			// 	conn.startPersistentConnection();
+			Ext.get('stop').on('click', function() {
+				conn.stopPersistentConnection();
+			});
+			
+			Ext.get('join_location').on('click', function() {
+				conn.joinLocation(Ext.get('location').getValue());
+			});
+			
+			Ext.get('join_room').on('click', function() {
+				conn.joinRoom(Ext.get('room').getValue());
+			});
+			
+			// Ext.get('leave_room').on('click', function() {
+			// 	conn.leaveRoom(Ext.get('room').getValue());
 			// });
+			
 		});
 		
 
@@ -211,11 +224,10 @@
 
 
 <button id="login" >Login</button>
-<button id="connect">Connect</button>
-<button id="join_room" onclick="joinRoom()">Join Room</button>
-<button id="join_location" onclick="joinLocation()">Join Location</button>
-<button id="leave" onclick="leaveRoom()">Leave Room</button>
-<button id="stop" onclick="setStopConnection()">Stop</button>
+<button id="join_room">Join Room</button>
+<button id="join_location">Join Location</button>
+<button id="leave_room">Leave Room</button>
+<button id="stop">Stop</button>
 <label for="new_user">New User</label><input type="text" name="new_user" value="" id="new_user">
 <button id="new_user_button" onclick="createNewUser()">New User</button>
 
