@@ -56,7 +56,8 @@ class YarnApplication(tornado.web.Application):
             (r"/users/choose", ChooseUsersHandler),
             (r"/agenda/", AgendaHandler),
             (r"/agendajqt/", AgendaJQTHandler),
-            (r"/state/", StateHandler)
+            (r"/state/", StateHandler),
+            (r"/rooms/",ChooseRoomsHandler)
             ]
         
         settings = dict(
@@ -386,6 +387,10 @@ class AgendaHandler(tornado.web.RequestHandler):
 class ChooseUsersHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("login.html")
+        
+class ChooseRoomsHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("rooms.html")
 
 class AgendaJQTHandler(tornado.web.RequestHandler):
     def get(self):
