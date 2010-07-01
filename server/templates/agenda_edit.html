@@ -1,9 +1,11 @@
 <html>
 <head>
+<meta name="viewport" content="width=300" />
 	<script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
   <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+  <script src="../static/js/jquery.iphoneui.js" type="text/javascript" charset="utf-8"></script>
 
 	<script type ="text/javascript">
 		var template;
@@ -21,7 +23,8 @@
 			itemList = $("#container");
 			clone = template.clone();
 			itemList.append(clone);
-			clone.show();		
+			clone.show();
+			$('.drag').addTouch();		
 		}
 		
 		function makeDoneItem() {
@@ -30,6 +33,7 @@
 			clone = template.clone();
 			itemList.append(clone);
 			clone.show();
+			$('.drag').addTouch();		
 		}
 		
 		function makeFutureItem() {
@@ -40,10 +44,11 @@
 			clone = template.clone();
 			itemList.append(clone);
 			clone.show();
+			$('.drag').addTouch();		
 		}
 		
 	</script>
-	<meta name="viewport" content="width=300" />
+
 
 	<style type="text/css">
 	
