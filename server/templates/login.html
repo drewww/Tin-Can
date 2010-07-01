@@ -12,6 +12,7 @@
 	var nametemplate;
 	var temp = ["asdf", "asdf325", "omgomgomg"];
 	var lilist = new Array();
+	var click=true;
 	
 	$(document).ready(function(){
 		namelist = $("#usernamelist");
@@ -20,7 +21,9 @@
 		$("#searchtype").hide();
 		$(".name").hide();
 		for (var x in temp){
-			createNewItem(temp[x]);
+			var newitem = createNewItem(temp[x]);
+			namelist.append(newitem);
+			lilist.push(newitem);
 		}
 		$("#searchname").keyup(function(e){searchUsers(e);});
 	});
@@ -36,21 +39,10 @@
 	}*/
 	
 	function createNewItem(name){
-		newname = nametemplate.clone();
-		newname.find("div").html(name);
-		newname.show();
-		namelist.append(newname);
-		lilist.push(newname);
-	}
-	
-	function createList(){
-		for (var x in temp){
-			newname = nametemplate.clone();
-			newname.find("div").html(temp[x]);
-			newname.show();
-			namelist.append(newname);
-			lilist.push(newname);
-		}
+		newitem = nametemplate.clone();
+		newitem.find("div").html(name);
+		newitem.show();
+		return newitem;
 	}
 	
 	function displayList(list){
@@ -63,14 +55,18 @@
 	}
 	
 	function addUser(){
+		$(".name").css("background","white");
+		cancelSearch();
 		addname=$("#newuser")[0];
 		$("#searchtype").hide();
 		if (addname.style.display!="block"){
 			addname.style.display="block";
+			click=false;
 		}
 		else{
 			$("#newname")[0].value="";
 			addname.style.display="none";
+			click=true;
 		}
 	}
 	
@@ -80,14 +76,19 @@
 		while (newname>temp[x]){
 			x++;
 		}
-		temp.splice(x,0,newname);
-		$("#newname")[0].value="";*/
-		temp.push(newname);
-		createNewItem(newname);
+		temp.splice(x,0,newname);*/
+		$("#newname")[0].value="";
+		var newitem = createNewItem(newname);
+		temp.splice(0,0,newname);
+		newitem.insertAfter("#template");
+		lilist.splice(0,0,newitem);
+		addUser();
 		displayList(temp);
+		selectUser(newitem[0]);
 	}
 	
 	function toggleSearch(){
+		$(".name").css("background","white");
 		search=$("#searchtype")[0];
 		$("#newuser").hide();
 		if (search.style.display!="block"){
@@ -95,11 +96,13 @@
 		}
 		else{
 			$("#searchname")[0].value="";
+			search.style.display="none";
 			displayList(temp);
 		}
 	}
 	
 	function searchUsers(e){
+		$(".name").css("background","white");
 		searchname=$("#searchname")[0].value;
 		if (searchname==""){
 			cancelSearch();
@@ -118,10 +121,18 @@
 	}
 	
 	function cancelSearch(){
+		$(".name").css("background","white");
 		$("#searchname")[0].value="";
 		displayList(temp);
 		search=$("#searchtype")[0];
 		search.style.display="block";
+	}
+	
+	function selectUser(item){
+		$(".name").css("background","white");
+		if (click){
+			item.style.background="#00CCFF";
+		}
 	}
 	
 </script>
@@ -242,90 +253,12 @@
 			<label for="name"></label><input type="text" name="name" value="" id="searchname" class="textbox">
 			<button id = "clearsearch" onclick="cancelSearch();">Cancel</button>
 		</li>
-		<li id ="template" class="line name">
+		<li id ="template" class="line name" onclick = "selectUser(this);">
 			<img class = "status" src = "{{ static_url("images/online.png")}}">
 			<div class = "username"></div>
 			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
 			<img class = "next" src = "{{ static_url("images/next.png")}}">
 		</li>
-		<!--<li class="line">
-			<img class = "status" src = "{{ static_url("images/online.png")}}">
-			<div class = "username">coffee_break</div>
-			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
-			<img class = "next" src = "{{ static_url("images/next.png")}}">
-		</li>
-		<li class="line">
-			<div class="line">
-			<img class = "status" src = "{{ static_url("images/online.png")}}">
-			<div class = "username">dandystrawberry</div>
-			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
-			<img class = "next" src = "{{ static_url("images/next.png")}}">
-			</div>
-		</li>
-		<li class="line">
-			<div class="line">
-			<img class = "status" src = "{{ static_url("images/online.png")}}">
-			<div class = "username">gamer_nuts</div>
-			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
-			<img class = "next" src = "{{ static_url("images/next.png")}}">
-			</div>
-		</li>
-		<li class="line">
-			<div class="line">
-			<img class = "status" src = "{{ static_url("images/online.png")}}">
-			<div class = "username">jackrabbit</div>
-			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
-			<img class = "next" src = "{{ static_url("images/next.png")}}">
-			</div>
-		</li>
-		<li class="line">
-			<div class="line">
-			<img class = "status" src = "{{ static_url("images/offline.png")}}">
-			<div class = "username">mooncake15</div>
-			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
-			<img class = "next" src = "{{ static_url("images/next.png")}}">
-			</div>
-		</li>
-		<li class="line">
-			<div class="line">
-			<img class = "status" src = "{{ static_url("images/offline.png")}}">
-			<div class = "username">piinkladyx</div>
-			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
-			<img class = "next" src = "{{ static_url("images/next.png")}}">
-			</div>
-		</li>
-		<li class="line">
-			<div class="line">
-			<img class = "status" src = "{{ static_url("images/offline.png")}}">
-			<div class = "username">rollingstar</div>
-			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
-			<img class = "next" src = "{{ static_url("images/next.png")}}">
-			</div>
-		</li>
-		<li class="line">
-			<div class="line">
-			<img class = "status" src = "{{ static_url("images/offline.png")}}">
-			<div class = "username">sockshoes</div>
-			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
-			<img class = "next" src = "{{ static_url("images/next.png")}}">
-			</div>
-		</li>
-		<li class="line">
-			<div class="line">
-			<img class = "status" src = "{{ static_url("images/offline.png")}}">
-			<div class = "username">tadpole</div>
-			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
-			<img class = "next" src = "{{ static_url("images/next.png")}}">
-			</div>
-		</li>
-		<li class="line">
-			<div class="line">
-			<img class = "status" src = "{{ static_url("images/offline.png")}}">
-			<div class = "username">yummy_hamburgers</div>
-			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
-			<img class = "next" src = "{{ static_url("images/next.png")}}">
-			</div>
-		</li>-->
 	</ul>
 	</div>
 </body>
