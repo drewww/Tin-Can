@@ -110,13 +110,13 @@ class Meeting(YarnBaseType):
         self.eventHistory = []
         
         
-    def userJoined(self, user):
+    def userJoinedLocation(self, user, location):
         logging.info("User %s joined meeting %s in room %s"%(user.name,
             self.title, self.room.name))
         
         self.allParticipants.add(user)
 
-    def userLeft(self, user):
+    def userLeftLocation(self, user, location):
         logging.info("User %s left meeting %s in room %s"%(user.name,
             self.title, self.room.name))
 
@@ -125,6 +125,11 @@ class Meeting(YarnBaseType):
         self.title, self.room.name, len(location.users)))
         
         self.locations.add(location)
+        
+        # add all the users in this location to the list of all users this
+        # meeting has ever seen. 
+        for user in location.getUsers():
+            self.allParticipants.add(user)
     
     def locationLeft(self, location):
         logging.info("Location %s LEFT %s@%s with %d users"%(location.name,
@@ -430,7 +435,7 @@ class Location(Actor):
         user.location = self
         
         if(self.isInMeeting()):
-            self.meeting.userJoined(user)
+            self.meeting.userJoinedLocation(user, self)
         
     def userLeft(self, user):
         """Removes the specified user from this location."""
@@ -439,7 +444,7 @@ class Location(Actor):
         user.location = None
         
         if(self.isInMeeting()):
-            self.meeting.userLeft(user)
+            self.meeting.userLeftLocation(user, self)
         
     
     def getUsers(self):
