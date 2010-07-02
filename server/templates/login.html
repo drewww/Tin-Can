@@ -8,130 +8,120 @@
 	<title>login</title>
 <script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
 <script type="text/javascript" charset="utf-8">
-	var namelist;
-	var nametemplate;
-	var temp = ["asdf", "asdf325", "omgomgomg"];
-	var lilist = new Array();
-	var click=true;
+	var listElement;
+	var nameTemplate;
+	var names = ["asdf", "asdf325", "omgomgomg"];
+	var nameElements = new Array();
+	var select=true; //keeps track of whether you can select usernames
 	
 	$(document).ready(function(){
-		namelist = $("#usernamelist");
-		nametemplate = $("#template");
-		$("#newuser").hide();
-		$("#searchtype").hide();
-		$(".name").hide();
-		for (var x in temp){
-			var newitem = createNewItem(temp[x]);
-			namelist.append(newitem);
-			lilist.push(newitem);
+		listElement = $("#usernamelist");
+		nameTemplate = $("#template");
+		
+		nameTemplate.hide();
+		
+		//generates initial username list
+		for (var name in names){
+			var newNameElement = createNewItem(names[name]);
+			listElement.append(newNameElement);
+			nameElements.push(newNameElement);
 		}
-		$("#searchname").keyup(function(e){searchUsers(e);});
+		
+		$("#searchname").keyup(searchForUser);
 	});
 	
-/*	function displayList(list){
-		$(".name").hide();
-		for (var x in list){
-			newname = nametemplate.clone();
-			newname.find("div").html(list[x]);
-			newname.show();
-			namelist.append(newname);
-		}
-	}*/
-	
 	function createNewItem(name){
-		newitem = nametemplate.clone();
-		newitem.find("div").html(name);
-		newitem.show();
-		return newitem;
+		var newNameElement = nameTemplate.clone();
+		newNameElement.find("div").html(name);
+		newNameElement.show();
+		return newNameElement;
 	}
 	
+	//hide all elements. go through names. if a name is in list, show the name element.
 	function displayList(list){
 		$(".name").hide();
-		for (var x in temp){
-			if ($.inArray(temp[x],list)>=0){
-				lilist[x].show();
+		for (var name in names){
+			if ($.inArray(names[name],list)>=0){
+				nameElements[name].show();
 			}
 		}
 	}
 	
-	function addUser(){
-		$(".name").css("background","white");
-		cancelSearch();
-		addname=$("#newuser")[0];
+	function toggleAdd(){
+		clearSearch();
+		var addName=$("#newuser")[0];
 		$("#searchtype").hide();
-		if (addname.style.display!="block"){
-			addname.style.display="block";
-			click=false;
+		
+		if (addName.style.display!="block"){
+			addName.style.display="block";
+			$("#newname").focus();
+			select=false;
 		}
 		else{
 			$("#newname")[0].value="";
-			addname.style.display="none";
-			click=true;
+			addName.style.display="none";
+			select=true;
 		}
 	}
 	
 	function submitNewUser(){
-		newname=$("#newname")[0].value;
-	/*	var x=0;
-		while (newname>temp[x]){
-			x++;
+		var newName=$("#newname")[0].value;
+		if (newName!=""){
+			$("#newname")[0].value="";
+			var newNameElement = createNewItem(newName);
+			names.splice(0,0,newName);
+			newNameElement.insertAfter("#template");
+			nameElements.splice(0,0,newNameElement);
+			toggleAdd();
+			displayList(names);
+			selectUser(newNameElement[0]);
 		}
-		temp.splice(x,0,newname);*/
-		$("#newname")[0].value="";
-		var newitem = createNewItem(newname);
-		temp.splice(0,0,newname);
-		newitem.insertAfter("#template");
-		lilist.splice(0,0,newitem);
-		addUser();
-		displayList(temp);
-		selectUser(newitem[0]);
 	}
 	
 	function toggleSearch(){
+		select=true;
 		$(".name").css("background","white");
 		search=$("#searchtype")[0];
 		$("#newuser").hide();
+		
 		if (search.style.display!="block"){
 			search.style.display="block";
+			$("#searchname").focus();
 		}
 		else{
 			$("#searchname")[0].value="";
 			search.style.display="none";
-			displayList(temp);
+			displayList(names);
 		}
 	}
 	
-	function searchUsers(e){
+	function searchForUser(){
 		$(".name").css("background","white");
-		searchname=$("#searchname")[0].value;
-		if (searchname==""){
-			cancelSearch();
-		}
-		else{
-			var newlist = new Array();
-			for (var x in temp){
-				if (temp[x].substring(0,searchname.length)==searchname){
-					newlist.push(temp[x]);
-				}
+		searchName=$("#searchname")[0].value.toUpperCase();
+		var newList = new Array();
+		for (var name in names){
+			if (names[name].substring(0,searchName.length).toUpperCase()==searchName){
+				newList.push(names[name]);
 			}
-			displayList(newlist);
-		//	search=$("#searchtype")[0];
-		//	search.style.display="block";
 		}
+		displayList(newList);
 	}
 	
-	function cancelSearch(){
+	function clearSearch(){
 		$(".name").css("background","white");
 		$("#searchname")[0].value="";
-		displayList(temp);
-		search=$("#searchtype")[0];
-		search.style.display="block";
+		displayList(names);
+		$("#searchname").focus();
 	}
 	
+	//highlights username or closes add-user-bar
 	function selectUser(item){
 		$(".name").css("background","white");
-		if (click){
+		if (select){
 			item.style.background="#00CCFF";
+		}
+		else{
+			toggleAdd();
 		}
 	}
 	
@@ -225,7 +215,7 @@
 		margin-top:7px;
 		margin-bottom:7px;
 		margin-left:5px;
-		width:200px;
+		width:150px;
 		font-size:17px;
 	}
 	#newuser{
@@ -240,7 +230,7 @@
 <body>
 	<div>
 	<div id="header">
-		<div id = "add"><button id="addbutton" onclick = "addUser();">Add</button></div>
+		<div id = "add"><button id="addbutton" onclick = "toggleAdd();">Add</button></div>
 		<div id ="title">Users</div>
 		<div id ="search"><button id="searchbutton" onclick = "toggleSearch();">Find</button></div>
 	</div>
@@ -251,7 +241,8 @@
 		</li>
 		<li id = "searchtype" class = "line">
 			<label for="name"></label><input type="text" name="name" value="" id="searchname" class="textbox">
-			<button id = "clearsearch" onclick="cancelSearch();">Cancel</button>
+			<button id = "clearsearch" onclick="clearSearch();">x</button>
+			<button id = "cancelsearch" onclick="toggleSearch();">Cancel</button>
 		</li>
 		<li id ="template" class="line name" onclick = "selectUser(this);">
 			<img class = "status" src = "{{ static_url("images/online.png")}}">
