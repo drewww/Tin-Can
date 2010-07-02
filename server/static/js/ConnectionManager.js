@@ -160,6 +160,29 @@ ConnectionManager.prototype = {
            context: this,
            data: { "roomUUID": roomUUID}
         });
+    },
+    
+    getState: function(callback) {
+        // callback is a function that we'll hand the three chunks of state
+        // to when we get a response.
+        
+        $.ajax({
+            url: '/connect/state',
+            type: "GET",
+            dataType: "JSON",
+            success: function (data) {
+                initialState = $.parseJSON(data);
+                console.log("Received state response: (" +
+                    initialState["users"].length + ") users, (" +
+                    initialState["locations"].length + ") locations, (" +
+                    initialState["rooms"].length + ") rooms.");
+                
+                callback(initialState["users"], initialState["locations"],
+                    initialState["rooms"]);
+            }
+            
+            
+        })
     }
 };
 

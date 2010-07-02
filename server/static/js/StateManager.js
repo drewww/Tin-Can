@@ -32,6 +32,9 @@ function StateManager() {
     this.actors = [];
     
     this.rooms = [];
+    
+    // Kick off an initialization request to the server.
+    connection.getState(this.initStateManager);
 }
 
 StateManager.prototype = {
@@ -62,8 +65,14 @@ StateManager.prototype = {
     
     putObj: function(key, value) {
         this.db[key] = value;
-    }
+    },
     
+    initStateManager: function(users, locations, rooms) {
+        // Loop through all of these objects and create local 
+        // JS versions of all of them to set up our data store properly.
+        
+        console.log("Got callback response from the server.");
+    }
 }
 
 
