@@ -8,6 +8,7 @@
 // Global data:
 //  - user list and status
 //  - room status
+//  - (meetings, transitive from rooms)
 //
 // Meeting data:
 //  - current participants
@@ -64,3 +65,8 @@ StateManager.prototype = {
     }
     
 }
+
+
+// This should really be namespaced nicely, but I dont want to figure that
+// out quite yet.
+state = new StateManager();

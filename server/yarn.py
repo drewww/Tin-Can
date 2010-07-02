@@ -52,11 +52,14 @@ class YarnApplication(tornado.web.Application):
             (r"/connect/", ConnectionHandler),
             (r"/connect/test", ConnectTestHandler),
             (r"/connect/login", LoginHandler),
+            (r"/connect/state", StateHandler),
             
             (r"/users/choose", ChooseUsersHandler),
             (r"/agenda/", AgendaHandler),
             (r"/agendajqt/", AgendaJQTHandler),
-            (r"/state/", StateHandler),
+            
+            (r"/status/", StatusHandler),
+            
             (r"/rooms/",ChooseRoomsHandler)
             ]
         
@@ -114,6 +117,20 @@ class BaseHandler(tornado.web.RequestHandler):
 
 
 class StateHandler(tornado.web.RequestHandler):
+    
+    def get(self):
+        # We want to dump all current information (deep search-ly) onto
+        # the channel so a new client can initialize their internal state
+        # representation of users, locations, rooms, and meetings.
+        stateDict = {
+            "locations":state.get_locations(),
+            "users":state.get_users(),
+            "rooms":list(state.get_rooms())
+            }
+        
+        self.write(json.dumps(stateDict, cls=YarnModelJSONEncoder))
+
+class StatusHandler(tornado.web.RequestHandler):
     # TODO Figure out a way to protect this. It's useful for debugging,
     # but I don't want to push something that exposes the entire internal
     # state to a production machine. Do some kind of simple admin login
