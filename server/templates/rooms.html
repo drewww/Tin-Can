@@ -5,32 +5,48 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 	<meta name="viewport" content="width=320, user-scalable=yes">
-	<title>login</title>
+	<title>Rooms</title>
 <script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
 <script type="text/javascript" charset="utf-8">
-	var namelist;
+	var roomlist;
 	var nametemplate;
-	var temp = ["asdf", "asdf325", "omgomgomg"];
+	var locationtemplate
+	var temp = [[true,"asdf","meeting1",[4,3]], [true,"asdf325","meeting2",[5,4]], [false,"omgomgomg","meeting3's name is really long and goes past the edge",[7,1,3]]];
 	var lilist = new Array();
 	var click=true;
 	
 	$(document).ready(function(){
-		namelist = $("#roomlist");
+		roomlist = $("#roomlist");
 		nametemplate = $("#template");
+		locationtemplate = $("#locationtemplate");
+		nametemplate.hide();
+		locationtemplate.hide();
 		$("#newuser").hide();
 		$("#searchtype").hide();
 	//	$(".name").hide();
 		for (var x in temp){
 			var newitem = createNewItem(temp[x]);
-			namelist.append(newitem);
+			roomlist.append(newitem);
 			lilist.push(newitem);
 		}
 		$("#searchname").keyup(function(e){searchUsers(e);});
 	});
 	
-	function createNewItem(name){
+	function createNewItem(meeting){
 		newitem = nametemplate.clone();
-		newitem.find("div").html(name);
+		if (meeting[0]){
+			newitem.find("strong").html(meeting[1]);
+		}
+		else{
+			newitem.find("em").html(meeting[1]);
+		}
+		newitem.find("div.room").append(" - " + meeting[2]);
+		for (var y in meeting[3]){
+			newloc = locationtemplate.clone();
+			newloc.prepend(meeting[3][y]);
+			newloc.show();
+			newitem.find("ul").append(newloc);
+		} 
 		newitem.show();
 		return newitem;
 	}
@@ -62,11 +78,6 @@
 	
 	function submitNewUser(){
 		newname=$("#newname")[0].value;
-	/*	var x=0;
-		while (newname>temp[x]){
-			x++;
-		}
-		temp.splice(x,0,newname);*/
 		$("#newname")[0].value="";
 		var newitem = createNewItem(newname);
 		temp.splice(0,0,newname);
@@ -93,14 +104,14 @@
 	div{
 		margin:0px;
 	}
-	ul{
+	#roomlist{
 		border:solid;
 		width:320px;
 		list-style-type:none;
 		padding:0px;
 		margin:0px;
 	}
-	li{
+	#template{
 		border-bottom: 1px solid black;
 	}
 	.line{
@@ -124,23 +135,38 @@
 		padding-bottom:11px;
 	}
 	.participants{
+		margin-left:30px;
+		float:left;
+		padding:0px;
+		height:50px;
+		font-family:"Arial",sans-serif;
+		width:260px;
 		text-align:center;
-		padding-left:35px;
+		list-style-type:none;
+	}
+	.location{
+		font-size:40px;
+		display:inline;
+		border: 1px solid #0066FF;
+		padding:0px;
 	}
 	.icon{
-		width:40px;
-		padding-top:15px;
-		padding-bottom:15px;
+		margin:0px;
+		padding:0px;
 	}
-	.roomname{
+	.room{
 		width:320px;
 		font-family:"Arial",sans-serif;
+		white-space:nowrap;
+		overflow:hidden;
 	}
 	.statusbar{
 		border: 1px solid black;
 		height:15px;
 		margin-left:5px;
 		margin-right:5px;
+		position:absolute;
+		top:70px;
 	}
 	#back{
 		width:100px;
@@ -200,15 +226,13 @@
 			<label for="name"></label><input type="text" name="name" value="" id="newname" class="textbox">
 			<button type = "submit" onclick="submitNewUser();">Create!</button>
 		</li>
+		<li id = "locationtemplate" class = "location"><img class = "icon" src = "{{ static_url("images/icon.png")}}"></li>
 		<li id ="template" class="line name" onclick = "selectUser(this);">
-			<div class = "roomname"></div>
-			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
+			<div class = "room"><strong></strong><em></em></div>
+			<ul class = "participants">
+			</ul>
 			<img class = "next" src = "{{ static_url("images/next.png")}}">
-		</li>
-		<li id ="template" class="line name" onclick = "selectUser(this);">
-			<div class = "roomname"><strong>roomname</strong> - whatifthismeetingname</div>
-			<div class = "participants"><img class = "icon" src = "{{ static_url("images/icon.png")}}"><img class = "next" src = "{{ static_url("images/next.png")}}"></div>
-			<div class = "statusbar"></div>
+			<div class = "statusbar">there's a status bar here and it goes to that edge :)</div>
 		</li>
 	</ul>
 	</div>
