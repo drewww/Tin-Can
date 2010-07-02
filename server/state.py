@@ -92,6 +92,8 @@ def get_users():
 def get_locations():
     return [actor for actor in actors if isinstance(actor, model.Location)]
 
+def get_rooms():
+    return rooms
     
 def get_devices():
     """Return all current known devices. 
@@ -105,9 +107,6 @@ def get_devices():
         allDevices = allDevices | actor.getDevices()
     
     return allDevices
-    
-def get_locations():
-    return [actor for actor in actors if isinstance(actor, model.Location)]
 
 
 if __name__ == '__main__':

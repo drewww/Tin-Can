@@ -9,6 +9,8 @@ function User(uuid, name, location) {
     this.name = name;
     
     this.location = location;
+    
+    state.putObj(this.uuid, this);
 }
 
 User.prototype = {
@@ -30,6 +32,8 @@ function Location(uuid, name, meeting, users) {
     
     this.meeting = meeting;
     this.users = users;
+    
+    state.putObj(this.uuid, this);
 }
 
 Location.prototype = {
@@ -63,6 +67,8 @@ function Room(name, roomUUID, currentMeeting) {
     this.name = name;
     this.roomUUID = roomUUID;
     this.currentMeeting = currentMeeting;
+    
+    state.putObj(this.uuid, this);
 }
 
 Room.prototype = {
@@ -88,6 +94,8 @@ function Meeting(roomUUID, title, meetingUUID) {
     this.allParticipants = [];
     
     this.locations = [];
+    
+    state.putObj(this.uuid, this);
 }
 
 Meeting.prototype = {
