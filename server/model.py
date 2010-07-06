@@ -393,6 +393,10 @@ class User(Actor):
     def getDict(self):
         d = Actor.getDict(self)
         d["status"] = self._status
+        
+        # Do we not include locations here because they're included in
+        # the Location object itself?
+        
         return d
     
     def isInMeeting(self):
@@ -485,6 +489,7 @@ class Location(Actor):
         # this is stupid, but I can't figure out how to get JSONEncoder
         # to take sets, so we have to convert to lists on the way out.
         d["users"] = list(self.users)
+        d["meeting"] = self.meeting;
         return d
 
     def __str__(self):

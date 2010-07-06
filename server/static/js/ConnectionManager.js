@@ -162,10 +162,9 @@ ConnectionManager.prototype = {
         });
     },
     
-    getState: function(callback) {
+    getState: function() {
         // callback is a function that we'll hand the three chunks of state
         // to when we get a response.
-        
         $.ajax({
             url: '/connect/state',
             type: "GET",
@@ -176,13 +175,13 @@ ConnectionManager.prototype = {
                     initialState["users"].length + ") users, (" +
                     initialState["locations"].length + ") locations, (" +
                     initialState["rooms"].length + ") rooms.");
-                
-                callback(initialState["users"], initialState["locations"],
-                    initialState["rooms"]);
-            }
-            
-            
-        })
+
+                state.initStateManager.call(state, initialState["users"],
+                    initialState["locations"], initialState["rooms"]);
+                    
+                }
+            });
+        
     }
 };
 

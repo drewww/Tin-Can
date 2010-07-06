@@ -17,9 +17,11 @@
 	$(document).ready(function(){
 		namelist = $("#usernamelist");
 		nametemplate = $("#template");
+		
 		$("#newuser").hide();
 		$("#searchtype").hide();
 		$(".name").hide();
+		
 		for (var x in temp){
 			var newitem = createNewItem(temp[x]);
 			namelist.append(newitem);

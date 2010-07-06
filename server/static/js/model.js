@@ -4,24 +4,28 @@
 // quite similar to model.py on the server, but is missing lots of the 
 // more complicated server logic that client types don't need.
 
-function User(uuid, name, location) {
+function User(uuid, name, loc) {
     this.uuid = uuid;
     this.name = name;
     
-    this.location = location;
+    this.loc = loc;
     
     state.putObj(this.uuid, this);
 }
 
 User.prototype = {
     
-    
     isInLocation: function() {
-        return this.location != null;
+        return this.loc != null;
     },
     
     isInMeeting: function() {
-        return this.location.isInMeeting();
+        return this.loc.isInMeeting();
+    },
+    
+    unswizzle: function() {
+        // Converts uuids back into objects.
+        this.loc = stat.getObj(this.loc, Location);
     }
 };
 
@@ -55,17 +59,30 @@ Location.prototype = {
         
     },
     
-    
     isInMeeting: function() {
-        return this.location.isInMeeting();
+        return this.loc.isInMeeting();
+    },
+    
+    unswizzle: function() {
+        this.meeting = state.getObj(this.meeeting, Meeting);
+        
+        this.meeting.locJoined(this);
+        
+        newUsersList = [];
+        for (user in this.users) {
+            newUsersList.push(state.getObj(user, User));
+        }
+        
+        this.users = newUsersList;
     }
+    
 };
 
 
 
-function Room(name, roomUUID, currentMeeting) {
+function Room(name, uuid, currentMeeting) {
     this.name = name;
-    this.roomUUID = roomUUID;
+    this.uuid = uuid;
     this.currentMeeting = currentMeeting;
     
     state.putObj(this.uuid, this);
@@ -81,50 +98,67 @@ Room.prototype = {
         }
         
         self.currentMeeting = meeting;
+    },
+    
+    unswizzle: function() {
+        this.currentMeeting = state.getObj(this.currentMeeting, Room);
     }
     
 };
 
 
-function Meeting(roomUUID, title, meetingUUID) {
-    this.roomUUID = roomUUID;
+function Meeting(uuid, title, room) {
+    this.room = room;
     this.title = title;
-    this.meetingUUID = meetingUUID;
+    this.uuid = uuid;
     
     this.allParticipants = [];
     
-    this.locations = [];
+    this.locs = [];
     
     state.putObj(this.uuid, this);
 }
 
 Meeting.prototype = {
-    userJoinedLocation: function(user, location) {
+    userJoinedLocation: function(user, loc) {
         this.allParticipants.push(user);
     },
     
-    userLeftLocation: function(user, location) {
+    userLeftLocation: function(user, loc) {
         // nothing to do, really. 
     },
     
-    locationJoined: function(location) {
-        this.locations.push(location);
+    locJoined: function(loc) {
+        this.locs.push(loc);
+        
+        for(user in loc.users) {
+            this.allParticipants.push(user);
+        }
     },
     
-    locationLeft: function(location) {
-        this.locations.remove(location);
+    locLeft: function(loc) {
+        this.locs.remove(loc);
     },
     
     getCurrentParticipants: function() {
         currentParticipants = [];
         
-        for(location in this.locations) {
-            for(user in location.getUsers()) {
+        for(loc in this.locs) {
+            for(user in loc.getUsers()) {
                 currentParticipants.push(user);
             }
         }   
         return currentParticipants;
+    },
+    
+    unswizzle: function() {
+        this.room = state.getObj(this.room, Room);
+        
+        // We don't need to unswizzle locs or participants; those get
+        // handled when the loc unswizzles. It'll register itself
+        // with the meeting it's currently in. 
     }
+    
 };
 
 
