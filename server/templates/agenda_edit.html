@@ -8,16 +8,34 @@
   <script src="../static/js/jquery.iphoneui.js" type="text/javascript" charset="utf-8"></script>
 
 	<script type ="text/javascript">
-		var template;
-		var clone;
-		var itemList;
-		
+	
+	//Turn on drag and drop sorting and constrain to y axis	
 		$(function() {
 			$("#container").sortable({placeholder: 'ui-state-highlight',
 			axis: 'y'});
 
 		});
+	
+		$(document).ready(function(){
+			template = $("#doneTemplate");
+			itemList = $("#container");
+			$("#newItem").hide();
+		})
 		
+	// show/hide input textbox 
+		function add(){
+			newItem = $("#newItem")[0];
+			if (newItem.style.display!="block"){
+				newItem.style.display="block";
+			}
+			else{
+				$("#itemInput").value="";
+				newItem.style.display="none";
+			}
+
+		}
+	
+	//crash test dummy item
 		function makeCurrentItem() {
 			template = $("#currentTemplate");
 			itemList = $("#container");
@@ -26,7 +44,8 @@
 			clone.show();
 			$('.drag').addTouch();		
 		}
-		
+
+	//crash test dummy item		
 		function makeDoneItem() {
 			template = $("#doneTemplate");
 			itemList = $("#container");
@@ -35,18 +54,22 @@
 			clone.show();
 			$('.drag').addTouch();		
 		}
-		
-		function makeFutureItem() {
+	
+	//grab input from textbox and generate item in list
+		function makeFutureItem(name) {
 			var check = document.getElementById("futureCheck");
 			template = $("#futureTemplate");
 			itemList = $("#container");
+			newItem=$("#itemInput")[0].value;
 			check.style.visibility = "hidden";
 			clone = template.clone();
+			clone.find("span").html(newItem);
 			itemList.append(clone);
 			clone.show();
-			$('.drag').addTouch();		
+			$('.drag').addTouch();
+			$("#itemInput")[0].value="";
+			$("#newItem")[0].style.display="none"				
 		}
-		
 	</script>
 
 
@@ -96,34 +119,47 @@
 	.template{
 		display: none;
 	}
+	
+	#newItem{
+		display:none;
+	}
+
 	</style>
 </head>
 <body>
 <div id="border">
-<div id="container">
+	
 	<div id="header">Edit 
 		<input type="button" value="Done" onclick="makeDoneItem()">
 		<input type="button" value="Current" onclick="makeCurrentItem()">
-		<input type="button" value="Future" onclick="makeFutureItem()"> </div>
+		<input type="button" value="Add" onclick="add()"> </div>
 	
+	<div id="newItem">
+		<input type="text" name="item" value="" id="itemInput" class="textbox">
+		<button type = "submit" onclick="makeFutureItem();">Submit</button>
+	</div>		
+	
+<div id="container">
+	
+			
 	<div id="currentTemplate" class="template">
 		<img src="{{ static_url("images/delete.png")}}" class="delete">
 		--->
-		Item 4
+		current Item
 		<img src ="{{ static_url("images/drag.png")}}" class="drag">		
 	</div>
 
 	<div id="doneTemplate" class="template">
 		<img src="{{ static_url("images/delete.png")}}" class="delete">
 		<img src="{{ static_url("images/accept.png")}}" class="check">
-		Item 4
+		Done Item
 		<img src ="{{ static_url("images/drag.png")}}" class="drag">		
 	</div>	
 
 	<div id="futureTemplate" class="template">
 		<img src="{{ static_url("images/delete.png")}}" class="delete">
 		<img src="{{ static_url("images/accept.png")}}" class="check" id="futureCheck">
-		Item 4
+		<span id="text"></span>
 		<img src ="{{ static_url("images/drag.png")}}" class="drag">		
 	</div>
 	
