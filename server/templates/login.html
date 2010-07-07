@@ -4,42 +4,82 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-	<meta name="viewport" content="width=320, user-scalable=yes">
+	<meta name="viewport" content="width=320; initial-scale=1.0; minimum-scale=1.0; maximum-scale=1.0; user-scalable=0;">
 	<title>login</title>
 <script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
 <script type="text/javascript" charset="utf-8">
-	var listElement;
+	var userListElement;
+	var roomListElement;
 	var nameTemplate;
-	var names = ["asdf", "asdf325", "omgomgomg"];
-	var nameElements = new Array();
+	var roomTemplate;
+	var locationTemplate;
+	var names = ["asdf", "asdf325", "omgomgomg","sd","sdf","sdfdsfgf","sdvdfbdfg","ssdf","sdg"];
+	var rooms = [[true,"asdf","meeting1",[4,3]], [true,"asdf325","meeting2",[5,4,2,1]], [false,"omgomgomg","meeting3's name is really long and goes past the edge",[7,1,3]],[false,"wtf","meeting4",[1,12]]];
+	var nameElements = [];
+	var roomElements = [];
 	var select=true; //keeps track of whether you can select usernames
+	var selected;
 	
 	$(document).ready(function(){
-		listElement = $("#usernamelist");
-		nameTemplate = $("#template");
+		userListElement = $("#usernamelist");
+		nameTemplate = $("#nametemplate");
 		
 		nameTemplate.hide();
+		$("#searchtype").hide();
+		$("#newuser").hide();
 		
 		//generates initial username list
 		for (var name in names){
-			var newNameElement = createNewItem(names[name]);
-			listElement.append(newNameElement);
+			var newNameElement = createNewNameItem(names[name]);
+			userListElement.append(newNameElement);
 			nameElements.push(newNameElement);
 		}
 		
 		$("#searchname").keyup(searchForUser);
+		
+		roomListElement = $("#roomlist");
+		roomTemplate = $("#roomtemplate");
+		locationTemplate = $("#locationtemplate");
+		roomTemplate.hide();
+		locationTemplate.hide();
+	//	$(".name").hide();
+		for (var x in rooms){
+			var newRoomElement = createNewRoomItem(rooms[x]);
+			roomListElement.append(newRoomElement);
+			roomElements.push(newRoomElement);
+		}
+		$("#rooms").hide();
 	});
 	
-	function createNewItem(name){
+	function createNewNameItem(name){
 		var newNameElement = nameTemplate.clone();
 		newNameElement.find("div").html(name);
 		newNameElement.show();
 		return newNameElement;
 	}
 	
+	function createNewRoomItem(meeting){
+		newRoomElement = roomTemplate.clone();
+		if (meeting[0]){
+			newRoomElement.find("strong").html(meeting[1]);
+		}
+		else{
+			newRoomElement.find("em").html(meeting[1]);
+		}
+		newRoomElement.find("div.room").append(" - " + meeting[2]);
+		for (var y in meeting[3]){
+			newloc = locationTemplate.clone();
+			newloc.prepend(meeting[3][y]);
+			newloc.show();
+			newRoomElement.find("ul").append(newloc);
+		}
+		newRoomElement.show();
+		return newRoomElement;
+	}
+	
 	//hide all elements. go through names. if a name is in list, show the name element.
 	function displayList(list){
-		$(".name").hide();
+	//	$(".name").hide();
 		for (var name in names){
 			if ($.inArray(names[name],list)>=0){
 				nameElements[name].show();
@@ -68,13 +108,13 @@
 		var newName=$("#newname")[0].value;
 		if (newName!=""){
 			$("#newname")[0].value="";
-			var newNameElement = createNewItem(newName);
+			var newNameElement = createNewNameItem(newName);
 			names.splice(0,0,newName);
-			newNameElement.insertAfter("#template");
+			newNameElement.insertAfter("#nametemplate");
 			nameElements.splice(0,0,newNameElement);
 			toggleAdd();
-			displayList(names);
-			selectUser(newNameElement[0]);
+		//	displayList(names);
+			highlightUser(newNameElement[0]);
 		}
 	}
 	
@@ -116,12 +156,59 @@
 	
 	//highlights username or closes add-user-bar
 	function selectUser(item){
-		$(".name").css("background","white");
 		if (select){
-			item.style.background="#00CCFF";
+			$("#rooms").show();
+			username = selected.find("div").html();
+			$("#currentuser").html("logged in as: " + username);
+			if($("#rooms").offset().left>=5){
+				slideLeft($("#users").offset().left,$("#rooms").offset().left);
+				var t = setTimeout("selectUser(selected)", 2);
+			}
+			else{
+				$("#users").hide();
+				$("#rooms").offset({left:0,top:0});
+				$("#users").offset({left:0,top:0});
+			}
 		}
 		else{
 			toggleAdd();
+		}
+	}
+	
+	function slideLeft(userspos,roomspos){
+		$("#users").offset({left:userspos-5,top:0});
+		$("#rooms").offset({left:roomspos-5,top:0});
+	}
+	
+	function slideRight(userspos,roomspos){
+		$("#users").offset({left:userspos+5,top:0});
+		$("#rooms").offset({left:roomspos+5,top:0});
+	}
+	
+	function highlightUser(item){
+		$(".name").css("background","white");
+		if (select){
+			item.style.background="#00CCFF";
+			selected = $(item);
+		}
+		var t = setTimeout("selectUser(selected);", 500);
+	}
+	
+	function selectRoom(item){
+		$(".meetingroom").css("background","white");
+		item.style.background="#00CCFF";
+	}
+	
+	function back(){
+		$("#users").show();
+		if($("#users").offset().left<=-5){
+			slideRight($("#users").offset().left,$("#rooms").offset().left);
+			var t = setTimeout("back()", 2);
+		}
+		else{
+			$("#rooms").hide();
+			$("#rooms").offset({left:0,top:0});
+			$("#users").offset({left:0,top:0});
 		}
 	}
 	
@@ -134,23 +221,83 @@
 	div{
 		margin:0px;
 	}
-	ul{
+	#usernamelist,#roomlist{
 		border:solid;
 		width:320px;
 		list-style-type:none;
 		padding:0px;
 		margin:0px;
 	}
+	#users{
+		float:left;
+		position:absolute;
+		top:0px;
+		left:0px;
+	}
+	#rooms{
+		float:left;
+		position:absolute;
+		top:0px;
+		left:320px;
+	}
 	li{
 		border-bottom: 1px solid black;
 	}
-	.line{
+	.user{
 		width:320px;
 		height:50px;
 		margin:none;
 		padding:none;
+	}
+	.meetingroom{
+		width:320px;
+		height:90px;
+		margin:none;
+		padding:none;
 		clear:both;
 		position:relative;
+	}
+	.participants{
+		margin-left:30px;
+		float:left;
+		padding:0px;
+		height:50px;
+		font-family:"Arial",sans-serif;
+		width:260px;
+		text-align:center;
+		list-style-type:none;
+	}
+	.location{
+		font-size:30px;
+		display:inline;
+		border: 1px solid #0066FF;
+		padding:0px;
+	}
+	.figure{
+		margin:0px;
+		padding:0px;
+	}
+	.room{
+		font-size:20px;
+		width:320px;
+		font-family:"Arial",sans-serif;
+		white-space:nowrap;
+		overflow:hidden;
+	}
+	.statusbar{
+		border: 1px solid black;
+		height:15px;
+		margin-left:5px;
+		margin-right:5px;
+		position:absolute;
+		top:70px;
+	}
+	#back{
+		width:100px;
+		float:left;
+		padding-top:10px;
+		padding-bottom:10px;
+		margin-left:5px;
 	}
 	.status{
 		width:25px;
@@ -205,11 +352,7 @@
 		margin:none;
 		padding:none;
 		clear:both;
-		position:relative;
-		border-top:solid;
-		border-left:solid;
-		border-right:solid;
-	}
+		border:solid;
 	.textbox{
 		height:25px;
 		margin-top:7px;
@@ -224,31 +367,51 @@
 	#searchtype{
 		display:none;
 	}
+
 </style>
 </head>
 
 <body>
-	<div>
+	<div id = "users">
 	<div id="header">
 		<div id = "add"><button id="addbutton" onclick = "toggleAdd();">Add</button></div>
 		<div id ="title">Users</div>
 		<div id ="search"><button id="searchbutton" onclick = "toggleSearch();">Find</button></div>
 	</div>
+	<div id="content">
 	<ul id = "usernamelist">
-		<li id = "newuser" class = "line">
+		<li id = "newuser" class = "user">
 			<label for="name"></label><input type="text" name="name" value="" id="newname" class="textbox">
 			<button type = "submit" onclick="submitNewUser();">Create!</button>
 		</li>
-		<li id = "searchtype" class = "line">
+		<li id = "searchtype" class = "user">
 			<label for="name"></label><input type="text" name="name" value="" id="searchname" class="textbox">
 			<button id = "clearsearch" onclick="clearSearch();">x</button>
 			<button id = "cancelsearch" onclick="toggleSearch();">Cancel</button>
 		</li>
-		<li id ="template" class="line name" onclick = "selectUser(this);">
+		<li id ="nametemplate" class="user name" onclick = "highlightUser(this);">
 			<img class = "status" src = "{{ static_url("images/online.png")}}">
 			<div class = "username"></div>
 			<img class = "icon" src = "{{ static_url("images/icon.png")}}">
 			<img class = "next" src = "{{ static_url("images/next.png")}}">
+		</li>
+	</ul>
+	</div>
+	</div>
+	<div id = "rooms">
+	<div id="header">
+		<div id = "back"><button id="backbutton" onclick="back();">< Users</button></div>
+		<div id ="title">Rooms</div>
+		<div id = "currentuser">logged in as: </div>
+	</div>
+	<ul id = "roomlist">
+		<li id = "locationtemplate" class = "location"><img class = "figure" src = "{{ static_url("images/icon.png")}}"></li>
+		<li id ="roomtemplate" class="meetingroom name" onclick = "selectRoom(this);">
+			<div class = "room"><strong></strong><em></em></div>
+			<ul class = "participants">
+			</ul>
+			<img class = "next" src = "{{ static_url("images/next.png")}}">
+			<div class = "statusbar">there's a status bar here and it goes to that edge :)</div>
 		</li>
 	</ul>
 	</div>
