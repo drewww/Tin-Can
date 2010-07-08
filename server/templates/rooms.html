@@ -11,7 +11,7 @@
 	var roomlist;
 	var nametemplate;
 	var locationtemplate
-	var temp = [[true,"asdf","meeting1",[4,3]], [true,"asdf325","meeting2",[5,4]], [false,"omgomgomg","meeting3's name is really long and goes past the edge",[7,1,3]]];
+	var temp = [[true,"asdf","meeting1",[4,3]], [true,"asdf325","meeting2",[5,4,2,1]], [false,"omgomgomg","meeting3's name is really long and goes past the edge",[7,1,3]],[false,"wtf","meeting4",[1,12]]];
 	var lilist = new Array();
 	var click=true;
 	
@@ -21,15 +21,12 @@
 		locationtemplate = $("#locationtemplate");
 		nametemplate.hide();
 		locationtemplate.hide();
-		$("#newuser").hide();
-		$("#searchtype").hide();
 	//	$(".name").hide();
 		for (var x in temp){
 			var newitem = createNewItem(temp[x]);
 			roomlist.append(newitem);
 			lilist.push(newitem);
 		}
-		$("#searchname").keyup(function(e){searchUsers(e);});
 	});
 	
 	function createNewItem(meeting){
@@ -58,34 +55,6 @@
 				lilist[x].show();
 			}
 		}
-	}
-	
-	function addUser(){
-		$(".name").css("background","white");
-		cancelSearch();
-		addname=$("#newuser")[0];
-		$("#searchtype").hide();
-		if (addname.style.display!="block"){
-			addname.style.display="block";
-			click=false;
-		}
-		else{
-			$("#newname")[0].value="";
-			addname.style.display="none";
-			click=true;
-		}
-	}
-	
-	function submitNewUser(){
-		newname=$("#newname")[0].value;
-		$("#newname")[0].value="";
-		var newitem = createNewItem(newname);
-		temp.splice(0,0,newname);
-		newitem.insertAfter("#template");
-		lilist.splice(0,0,newitem);
-		addUser();
-		displayList(temp);
-		selectUser(newitem[0]);
 	}
 	
 	function selectUser(item){
@@ -122,12 +91,6 @@
 		clear:both;
 		position:relative;
 	}
-	.status{
-		width:25px;
-		float:left;
-		padding-top:12px;
-		padding-bottom:12px;
-	}
 	.next{
 		width:25px;
 		float:right;
@@ -145,7 +108,7 @@
 		list-style-type:none;
 	}
 	.location{
-		font-size:40px;
+		font-size:30px;
 		display:inline;
 		border: 1px solid #0066FF;
 		padding:0px;
@@ -155,6 +118,7 @@
 		padding:0px;
 	}
 	.room{
+		font-size:20px;
 		width:320px;
 		font-family:"Arial",sans-serif;
 		white-space:nowrap;
@@ -184,12 +148,6 @@
 		padding-top:15px;
 		padding-bottom:15px;
 	}
-	#search{
-		width:100px;
-		float:right;
-		padding-top:10px;
-		padding-bottom:10px;
-	}
 	#header{
 		width:320px;
 		height:50px;
@@ -200,17 +158,7 @@
 		border-top:solid;
 		border-left:solid;
 		border-right:solid;
-	}
-	.textbox{
-		height:25px;
-		margin-top:7px;
-		margin-bottom:7px;
-		margin-left:5px;
-		width:200px;
-		font-size:17px;
-	}
-	#newuser{
-		display:none;
+		position:relative;
 	}
 </style>
 </head>
@@ -222,10 +170,6 @@
 		<div id ="title">Rooms</div>
 	</div>
 	<ul id = "roomlist">
-		<li id = "newuser" class = "line">
-			<label for="name"></label><input type="text" name="name" value="" id="newname" class="textbox">
-			<button type = "submit" onclick="submitNewUser();">Create!</button>
-		</li>
 		<li id = "locationtemplate" class = "location"><img class = "icon" src = "{{ static_url("images/icon.png")}}"></li>
 		<li id ="template" class="line name" onclick = "selectUser(this);">
 			<div class = "room"><strong></strong><em></em></div>
