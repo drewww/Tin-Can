@@ -7,6 +7,7 @@
 	<meta name="viewport" content="width=320; initial-scale=1.0; minimum-scale=1.0; maximum-scale=1.0; user-scalable=0;">
 	<title>login</title>
 <script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
+<script type = "text/javascript" src = "../static/js/Timeline.js"></script>
 <script type="text/javascript" charset="utf-8">
 	var userListElement;
 	var roomListElement;
@@ -49,6 +50,8 @@
 			roomElements.push(newRoomElement);
 		}
 		$("#rooms").hide();
+		
+		$("#newname").keypress(enter);
 	});
 	
 	function createNewNameItem(name){
@@ -73,6 +76,7 @@
 			newloc.show();
 			newRoomElement.find("ul").append(newloc);
 		}
+		newRoomElement.data("timeline",new Timeline(newRoomElement.find("canvas")[0]));
 		newRoomElement.show();
 		return newRoomElement;
 	}
@@ -101,6 +105,13 @@
 			$("#newname")[0].value="";
 			addName.style.display="none";
 			select=true;
+		}
+	}
+	
+	function enter(e){
+		if (e.which==13){
+			$("#submit").focus();
+			submitNewUser();
 		}
 	}
 	
@@ -158,7 +169,7 @@
 	function selectUser(item){
 		if (select){
 			$("#rooms").show();
-			username = selected.find("div").html();
+			username = item.find("div").html();
 			$("#currentuser").html("logged in as: " + username);
 			if($("#rooms").offset().left>=5){
 				slideLeft($("#users").offset().left,$("#rooms").offset().left);
@@ -191,12 +202,17 @@
 			item.style.background="#00CCFF";
 			selected = $(item);
 		}
-		var t = setTimeout("selectUser(selected);", 500);
+		selectUser(selected);
+	}
+	
+	function statusbar(item){
+		item.data("timeline").draw();
 	}
 	
 	function selectRoom(item){
 		$(".meetingroom").css("background","white");
 		item.style.background="#00CCFF";
+		statusbar($(item));
 	}
 	
 	function back(){
@@ -285,12 +301,13 @@
 		overflow:hidden;
 	}
 	.statusbar{
-		border: 1px solid black;
 		height:15px;
+		width:300px;
 		margin-left:5px;
 		margin-right:5px;
 		position:absolute;
 		top:70px;
+		left:5px;
 	}
 	#back{
 		width:100px;
@@ -382,7 +399,7 @@
 	<ul id = "usernamelist">
 		<li id = "newuser" class = "user">
 			<label for="name"></label><input type="text" name="name" value="" id="newname" class="textbox">
-			<button type = "submit" onclick="submitNewUser();">Create!</button>
+			<button id = "submit" onclick="submitNewUser();">Create!</button>
 		</li>
 		<li id = "searchtype" class = "user">
 			<label for="name"></label><input type="text" name="name" value="" id="searchname" class="textbox">
@@ -411,7 +428,7 @@
 			<ul class = "participants">
 			</ul>
 			<img class = "next" src = "{{ static_url("images/next.png")}}">
-			<div class = "statusbar">there's a status bar here and it goes to that edge :)</div>
+			<canvas class="statusbar" width=300 height=15><canvas>
 		</li>
 	</ul>
 	</div>
