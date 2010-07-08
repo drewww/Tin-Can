@@ -29,7 +29,7 @@ function StateManager() {
     this.db = {};
         
     // Kick off an initialization request to the server.
-    connection.getState(this.initStateManager);
+    connection.getState(this.initStateManager, this);
 }
 
 StateManager.prototype = {
@@ -72,10 +72,6 @@ StateManager.prototype = {
         // This wipes all existing state, though - gotta be careful with it.
         
         console.log("this: " + this);
-        
-        // alert("IN INITSTATEMANAGER this.location: " + this.location);
-        // alert("IN INITSTATEMANAGER location: " + location);
-        // alert("IN INITSTATEMANAGER this: " + this);
         
         // Set up the main data stores, and clear the database object.
         // 
@@ -129,16 +125,16 @@ StateManager.prototype = {
             try {
                 if(obj instanceof User) {
                     console.log("user");
-                    User(obj).unswizzle();
+                    obj.unswizzle();
                 } else if(obj instanceof Location) {
                     console.log("location");
-                    Location(obj).unswizzle();
+                    obj.unswizzle();
                 } else if(obj instanceof Room) {
                     console.log("room");
-                    Room(obj).unswizzle();
+                    obj.unswizzle();
                 } else if(obj instanceof Meeting) {
                     console.log("meeting");
-                    Meeting(obj).unswizzle();
+                    obj.unswizzle();
                 }
             } catch (err){
                 console.log("Failed to unswizzle: " + obj + " with error: " + err);

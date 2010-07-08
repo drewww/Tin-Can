@@ -175,7 +175,9 @@ ConnectionManager.prototype = {
                     initialState["users"].length + ") users, (" +
                     initialState["locations"].length + ") locations, (" +
                     initialState["rooms"].length + ") rooms.");
-
+                
+                // console.log(state);
+                
                 state.initStateManager.call(state, initialState["users"],
                     initialState["locations"], initialState["rooms"]);
                     

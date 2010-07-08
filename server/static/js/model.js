@@ -25,7 +25,9 @@ User.prototype = {
     
     unswizzle: function() {
         // Converts uuids back into objects.
-        this.loc = stat.getObj(this.loc, Location);
+        if(this.loc != null) {
+            this.loc = state.getObj(this.loc, Location);
+        }
     }
 };
 
@@ -47,7 +49,7 @@ Location.prototype = {
     },
     
     userLeft: function(user) {
-        this.users.remove(user);
+        array_remove(users, user);
     },
     
     joinedMeeting: function (meeting){
@@ -64,13 +66,15 @@ Location.prototype = {
     },
     
     unswizzle: function() {
-        this.meeting = state.getObj(this.meeeting, Meeting);
-        
-        this.meeting.locJoined(this);
+
+        if(this.meeting!=null) {
+            this.meeting = state.getObj(this.meeeting, Meeting);
+            this.meeting.locJoined(this);
+        }
         
         newUsersList = [];
         for (user in this.users) {
-            newUsersList.push(state.getObj(user, User));
+            newUsersList.push(state.getObj(this.users[user], User));
         }
         
         this.users = newUsersList;
@@ -101,7 +105,9 @@ Room.prototype = {
     },
     
     unswizzle: function() {
-        this.currentMeeting = state.getObj(this.currentMeeting, Room);
+        if(this.currentMeeting!=null) {
+            this.currentMeeting = state.getObj(this.currentMeeting, Room);
+        }
     }
     
 };
@@ -137,7 +143,7 @@ Meeting.prototype = {
     },
     
     locLeft: function(loc) {
-        this.locs.remove(loc);
+        array_remove(locs, loc);
     },
     
     getCurrentParticipants: function() {
