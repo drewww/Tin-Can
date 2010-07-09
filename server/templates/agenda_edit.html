@@ -12,6 +12,7 @@
 	var items = [];  // array of agenda items
 	var currentItem = 0; //position in array
 	var lastClicked = 'item0';
+	var currentClicked;
 
 	//Turn on drag and drop sorting and constrain to y axis	
 		// $(function() {
@@ -65,16 +66,15 @@
 			clone[0].id = 'item' + itemCounter;
 			items.push(clone[0].id);
 			// $('.drag').addTouch();
+			template = $("#extraOptionsTemplate").clone();
 			clone.click(function (e) {
-				var domEl = $(this).get(0);
-				template = $("#extraOptionsTemplate");
-				console.log('last = ' + lastClicked);
-				console.log('current = ' + domEl.id);
-				if (lastClicked == domEl.id){
+				currentClicked = $(this);
+				if (lastClicked == currentClicked.get(0).id){
 					template.hide();
+					lastClicked = 'item0';
 				}
 				else{
-					lastClicked = domEl.id;
+					lastClicked = currentClicked.get(0).id;
 					$(this).append(template);
 					template.show();
 				}
@@ -105,6 +105,13 @@
 			// $('.drag').addTouch();
 			$("#itemInput")[0].value="";
 			$("#newItem")[0].style.display="none"				
+		}
+		
+		function deleteItem() {
+			template = $("#extraOptionsTemplate").clone();
+			template.hide;
+			$("#container").append(template);
+			currentClicked.remove();
 		}
 	</script>
 
@@ -202,7 +209,7 @@
 	</div>
 	
 	<div id="extraOptionsTemplate">
-		<button type="submit" id="button" onclick="">Delete</button>
+		<button type="submit" id="button" onclick="deleteItem();">Delete</button>
 		<button type="submit" onclick="">Make Current</button>
 		<button type="submit" onclick="">Make Next</button>
 	</div>
