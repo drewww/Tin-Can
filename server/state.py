@@ -94,6 +94,10 @@ def get_locations():
 
 def get_rooms():
     return rooms
+
+def get_meetings():
+    return [room.currentMeeting for room in get_rooms()
+        if room.currentMeeting != None]
     
 def get_devices():
     """Return all current known devices. 

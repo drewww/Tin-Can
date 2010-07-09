@@ -25,9 +25,11 @@ User.prototype = {
     
     unswizzle: function() {
         // Converts uuids back into objects.
-        if(this.loc != null) {
-            this.loc = state.getObj(this.loc, Location);
-        }
+        // This is deceptive and will never execute beacuse the link between
+        // users and locations is made on the location side.
+        // if(this.loc != null) {
+        //     this.loc = state.getObj(this.loc, Location);
+        // }
     }
 };
 
@@ -67,17 +69,21 @@ Location.prototype = {
     
     unswizzle: function() {
 
-        if(this.meeting!=null) {
-            this.meeting = state.getObj(this.meeeting, Meeting);
-            this.meeting.locJoined(this);
-        }
         
         newUsersList = [];
-        for (user in this.users) {
-            newUsersList.push(state.getObj(this.users[user], User));
+        for (key in this.users) {
+            user = state.getObj(this.users[key], User);
+            user.loc = this;
+            newUsersList.push(user);
         }
         
         this.users = newUsersList;
+        
+        if(this.meeting!=null) {
+            this.meeting = state.getObj(this.meeting, Meeting);
+            this.meeting.locJoined(this);
+        }
+        
     }
     
 };
@@ -106,7 +112,7 @@ Room.prototype = {
     
     unswizzle: function() {
         if(this.currentMeeting!=null) {
-            this.currentMeeting = state.getObj(this.currentMeeting, Room);
+            this.currentMeeting = state.getObj(this.currentMeeting, Meeting);
         }
     }
     
@@ -137,8 +143,8 @@ Meeting.prototype = {
     locJoined: function(loc) {
         this.locs.push(loc);
         
-        for(user in loc.users) {
-            this.allParticipants.push(user);
+        for(key in loc.users) {
+            this.allParticipants.push(loc.users[key]);
         }
     },
     
@@ -158,6 +164,8 @@ Meeting.prototype = {
     },
     
     unswizzle: function() {
+        
+        // This can't be null.
         this.room = state.getObj(this.room, Room);
         
         // We don't need to unswizzle locs or participants; those get

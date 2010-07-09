@@ -41,7 +41,7 @@ StateManager.prototype = {
         }
         
         try {
-            obj = db[uuid];
+            obj = this.db[uuid];
         } catch(err) {
             console.log("Error getting object with uuid " + uuid + ": "
                 + err);
@@ -51,6 +51,11 @@ StateManager.prototype = {
         if(type==null) {
             console.log("No type specified in getObj. This is dangerous.");
             return obj;
+        }
+
+        if(obj==null) {
+            console.log("No object found for " + uuid);
+            return null;
         }
         
         if(obj instanceof type) {
@@ -66,7 +71,7 @@ StateManager.prototype = {
         this.db[key] = value;
     },
     
-    initStateManager: function(users, locs, rooms) {
+    initStateManager: function(users, locs, rooms, meetings) {
         // Loop through all of these objects and create local 
         // JS versions of all of them to set up our data store properly.
         // This wipes all existing state, though - gotta be careful with it.
@@ -78,6 +83,7 @@ StateManager.prototype = {
         this.db = {};
         this.actors = [];
         this.rooms = [];
+        this.meetings = []
         
         // We need to do this in two passes - one pass where we make all the
         // objects using uuids as references between them, and then a 
@@ -88,7 +94,8 @@ StateManager.prototype = {
             user = users[key];
             console.log("processing user: " + user);
             if(user["location"]!=null) {
-                this.actors.push(new User(user["uuid"], user["name"], user["location"]["uuid"]));
+                this.actors.push(new User(user["uuid"], user["name"],
+                    user["location"]));
             } else {
                 this.actors.push(new User(user["uuid"], user["name"], null));
             }
@@ -99,47 +106,79 @@ StateManager.prototype = {
             loc = locs[key];
             locationUsers = [];
             for(userKey in loc["users"]) {
-                user = loc["users"][userKey];
-                locationUsers.push(user["uuid"]);
+                userUUID = loc["users"][userKey];
+                locationUsers.push(userUUID);
             }
             
-            if(location["meeting"]==null) {
+            if(loc["meetingUUID"]==null) {
                 meetingUUID = null;
             } else {
-                meetingUUID = loc["meeting"]["uuid"];
+                meetingUUID = loc["meetingUUID"];
             }
             
-            this.actors.push(new Location(loc["uuid"], loc["name"], meetingUUID, locationUsers));
+            this.actors.push(new Location(loc["uuid"], loc["name"],
+                meetingUUID, locationUsers));
         }
         
         for(key in rooms) {
             room = rooms[key];
                         
-            this.rooms.push(new Room(room["name"], room["uuid"], room["currentMeetingUUID"]));
+            this.rooms.push(new Room(room["name"], room["uuid"],
+                room["currentMeeting"]));
         }
         
+        for(key in meetings) {
+            meeting = meetings[key];
+            
+            this.meetings.push(new Meeting(meeting["uuid"], meeting["title"],
+                meeting["room"]))
+        }
         
-        // Now do an unswizzling pass.
-        for(key in this.db) {
-            obj = this.db[key];
-            try {
-                if(obj instanceof User) {
-                    console.log("user");
+        // Now do an unswizzling pass. Need to do this one in order, too,
+        // because locations need to be unswizzled before meetings, otherwise
+        // the user list in meetings ends up with the occasional UUID in it
+        
+        // This is a kind of annoying dance to get around javascript 
+        // iterating across keys instead of values. This array sets the
+        // order in which we unswizzle types.
+        allObjectCollections = {"actors":this.actors, "rooms":this.rooms,
+            "meetings":this.meetings};
+        for (objectType in allObjectCollections) {
+            allObjectsOfType = allObjectCollections[objectType];
+            console.log("Unswizzling: " + objectType);
+            for (key in allObjectsOfType) {
+                obj = allObjectsOfType[key];
+                try {
                     obj.unswizzle();
-                } else if(obj instanceof Location) {
-                    console.log("location");
-                    obj.unswizzle();
-                } else if(obj instanceof Room) {
-                    console.log("room");
-                    obj.unswizzle();
-                } else if(obj instanceof Meeting) {
-                    console.log("meeting");
-                    obj.unswizzle();
+                } catch (err) {
+                    console.log("Failed to unswizzle: "+obj+" with error: "
+                                + err);
                 }
-            } catch (err){
-                console.log("Failed to unswizzle: " + obj + " with error: " + err);
-            }
+                
+            }            
         }
+        
+        // for(key in this.db) {
+        //     obj = this.db[key];
+        //     try {
+        //         if(obj instanceof User) {
+        //             console.log("user");
+        //             obj.unswizzle();
+        //         } else if(obj instanceof Location) {
+        //             console.log("location");
+        //             obj.unswizzle();
+        //         } else if(obj instanceof Room) {
+        //             console.log("room");
+        //             obj.unswizzle();
+        //         } else if(obj instanceof Meeting) {
+        //             console.log("meeting");
+        //             obj.unswizzle();
+        //         }
+        //     } catch (err){
+        //         console.log("Failed to unswizzle: " + obj + " with error: "
+        //             + err);
+        //     }
+        // }
         
     }
 }

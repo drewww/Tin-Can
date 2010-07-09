@@ -174,12 +174,14 @@ ConnectionManager.prototype = {
                 console.log("Received state response: (" +
                     initialState["users"].length + ") users, (" +
                     initialState["locations"].length + ") locations, (" +
-                    initialState["rooms"].length + ") rooms.");
+                    initialState["rooms"].length + ") rooms, (" +
+                    initialState["meetings"].length + ") meetings.");
                 
                 // console.log(state);
                 
                 state.initStateManager.call(state, initialState["users"],
-                    initialState["locations"], initialState["rooms"]);
+                    initialState["locations"], initialState["rooms"],
+                    initialState["meetings"]);
                     
                 }
             });

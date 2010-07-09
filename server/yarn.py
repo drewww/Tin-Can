@@ -125,7 +125,8 @@ class StateHandler(tornado.web.RequestHandler):
         stateDict = {
             "locations":state.get_locations(),
             "users":state.get_users(),
-            "rooms":list(state.get_rooms())
+            "rooms":list(state.get_rooms()),
+            "meetings":state.get_meetings()
             }
         
         self.write(json.dumps(stateDict, cls=YarnModelJSONEncoder))
