@@ -8,19 +8,39 @@
   <script src="../static/js/jquery.iphoneui.js" type="text/javascript" charset="utf-8"></script>
 
 	<script type ="text/javascript">
-	
-	//Turn on drag and drop sorting and constrain to y axis	
-		$(function() {
-			$("#container").sortable({placeholder: 'ui-state-highlight',
-			axis: 'y'});
+	var itemCounter = 0; // number of items ever created
+	var items = [];  // array of agenda items
+	var currentItem = 0; //position in array
+	var lastClicked = 'item0';
+	var currentClicked;
 
-		});
+	//Turn on drag and drop sorting and constrain to y axis	
+		// $(function() {
+		// 	$("#container").sortable({placeholder: 'ui-state-highlight',
+		// 	axis: 'y'});
+		// 
+		// });
 	
 		$(document).ready(function(){
 			template = $("#doneTemplate");
 			itemList = $("#container");
 			$("#newItem").hide();
 		})
+		
+		// insert div with extra buttons beneath whatever item is clicked
+
+		$('.template').click(function (e) {
+
+			e.stopPropagation();
+			var domEl = $(this).get(0);
+			template = $("#extraOptionsTemplate");
+			clone = template.clone();
+			$(domEl.parent()).after(clone);
+			clone.show();
+		
+		})
+		
+		
 		
 	// show/hide input textbox 
 		function add(){
@@ -42,7 +62,23 @@
 			clone = template.clone();
 			itemList.append(clone);
 			clone.show();
-			$('.drag').addTouch();		
+			itemCounter = itemCounter + 1;
+			clone[0].id = 'item' + itemCounter;
+			items.push(clone[0].id);
+			// $('.drag').addTouch();
+			template = $("#extraOptionsTemplate").clone();
+			clone.click(function (e) {
+				currentClicked = $(this);
+				if (lastClicked == currentClicked.get(0).id){
+					template.hide();
+					lastClicked = 'item0';
+				}
+				else{
+					lastClicked = currentClicked.get(0).id;
+					$(this).append(template);
+					template.show();
+				}
+			})	
 		}
 
 	//crash test dummy item		
@@ -52,7 +88,7 @@
 			clone = template.clone();
 			itemList.append(clone);
 			clone.show();
-			$('.drag').addTouch();		
+			// $('.drag').addTouch();		
 		}
 	
 	//grab input from textbox and generate item in list
@@ -66,9 +102,16 @@
 			clone.find("span").html(newItem);
 			itemList.append(clone);
 			clone.show();
-			$('.drag').addTouch();
+			// $('.drag').addTouch();
 			$("#itemInput")[0].value="";
 			$("#newItem")[0].style.display="none"				
+		}
+		
+		function deleteItem() {
+			template = $("#extraOptionsTemplate").clone();
+			template.hide;
+			$("#container").append(template);
+			currentClicked.remove();
 		}
 	</script>
 
@@ -88,7 +131,7 @@
 		height: 480px;
 		width: 320px;
 	}
-	#container div{
+	#container > div{
 		height: 8.75%;
 		border: 1px solid;
 		margin: .07em;
@@ -105,7 +148,6 @@
 		width: 30px;
 		margin-top: 5px;
 		margin-right: 5px;
-
 	}
 	
 	.drag{
@@ -124,6 +166,9 @@
 		display:none;
 	}
 
+	#extraOptionsTemplate{
+		display:none;
+	}
 	</style>
 </head>
 <body>
@@ -145,14 +190,14 @@
 	<div id="currentTemplate" class="template">
 		<img src="{{ static_url("images/delete.png")}}" class="delete">
 		--->
-		current Item
+		<span id="text">current Item</span>
 		<img src ="{{ static_url("images/drag.png")}}" class="drag">		
 	</div>
 
 	<div id="doneTemplate" class="template">
 		<img src="{{ static_url("images/delete.png")}}" class="delete">
 		<img src="{{ static_url("images/accept.png")}}" class="check">
-		Done Item
+		<span id="text">Done Item</span>
 		<img src ="{{ static_url("images/drag.png")}}" class="drag">		
 	</div>	
 
@@ -163,7 +208,11 @@
 		<img src ="{{ static_url("images/drag.png")}}" class="drag">		
 	</div>
 	
-
+	<div id="extraOptionsTemplate">
+		<button type="submit" id="button" onclick="deleteItem();">Delete</button>
+		<button type="submit" onclick="">Make Current</button>
+		<button type="submit" onclick="">Make Next</button>
+	</div>
 </div>
 Done
 

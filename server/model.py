@@ -76,9 +76,9 @@ class Room(YarnBaseType):
         d["name"] = self.name
         
         if(self.currentMeeting!=None):
-            d["currentMeetingUUID"] = self.currentMeeting.uuid
+            d["currentMeeting"] = self.currentMeeting.uuid
         else:
-            d["currentMeetingUUID"] = None
+            d["currentMeeting"] = None
             
         return d
         
@@ -159,16 +159,18 @@ class Meeting(YarnBaseType):
         d = YarnBaseType.getDict(self)
         d["endedAt"] = self.endedAt
         d["isLive"] = self.isLive
+        d["room"] = self.room.uuid
         
         # We are pointedly NOT including eventHistory in here. It's 
         # duplicating information that will live in the on-disk caches anyway.
         
-        d["locations"] = list(self.locations)
+        d["locations"] = [location.uuid for location in self.locations]
         
         # Should these be just UUIDs of participants? Doing everything about
         # them, for now.
-        d["allParticipants"] = list(self.allParticipants)
-        d["currentParticipants"] = list(self.getCurrentParticipants())
+        d["allParticipants"] = [user.uuid for user in self.allParticipants]
+        d["currentParticipants"] = [user.uuid for user in self.getCurrentParticipants()]
+        
         return d
     
     def sendEvent(self, eventToSend):
@@ -394,8 +396,10 @@ class User(Actor):
         d = Actor.getDict(self)
         d["status"] = self._status
         
-        # Do we not include locations here because they're included in
-        # the Location object itself?
+        if(self.location != None):
+            d["location"] = self.location.uuid
+        else:
+            d["location"] = None
         
         return d
     
@@ -460,6 +464,7 @@ class Location(Actor):
     def joinedMeeting(self, meeting):
         logging.debug("Location joined meeting.")
         meeting.locationJoined(self)
+        self.meeting = meeting
 
         
         # create events for all our users to set them up as joining
@@ -488,8 +493,13 @@ class Location(Actor):
         
         # this is stupid, but I can't figure out how to get JSONEncoder
         # to take sets, so we have to convert to lists on the way out.
-        d["users"] = list(self.users)
-        d["meeting"] = self.meeting;
+        d["users"] = [user.uuid for user in self.users]
+        
+        if(self.meeting!=None):
+            d["meetingUUID"] = self.meeting.uuid;
+        else:
+            d["meetingUUID"] = None
+        
         return d
 
     def __str__(self):
