@@ -48,10 +48,12 @@ Location.prototype = {
     
     userJoined: function(user) {
         this.users.push(user);
+        user.loc = this;
     },
     
     userLeft: function(user) {
         array_remove(users, user);
+        user.loc = null;
     },
     
     joinedMeeting: function (meeting){

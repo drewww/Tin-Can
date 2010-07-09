@@ -154,32 +154,8 @@ StateManager.prototype = {
                     console.log("Failed to unswizzle: "+obj+" with error: "
                                 + err);
                 }
-                
             }            
         }
-        
-        // for(key in this.db) {
-        //     obj = this.db[key];
-        //     try {
-        //         if(obj instanceof User) {
-        //             console.log("user");
-        //             obj.unswizzle();
-        //         } else if(obj instanceof Location) {
-        //             console.log("location");
-        //             obj.unswizzle();
-        //         } else if(obj instanceof Room) {
-        //             console.log("room");
-        //             obj.unswizzle();
-        //         } else if(obj instanceof Meeting) {
-        //             console.log("meeting");
-        //             obj.unswizzle();
-        //         }
-        //     } catch (err){
-        //         console.log("Failed to unswizzle: " + obj + " with error: "
-        //             + err);
-        //     }
-        // }
-        
     },
     
     getUsers: function() {

@@ -150,19 +150,35 @@ class Event:
         
         # load in the params. Put them in a separate namespace to avoid
         # collisions.
-        d["params"] = self.params
         
-        # ibid.
+        # deswizzle params; we don't need to be including whole objects here,
+        # just their UUIDs. The clients can unswizzle them. 
+        d["params"] = {}
+        for paramKey in self.params.keys():
+            if(self.params[paramKey].uuid != None):
+                d["params"][paramKey] = self.params[paramKey].uuid
+            else:
+                logger.debug("Tried to convert a param into a uuid and failed\
+                " + str(self.params[paramKey]))
+        
+        
+        # Stuff in "results" stays whole and un-swizzled. This is where the
+        # outcome of events goes. IE if we have a new agenda item, the whole
+        # object will go here for easy unpacking on the other end.
         d["results"] = self.results
             
         # as above, this is just a temporary work around. Later, we'll enforce
         # these objects' existence
         try:
             d["meetingUUID"] = self.meeting.uuid
-            d["actorUUID"] = self.actor.uuid
         except:
             d["meetingUUID"] = None
+
+        try:
+            d["actorUUID"] = self.actor.uuid
+        except:
             d["actorUUID"] = None
+
             
         return d
         
@@ -314,7 +330,8 @@ def _handleAddActorDevice(event):
 def _handleJoinedLocation(event):
     location = event.params["location"]
     location.userJoined(event.actor)
-    event.addResult("user", event.actor)
+    
+    # event.addResult("user", event.actor)
     
     # Turning this off for now - I think we can live without it.
     # The USER_JOINED_LOCATION event will fire, and clients should be able

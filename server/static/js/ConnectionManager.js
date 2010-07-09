@@ -62,7 +62,6 @@ ConnectionManager.prototype = {
             dataType: "JSON",
             success: function (data) {
                 events = $.parseJSON(data);
-                console.log(events);
                 var self = this;
                 this.currentConnectRequest=setTimeout(
                     function() {self.startPersistentConnection();}, 10);
@@ -100,13 +99,66 @@ ConnectionManager.prototype = {
         
         // Depending on the event type, update the internal state
         // appropriately
+        
         switch(ev.eventType) {
             case "ADD_ACTOR_DEVICE":
+                // We don't really care about this one, actually.
+                break;
+            case "NEW_MEETING":
+                meetingData = ev["result"]["meeting"]
+                
+                meeting = new Meeting(meetingData["uuid"],
+                    meetingData["title"], meetingData["room"]);
+                meeting.unswizzle();
+                
+                state.meetings.push(meeting);
+                console.log("Added new meeting: " + meeting + " with data: "
+                    + meetingData["uuid"] + "; " + meetingdata["room"]);
+                break;
+            case "NEW_USER":
+                userData = ev["result"]["user"];
+                user = new User(userData["uuid"], userData["name"],
+                    userData["location"]);
+                user.unswizzle();
+                
+                state.actors.push(user);
+                break;
+            case "USER_JOINED_LOCATION":
+                loc = state.getObj(ev["params"]["location"], Location);
+                user = state.getObj(ev["actorUUID"], User);
+                loc.userJoined(user);
+                console.log(user.name + " joined " + loc.name);
+                break;
+            case "USER_LEFT_LOCATION":
+                loc = state.getObj(ev["params"]["location"], Location);
+                user = state.getObj(ev["actorUUID"], User);
+                loc.userLeft(user);
+                console.log(user.name + " left " + loc.name);
+                break;
+            case "LOCATION_JOINED_MEETING":
+                meeting = state.getObj(ev["meetingUUID"], Meeting);
+                loc = state.getObj(ev["params"]["location"], Location);
+                meeting.locJoined(loc);
+                console.log(loc.name + " joined " + meeting.title);
                 
                 break;
-            
+            case "LOCATION_LEFT_MEETING":
+                meeting = state.getObj(ev["meetingUUID"], Meeting);
+                loc = state.getObj(ev["params"]["location"], Location);
+                meeting.locLeft(loc);
+                
+                console.log(loc.name + " left " + meeting.title);
+                break;
+            case "NEW_DEVICE":
+                // I don't think we care about this, do we? I'm not even sure
+                // it gets sent to clients. 
+                break;
             
         }
+
+        // TODO Set up a listener infrastructure so we can update pages live,
+        // too. They'll register for event types and we'll send them on
+        // when they arrive.
         
       console.log("EVENT: <" + ev.eventType + ">");
     },
