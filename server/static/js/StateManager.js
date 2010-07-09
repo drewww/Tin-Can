@@ -180,6 +180,33 @@ StateManager.prototype = {
         //     }
         // }
         
+    },
+    
+    getUsers: function() {
+        
+        users = [];
+        for(key in this.actors) {
+            actor = this.actors[key];
+            if(actor instanceof User) {
+                users.append(actor);
+            }
+        }
+        
+        return users;
+        
+    },
+    
+    getLocations: function() {
+        
+        locations = [];
+        for(key in this.actors) {
+            actor = this.actors[key];
+            if(actor instanceof Location) {
+                locations.append(actor);
+            }
+        }
+        
+        return locations;
     }
 }
 
