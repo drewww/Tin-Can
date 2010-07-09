@@ -77,6 +77,7 @@
 			newRoomElement.find("ul").append(newloc);
 		}
 		newRoomElement.data("timeline",new Timeline(newRoomElement.find("canvas")[0]));
+		newRoomElement.data("timeline").start();
 		newRoomElement.show();
 		return newRoomElement;
 	}
