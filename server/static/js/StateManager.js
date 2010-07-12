@@ -164,7 +164,7 @@ StateManager.prototype = {
         for(key in this.actors) {
             actor = this.actors[key];
             if(actor instanceof User) {
-                users.append(actor);
+                users.push(actor);
             }
         }
         
@@ -178,7 +178,7 @@ StateManager.prototype = {
         for(key in this.actors) {
             actor = this.actors[key];
             if(actor instanceof Location) {
-                locations.append(actor);
+                locations.push(actor);
             }
         }
         
