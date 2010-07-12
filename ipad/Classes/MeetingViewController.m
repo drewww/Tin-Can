@@ -16,7 +16,7 @@
 
 #define INITIAL_REVISION_NUMBER 10000
 
-@implementation TinCanViewController
+@implementation MeetingViewController
 
 #pragma mark Application Events
 

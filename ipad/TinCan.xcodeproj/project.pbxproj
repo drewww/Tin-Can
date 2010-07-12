@@ -15,6 +15,7 @@
 		2899E5220DE3E06400AC0155 /* TinCanViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2899E5210DE3E06400AC0155 /* TinCanViewController.xib */; };
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
 		28D7ACF80DDB3853001CB0EB /* TinCanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D7ACF70DDB3853001CB0EB /* TinCanViewController.m */; };
+		3A57217F11EB7515004C2687 /* MeetingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57217E11EB7515004C2687 /* MeetingViewController.m */; };
 		3AA06B7411A9C1DA00C3D279 /* DragManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AA06B7311A9C1DA00C3D279 /* DragManager.m */; };
 		3AA06D1411AAD1C500C3D279 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AA06D1311AAD1C500C3D279 /* Icon.png */; };
 		3AB0BC3811A5D73C003A91EB /* MeetingTimerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AB0BC3711A5D73C003A91EB /* MeetingTimerView.m */; };
@@ -56,6 +57,8 @@
 		28D7ACF70DDB3853001CB0EB /* TinCanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TinCanViewController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* TinCan_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TinCan_Prefix.pch; sourceTree = "<group>"; };
+		3A57217D11EB7515004C2687 /* MeetingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeetingViewController.h; sourceTree = "<group>"; };
+		3A57217E11EB7515004C2687 /* MeetingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeetingViewController.m; sourceTree = "<group>"; };
 		3AA06B7211A9C1DA00C3D279 /* DragManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DragManager.h; sourceTree = "<group>"; };
 		3AA06B7311A9C1DA00C3D279 /* DragManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DragManager.m; sourceTree = "<group>"; };
 		3AA06D1311AAD1C500C3D279 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
@@ -137,6 +140,8 @@
 				1D3623250D0F684500981E51 /* TinCanAppDelegate.m */,
 				28D7ACF60DDB3853001CB0EB /* TinCanViewController.h */,
 				28D7ACF70DDB3853001CB0EB /* TinCanViewController.m */,
+				3A57217D11EB7515004C2687 /* MeetingViewController.h */,
+				3A57217E11EB7515004C2687 /* MeetingViewController.m */,
 				3AC2B9171198715A0071F912 /* ParticipantView.h */,
 				3AC2B9181198715A0071F912 /* ParticipantView.m */,
 				3AC2B91A119871670071F912 /* Todo.h */,
@@ -334,6 +339,7 @@
 				3AC2C23911A5B9890071F912 /* Reachability.m in Sources */,
 				3AB0BC3811A5D73C003A91EB /* MeetingTimerView.m in Sources */,
 				3AA06B7411A9C1DA00C3D279 /* DragManager.m in Sources */,
+				3A57217F11EB7515004C2687 /* MeetingViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
