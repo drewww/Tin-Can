@@ -1,5 +1,3 @@
-
-
 function Timeline(canvas){
    this.canvas=canvas;
    this.eventChanges=[];
@@ -28,7 +26,6 @@ Timeline.prototype={
         hours = Math.ceil(this.currentTime/60.0);
         hourWidth=300/hours;
         last=0;
-        console.log(this.eventChanges+ " "+ this.currentTime)
         for (var change in this.eventChanges){
             
             index = change%7;
@@ -62,8 +59,6 @@ Timeline.prototype={
         
         ctx.fillStyle="black";
         while ($.inArray(Math.round(length-1),nogood)>=0){
-            console.log(nogood);
-            console.log(length);
             length=length+1;
         }
         ctx.fillRect(length-1,0,2,15);
