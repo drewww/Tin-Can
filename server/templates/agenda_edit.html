@@ -10,7 +10,7 @@
 	<script type ="text/javascript">
 	var itemCounter = 0; // number of items ever created
 	var items = [];  // array of agenda items
-	var currentItem = 0; //position in array
+	var currentItem; // current item's id
 	var lastClicked = 'item0';
 	var currentClicked;
 
@@ -29,19 +29,7 @@
 		
 		// insert div with extra buttons beneath whatever item is clicked
 
-		$('.template').click(function (e) {
-
-			e.stopPropagation();
-			var domEl = $(this).get(0);
-			template = $("#extraOptionsTemplate");
-			clone = template.clone();
-			$(domEl.parent()).after(clone);
-			clone.show();
-		
-		})
-		
-		
-		
+	
 	// show/hide input textbox 
 		function add(){
 			newItem = $("#newItem")[0];
@@ -54,64 +42,141 @@
 			}
 
 		}
-	
+		
+		
 	//crash test dummy item
 		function makeCurrentItem() {
-			template = $("#currentTemplate");
+			templateCurrent = $("#currentTemplate");
 			itemList = $("#container");
-			clone = template.clone();
+			clone = templateCurrent.clone();
 			itemList.append(clone);
 			clone.show();
 			itemCounter = itemCounter + 1;
 			clone[0].id = 'item' + itemCounter;
 			items.push(clone[0].id);
 			// $('.drag').addTouch();
-			template = $("#extraOptionsTemplate").clone();
+			
 			clone.click(function (e) {
+				template = $("#extraOptionsTemplate");
 				currentClicked = $(this);
 				if (lastClicked == currentClicked.get(0).id){
 					template.hide();
 					lastClicked = 'item0';
+					// currentClicked[0].style.height = "40px";
 				}
 				else{
 					lastClicked = currentClicked.get(0).id;
 					$(this).append(template);
+					// currentClicked[0].style.height = "60px";
 					template.show();
 				}
 			})	
 		}
 
 	//crash test dummy item		
-		function makeDoneItem() {
-			template = $("#doneTemplate");
+		function makeDoneItem(doneItem) {
+			templateDone = $("#doneTemplate");
 			itemList = $("#container");
-			clone = template.clone();
+			clone = templateDone.clone();
 			itemList.append(clone);
 			clone.show();
-			// $('.drag').addTouch();		
+			// $('.drag').addTouch();	
+			// clone.click(function (e) {
+			// 	template = $("#extraOptionsTemplate");
+			// 	currentClicked = $(this);
+			// 	currentClicked.doneItem=true;
+			// 	if (lastClicked == currentClicked.get(0).id){
+			// 		template.hide();
+			// 		lastClicked = 'item0';
+			// 		currentClicked[0].style.height = "40px";
+			// 	}
+			// 	else{
+			// 		lastClicked = currentClicked.get(0).id;
+			// 		$(this).append(template);
+			// 		currentClicked[0].style.height = "60px";
+			// 		template.show();
+			// 	}
+			// })	
 		}
 	
 	//grab input from textbox and generate item in list
 		function makeFutureItem(name) {
 			var check = document.getElementById("futureCheck");
-			template = $("#futureTemplate");
+			templateFuture = $("#futureTemplate");
 			itemList = $("#container");
 			newItem=$("#itemInput")[0].value;
 			check.style.visibility = "hidden";
-			clone = template.clone();
+			clone = templateFuture.clone();
 			clone.find("span").html(newItem);
 			itemList.append(clone);
 			clone.show();
+			itemCounter = itemCounter + 1;
+			clone[0].id = 'item' + itemCounter;
+			items.push(clone[0].id);
 			// $('.drag').addTouch();
 			$("#itemInput")[0].value="";
-			$("#newItem")[0].style.display="none"				
+			$("#newItem")[0].style.display="none"
+			updateCurrent();
+			clone.click(function (e) {
+				template = $("#extraOptionsTemplate");
+				currentClicked = $(this);
+				console.log('items: ' + items);
+				console.log('current clicked is ' + items.indexOf(currentClicked[0].id));
+				if (lastClicked == currentClicked.get(0).id){
+					template.hide();
+					lastClicked = 'item0';
+					currentClicked[0].style.height = "40px";
+				}
+				else{
+					lastClicked = currentClicked.get(0).id;
+					$(this).append(template);
+					currentClicked[0].style.height = "60px";
+					template.show();
+				}
+			})				
 		}
 		
 		function deleteItem() {
-			template = $("#extraOptionsTemplate").clone();
-			template.hide;
-			$("#container").append(template);
-			currentClicked.remove();
+			if (currentClicked.doneItem){}
+			else{
+				template = $("#extraOptionsTemplate");
+				template.hide();
+				$("#container").append(template);
+				currentIndex = items.indexOf(currentClicked[0].id);
+				items.splice(currentIndex, 1);
+				currentClicked.remove();
+				if (currentClicked[0].id == currentItem) {
+					currentItem = items[currentIndex];
+				}
+				updateCurrent();	
+			}
+			
+		}
+		
+		function makeCurrent() {
+			
+		}
+		
+		function updateCurrent() { 
+			console.log('length is ' + items.length);
+			if (items.length == 1) {
+				console.log('length is 1 and item is ' + items[0]);
+				currentItem = items[0];
+				document.getElementById(currentItem).style.background = "#00FF00";
+			}
+			else{
+				document.getElementById(currentItem).style.background = "#00FF00";
+			}
+		}
+			
+		function itemDone() {
+			currentIndex = items.indexOf(currentClicked[0].id);
+			currentClicked.click(function() {});
+			document.getElementById(currentItem).style.background = "#FFFFFF";
+			items.splice(currentIndex, 1);
+			currentItem = items[currentIndex];
+			updateCurrent();
+		
 		}
 	</script>
 
@@ -132,7 +197,7 @@
 		width: 320px;
 	}
 	#container > div{
-		height: 8.75%;
+		height: 40px;
 		border: 1px solid;
 		margin: .07em;
 		padding: 0px;
@@ -210,8 +275,9 @@
 	
 	<div id="extraOptionsTemplate">
 		<button type="submit" id="button" onclick="deleteItem();">Delete</button>
-		<button type="submit" onclick="">Make Current</button>
+		<button type="submit" onclick="makeCurrent();">Make Current</button>
 		<button type="submit" onclick="">Make Next</button>
+		<button type="submit" onclick="itemDone();"> Done</button>
 	</div>
 </div>
 Done
