@@ -7,19 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TinCanViewController.h"
+#import "MeetingViewController.h"
 
 // This was very helpful in structuring this class.
 // http://www.cimgf.com/2008/02/16/cocoa-tutorial-nsoperation-and-nsoperationqueue/
 
 
 @interface TodoUpdateOperation : NSOperation {
-    TinCanViewController *viewController;
+    MeetingViewController *viewController;
     int rev;
 }
 
-- (id)initWithViewController:(TinCanViewController *)vC withRevisionNumber:(int)nextRev;
+- (id)initWithViewController:(MeetingViewController *)vC withRevisionNumber:(int)nextRev;
 
-@property(retain) TinCanViewController *viewController;
+@property(retain) MeetingViewController *viewController;
 
 @end

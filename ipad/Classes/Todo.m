@@ -47,7 +47,7 @@
     return [self retain];
 }
 
-- (void) startAssignment:(Participant *)participant withViewController:(TinCanViewController *)viewController {
+- (void) startAssignment:(Participant *)participant withViewController:(MeetingViewController *)viewController {
     
     // Check and see if we're owned by a participant right now AND we don't currently have a view (ie we're
     // in minimized mode inside a participant object.)

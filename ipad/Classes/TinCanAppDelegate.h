@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ParticipantView.h"
+#import "TinCanViewController.h"
 
 @class TinCanViewController;
 

@@ -1,12 +1,12 @@
 //
-//  TinCanViewController.m
+//  MeetingViewController.m
 //  TinCan
 //
 //  Created by Drew Harry on 5/10/10.
 //  Copyright MIT Media Lab 2010. All rights reserved.
 //
 
-#import "TinCanViewController.h"
+#import "MeetingViewController.h"
 #import "ParticipantView.h"
 #import "TodoUpdateOperation.h"
 #import "Todo.h"

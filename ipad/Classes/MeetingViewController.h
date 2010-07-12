@@ -1,5 +1,5 @@
 //
-//  TinCanViewController.h
+//  MeetingViewController.h
 //  TinCan
 //
 //  Created by Drew Harry on 5/10/10.
@@ -13,7 +13,7 @@
 
 @class Todo;
 
-@interface TinCanViewController : UIViewController {    
+@interface MeetingViewController : UIViewController {    
     UIView *participantsContainer;
     
     NSMutableSet *todoViews;

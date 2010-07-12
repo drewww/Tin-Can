@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import "Participant.h"
-#import "TinCanViewController.h"
+#import "MeetingViewController.h"
 
-@class TinCanViewController;
+@class MeetingViewController;
 @class Participant;
 
 @interface Todo : NSObject  <NSCopying> {
@@ -31,7 +31,7 @@
 
 - (id) copyWithZone:(NSZone *)zone;
 
-- (void) startAssignment:(Participant *)participant withViewController:(TinCanViewController *)viewController;
+- (void) startAssignment:(Participant *)participant withViewController:(MeetingViewController *)viewController;
 
 @property (nonatomic, retain) NSString *text;
 @property (nonatomic, retain) NSDate *created;

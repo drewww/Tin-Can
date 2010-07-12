@@ -15,7 +15,7 @@
 
 @synthesize viewController;
 
-- (id)initWithViewController:(TinCanViewController *)vC withRevisionNumber:(int)nextRev{
+- (id)initWithViewController:(MeetingViewController *)vC withRevisionNumber:(int)nextRev{
     
     if (![super init]) return nil;
     
