@@ -278,28 +278,24 @@ class JoinRoomHandler(BaseHandler):
                 newMeetingEvent = Event("NEW_MEETING",
                     actor.uuid, None, {"room":room})
                 newMeetingEvent = newMeetingEvent.dispatch()
-                
-                logging.debug("New meeting created, now joining people to\
-                the meeting.")
-                # Can't do this until we have events changing
-                # the internal state of the server, because
-                # the meeting with that UUID doesn't actually
-                # exist yet. Going to check this in without
-                # that chunk. The earlier stuff is working great.
-                locationJoinedEvent = Event("LOCATION_JOINED_MEETING",
-                location.uuid, newMeetingEvent.results["meeting"].uuid,
-                {"location":location})
-                locationJoinedEvent.dispatch()
-                
+
+                meeting = newMeetingEvent.results["meeting"]                
             else:
                 # pull the existing meeting.
                 meeting = room.currentMeeting
+            
+            
                 
-                # we need to mark this user as joining this
-                # meeting TODO TODO TODO
-                userJoinedEvent = Event("JOINED_ROOM", actor.uuid,
-                    meeting.uuid)
-                userJoinedEvent.dispatch()
+            logging.debug("New meeting created, now joining people to\
+            the meeting.")
+            # Can't do this until we have events changing
+            # the internal state of the server, because
+            # the meeting with that UUID doesn't actually
+            # exist yet. Going to check this in without
+            # that chunk. The earlier stuff is working great.
+            locationJoinedMeetingEvent = Event("LOCATION_JOINED_MEETING",
+            location.uuid, meeting.uuid, {"location":location})
+            locationJoinedMeetingEvent.dispatch()
               
         else: 
             raise HTTPError(400, "Specified room UUID %s \
