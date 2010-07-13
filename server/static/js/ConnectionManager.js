@@ -173,7 +173,8 @@ ConnectionManager.prototype = {
            success: function () {
                this.publishEvent("JOIN_LOCATION_COMPLETE", {});
                },
-           error: function () { console.log("Failed to join location.");},
+           error: function () { this.publishEvent("JOIN_LOCATION_COMPLETE",{},
+            false);},
            context: this,
            data: { "locationUUID": locationUUID }
         });
@@ -190,7 +191,8 @@ ConnectionManager.prototype = {
            success: function () {
                this.publishEvent("JOIN_ROOM_COMPLETE", {});
                },
-           error: function () { console.log("Failed to join room.");},
+           error: function () { this.publishEvent("JOIN_ROOM_COMPLETE", {},
+           false);},
            context: this,
            data: { "roomUUID": roomUUID}
         });
@@ -207,7 +209,9 @@ ConnectionManager.prototype = {
            success: function () {
                this.publishEvent("LEAVE_ROOM_COMPLETE", {});
                },
-           error: function () { console.log("Failed to leave room.");},
+           error: function () {this.publishEvent("LEAVE_ROOM_COMPLETE", {},
+            false);
+           },
            context: this,
            data: { "roomUUID": roomUUID}
         });
@@ -229,7 +233,7 @@ ConnectionManager.prototype = {
         this.eventListeners = array_remove(this.eventListeners, callback);
     },
     
-    publishEvent: function(type, result) {
+    publishEvent: function(type, result, success) {
         
         // ConnectionEvents have the form:
         // {"type":type, "results":{}}
@@ -243,7 +247,11 @@ ConnectionManager.prototype = {
         //      JOIN_LOCATION_COMPLETE
         //      etc, basically any server-side event type + _COMPLETE
         
-        e = {"type": type, "result":result};
+        if(success==null) {
+            success = true;
+        }
+        
+        e = {"type": type, "result":result, "success":success};
         
         // Loop through the list of event listeners, and trigger
         // "connectionEvent" on each of them with the event object
