@@ -23,8 +23,9 @@
 	var users;
 //	var names = ["asdf", "asdf325", "omgomgomg","sd","sdf","sdfdsfgf","sdvdfbdfg","ssdf","sdg"];
 	var names=[];
-	var locs;
-	var rooms = [[true,"asdf","meeting1",[4,3]], [true,"asdf325","meeting2",[5,4,2,1]], [false,"omgomgomg","meeting3's name is really long and goes past the edge",[7,1,3]],[false,"wtf","meeting4",[1,12]]];
+	var locs=[];
+//	var rooms = [[true,"asdf","meeting1",[4,3]], [true,"asdf325","meeting2",[5,4,2,1]], [false,"omgomgomg","meeting3's name is really long and goes past the edge",[7,1,3]],[false,"wtf","meeting4",[1,12]]];
+	var rooms=[];
 	var roomNames=[];
 	var locNames=[];
 	var nameElements = [];
@@ -34,61 +35,98 @@
 	var selected;
 	
 	$(document).ready(function(){
+		//initializes variables
+		//locTemplate and locationTemplate have similar names - not sure how to distunguish.
+		//locTemplate is for the location page, locationTemplate is for the rooms page (the 
+		//squares that show number of people in each location in the rooms).
+		userListElement = $("#usernamelist");
+		nameTemplate = $("#nametemplate");
+		locListElement=$("#loclist");
+		locTemplate=$("#loctemplate");
+		roomListElement = $("#roomlist");
+		roomTemplate = $("#roomtemplate");
+		locationTemplate = $("#locationtemplate");
+		
+		//hides templates and locations/rooms pages
+		nameTemplate.hide();
+		locTemplate.hide();
+		roomTemplate.hide();
+		locationTemplate.hide();
+		$("#searchtype").hide();
+		$("#newuser").hide();
+		$("#locs").hide();
+		$("#rooms").hide();
+		
+		//handlers for add user and searching
+		$("#newname").keypress(enter);
+		$("#searchname").keyup(searchForUser);
+		
+		//because js files take forever to load
+		var t = setTimeout("update()",50);
+	});
+	
+	//in theory, I'd like to use this to update pages from the server, but I don't know how
+	//to do it without clearing the bg color for the selected item. currently it's only used 
+	//to initialize the page
+	function update(){
+		displayNameList();
+		displayLocList();
+		displayRoomList();
+	}
+	
+	//removes all name elements, gets new userlist from state and creates new name elements
+	function displayNameList(){
+		for (nameElement in nameElements){
+			nameElements[nameElement].remove();
+		}
 		
 		users=state.getUsers();
-		rooms=state.rooms; //I have no idea how I did this. will probably get replaced with a method
-		locs=state.getLocations();
 		for (user in users){
 			names.push(users[user].name);
 		}
-		for (room in rooms){
-			roomNames.push(rooms[room].name);
-		}
-		for (loc in locs){
-			locNames.push(locs[loc].name);
-		}
 		
-		userListElement = $("#usernamelist");
-		nameTemplate = $("#nametemplate");
-		
-		nameTemplate.hide();
-		$("#searchtype").hide();
-		$("#newuser").hide();
-		
-		//generates initial username list
 		for (var name in names){
 			var newNameElement = createNewNameItem(names[name]);
 			userListElement.append(newNameElement);
 			nameElements.push(newNameElement);
 		}
+	}
+	
+	//removes all loc elements, gets new locations from state and creates new loc elements
+	function displayLocList(){
+		for (locElement in locElements){
+			locElements[locElement].remove();
+		}
 		
-		$("#searchname").keyup(searchForUser);
+		locs=state.getLocations();
+		for (loc in locs){
+			locNames.push(locs[loc].name);
+		}
 		
-		locListElement=$("#loclist");
-		locTemplate=$("#loctemplate");
-		locTemplate.hide();
 		for (var loc in locs){
 			var newLocElement = createNewLocItem(locs[loc]);
 			locListElement.append(newLocElement);
 			locElements.push(newLocElement);
 		}
-		$("#locs").hide();
+	}
+	
+	//removes all room elements, gets new rooms from state and creates new room elements
+	function displayRoomList(){
+		for (roomElement in roomElements){
+			roomElements[roomElement].remove();
+		}
 		
-		roomListElement = $("#roomlist");
-		roomTemplate = $("#roomtemplate");
-		locationTemplate = $("#locationtemplate");
-		roomTemplate.hide();
-		locationTemplate.hide();
-	//	$(".name").hide();
+		rooms=state.rooms; //I have no idea how I did this. will probably get replaced with a method
+		for (room in rooms){
+			roomNames.push(rooms[room].name);
+		}
+
 		for (var x in rooms){
 			var newRoomElement = createNewRoomItem(rooms[x]);
 			roomListElement.append(newRoomElement);
 			roomElements.push(newRoomElement);
 		}
-		$("#rooms").hide();
-		
-		$("#newname").keypress(enter);
-	});
+	}
 	
 	function createNewNameItem(name){
 		var newNameElement = nameTemplate.clone();
@@ -106,27 +144,27 @@
 	
 	function createNewRoomItem(room){
 		newRoomElement = roomTemplate.clone();
-		if (true){ //assume every room has a current meeting
+		if (room.currentMeeting!=null){ //assume every room has a current meeting for now
 			newRoomElement.find("strong").html(room.name);
-		}
-		else{
-			newRoomElement.find("em").html(room.name);
-		}
-		newRoomElement.find("div.room").append(" - " + room.currentMeeting);
-		if (room.currentMeeting!=null){
+			newRoomElement.find("div.room").append(" - " + room.currentMeeting.title);
 			for (var y in room.currentMeeting.locs){
 				newloc = locationTemplate.clone();
-				newloc.prepend(room.currentMeeting.locs[y]);
+				newloc.prepend(room.currentMeeting.locs[y].users.length);
 				newloc.show();
 				newRoomElement.find("ul").append(newloc);
 			}
 		}
+		else{
+			newRoomElement.find("em").html(room.name);
+		}
+		
 		newRoomElement.data("timeline",new Timeline(newRoomElement.find("canvas")[0]));
 		newRoomElement.data("timeline").start();
 		newRoomElement.show();
 		return newRoomElement;
 	}
 	
+	//only used in search. will probably get deleted.
 	//hide all elements. go through names. if a name is in list, show the name element.
 	function displayList(list){
 	//	$(".name").hide();
@@ -137,6 +175,7 @@
 		}
 	}
 	
+	//hides and shows the "add new user" box
 	function toggleAdd(){
 		clearSearch();
 		var addName=$("#newuser")[0];
@@ -154,6 +193,7 @@
 		}
 	}
 	
+	//allows enter to submit the name of the new user instead of having to click the button
 	function enter(e){
 		if (e.which==13){
 			$("#submit").focus();
@@ -161,6 +201,10 @@
 		}
 	}
 	
+	//should eventually be able to submit new users to the server. currently updates
+	//names and nameElements. unfortunately, updating names screws things up in selectUser
+	//because the new name is in names but there's no user object, so it sends the wrong info
+	//to the server. I would change it, but I can't create new users yet
 	function submitNewUser(){
 		var newName=$("#newname")[0].value;
 		if (newName!=""){
@@ -175,6 +219,7 @@
 		}
 	}
 	
+	//next few functions are for search, which we'll probably delete anyways...
 	function toggleSearch(){
 		select=true;
 		$(".name").css("background","white");
@@ -211,22 +256,53 @@
 		$("#searchname").focus();
 	}
 	
-	//highlights username or closes add-user-bar
+	//slides the screen left slightly
+	function slideLeft(userspos,locspos,roomspos){
+		$("#users").offset({left:userspos-5,top:0});
+		$("#locs").offset({left:locspos-5,top:0});
+		$("#rooms").offset({left:roomspos-5,top:0});
+	}
+	
+	//slides the screen right slightly
+	function slideRight(userspos,locspos,roomspos){
+		$("#users").offset({left:userspos+5,top:0});
+		$("#locs").offset({left:locspos+5,top:0});
+		$("#rooms").offset({left:roomspos+5,top:0});
+	}
+	
+	//highlights the clicked user (if add is not toggled), refreshes loc page, and calls selectUser
+	function highlightUser(item){
+		$(".name").css("background","white");
+		if (select){
+			item.style.background="#00CCFF";
+			selected = $(item);
+		}
+		connection.getState(); //I hope this is how you update the state
+	//	var t = setTimeout("tempUser()",200);
+		console.log(state);
+		displayLocList();
+		selectUser(selected);
+	}
+	
+	//sets the "logged in as" and calls itself in a setTimeout to slide left. also sends information
+	//to server and starts the connection
 	function selectUser(item){
 		if (select){
 			$("#locs").show();
 			username = item.find("div").html();
 			user=users[$.inArray(username,names)];
 			$("#currentuser").html("logged in as: " + user.name);
+			
 			if($("#locs").offset().left>=5){
 				slideLeft($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
 				var t = setTimeout("selectUser(selected)", 2);
 			}
+			
 			else{
 				$("#users").hide();
 				$("#locs").offset({left:0,top:0});
-				$("#users").offset({left:-320,top:0});
-				$("#rooms").offset({left:320,top:0});
+				$("#users").offset({left:0,top:0});
+				$("#rooms").offset({left:0,top:0});
 				connection.setUser(user.uuid);
 				connection.connect();
 			}
@@ -236,90 +312,90 @@
 		}
 	}
 	
-	function slideLeft(userspos,locspos,roomspos){
-		$("#users").offset({left:userspos-5,top:0});
-		$("#locs").offset({left:locspos-5,top:0});
-		$("#rooms").offset({left:roomspos-5,top:0});
-	}
-	
-	function slideRight(userspos,locspos,roomspos){
-		$("#users").offset({left:userspos+5,top:0});
-		$("#locs").offset({left:locspos+5,top:0});
-		$("#rooms").offset({left:roomspos+5,top:0});
-	}
-	
-	function highlightUser(item){
-		$(".name").css("background","white");
-		if (select){
-			item.style.background="#00CCFF";
-			selected = $(item);
-		}
-		selectUser(selected);
-	}
-	
-	function statusbar(item){
-		item.data("timeline").draw();
-	}
-	
+	//highlights the clicked user, refreshes the room page, and calls selectLoc
 	function highlightLoc(item){
 		$(".loc").css("background","white");
 		item.style.background="#00CCFF";
-		selected=$(item)
+		selected=$(item);
+		connection.getState(); //I hope this is how you update the state
+		console.log(state);
+		displayRoomList();
 		selectLoc(selected);
 	}
 	
+	//sets the "location:" and calls itself in a setTimeout to slide left. also sends information
+	//to server
 	function selectLoc(item){
 		$("#rooms").show();
 		locname = item.find("div").html();
 		loc=locs[$.inArray(locname,locNames)];
-		$("#currentloc").html("joined location: " + loc.name);
+		$("#currentloc").html("location: " + loc.name);
+		
 		if($("#rooms").offset().left>=5){
 			slideLeft($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
 			var t = setTimeout("selectLoc(selected)", 2);
 		}
+		
 		else{
 			$("#locs").hide();
 			$("#rooms").offset({left:0,top:0});
-			$("#locs").offset({left:-320,top:0});
-			$("#users").offset({left:-640,top:0});
+			$("#locs").offset({left:0,top:0});
+			$("#users").offset({left:0,top:0});
 			connection.joinLocation(loc.uuid);
 		}
 	}
 	
+	//highlights the current room and sends information to the server. also updates the statusbar
+	//on clicks (but makes the server yell a lot) to test the timeline library
 	function selectRoom(item){
 		$(".meetingroom").css("background","white");
+		
 		roomname = $(item).find("div").find("strong").html();
+		if (roomname==""){
+			roomname = $(item).find("div").find("em").html();
+		}
+		
 		room=rooms[$.inArray(roomname,roomNames)];
 		connection.joinRoom(room.uuid);
 		item.style.background="#00CCFF";
 		statusbar($(item));
 	}
 	
+	function statusbar(item){
+		item.data("timeline").draw();
+	}
+	
+	//slides right 
 	function backToUsers(){
 		$("#users").show();
+		
 		if($("#users").offset().left<=-5){
 			slideRight($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
 			var t = setTimeout("backToUsers()", 2);
 		}
+		
 		else{
 			$("#locs").hide();
-			$("#rooms").offset({left:640,top:0});
-			$("#locs").offset({left:320,top:0});
+			$("#rooms").offset({left:0,top:0});
+			$("#locs").offset({left:0,top:0});
 			$("#users").offset({left:0,top:0});
 		}
 	}
 	
+	//slides right
 	function backToLocs(){
 		$("#locs").show();
+		
 		if($("#locs").offset().left<=-5){
 			slideRight($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
 			var t = setTimeout("backToLocs()", 2);
 		}
+		
 		else{
 			$("#rooms").hide();
-			$("#rooms").offset({left:320,top:0});
+			$("#rooms").offset({left:0,top:0});
 			$("#locs").offset({left:0,top:0});
-			$("#users").offset({left:-320,top:0});
+			$("#users").offset({left:0,top:0});
 		}
 	}
 	
@@ -333,7 +409,10 @@
 		margin:0px;
 	}
 	#usernamelist,#roomlist,#loclist{
-		border:solid;
+		border-top:solid 3px;
+		border-bottom:solid 2px;
+		border-right:solid 2px;
+		border-left:solid 2px;
 		width:320px;
 		list-style-type:none;
 		padding:0px;
@@ -423,6 +502,18 @@
 		padding-bottom:10px;
 		margin-left:5px;
 	}
+	#currentuser{
+		text-align:right;
+		margin:3px;
+		font-family:"Arial",sans-serif;
+		font-size:12px;
+	}
+	#currentloc{
+		text-align:right;
+		margin:3px;
+		font-family:"Arial",sans-serif;
+		font-size:12px;
+	}
 	.status{
 		width:25px;
 		float:left;
@@ -455,6 +546,11 @@
 		padding-bottom:15px;
 		padding-left:25px;
 	}
+	.room{
+		padding-top:5px;
+		padding-right:5px;
+		padding-left:5px;
+	}
 	#add{
 		width:100px;
 		text-align:right;
@@ -483,7 +579,8 @@
 		margin:none;
 		padding:none;
 		clear:both;
-		border:solid;
+		border:solid 2px;
+	
 	.textbox{
 		height:25px;
 		margin-top:7px;
@@ -498,6 +595,7 @@
 	#searchtype{
 		display:none;
 	}
+	
 
 </style>
 </head>
