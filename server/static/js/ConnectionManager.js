@@ -220,6 +220,18 @@ ConnectionManager.prototype = {
     addUser: function(name) {
         // Trigger an add-user event on the server. Will 
         
+        $.ajax({
+            url: '/users/add',
+            type: "POST",
+            context: this,
+            data: {"newUserName":name},
+            success: function () {
+                this.publishEvent("NEW_USER_COMPLETE", {});
+            },
+            error: function() {
+                this.publishEvent("NEW_USER_COMPLETE", {}, false);
+            }
+        });
     },
     
     addListener: function(callback) {

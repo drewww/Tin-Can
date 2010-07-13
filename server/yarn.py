@@ -322,9 +322,7 @@ class AddUserHandler(tornado.web.RequestHandler):
         logging.info("Adding new user: " + newUserName)
         
         newUserEvent = Event("NEW_USER", None, None, {"name":newUserName})
-        
-        
-        # 
+        newUserEvent.dispatch()
     
     
 

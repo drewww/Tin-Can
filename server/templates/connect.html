@@ -24,7 +24,6 @@
 					conn.addListener({connectionEvent: function(e) {
 						console.log("Listener received conn event: " + e);
 					}});
-
 					
 					// Setup the button actions.
 					$("#login").click(function() {
@@ -43,6 +42,10 @@
 					$('#join_room').click(function() {
 						conn.joinRoom($('#room')[0].value);
 					});
+					
+					$('#new_user_button').click(function() {
+						conn.addUser($('#new_user')[0].value);
+					})
 					
 				});
 		
@@ -80,7 +83,7 @@
 <button id="leave_room">Leave Room</button>
 <button id="stop">Stop</button>
 <label for="new_user">New User</label><input type="text" name="new_user" value="" id="new_user">
-<button id="new_user_button" onclick="createNewUser()">New User</button>
+<button id="new_user_button">New User</button>
 
 
 

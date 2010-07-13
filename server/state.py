@@ -84,7 +84,7 @@ def put_obj(key, value):
 
 
 def add_actor(actor):
-    self.actors.add(actor)
+    actors.add(actor)
 
 def get_users():
     return [actor for actor in actors if isinstance(actor, model.User)]

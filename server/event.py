@@ -88,7 +88,6 @@ class Event:
         else:
             self.params = params
         
-        
         # If this is a NEW_DEVICE event, we're not going to have any actor
         # information yet, so ditch out of the constructor now instead of 
         # failing on that stuff later. 
@@ -99,11 +98,16 @@ class Event:
         # Eventually we'll be rigorous about checking these, but for now
         # if we get key errors, just eat them and set them to None. Too hard
         # to test without this for now.
-        self.actor = state.get_obj(actorUUID, model.Actor)
-        if(self.actor==None):
-            logging.error("""Tried to create an event with
-                            invalid actorUUID %s"""%actorUUID)
-            return None
+        if(not self.eventType in ["NEW_USER"]):
+            self.actor = state.get_obj(actorUUID, model.Actor)
+            if(self.actor==None):
+                logging.error("""Tried to create an event with
+                                invalid actorUUID %s"""%actorUUID)
+                return None
+        else:
+            logging.debug("Since this is a NEW_USER event, we can allow \
+self.actor to be None.")
+            self.actor = None
 
         # TODO Think about changing this. Makes returning the UUID
         # of the new object easier if we just say that new meetings REQUIRE
@@ -111,7 +115,7 @@ class Event:
         # event to create the UUID at that point and pass it down the chain.
         # TODO Figure out how to merge these event details into the main
         # event specification data structure, too.
-        if(not self.eventType in["NEW_MEETING", "ADD_ACTOR_DEVICE",
+        if(not self.eventType in ["NEW_MEETING", "ADD_ACTOR_DEVICE",
             "USER_JOINED_LOCATION", "USER_LEFT_LOCATION", "NEW_USER"]):
             # any event other than NEW MEETING needs to have a meeting param
             self.meeting = state.get_obj(meetingUUID, model.Meeting)
@@ -146,7 +150,7 @@ class Event:
     def getDict(self):
         d = {}
         
-        # I think I could some fancy self-referential loop-through-own-keys
+        # I think I could do some fancy self-referential loop-through-own-keys
         # thing here, but I kinda like the explicitness of doing it by hand
         # to remind what will actually be in this dictionary.
         d["eventType"] = self.eventType
@@ -159,12 +163,23 @@ class Event:
         # deswizzle params; we don't need to be including whole objects here,
         # just their UUIDs. The clients can unswizzle them. 
         d["params"] = {}
+        logging.debug("params: " + str(self.params))
         for paramKey in self.params.keys():
-            if(self.params[paramKey].uuid != None):
-                d["params"][paramKey] = self.params[paramKey].uuid
-            else:
-                logger.debug("Tried to convert a param into a uuid and failed\
-                " + str(self.params[paramKey]))
+            try:
+                # if this works, then we were given an object that needs to be
+                # converted down to a uuid. If it doesn't, then we didn't need
+                # to convert it anyway.
+                if(self.params[paramKey].uuid != None):
+                    d["params"][paramKey] = self.params[paramKey].uuid
+                else:
+                    logging.debug("Tried to convert a param into a uuid and\
+failed" + str(self.params[paramKey]))
+            except Exception, e:
+                logging.debug("Failed to convert a param into a UUID, probably\
+wasn't an object to begin with. exception: " + str(e) + ", object: "
++ str(self.params[paramKey]))
+                
+            
         
         
         # Stuff in "results" stays whole and un-swizzled. This is where the
