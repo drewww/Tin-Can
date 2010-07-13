@@ -103,7 +103,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
         return actor
     
-    def get_current_device(self):
+    def get_current_device(self):   
         # All logged-in users should have a deviceUUID.
         deviceUUID = self.get_cookie("deviceUUID")
         

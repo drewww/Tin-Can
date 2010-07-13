@@ -218,7 +218,8 @@ class Event:
         
         # SEND EVENT TO APPROPRIATE CLIENTS
         if(self.eventType in ["NEW_MEETING","NEW_USER","NEW_DEVICE",
-            "ADD_ACTOR_DEVICE", "USER_JOINED_LOCATION", "USER_LEFT_LOCATION"]):
+            "ADD_ACTOR_DEVICE", "USER_JOINED_LOCATION", "USER_LEFT_LOCATION",
+            "LOCATION_JOINED_MEETING"]):
             sendEventsToDevices(state.get_devices(), [event])
         else:
             try:

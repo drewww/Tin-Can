@@ -144,6 +144,7 @@ Meeting.prototype = {
     
     locJoined: function(loc) {
         this.locs.push(loc);
+        loc.joinedMeeting(this);
         
         for(key in loc.users) {
             this.allParticipants.push(loc.users[key]);

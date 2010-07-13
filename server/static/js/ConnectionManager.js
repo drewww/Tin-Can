@@ -55,7 +55,6 @@ ConnectionManager.prototype = {
     },
     
     startPersistentConnection: function() {
-        console.log("cookie: " + document.cookie);
         this.currentConnectRequest = $.ajax({
             url: '/connect/',
             type: "GET",
@@ -105,7 +104,7 @@ ConnectionManager.prototype = {
                 // We don't really care about this one, actually.
                 break;
             case "NEW_MEETING":
-                meetingData = ev["result"]["meeting"]
+                meetingData = ev["results"]["meeting"]
                 
                 meeting = new Meeting(meetingData["uuid"],
                     meetingData["title"], meetingData["room"]);
@@ -113,10 +112,10 @@ ConnectionManager.prototype = {
                 
                 state.meetings.push(meeting);
                 console.log("Added new meeting: " + meeting + " with data: "
-                    + meetingData["uuid"] + "; " + meetingdata["room"]);
+                    + meetingData["uuid"] + "; " + meetingData["room"]);
                 break;
             case "NEW_USER":
-                userData = ev["result"]["user"];
+                userData = ev["results"]["user"];
                 user = new User(userData["uuid"], userData["name"],
                     userData["location"]);
                 user.unswizzle();
@@ -140,7 +139,6 @@ ConnectionManager.prototype = {
                 loc = state.getObj(ev["params"]["location"], Location);
                 meeting.locJoined(loc);
                 console.log(loc.name + " joined " + meeting.title);
-                
                 break;
             case "LOCATION_LEFT_MEETING":
                 meeting = state.getObj(ev["meetingUUID"], Meeting);
