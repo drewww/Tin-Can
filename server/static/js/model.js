@@ -152,6 +152,7 @@ Meeting.prototype = {
     },
     
     locLeft: function(loc) {
+        loc.leftMeeting(this);
         array_remove(locs, loc);
     },
     

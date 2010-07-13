@@ -18,6 +18,9 @@ import simplejson as json
 
 import model
 
+# TODO Merge EVENT_TYPES, EVENT_PARAMS, and DISPATCH (way at the bottom) 
+# into one happy data structure. All the metadata about events should be
+# kept together, instead of in three places. 
 EVENT_TYPES = ["NEW_MEETING", "JOINED_MEETING", "LEFT_ROOM",
     "USER_JOINED_LOCATION", "USER_LEFT_LOCATION", "NEW_USER", "LOCATION_JOINED_MEETING",
     "LOCATION_LEFT_ROOM", "NEW_DEVICE", "ADD_ACTOR_DEVICE"
@@ -106,8 +109,10 @@ class Event:
         # of the new object easier if we just say that new meetings REQUIRE
         # UUIDs too, and it's the job of the person creating a new meeting
         # event to create the UUID at that point and pass it down the chain.
+        # TODO Figure out how to merge these event details into the main
+        # event specification data structure, too.
         if(not self.eventType in["NEW_MEETING", "ADD_ACTOR_DEVICE",
-            "USER_JOINED_LOCATION", "USER_LEFT_LOCATION"]):
+            "USER_JOINED_LOCATION", "USER_LEFT_LOCATION", "NEW_USER"]):
             # any event other than NEW MEETING needs to have a meeting param
             self.meeting = state.get_obj(meetingUUID, model.Meeting)
             if(self.meeting==None):

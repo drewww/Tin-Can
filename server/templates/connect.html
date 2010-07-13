@@ -20,6 +20,11 @@
 				$("document").ready(function() {
 					console.log("document ready");
 					conn = connection;
+
+					conn.addListener({connectionEvent: function(e) {
+						console.log("Listener received conn event: " + e);
+					}});
+
 					
 					// Setup the button actions.
 					$("#login").click(function() {
@@ -38,6 +43,7 @@
 					$('#join_room').click(function() {
 						conn.joinRoom($('#room')[0].value);
 					});
+					
 				});
 		
 	</script>

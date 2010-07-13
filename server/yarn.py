@@ -317,7 +317,12 @@ class LeaveRoomHandler(BaseHandler):
 class AddUserHandler(tornado.web.RequestHandler):
     
     def post(self):
-        userName = self.get_argument()
+        newUserName = self.get_argument("newUserName")
+        
+        logging.info("Adding new user: " + newUserName)
+        
+        newUserEvent = Event("NEW_USER", None, None, {"name":newUserName})
+        
         
         # 
     

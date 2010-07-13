@@ -14,6 +14,8 @@ ConnectionManager.prototype = {
    currentConnectRequest: null,
    isConnected: false,
    
+   eventListeners: [],
+   
    setUser: function(userUUID) {
         console.log("Setting userUUID: " + userUUID);
         this.userUUID = userUUID;
@@ -26,17 +28,16 @@ ConnectionManager.prototype = {
             return;
         }
         
-        console.log("cookie (pre): " + document.cookie);
         $.ajax({
            url: '/connect/login',
            type: "POST",
            success: function () {
                this.isConnected = true;
+               this.publishEvent("CONNECT_COMPLETE", {});
                
                var self = this;
                this.currentConnectRequest=setTimeout(
                    function() {self.startPersistentConnection();}, 10);
-                   
                },
            error: function () { console.log("FAIL (login)");},
            context: this,
@@ -66,7 +67,7 @@ ConnectionManager.prototype = {
                     function() {self.startPersistentConnection();}, 10);
                     
                 for(var i=0; i<events.length; i++) {
-                    this.dispatchEvent(events[i]);
+                    this.publishEvent(events[i]);
                 }
                 
                 },
@@ -94,7 +95,7 @@ ConnectionManager.prototype = {
         Console.log("Aborted current connection.");
     },
         
-    dispatchEvent: function(ev) {
+    publishEvent: function(ev) {
         
         // Depending on the event type, update the internal state
         // appropriately
@@ -170,7 +171,7 @@ ConnectionManager.prototype = {
            url: '/locations/join',
            type: "POST",
            success: function () {
-               console.log("Joined location successfully.");
+               this.publishEvent("JOIN_LOCATION_COMPLETE", {});
                },
            error: function () { console.log("Failed to join location.");},
            context: this,
@@ -187,7 +188,7 @@ ConnectionManager.prototype = {
            url: '/rooms/join',
            type: "POST",
            success: function () {
-               console.log("Joined room successfully.");
+               this.publishEvent("JOIN_ROOM_COMPLETE", {});
                },
            error: function () { console.log("Failed to join room.");},
            context: this,
@@ -204,12 +205,63 @@ ConnectionManager.prototype = {
            url: '/rooms/leave',
            type: "POST",
            success: function () {
-               console.log("Left room successfully.");
+               this.publishEvent("LEAVE_ROOM_COMPLETE", {});
                },
            error: function () { console.log("Failed to leave room.");},
            context: this,
            data: { "roomUUID": roomUUID}
         });
+    },
+    
+    addUser: function(name) {
+        // Trigger an add-user event on the server. Will 
+        
+    },
+    
+    addListener: function(callback) {
+        // Pass in an object that you connectEvent called on when there is
+        // a connection event. 
+        
+        this.eventListeners.push(callback);
+    },
+    
+    removeListener: function(callback) {
+        this.eventListeners = array_remove(this.eventListeners, callback);
+    },
+    
+    publishEvent: function(type, result) {
+        
+        // ConnectionEvents have the form:
+        // {"type":type, "results":{}}
+        // Types are:
+        //      CONNECT_COMPLETE    - done with initial conection, persistent
+        //                            connection now open.
+        //      GET_STATE_COMPLETE  - when the get_state operation is completed
+        //      NEW_USER_COMPLETE
+        //      LEAVE_ROOM_COMPLETE
+        //      JOIN_ROOM_COMPLETE
+        //      JOIN_LOCATION_COMPLETE
+        //      etc, basically any server-side event type + _COMPLETE
+        
+        e = {"type": type, "result":result};
+        
+        // Loop through the list of event listeners, and trigger
+        // "connectionEvent" on each of them with the event object
+        // as a parameter. If they don't have that method, sucks for them -
+        // make a note in the console.
+        console.log("ConnectionEvent: " + e.type + ".");
+        
+        for(key in this.eventListeners) {
+            listener = this.eventListeners[key];
+            
+            try {
+                listener.connectionEvent(e);
+            } catch (err) {
+                console.log("Tried to send event " + e + " to " + listener + 
+                " but connectionEvent method was missing. You must declare" +
+                " that method to receive connectionEvents.");
+            }
+        }
     },
     
     getState: function() {
@@ -219,6 +271,7 @@ ConnectionManager.prototype = {
             url: '/connect/state',
             type: "GET",
             dataType: "JSON",
+            context: this,
             success: function (data) {
                 initialState = $.parseJSON(data);
                 console.log("Received state response: (" +
@@ -232,10 +285,10 @@ ConnectionManager.prototype = {
                 state.initStateManager.call(state, initialState["users"],
                     initialState["locations"], initialState["rooms"],
                     initialState["meetings"]);
-                    
+                
+                this.publishEvent("GET_STATE_COMPLETE", {});
                 }
             });
-        
     }
 };
 
