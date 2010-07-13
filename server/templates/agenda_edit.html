@@ -153,7 +153,13 @@
 			
 		}
 		
-		function makeCurrent() {
+		function makeNext() {
+			console.log('current ITEM is ' + currentItem);
+			console.log(currentItem);
+			console.log(currentClicked);
+			
+			(currentClicked).insertAfter($("#"+currentItem));
+			// document.getElementById(currentItem).after(currentClicked);
 			
 		}
 		
@@ -162,17 +168,19 @@
 			if (items.length == 1) {
 				console.log('length is 1 and item is ' + items[0]);
 				currentItem = items[0];
-				document.getElementById(currentItem).style.background = "#00FF00";
+				document.getElementById(currentItem).style.background = "#0000FF";
 			}
 			else{
-				document.getElementById(currentItem).style.background = "#00FF00";
+				 document.getElementById(currentItem).style.background = "#0000FF";
+				//$("#"+currentItem).style.background = "0000FF";
 			}
 		}
 			
 		function itemDone() {
+			console.log($("#"+currentItem));
+			console.log(currentClicked);
 			currentIndex = items.indexOf(currentClicked[0].id);
-			currentClicked.click(function() {});
-			document.getElementById(currentItem).style.background = "#FFFFFF";
+			document.getElementById(currentItem).style.background = "#C0C0C0";
 			items.splice(currentIndex, 1);
 			currentItem = items[currentIndex];
 			updateCurrent();
@@ -240,7 +248,7 @@
 <div id="border">
 	
 	<div id="header">Edit 
-		<input type="button" value="Done" onclick="makeDoneItem()">
+		<input type="button" id="doneButton" value="Done" onclick="itemDone()">
 		<input type="button" value="Current" onclick="makeCurrentItem()">
 		<input type="button" value="Add" onclick="add()"> </div>
 	
@@ -275,8 +283,7 @@
 	
 	<div id="extraOptionsTemplate">
 		<button type="submit" id="button" onclick="deleteItem();">Delete</button>
-		<button type="submit" onclick="makeCurrent();">Make Current</button>
-		<button type="submit" onclick="">Make Next</button>
+		<button type="submit" onclick="makeNext();">Make Next</button>
 		<button type="submit" onclick="itemDone();"> Done</button>
 	</div>
 </div>
