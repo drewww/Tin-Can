@@ -22,7 +22,7 @@
 					conn = connection;
 
 					conn.addListener({connectionEvent: function(e) {
-						console.log("Listener received conn event: " + e);
+						// console.log("Listener received conn event: " + e);
 					}});
 					
 					// Setup the button actions.
@@ -43,9 +43,14 @@
 						conn.joinRoom($('#room')[0].value);
 					});
 					
-					$('#new_user_button').click(function() {
-						conn.addUser($('#new_user')[0].value);
+					$('#add_user_button').click(function() {
+						conn.addUser($('#new_input')[0].value);
 					})
+
+					$('#add_location_button').click(function() {
+						conn.addLocation($('#new_input')[0].value);
+					})
+
 					
 				});
 		
@@ -82,8 +87,9 @@
 <button id="join_location">Join Location</button>
 <button id="leave_room">Leave Room</button>
 <button id="stop">Stop</button>
-<label for="new_user">New User</label><input type="text" name="new_user" value="" id="new_user">
-<button id="new_user_button">New User</button>
+<input type="text" name="new_user" value="" id="new_input">
+<button id="add_user_button">Add User</button>
+<button id="add_location_button">Add Location</button>
 
 
 

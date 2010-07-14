@@ -67,7 +67,7 @@ ConnectionManager.prototype = {
                     function() {self.startPersistentConnection();}, 10);
                     
                 for(var i=0; i<events.length; i++) {
-                    this.publishEvent(events[i]);
+                    this.dispatchEvent(events[i]);
                 }
                 
                 },
@@ -95,7 +95,7 @@ ConnectionManager.prototype = {
         Console.log("Aborted current connection.");
     },
         
-    publishEvent: function(ev) {
+    dispatchEvent: function(ev) {
         
         // Depending on the event type, update the internal state
         // appropriately
@@ -254,6 +254,21 @@ ConnectionManager.prototype = {
         });
     },
     
+    addLocation: function(name) {
+        $.ajax({
+            url: '/locations/add',
+            type: "POST",
+            context: this,
+            data: {"newLocationName":name},
+            success: function () {
+                this.publishEvent("NEW_LOCATION_COMPLETE", {});
+            },
+            error: function() {
+                this.publishEvent("NEW_LOCATION_COMPLETE", {}, false);
+            }
+        });
+    },
+    
     addListener: function(callback) {
         // Pass in an object that you connectEvent called on when there is
         // a connection event. 
@@ -278,7 +293,8 @@ ConnectionManager.prototype = {
         //      JOIN_ROOM_COMPLETE
         //      JOIN_LOCATION_COMPLETE
         //      etc, basically any server-side event type + _COMPLETE
-        
+
+        console.log("ConMan Event: " + type);
         if(success==null) {
             success = true;
         }
@@ -289,7 +305,7 @@ ConnectionManager.prototype = {
         // "connectionEvent" on each of them with the event object
         // as a parameter. If they don't have that method, sucks for them -
         // make a note in the console.
-        console.log("ConnectionEvent: " + e.type + ".");
+        // console.log("ConnectionEvent: " + type + ".");
         
         for(key in this.eventListeners) {
             listener = this.eventListeners[key];

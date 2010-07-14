@@ -43,6 +43,7 @@ class YarnApplication(tornado.web.Application):
             (r"/rooms/leave", LeaveRoomHandler),
             
             (r"/locations/list", LocationsHandler),
+            (r"/locations/add", AddLocationHandler),
             (r"/locations/join", JoinLocationHandler),
             (r"/locations/leave", LeaveLocationHandler),
             
@@ -323,12 +324,19 @@ class AddUserHandler(tornado.web.RequestHandler):
         
         newUserEvent = Event("NEW_USER", None, None, {"name":newUserName})
         newUserEvent.dispatch()
+
+class AddLocationHandler(BaseHandler):
     
-        # lets actually write out the JSON for the new user here, so
-        # interested clients can update their internal state with the new user
-        # this is important because they likely won't have an open connection
-        # when they call this, and so won't have any way to update their local
-        # state otherwise. 
+    @tornado.web.authenticated
+    def post(self):
+        newLocationName = self.get_argument("newLocationName")
+        
+        logging.info("Adding new location: " + newLocationName)
+        
+        actor = self.get_current_actor()
+        newLocationEvent = Event("NEW_LOCATION", actor.uuid, None,
+            {"name":newLocationName})
+        newLocationEvent.dispatch()
     
 
 class LoginHandler(BaseHandler):

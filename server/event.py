@@ -23,7 +23,7 @@ import model
 # kept together, instead of in three places. 
 EVENT_TYPES = ["NEW_MEETING", "JOINED_MEETING", "LEFT_ROOM",
     "USER_JOINED_LOCATION", "USER_LEFT_LOCATION", "NEW_USER", "LOCATION_JOINED_MEETING",
-    "LOCATION_LEFT_ROOM", "NEW_DEVICE", "ADD_ACTOR_DEVICE"
+    "LOCATION_LEFT_ROOM", "NEW_DEVICE", "ADD_ACTOR_DEVICE", "NEW_LOCATION"
     ]
 
 # Stores the required paramters for each event type. We'll use this
@@ -31,6 +31,7 @@ EVENT_TYPES = ["NEW_MEETING", "JOINED_MEETING", "LEFT_ROOM",
 # what's required for each event.
 EVENT_PARAMS = {"NEW_MEETING":["room"],
                 "NEW_USER":["name"],
+                "NEW_LOCATION":["name"],
                 "USER_JOINED_LOCATION":["location"],
                 "USER_LEFT_LOCATION": ["location"],
                 "LOCATION_JOINED_MEETING": ["location"],
@@ -116,7 +117,8 @@ self.actor to be None.")
         # TODO Figure out how to merge these event details into the main
         # event specification data structure, too.
         if(not self.eventType in ["NEW_MEETING", "ADD_ACTOR_DEVICE",
-            "USER_JOINED_LOCATION", "USER_LEFT_LOCATION", "NEW_USER"]):
+            "USER_JOINED_LOCATION", "USER_LEFT_LOCATION", "NEW_USER",
+            "NEW_LOCATION"]):
             # any event other than NEW MEETING needs to have a meeting param
             self.meeting = state.get_obj(meetingUUID, model.Meeting)
             if(self.meeting==None):
@@ -238,8 +240,8 @@ wasn't an object to begin with. exception: " + str(e) + ", object: "
         
         # SEND EVENT TO APPROPRIATE CLIENTS
         if(self.eventType in ["NEW_MEETING","NEW_USER","NEW_DEVICE",
-            "ADD_ACTOR_DEVICE", "USER_JOINED_LOCATION", "USER_LEFT_LOCATION",
-            "LOCATION_JOINED_MEETING"]):
+            "NEW_LOCATION", "ADD_ACTOR_DEVICE", "USER_JOINED_LOCATION",
+            "USER_LEFT_LOCATION", "LOCATION_JOINED_MEETING"]):
             sendEventsToDevices(state.get_devices(), [event])
         else:
             try:
@@ -330,6 +332,13 @@ def _handleNewUser(event):
     
     event.addResult("actor", newUser)
     return event
+    
+def _handleNewLocation(event):
+    newLocation = model.Location(event.params["name"])
+    state.add_actor(newLocation)
+    
+    event.addResult("actor", newLocation)
+    return event
 
 def _handleNewDevice(event):
     device = model.Device()
@@ -410,6 +419,7 @@ def _handleLocationLeftMeeting(event):
 # Event.dispatch. 
 DISPATCH = {"NEW_MEETING":_handleNewMeeting,
             "NEW_USER":_handleNewUser,
+            "NEW_LOCATION":_handleNewLocation,
             "USER_JOINED_LOCATION":_handleJoinedLocation,
             "USER_LEFT_LOCATION": _handleLeftLocation,
             "LOCATION_JOINED_MEETING": _handleLocationJoinedMeeting,
