@@ -33,7 +33,7 @@ ConnectionManager.prototype = {
            type: "POST",
            success: function () {
                this.isConnected = true;
-               this.publishEvent("CONNECT_COMPLETE", {});
+               this.publishEvent(this.generateEvent("LOGIN_COMPLETE", {}));
                
                var self = this;
                this.currentConnectRequest=setTimeout(
@@ -70,9 +70,15 @@ ConnectionManager.prototype = {
                     this.dispatchEvent(events[i]);
                 }
                 
+                // Not generating events here because dispatch is almost
+                // certainly going to be generating them. 
+                
                 },
             error: function () {
                 console.log("/connect/ failed. reconnecting.");
+                
+                this.publishEvent(this.generateEvent("CONNECT_COMPLETE", {},
+                    false));
                 
                 var self = this;
                 this.currentConnectRequest=setTimeout(
@@ -104,6 +110,7 @@ ConnectionManager.prototype = {
             case "ADD_ACTOR_DEVICE":
                 // We don't really care about this one, actually.
                 break;
+                
             case "NEW_MEETING":
                 meetingData = ev["results"]["meeting"]
                 
@@ -115,6 +122,7 @@ ConnectionManager.prototype = {
                 console.log("Added new meeting: " + meeting + " with data: "
                     + meetingData["uuid"] + "; " + meetingData["room"]);
                 break;
+                
             case "NEW_USER":
                 userData = ev["results"]["user"];
                 user = new User(userData["uuid"], userData["name"],
@@ -122,25 +130,30 @@ ConnectionManager.prototype = {
                 user.unswizzle();
                 
                 state.actors.push(user);
+                console.log("New user: " + user.name);
                 break;
+                
             case "USER_JOINED_LOCATION":
                 loc = state.getObj(ev["params"]["location"], Location);
                 user = state.getObj(ev["actorUUID"], User);
                 loc.userJoined(user);
                 console.log(user.name + " joined " + loc.name);
                 break;
+                
             case "USER_LEFT_LOCATION":
                 loc = state.getObj(ev["params"]["location"], Location);
                 user = state.getObj(ev["actorUUID"], User);
                 loc.userLeft(user);
                 console.log(user.name + " left " + loc.name);
                 break;
+                
             case "LOCATION_JOINED_MEETING":
                 meeting = state.getObj(ev["meetingUUID"], Meeting);
                 loc = state.getObj(ev["params"]["location"], Location);
                 meeting.locJoined(loc);
                 console.log(loc.name + " joined " + meeting.title);
                 break;
+                
             case "LOCATION_LEFT_MEETING":
                 meeting = state.getObj(ev["meetingUUID"], Meeting);
                 loc = state.getObj(ev["params"]["location"], Location);
@@ -148,18 +161,57 @@ ConnectionManager.prototype = {
                 
                 console.log(loc.name + " left " + meeting.title);
                 break;
+                
             case "NEW_DEVICE":
-                // I don't think we care about this, do we? I'm not even sure
-                // it gets sent to clients. 
+                // I don't think we care about this, do we?
                 break;
             
         }
 
-        // TODO Set up a listener infrastructure so we can update pages live,
-        // too. They'll register for event types and we'll send them on
-        // when they arrive.
+        // Setting this so people downstream of these published events
+        // can easily distinguish between events from the server and
+        // events generated locally.
+        ev.localEvent = false;
+        this.publishEvent(ev);
+    },
+    
+    generateEvent: function(type, result, success) {
+        return {"eventType":type, "results":result, "success":success,
+        "localEvent":true};
+    },
+    
+    publishEvent: function(ev) {
         
-      console.log("EVENT: <" + ev.eventType + ">");
+        // ConnectionEvents have the form:
+        // {"type":type, "results":{}}
+        // Types are:
+        //      CONNECT_COMPLETE    - done with initial conection, persistent
+        //                            connection now open.
+        //      GET_STATE_COMPLETE  - when the get_state operation is done
+        //      NEW_USER_COMPLETE
+        //      LEAVE_ROOM_COMPLETE
+        //      JOIN_ROOM_COMPLETE
+        //      JOIN_LOCATION_COMPLETE
+        //      etc, basically any server-side event type + _COMPLETE
+        
+    
+        // Loop through the list of event listeners, and trigger
+        // "connectionEvent" on each of them with the event object
+        // as a parameter. If they don't have that method, sucks for them -
+        // make a note in the console.
+        // console.log("ConnectionEvent: " + type + ".");
+        
+        for(key in this.eventListeners) {
+            listener = this.eventListeners[key];
+            
+            try {
+                listener.connectionEvent(ev);
+            } catch (err) {
+                console.log("Tried to send event " + ev.eventType + " to "
+                + listener + " but connectionEvent method was missing. You " +
+                " must declare that method to receive connectionEvents.");
+            }
+        }
     },
     
     joinLocation: function(locationUUID) {
@@ -171,10 +223,11 @@ ConnectionManager.prototype = {
            url: '/locations/join',
            type: "POST",
            success: function () {
-               this.publishEvent("JOIN_LOCATION_COMPLETE", {});
+               this.publishEvent(this.generateEvent("JOIN_LOCATION_COMPLETE",
+                {}));
                },
-           error: function () { this.publishEvent("JOIN_LOCATION_COMPLETE",{},
-            false);},
+           error: function () { this.publishEvent(this.generateEvent(
+               "JOIN_LOCATION_COMPLETE", false));},
            context: this,
            data: { "locationUUID": locationUUID }
         });
@@ -189,10 +242,11 @@ ConnectionManager.prototype = {
            url: '/rooms/join',
            type: "POST",
            success: function () {
-               this.publishEvent("JOIN_ROOM_COMPLETE", {});
+               this.publishEvent(this.generateEvent("JOIN_ROOM_COMPLETE",
+                {}));
                },
-           error: function () { this.publishEvent("JOIN_ROOM_COMPLETE", {},
-           false);},
+           error: function () { this.publishEvent(this.generateEvent(
+               "JOIN_ROOM_COMPLETE", {}, false));},
            context: this,
            data: { "roomUUID": roomUUID}
         });
@@ -207,10 +261,11 @@ ConnectionManager.prototype = {
            url: '/rooms/leave',
            type: "POST",
            success: function () {
-               this.publishEvent("LEAVE_ROOM_COMPLETE", {});
+               this.publishEvent(this.generateEvent("LEAVE_ROOM_COMPLETE",
+                {}));
                },
-           error: function () {this.publishEvent("LEAVE_ROOM_COMPLETE", {},
-            false);
+           error: function () {this.publishEvent(this.generateEvent(
+               "LEAVE_ROOM_COMPLETE", {}, false));
            },
            context: this,
            data: { "roomUUID": roomUUID}
@@ -249,7 +304,8 @@ ConnectionManager.prototype = {
                 }
             },
             error: function() {
-                this.publishEvent("NEW_USER_COMPLETE", {}, false);
+                this.publishEvent(this.generateEvent("NEW_USER_COMPLETE", {},
+                false));
             }
         });
     },
@@ -261,10 +317,12 @@ ConnectionManager.prototype = {
             context: this,
             data: {"newLocationName":name},
             success: function () {
-                this.publishEvent("NEW_LOCATION_COMPLETE", {});
+                this.publishEvent(this.generateEvent("NEW_LOCATION_COMPLETE",
+                    {}));
             },
             error: function() {
-                this.publishEvent("NEW_LOCATION_COMPLETE", {}, false);
+                this.publishEvent(this.generateEvent("NEW_LOCATION_COMPLETE",
+                    {}, false));
             }
         });
     },
@@ -278,46 +336,6 @@ ConnectionManager.prototype = {
     
     removeListener: function(callback) {
         this.eventListeners = array_remove(this.eventListeners, callback);
-    },
-    
-    publishEvent: function(type, result, success) {
-        
-        // ConnectionEvents have the form:
-        // {"type":type, "results":{}}
-        // Types are:
-        //      CONNECT_COMPLETE    - done with initial conection, persistent
-        //                            connection now open.
-        //      GET_STATE_COMPLETE  - when the get_state operation is completed
-        //      NEW_USER_COMPLETE
-        //      LEAVE_ROOM_COMPLETE
-        //      JOIN_ROOM_COMPLETE
-        //      JOIN_LOCATION_COMPLETE
-        //      etc, basically any server-side event type + _COMPLETE
-
-        console.log("ConMan Event: " + type);
-        if(success==null) {
-            success = true;
-        }
-        
-        e = {"type": type, "result":result, "success":success};
-        
-        // Loop through the list of event listeners, and trigger
-        // "connectionEvent" on each of them with the event object
-        // as a parameter. If they don't have that method, sucks for them -
-        // make a note in the console.
-        // console.log("ConnectionEvent: " + type + ".");
-        
-        for(key in this.eventListeners) {
-            listener = this.eventListeners[key];
-            
-            try {
-                listener.connectionEvent(e);
-            } catch (err) {
-                console.log("Tried to send event " + e + " to " + listener + 
-                " but connectionEvent method was missing. You must declare" +
-                " that method to receive connectionEvents.");
-            }
-        }
     },
     
     getState: function() {
@@ -342,7 +360,8 @@ ConnectionManager.prototype = {
                     initialState["locations"], initialState["rooms"],
                     initialState["meetings"]);
                 
-                this.publishEvent("GET_STATE_COMPLETE", {});
+                this.publishEvent(this.generateEvent("GET_STATE_COMPLETE",
+                    {}));
                 }
             });
     }

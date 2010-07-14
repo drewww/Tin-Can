@@ -22,7 +22,7 @@
 					conn = connection;
 
 					conn.addListener({connectionEvent: function(e) {
-						// console.log("Listener received conn event: " + e);
+						console.log("event: " + e.eventType);
 					}});
 					
 					// Setup the button actions.
