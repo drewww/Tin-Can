@@ -324,6 +324,11 @@ class AddUserHandler(tornado.web.RequestHandler):
         newUserEvent = Event("NEW_USER", None, None, {"name":newUserName})
         newUserEvent.dispatch()
     
+        # lets actually write out the JSON for the new user here, so
+        # interested clients can update their internal state with the new user
+        # this is important because they likely won't have an open connection
+        # when they call this, and so won't have any way to update their local
+        # state otherwise. 
     
 
 class LoginHandler(BaseHandler):

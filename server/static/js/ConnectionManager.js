@@ -217,8 +217,24 @@ ConnectionManager.prototype = {
         });
     },
     
-    addUser: function(name) {
+    addUser: function(name, refreshState) {
         // Trigger an add-user event on the server. Will 
+        
+        // Be aware that you probably don't have an option connection with
+        // the server at this point, so you shouldn't expect the NEW_USER
+        // event to actually arrive at the client. 
+        //
+        // You should almost certainly call getState again on the connection
+        // manager after this succeeds. Hardcoding that in for now, since
+        // that seems like the easiest option.
+        
+        // The refreshState flag sets whether or not we should trigger a full
+        // reset of the client state. This is the easiest way (right now) to 
+        // make sure we have all the current users in memory, since we're not
+        // going to get a message about it from the server.
+        if(refreshState==null) {
+            refreshState = false;
+        }
         
         $.ajax({
             url: '/users/add',
@@ -227,6 +243,10 @@ ConnectionManager.prototype = {
             data: {"newUserName":name},
             success: function () {
                 this.publishEvent("NEW_USER_COMPLETE", {});
+                
+                if(refreshState) {
+                    this.getState();
+                }
             },
             error: function() {
                 this.publishEvent("NEW_USER_COMPLETE", {}, false);
