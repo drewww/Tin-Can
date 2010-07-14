@@ -118,6 +118,8 @@ ConnectionManager.prototype = {
                     meetingData["title"], meetingData["room"]);
                 meeting.unswizzle();
                 
+                
+                
                 state.meetings.push(meeting);
                 console.log("Added new meeting: " + meeting + " with data: "
                     + meetingData["uuid"] + "; " + meetingData["room"]);

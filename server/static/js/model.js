@@ -171,7 +171,7 @@ Meeting.prototype = {
         
         // This can't be null.
         this.room = state.getObj(this.room, Room);
-        
+        this.room.currentMeeting = this;
         // We don't need to unswizzle locs or participants; those get
         // handled when the loc unswizzles. It'll register itself
         // with the meeting it's currently in. 

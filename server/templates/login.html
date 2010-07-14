@@ -33,6 +33,7 @@
 	var locElements = [];
 	var select=true; //keeps track of whether you can select usernames
 	var selected;
+	var go=false;
 	
 	$(document).ready(function(){
 		//initializes variables
@@ -62,7 +63,54 @@
 		$("#searchname").keyup(searchForUser);
 		
 		//because js files take forever to load
-		var t = setTimeout("update()",50);
+		//var t = setTimeout("update()",50);
+		connection.addListener({connectionEvent: function(e) {
+			console.log("event: " + e.eventType);
+			switch(e.eventType) {
+				case "GET_STATE_COMPLETE":
+					update();
+					break;
+					
+	            case "ADD_ACTOR_DEVICE":
+	                // We don't really care about this one, actually.
+					displayLocList();
+					selectUser();
+	                break;
+
+	            case "NEW_MEETING":
+	                
+	                break;
+
+	            case "NEW_USER":
+	                displayNameList();
+					console.log("hi");
+	                break;
+
+	            case "USER_JOINED_LOCATION":
+	                displayRoomList();
+					console.log(state.rooms);
+					selectLoc();
+	                break;
+
+	            case "USER_LEFT_LOCATION":
+	                
+	                break;
+
+	            case "LOCATION_JOINED_MEETING":
+					console.log(state.rooms);
+	                displayRoomList();
+	                break;
+
+	            case "LOCATION_LEFT_MEETING":
+	                
+	                break;
+
+	            case "NEW_DEVICE":
+	                // I don't think we care about this, do we?
+	                break;
+				
+	        }
+		}});
 	});
 	
 	//in theory, I'd like to use this to update pages from the server, but I don't know how
@@ -81,6 +129,8 @@
 		}
 		
 		users=state.getUsers();
+		names=[];
+		nameElements=[];
 		for (user in users){
 			names.push(users[user].name);
 		}
@@ -99,6 +149,8 @@
 		}
 		
 		locs=state.getLocations();
+		locNames=[];
+		locElements=[];
 		for (loc in locs){
 			locNames.push(locs[loc].name);
 		}
@@ -117,6 +169,8 @@
 		}
 		
 		rooms=state.rooms; //I have no idea how I did this. will probably get replaced with a method
+		roomNames=[];
+		roomElements=[];
 		for (room in rooms){
 			roomNames.push(rooms[room].name);
 		}
@@ -147,9 +201,11 @@
 		if (room.currentMeeting!=null){ //assume every room has a current meeting for now
 			newRoomElement.find("strong").html(room.name);
 			newRoomElement.find("div.room").append(" - " + room.currentMeeting.title);
+			console.log(room.currentMeeting.locs)
 			for (var y in room.currentMeeting.locs){
 				newloc = locationTemplate.clone();
 				newloc.prepend(room.currentMeeting.locs[y].users.length);
+				console.log(room.currentMeeting.locs[y].users)
 				newloc.show();
 				newRoomElement.find("ul").append(newloc);
 			}
@@ -209,20 +265,25 @@
 		var newName=$("#newname")[0].value;
 		if (newName!=""){
 			$("#newname")[0].value="";
-			var newNameElement = createNewNameItem(newName);
+		/*	var newNameElement = createNewNameItem(newName);
 			names.splice(0,0,newName);
 			newNameElement.insertAfter("#nametemplate");
-			nameElements.splice(0,0,newNameElement);
+			nameElements.splice(0,0,newNameElement);*/
 			toggleAdd();
+			connection.addUser(newName,true);
 		//	displayList(names);
-			highlightUser(newNameElement[0]);
+		/*while(!go){
+			
+		}
+			newNameELement=nameElements[$.inArray(newName,names)];
+			highlightUser(newNameELement[0]);*/
 		}
 	}
 	
 	//next few functions are for search, which we'll probably delete anyways...
 	function toggleSearch(){
 		select=true;
-		$(".name").css("background","white");
+		$(".name").css("background","white");s
 		search=$("#searchtype")[0];
 		$("#newuser").hide();
 		
@@ -275,40 +336,34 @@
 		$(".name").css("background","white");
 		if (select){
 			item.style.background="#00CCFF";
-			selected = $(item);
+			$("#locs").show();
+			username = $(item).find("div").html();
+			user=users[$.inArray(username,names)];
+			$("#currentuser").html("logged in as: " + user.name);
+			connection.setUser(user.uuid);
+			connection.connect();
 		}
-		connection.getState(); //I hope this is how you update the state
+		else{
+			toggleAdd();
+		}
+	//	connection.getState(); //I hope this is how you update the state
 	//	var t = setTimeout("tempUser()",200);
-		console.log(state);
-		displayLocList();
-		selectUser(selected);
+		
 	}
 	
 	//sets the "logged in as" and calls itself in a setTimeout to slide left. also sends information
 	//to server and starts the connection
-	function selectUser(item){
-		if (select){
-			$("#locs").show();
-			username = item.find("div").html();
-			user=users[$.inArray(username,names)];
-			$("#currentuser").html("logged in as: " + user.name);
-			
-			if($("#locs").offset().left>=5){
-				slideLeft($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
-				var t = setTimeout("selectUser(selected)", 2);
-			}
-			
-			else{
-				$("#users").hide();
-				$("#locs").offset({left:0,top:0});
-				$("#users").offset({left:0,top:0});
-				$("#rooms").offset({left:0,top:0});
-				connection.setUser(user.uuid);
-				connection.connect();
-			}
+	function selectUser(){
+		if($("#locs").offset().left>=5){
+			slideLeft($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
+			var t = setTimeout("selectUser()", 2);
 		}
+		
 		else{
-			toggleAdd();
+			$("#users").hide();
+			$("#locs").offset({left:0,top:0});
+			$("#users").offset({left:0,top:0});
+			$("#rooms").offset({left:0,top:0});
 		}
 	}
 	
@@ -316,24 +371,21 @@
 	function highlightLoc(item){
 		$(".loc").css("background","white");
 		item.style.background="#00CCFF";
-		selected=$(item);
-		connection.getState(); //I hope this is how you update the state
-		console.log(state);
-		displayRoomList();
-		selectLoc(selected);
+		$("#rooms").show();
+		locname = $(item).find("div").html();
+		loc=locs[$.inArray(locname,locNames)];
+		$("#currentloc").html("location: " + loc.name);
+	//	connection.getState(); //I hope this is how you update the state
+		connection.joinLocation(loc.uuid);
+		
 	}
 	
 	//sets the "location:" and calls itself in a setTimeout to slide left. also sends information
 	//to server
-	function selectLoc(item){
-		$("#rooms").show();
-		locname = item.find("div").html();
-		loc=locs[$.inArray(locname,locNames)];
-		$("#currentloc").html("location: " + loc.name);
-		
+	function selectLoc(){
 		if($("#rooms").offset().left>=5){
 			slideLeft($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
-			var t = setTimeout("selectLoc(selected)", 2);
+			var t = setTimeout("selectLoc()", 2);
 		}
 		
 		else{
@@ -341,7 +393,6 @@
 			$("#rooms").offset({left:0,top:0});
 			$("#locs").offset({left:0,top:0});
 			$("#users").offset({left:0,top:0});
-			connection.joinLocation(loc.uuid);
 		}
 	}
 	
@@ -357,8 +408,9 @@
 		
 		room=rooms[$.inArray(roomname,roomNames)];
 		connection.joinRoom(room.uuid);
-		item.style.background="#00CCFF";
-		statusbar($(item));
+		
+		//item.style.background="#00CCFF";
+		//statusbar($(item));
 	}
 	
 	function statusbar(item){
@@ -396,6 +448,7 @@
 			$("#rooms").offset({left:0,top:0});
 			$("#locs").offset({left:0,top:0});
 			$("#users").offset({left:0,top:0});
+			
 		}
 	}
 	
