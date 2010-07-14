@@ -10,9 +10,9 @@
 	<script type ="text/javascript">
 	var itemCounter = 0; // number of items ever created
 	var items = [];  // array of agenda items
-	var currentItem; // current item's id
+	var currentItem; // current item's id - string
 	var lastClicked = 'item0';
-	var currentClicked;
+	var currentClicked; // object
 
 	//Turn on drag and drop sorting and constrain to y axis	
 		// $(function() {
@@ -21,16 +21,16 @@
 		// 
 		// });
 	
-		$(document).ready(function(){
-			template = $("#doneTemplate");
-			itemList = $("#container");
-			$("#newItem").hide();
-		})
+		// $(document).ready(function(){
+		// 	template = $("#doneTemplate");
+		// 	itemList = $("#container");
+		// 	$("#newItem").hide();
+		// })
 		
-		// insert div with extra buttons beneath whatever item is clicked
+		
 
 	
-	// show/hide input textbox 
+	// visibility toggle for new item textbox input
 		function add(){
 			newItem = $("#newItem")[0];
 			if (newItem.style.display!="block"){
@@ -45,83 +45,88 @@
 		
 		
 	//crash test dummy item
-		function makeCurrentItem() {
-			templateCurrent = $("#currentTemplate");
-			itemList = $("#container");
-			clone = templateCurrent.clone();
-			itemList.append(clone);
-			clone.show();
-			itemCounter = itemCounter + 1;
-			clone[0].id = 'item' + itemCounter;
-			items.push(clone[0].id);
-			// $('.drag').addTouch();
-			
-			clone.click(function (e) {
-				template = $("#extraOptionsTemplate");
-				currentClicked = $(this);
-				if (lastClicked == currentClicked.get(0).id){
-					template.hide();
-					lastClicked = 'item0';
-					// currentClicked[0].style.height = "40px";
-				}
-				else{
-					lastClicked = currentClicked.get(0).id;
-					$(this).append(template);
-					// currentClicked[0].style.height = "60px";
-					template.show();
-				}
-			})	
-		}
+		// function makeCurrentItem() {
+		// 	templateCurrent = $("#currentTemplate");
+		// 	itemList = $("#container");
+		// 	clone = templateCurrent.clone();
+		// 	itemList.append(clone);
+		// 	clone.show();
+		// 	itemCounter = itemCounter + 1;
+		// 	clone[0].id = 'item' + itemCounter;
+		// 	items.push(clone[0].id);
+		// 	// $('.drag').addTouch();
+		// 	
+		// 	clone.click(function (e) {
+		// 		template = $("#extraOptionsTemplate");
+		// 		currentClicked = $(this);
+		// 		if (lastClicked == currentClicked.get(0).id){
+		// 			template.hide();
+		// 			lastClicked = 'item0';
+		// 			// currentClicked[0].style.height = "40px";
+		// 		}
+		// 		else{
+		// 			lastClicked = currentClicked.get(0).id;
+		// 			$(this).append(template);
+		// 			// currentClicked[0].style.height = "60px";
+		// 			template.show();
+		// 		}
+		// 	})	
+		// }
 
 	//crash test dummy item		
-		function makeDoneItem(doneItem) {
-			templateDone = $("#doneTemplate");
-			itemList = $("#container");
-			clone = templateDone.clone();
-			itemList.append(clone);
-			clone.show();
-			// $('.drag').addTouch();	
-			// clone.click(function (e) {
-			// 	template = $("#extraOptionsTemplate");
-			// 	currentClicked = $(this);
-			// 	currentClicked.doneItem=true;
-			// 	if (lastClicked == currentClicked.get(0).id){
-			// 		template.hide();
-			// 		lastClicked = 'item0';
-			// 		currentClicked[0].style.height = "40px";
-			// 	}
-			// 	else{
-			// 		lastClicked = currentClicked.get(0).id;
-			// 		$(this).append(template);
-			// 		currentClicked[0].style.height = "60px";
-			// 		template.show();
-			// 	}
-			// })	
-		}
+		// function makeDoneItem(doneItem) {
+		// 	templateDone = $("#doneTemplate");
+		// 	itemList = $("#container");
+		// 	clone = templateDone.clone();
+		// 	itemList.append(clone);
+		// 	clone.show();
+		// 	$('.drag').addTouch();	
+		// 	clone.click(function (e) {
+		// 		template = $("#extraOptionsTemplate");
+		// 		currentClicked = $(this);
+		// 		currentClicked.doneItem=true;
+		// 		if (lastClicked == currentClicked.get(0).id){
+		// 			template.hide();
+		// 			lastClicked = 'item0';
+		// 			currentClicked[0].style.height = "40px";
+		// 		}
+		// 		else{
+		// 			lastClicked = currentClicked.get(0).id;
+		// 			$(this).append(template);
+		// 			currentClicked[0].style.height = "60px";
+		// 			template.show();
+		// 		}
+		// 	})	
+		// }
 	
 	//grab input from textbox and generate item in list
 		function makeFutureItem(name) {
 			var check = document.getElementById("futureCheck");
 			templateFuture = $("#futureTemplate");
 			itemList = $("#container");
-			newItem=$("#itemInput")[0].value;
+			newItem=$("#itemInput")[0].value;  // assign user input in textbox to newItem
 			check.style.visibility = "hidden";
 			clone = templateFuture.clone();
 			clone.find("span").html(newItem);
 			itemList.append(clone);
 			clone.show();
 			itemCounter = itemCounter + 1;
-			clone[0].id = 'item' + itemCounter;
+			clone[0].id = 'item' + itemCounter;  // generate unique id's for every item based on how many items have ever been created
 			items.push(clone[0].id);
 			// $('.drag').addTouch();
 			$("#itemInput")[0].value="";
 			$("#newItem")[0].style.display="none"
 			updateCurrent();
+
 			clone.click(function (e) {
 				template = $("#extraOptionsTemplate");
 				currentClicked = $(this);
 				console.log('items: ' + items);
 				console.log('current clicked is ' + items.indexOf(currentClicked[0].id));
+				
+				// toggle showing the extra options
+				// if an item has been clicked on an even number of times (i.e. twice), hide the options
+				// otherwise show the options when clicked an odd number of times (i.e. first click)
 				if (lastClicked == currentClicked.get(0).id){
 					template.hide();
 					lastClicked = 'item0';
@@ -131,33 +136,56 @@
 					lastClicked = currentClicked.get(0).id;
 					$(this).append(template);
 					currentClicked[0].style.height = "60px";
-					template.show();
+					
+					// if the current item is clicked, show the "Done" button, otherwise hide it
+					if (currentClicked[0].id == currentItem) {
+						$("#doneButton").show();
+						template.show();
+					}
+					else{
+						$("#doneButton").hide()
+						template.show();
+					}
 				}
 			})				
 		}
 		
 		function deleteItem() {
-			if (currentClicked.doneItem){}
-			else{
+		//	if (currentClicked.doneItem){}
+	
 				template = $("#extraOptionsTemplate");
 				template.hide();
 				$("#container").append(template);
 				currentIndex = items.indexOf(currentClicked[0].id);
 				items.splice(currentIndex, 1);
 				currentClicked.remove();
+				
+				// if user deleted the current item on the agenda, update currentItem to be next on the agenda
 				if (currentClicked[0].id == currentItem) {
 					currentItem = items[currentIndex];
 				}
+				
 				updateCurrent();	
-			}
+			
 			
 		}
 		
-		function makeNext() {
+		function queueNext() {
 			console.log('current ITEM is ' + currentItem);
 			console.log(currentItem);
 			console.log(currentClicked);
 			
+			// update the items array to reflect the new order of items
+			// remove the item to be queued from array, set as temp, then insert in the new position
+			clickedIndex = items.indexOf(currentClicked[0].id);
+			temp = items[clickedIndex];
+			items.splice(clickedIndex, 1);
+			currentIndex = items.indexOf(currentItem);
+			tempindex = currentIndex + 1;
+			items.splice(tempindex,0,temp);
+			
+			console.log('updated items list: ');
+			console.log(items);			
 			(currentClicked).insertAfter($("#"+currentItem));
 			// document.getElementById(currentItem).after(currentClicked);
 			
@@ -165,6 +193,8 @@
 		
 		function updateCurrent() { 
 			console.log('length is ' + items.length);
+			
+			// if there's only one item left, make that the current item (mainly for the initial case when first adding items to agenda)
 			if (items.length == 1) {
 				console.log('length is 1 and item is ' + items[0]);
 				currentItem = items[0];
@@ -176,6 +206,7 @@
 			}
 		}
 			
+	// removes item marked done from the items array, colors it grey, and sets the next item in agenda as the current item
 		function itemDone() {
 			console.log($("#"+currentItem));
 			console.log(currentClicked);
@@ -248,7 +279,7 @@
 <div id="border">
 	
 	<div id="header">Edit 
-		<input type="button" id="doneButton" value="Done" onclick="itemDone()">
+		<input type="button" value="Done" onclick="itemDone()">
 		<input type="button" value="Current" onclick="makeCurrentItem()">
 		<input type="button" value="Add" onclick="add()"> </div>
 	
@@ -282,9 +313,9 @@
 	</div>
 	
 	<div id="extraOptionsTemplate">
-		<button type="submit" id="button" onclick="deleteItem();">Delete</button>
-		<button type="submit" onclick="makeNext();">Make Next</button>
-		<button type="submit" onclick="itemDone();"> Done</button>
+		<button type="submit" onclick="deleteItem();">Delete</button>
+		<button type="submit" onclick="queueNext();">Queue Next</button>
+		<button type="submit" id="doneButton" onclick="itemDone();"> Done</button>
 	</div>
 </div>
 Done
