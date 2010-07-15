@@ -1,26 +1,28 @@
 //
-//  TinCanAppDelegate.m
-//  TinCan
+//  LoginAppDelegate.m
+//  Login
 //
-//  Created by Drew Harry on 5/10/10.
+//  Created by Drew Harry on 6/18/10.
 //  Copyright MIT Media Lab 2010. All rights reserved.
 //
 
-#import "TinCanAppDelegate.h"
-#import "ParticipantView.h"
-#import "TinCanViewController.h"
+#import "LoginAppDelegate.h"
 #import "LoginMasterViewController.h"
 
-@implementation TinCanAppDelegate
+
+
+
+@implementation LoginAppDelegate
 
 @synthesize window;
 @synthesize viewController;
 
+
+//Rotates Window, paints it black and adds our viewController to it
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
+    LoginMasterViewController *tableViewController = [LoginMasterViewController alloc];
 	
-    //TinCanViewController *tableViewController = [TinCanViewController alloc];
-	LoginMasterViewController *tableViewController = [LoginMasterViewController alloc];
 	CGAffineTransform transform = CGAffineTransformMakeRotation(M_PI/2);
 	
 	[window setTransform:transform];
@@ -32,13 +34,12 @@
     [window makeKeyAndVisible];
 	
 	return YES;
-	
-   // [window addSubview:viewController.view];
-   // [window makeKeyAndVisible];
-    
-	//return YES;
 }
 
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+	return NO;
+}
 
 - (void)dealloc {
     [viewController release];

@@ -14,6 +14,7 @@
 	var lastClicked = 'item0';
 	var currentClicked; // object
 
+
 	//Turn on drag and drop sorting and constrain to y axis	
 		// $(function() {
 		// 	$("#container").sortable({placeholder: 'ui-state-highlight',
@@ -122,17 +123,25 @@
 				template = $("#extraOptionsTemplate");
 				currentClicked = $(this);
 				console.log('items: ' + items);
-				console.log('current clicked is ' + items.indexOf(currentClicked[0].id));
-				
+				console.log('index of current clicked is ' + items.indexOf(currentClicked[0].id));
+				console.log('current clicked id is ' + currentClicked[0].id);
+
+							
 				// toggle showing the extra options
+				// first, if item is not in items array, then it has been marked done - do nothing i.e. don't show extra options
+				if (items.indexOf(currentClicked[0].id) == -1){
+					console.log('clicked on an item that is done');
+				}
+				
 				// if an item has been clicked on an even number of times (i.e. twice), hide the options
 				// otherwise show the options when clicked an odd number of times (i.e. first click)
-				if (lastClicked == currentClicked.get(0).id){
+				else{
+					if (lastClicked == currentClicked.get(0).id){
 					template.hide();
 					lastClicked = 'item0';
 					currentClicked[0].style.height = "40px";
 				}
-				else{
+					else{
 					lastClicked = currentClicked.get(0).id;
 					$(this).append(template);
 					currentClicked[0].style.height = "60px";
@@ -146,6 +155,7 @@
 						$("#doneButton").hide()
 						template.show();
 					}
+				}
 				}
 			})				
 		}
@@ -169,6 +179,9 @@
 			
 			
 		}
+		
+		// FIX
+		// bad juju if you try to queue the current item as the next item
 		
 		function queueNext() {
 			console.log('current ITEM is ' + currentItem);
@@ -206,13 +219,15 @@
 			}
 		}
 			
-	// removes item marked done from the items array, colors it grey, and sets the next item in agenda as the current item
+	// removes item marked 'done' from the items array, colors it grey, and sets the next item in agenda as the current item
 		function itemDone() {
 			console.log($("#"+currentItem));
 			console.log(currentClicked);
+			template = $("#extraOptionsTemplate");
 			currentIndex = items.indexOf(currentClicked[0].id);
-			document.getElementById(currentItem).style.background = "#C0C0C0";
+			document.getElementById(currentItem).style.background = "#C0C0C0";			
 			items.splice(currentIndex, 1);
+			template.hide();
 			currentItem = items[currentIndex];
 			updateCurrent();
 		
@@ -279,8 +294,8 @@
 <div id="border">
 	
 	<div id="header">Edit 
-		<input type="button" value="Done" onclick="itemDone()">
-		<input type="button" value="Current" onclick="makeCurrentItem()">
+		<!-- <input type="button" value="Done" onclick="itemDone()">
+		<input type="button" value="Current" onclick="makeCurrentItem()"> -->
 		<input type="button" value="Add" onclick="add()"> </div>
 	
 	<div id="newItem">

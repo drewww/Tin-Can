@@ -105,16 +105,16 @@
 	
 	//for creating black space
 	if ((currentHour==hourCounter)&(hourCheck==1)){
-			CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
-			CGContextAddArc(ctx, 0, 0, 132-(hourCounter*5), 0, 2*M_PI , 0); 
-			CGContextFillPath(ctx);
-			hourCheck=0;
+		CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
+		CGContextAddArc(ctx, 0, 0, 132-(hourCounter*10), 0, 2*M_PI , 0); 
+		CGContextFillPath(ctx);
+		hourCheck=0;
 	}
 	if (i!=0){
-	float lastHour=[[[times objectAtIndex:i-1] objectAtIndex:3]floatValue];
+		float lastHour=[[[times objectAtIndex:i-1] objectAtIndex:3]floatValue];
 		if (currentHour!=lastHour){
 			CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
-			CGContextAddArc(ctx, 0, 0, 132-(currentHour*5), 0, 2*M_PI , 0); 
+			CGContextAddArc(ctx, 0, 0, 132-(currentHour*10), 0, 2*M_PI , 0); 
 			CGContextFillPath(ctx);
 		}	
 	}	
@@ -128,23 +128,25 @@
 	CGFloat arcLength = elapsedTime/3600.0f * (2*M_PI);
 	CGContextMoveToPoint(ctx, 0, 0);
 	
-	CGContextAddArc(ctx, 0, 0, 130-(currentHour*5), -M_PI/2 - arcLength, -M_PI/2 , 0); 
+	CGContextAddArc(ctx, 0, 0, 130-(currentHour*10), -M_PI/2 - arcLength, -M_PI/2 , 0); 
 	
 	
 	// Let's Color!
 	UIColor *colorRetrieved=[[times objectAtIndex:i] objectAtIndex:2];	
 	CGContextSetFillColorWithColor(ctx, colorRetrieved.CGColor);
 	CGContextFillPath(ctx);
-		
+	
 	//setting up blackspace on hour change
 	if ((i==[times count]-1)&([[times objectAtIndex:i] objectAtIndex:4]==@"Hour")){
 		CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
-		CGContextAddArc(ctx, 0, 0, 132-(hourCounter*5), 0, 2*M_PI , 0); 
+		CGContextAddArc(ctx, 0, 0, 132-(hourCounter*10), 0, 2*M_PI , 0); 
 		CGContextFillPath(ctx);
 		hourCheck=0;
 		//}
 	}
-	
+	CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
+	CGContextAddArc(ctx, 0, 0, 50, 0, 2*M_PI , 0); 
+	CGContextFillPath(ctx);
 	
 }
 
@@ -152,9 +154,9 @@
 
 - (void)drawRect:(CGRect)rect {
 	// for testing
-	testDate= [[ testDate addTimeInterval:1] retain];
+	testDate= [[ testDate addTimeInterval:120] retain];
 	
-
+	
 	
 	// Drawing our Clock!
 	
@@ -170,7 +172,7 @@
     //Wipe the layer manually because clearsContext doesn't work.
     CGContextSetRGBFillColor(ctx, 0, 0, 0, 1.0);
     CGContextFillRect(ctx, CGRectMake(-200, -200, 500, 500));
-
+	
 	
     // Puts it in landscape mode, basically - so the top of the clock is to the right in portrait mode
     CGContextRotateCTM(ctx, M_PI/2);
@@ -181,7 +183,7 @@
     CGContextSaveGState(ctx);
     CGContextStrokeEllipseInRect(ctx, CGRectMake(-160, -155, 315, 315));
 	
-        
+	
 	
 	
 	
@@ -195,17 +197,17 @@
 	
 	// These are all based on the information recieved
 	// when the user touches the screen
-		int i=0;
-		while(i< [selectedTimes count]){
-			[self drawArcWithTimes:selectedTimes withIndex:i  withContext:ctx];
-			CGContextRestoreGState(ctx);
-			CGContextSaveGState(ctx);
-			i++;
-		}
-		
+	int i=0;
+	while(i< [selectedTimes count]){
+		[self drawArcWithTimes:selectedTimes withIndex:i  withContext:ctx];
+		CGContextRestoreGState(ctx);
+		CGContextSaveGState(ctx);
+		i++;
+	}
+	
 	
 	//Drawing the Updating TIME ARC!
-
+	
 	float rotation;	
 	if(initialRot==-1) {
         // This was where the bug was. The initial rotation was coming from the CURRENT time when we first drew things. 
@@ -237,7 +239,7 @@
 	
 	// Now that we have elapsed seconds, lets draw our updating TIME ARC!
 	CGFloat arcLength = elapsedSeconds/3600.0f * (2*M_PI);
-	CGContextAddArc(ctx, 0, 0, 130-(hourCounter*5), -M_PI/2, -M_PI/2 + arcLength, 0);
+	CGContextAddArc(ctx, 0, 0, 130-(hourCounter*10), -M_PI/2, -M_PI/2 + arcLength, 0);
 	CGContextAddLineToPoint(ctx, 0, 0);
 	CGContextFillPath(ctx);
 	CGContextRestoreGState(ctx);
@@ -262,21 +264,36 @@
 		
 	}
 	
-
+	
+	CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
+	CGContextAddArc(ctx, 0, 0, 75, 0, 2*M_PI , 0); 
+	CGContextFillPath(ctx);
+	
 	//Drawing Hour and Minute hand! (Drawn here so that the hands aren't colored over)
 	CGContextRotateCTM(ctx, hourRotation);
 	CGContextMoveToPoint(ctx, 0, 0);
-	CGContextAddLineToPoint(ctx, 0, -90);
+	CGContextSetLineWidth(ctx, 1.0);
+	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+	CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
+	CGContextAddRect (ctx, CGRectMake(-2.5, 0, 5, -90));
+	CGContextFillPath(ctx);
+	CGContextAddRect (ctx, CGRectMake(-2.5, 0, 5, -90));
 	CGContextStrokePath(ctx);
 	
 	CGContextRestoreGState(ctx);
-	CGContextSaveGState(ctx);
-		
+	CGContextSaveGState(ctx);	
+	
 	CGContextRotateCTM(ctx, minRotation);
 	CGContextMoveToPoint(ctx, 0, 0);
-	CGContextAddLineToPoint(ctx, 0, -130);
+	CGContextSetLineWidth(ctx, 1.0);
+	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+	CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
+	CGContextAddRect (ctx, CGRectMake(-2.5, 0, 5, -130));
+	CGContextFillPath(ctx);
+	CGContextAddRect (ctx, CGRectMake(-2.5, 0, 5, -130));
 	CGContextStrokePath(ctx);
-		
+	
+	
 	CGContextRestoreGState(ctx);
     
     // Now put numbers on the face of the clock
@@ -288,10 +305,15 @@
     CGContextSetRGBFillColor(ctx, 1, 1, 1, 1.0);
     [twelve drawAtPoint:CGPointMake(-10, -153) withFont:[UIFont boldSystemFontOfSize:18]];
     [six drawAtPoint:CGPointMake(-10, 133) withFont:[UIFont boldSystemFontOfSize:18]];
-    [three drawAtPoint:CGPointMake(135, -7) withFont:[UIFont boldSystemFontOfSize:18]];
-    [nine drawAtPoint:CGPointMake(-145, -7) withFont:[UIFont boldSystemFontOfSize:18]];
-    		
-	}
+    [three drawAtPoint:CGPointMake(135, -10) withFont:[UIFont boldSystemFontOfSize:18]];
+    [nine drawAtPoint:CGPointMake(-145, -10) withFont:[UIFont boldSystemFontOfSize:18]];
+	
+	
+	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+	CGContextAddArc(ctx, 0, 0, 4, 0, 2*M_PI , 0); 
+	CGContextFillPath(ctx);
+	
+}
 
 
 

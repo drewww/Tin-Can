@@ -1,4 +1,4 @@
-    //
+//
 //  TinCanViewController.m
 //  TinCan
 //
@@ -8,27 +8,16 @@
 
 #import "TinCanViewController.h"
 #import "MeetingViewController.h"
-
+#import "LoginMasterViewController.h"
 
 @implementation TinCanViewController
-
-/*
- // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
- - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
- if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
- // Custom initialization
- }
- return self;
- }
- */
-
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
     
     if(currentViewController == nil) {
         // Make the initial one and load it. For now, that's just the MeetingView.
-        currentViewController = [[[MeetingViewController alloc] init] retain];
+        currentViewController = [[[LoginMasterViewController alloc] init] retain];
         
         // Make sure the viewcontroller has a reference back here, so it can send us 
         // messages if we need it.
@@ -37,14 +26,6 @@
     
     self.view = currentViewController.view;
 }
-
-/*
- // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
- - (void)viewDidLoad {
- [super viewDidLoad];
- }
- */
-
 
 // Per advice here: http://stackoverflow.com/questions/2270835/best-practices-for-displaying-new-view-controllers-iphone
 // This isn't beautiful, but since we have such a simple system I think it'll work.
