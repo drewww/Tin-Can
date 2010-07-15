@@ -33,7 +33,7 @@
 	var locElements = [];
 	var select=true; //keeps track of whether you can select usernames
 	var selected;
-	var go=false;
+	var user1;
 	
 	$(document).ready(function(){
 		//initializes variables
@@ -71,8 +71,8 @@
 					update();
 					break;
 					
-	            case "ADD_ACTOR_DEVICE":
-	                // We don't really care about this one, actually.
+	            case "LOGIN_COMPLETE":
+	                //only sent to one device, so this event shouldn't trigger anything on other devices
 					displayLocList();
 					selectUser();
 	                break;
@@ -83,13 +83,13 @@
 
 	            case "NEW_USER":
 	                displayNameList();
-					console.log("hi");
 	                break;
 
 	            case "USER_JOINED_LOCATION":
-	                displayRoomList();
-					console.log(state.rooms);
-					selectLoc();
+					displayRoomList();
+					if (e.actorUUID==connection.userUUID){
+						selectLoc();
+					}
 	                break;
 
 	            case "USER_LEFT_LOCATION":
@@ -97,7 +97,7 @@
 	                break;
 
 	            case "LOCATION_JOINED_MEETING":
-					console.log(state.rooms);
+					console.log("hi");
 	                displayRoomList();
 	                break;
 
@@ -271,12 +271,6 @@
 			nameElements.splice(0,0,newNameElement);*/
 			toggleAdd();
 			connection.addUser(newName,true);
-		//	displayList(names);
-		/*while(!go){
-			
-		}
-			newNameELement=nameElements[$.inArray(newName,names)];
-			highlightUser(newNameELement[0]);*/
 		}
 	}
 	
@@ -342,6 +336,8 @@
 			$("#currentuser").html("logged in as: " + user.name);
 			connection.setUser(user.uuid);
 			connection.connect();
+			console.log(user);
+			user1=user;
 		}
 		else{
 			toggleAdd();
@@ -448,7 +444,7 @@
 			$("#rooms").offset({left:0,top:0});
 			$("#locs").offset({left:0,top:0});
 			$("#users").offset({left:0,top:0});
-			
+			//connection.
 		}
 	}
 	
