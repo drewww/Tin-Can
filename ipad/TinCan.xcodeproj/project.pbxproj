@@ -42,6 +42,21 @@
 		3AC2C22B11A5B7520071F912 /* libz.1.2.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC2C22A11A5B7520071F912 /* libz.1.2.3.dylib */; };
 		3AC2C23911A5B9890071F912 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC2C23811A5B9890071F912 /* Reachability.m */; };
 		3AC2C25A11A5BA500071F912 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC2C25911A5BA500071F912 /* CFNetwork.framework */; };
+		DA96F0F711EE525500B64D3D /* greyButton-1.png in Resources */ = {isa = PBXBuildFile; fileRef = DA96F0E111EE525500B64D3D /* greyButton-1.png */; };
+		DA96F0F811EE525500B64D3D /* HeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E311EE525500B64D3D /* HeaderView.m */; };
+		DA96F0F911EE525500B64D3D /* LocationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E511EE525500B64D3D /* LocationCell.m */; };
+		DA96F0FA11EE525500B64D3D /* LocationCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E711EE525500B64D3D /* LocationCellView.m */; };
+		DA96F0FB11EE525500B64D3D /* LocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E911EE525500B64D3D /* LocationViewController.m */; };
+		DA96F0FC11EE525500B64D3D /* LoginAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0EB11EE525500B64D3D /* LoginAppDelegate.m */; };
+		DA96F0FD11EE525500B64D3D /* LoginMasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0ED11EE525500B64D3D /* LoginMasterViewController.m */; };
+		DA96F0FE11EE525500B64D3D /* LogoView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0EF11EE525500B64D3D /* LogoView.m */; };
+		DA96F0FF11EE525500B64D3D /* RoomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0F111EE525500B64D3D /* RoomCell.m */; };
+		DA96F10011EE525500B64D3D /* RoomCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0F311EE525500B64D3D /* RoomCellView.m */; };
+		DA96F10111EE525500B64D3D /* RoomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0F511EE525500B64D3D /* RoomViewController.m */; };
+		DA96F10211EE525500B64D3D /* tin_can_phone.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DA96F0F611EE525500B64D3D /* tin_can_phone.jpg */; };
+		DA96F10B11EE52DA00B64D3D /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F10611EE52DA00B64D3D /* DetailViewController.m */; };
+		DA96F10C11EE52DA00B64D3D /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F10811EE52DA00B64D3D /* RootViewController.m */; };
+		DA96F10D11EE52DA00B64D3D /* SettingsAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F10A11EE52DA00B64D3D /* SettingsAppDelegate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -111,6 +126,34 @@
 		3AC2C23811A5B9890071F912 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		3AC2C25911A5BA500071F912 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* TinCan-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "TinCan-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		DA96F0E111EE525500B64D3D /* greyButton-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "greyButton-1.png"; sourceTree = "<group>"; };
+		DA96F0E211EE525500B64D3D /* HeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeaderView.h; sourceTree = "<group>"; };
+		DA96F0E311EE525500B64D3D /* HeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeaderView.m; sourceTree = "<group>"; };
+		DA96F0E411EE525500B64D3D /* LocationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationCell.h; sourceTree = "<group>"; };
+		DA96F0E511EE525500B64D3D /* LocationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationCell.m; sourceTree = "<group>"; };
+		DA96F0E611EE525500B64D3D /* LocationCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationCellView.h; sourceTree = "<group>"; };
+		DA96F0E711EE525500B64D3D /* LocationCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationCellView.m; sourceTree = "<group>"; };
+		DA96F0E811EE525500B64D3D /* LocationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationViewController.h; sourceTree = "<group>"; };
+		DA96F0E911EE525500B64D3D /* LocationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationViewController.m; sourceTree = "<group>"; };
+		DA96F0EA11EE525500B64D3D /* LoginAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginAppDelegate.h; sourceTree = "<group>"; };
+		DA96F0EB11EE525500B64D3D /* LoginAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginAppDelegate.m; sourceTree = "<group>"; };
+		DA96F0EC11EE525500B64D3D /* LoginMasterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginMasterViewController.h; sourceTree = "<group>"; };
+		DA96F0ED11EE525500B64D3D /* LoginMasterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginMasterViewController.m; sourceTree = "<group>"; };
+		DA96F0EE11EE525500B64D3D /* LogoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogoView.h; sourceTree = "<group>"; };
+		DA96F0EF11EE525500B64D3D /* LogoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogoView.m; sourceTree = "<group>"; };
+		DA96F0F011EE525500B64D3D /* RoomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoomCell.h; sourceTree = "<group>"; };
+		DA96F0F111EE525500B64D3D /* RoomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoomCell.m; sourceTree = "<group>"; };
+		DA96F0F211EE525500B64D3D /* RoomCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoomCellView.h; sourceTree = "<group>"; };
+		DA96F0F311EE525500B64D3D /* RoomCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoomCellView.m; sourceTree = "<group>"; };
+		DA96F0F411EE525500B64D3D /* RoomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoomViewController.h; sourceTree = "<group>"; };
+		DA96F0F511EE525500B64D3D /* RoomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoomViewController.m; sourceTree = "<group>"; };
+		DA96F0F611EE525500B64D3D /* tin_can_phone.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = tin_can_phone.jpg; sourceTree = "<group>"; };
+		DA96F10511EE52DA00B64D3D /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
+		DA96F10611EE52DA00B64D3D /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		DA96F10711EE52DA00B64D3D /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
+		DA96F10811EE52DA00B64D3D /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
+		DA96F10911EE52DA00B64D3D /* SettingsAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsAppDelegate.h; sourceTree = "<group>"; };
+		DA96F10A11EE52DA00B64D3D /* SettingsAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsAppDelegate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,30 +177,14 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				3AC2BD7B11A33DDE0071F912 /* JSON */,
-				3AC2C20411A5B62C0071F912 /* ASIHTTPRequest */,
 				1D3623240D0F684500981E51 /* TinCanAppDelegate.h */,
 				1D3623250D0F684500981E51 /* TinCanAppDelegate.m */,
-				3A57217D11EB7515004C2687 /* MeetingViewController.h */,
-				3A57217E11EB7515004C2687 /* MeetingViewController.m */,
-				3AC2B9171198715A0071F912 /* ParticipantView.h */,
-				3AC2B9181198715A0071F912 /* ParticipantView.m */,
-				3AC2B91A119871670071F912 /* Todo.h */,
-				3AC2B91B119871670071F912 /* Todo.m */,
-				3AC2BA9E1199D89C0071F912 /* TodoItemView.h */,
-				3AC2BA9F1199D89C0071F912 /* TodoItemView.m */,
-				3AC2B9D21198BB120071F912 /* UIColor+Util.h */,
-				3AC2B9D31198BB120071F912 /* UIColor+Util.m */,
-				3AC2BD9211A340080071F912 /* TodoUpdateOperation.h */,
-				3AC2BD9311A340080071F912 /* TodoUpdateOperation.m */,
-				3AC2BF0311A490720071F912 /* Participant.h */,
-				3AC2BF0411A490720071F912 /* Participant.m */,
-				3AB0BC3611A5D73C003A91EB /* MeetingTimerView.h */,
-				3AB0BC3711A5D73C003A91EB /* MeetingTimerView.m */,
-				3AA06B7211A9C1DA00C3D279 /* DragManager.h */,
-				3AA06B7311A9C1DA00C3D279 /* DragManager.m */,
 				3A57237611EBDE0B004C2687 /* TinCanViewController.h */,
 				3A57237711EBDE0B004C2687 /* TinCanViewController.m */,
+				3AC2BD7B11A33DDE0071F912 /* JSON */,
+				DA96F10311EE526D00B64D3D /* Login Code */,
+				DA96F10411EE528900B64D3D /* Settings Code */,
+				DA96EFF811EE51E500B64D3D /* Meeting Code */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -219,6 +246,7 @@
 		3AC2BD7B11A33DDE0071F912 /* JSON */ = {
 			isa = PBXGroup;
 			children = (
+				3AC2C20411A5B62C0071F912 /* ASIHTTPRequest */,
 				3AC2BD7C11A33DDE0071F912 /* JSON.h */,
 				3AC2BD7D11A33DDE0071F912 /* NSObject+SBJSON.h */,
 				3AC2BD7E11A33DDE0071F912 /* NSObject+SBJSON.m */,
@@ -257,7 +285,75 @@
 				3AC2C21211A5B62C0071F912 /* ASINSStringAdditions.m */,
 				3AC2C21311A5B62C0071F912 /* ASIProgressDelegate.h */,
 			);
-			path = ASIHTTPRequest;
+			name = ASIHTTPRequest;
+			path = ../ASIHTTPRequest;
+			sourceTree = "<group>";
+		};
+		DA96EFF811EE51E500B64D3D /* Meeting Code */ = {
+			isa = PBXGroup;
+			children = (
+				3A57217D11EB7515004C2687 /* MeetingViewController.h */,
+				3A57217E11EB7515004C2687 /* MeetingViewController.m */,
+				3AC2B9171198715A0071F912 /* ParticipantView.h */,
+				3AC2B9181198715A0071F912 /* ParticipantView.m */,
+				3AC2BA9E1199D89C0071F912 /* TodoItemView.h */,
+				3AC2BA9F1199D89C0071F912 /* TodoItemView.m */,
+				3AC2B9D21198BB120071F912 /* UIColor+Util.h */,
+				3AC2B9D31198BB120071F912 /* UIColor+Util.m */,
+				3AC2BD9211A340080071F912 /* TodoUpdateOperation.h */,
+				3AC2BD9311A340080071F912 /* TodoUpdateOperation.m */,
+				3AC2BF0311A490720071F912 /* Participant.h */,
+				3AC2BF0411A490720071F912 /* Participant.m */,
+				3AB0BC3611A5D73C003A91EB /* MeetingTimerView.h */,
+				3AB0BC3711A5D73C003A91EB /* MeetingTimerView.m */,
+				3AA06B7211A9C1DA00C3D279 /* DragManager.h */,
+				3AA06B7311A9C1DA00C3D279 /* DragManager.m */,
+				3AC2B91A119871670071F912 /* Todo.h */,
+				3AC2B91B119871670071F912 /* Todo.m */,
+			);
+			name = "Meeting Code";
+			sourceTree = "<group>";
+		};
+		DA96F10311EE526D00B64D3D /* Login Code */ = {
+			isa = PBXGroup;
+			children = (
+				DA96F0E111EE525500B64D3D /* greyButton-1.png */,
+				DA96F0E211EE525500B64D3D /* HeaderView.h */,
+				DA96F0E311EE525500B64D3D /* HeaderView.m */,
+				DA96F0E411EE525500B64D3D /* LocationCell.h */,
+				DA96F0E511EE525500B64D3D /* LocationCell.m */,
+				DA96F0E611EE525500B64D3D /* LocationCellView.h */,
+				DA96F0E711EE525500B64D3D /* LocationCellView.m */,
+				DA96F0E811EE525500B64D3D /* LocationViewController.h */,
+				DA96F0E911EE525500B64D3D /* LocationViewController.m */,
+				DA96F0EA11EE525500B64D3D /* LoginAppDelegate.h */,
+				DA96F0EB11EE525500B64D3D /* LoginAppDelegate.m */,
+				DA96F0EC11EE525500B64D3D /* LoginMasterViewController.h */,
+				DA96F0ED11EE525500B64D3D /* LoginMasterViewController.m */,
+				DA96F0EE11EE525500B64D3D /* LogoView.h */,
+				DA96F0EF11EE525500B64D3D /* LogoView.m */,
+				DA96F0F011EE525500B64D3D /* RoomCell.h */,
+				DA96F0F111EE525500B64D3D /* RoomCell.m */,
+				DA96F0F211EE525500B64D3D /* RoomCellView.h */,
+				DA96F0F311EE525500B64D3D /* RoomCellView.m */,
+				DA96F0F411EE525500B64D3D /* RoomViewController.h */,
+				DA96F0F511EE525500B64D3D /* RoomViewController.m */,
+				DA96F0F611EE525500B64D3D /* tin_can_phone.jpg */,
+			);
+			name = "Login Code";
+			sourceTree = "<group>";
+		};
+		DA96F10411EE528900B64D3D /* Settings Code */ = {
+			isa = PBXGroup;
+			children = (
+				DA96F10511EE52DA00B64D3D /* DetailViewController.h */,
+				DA96F10611EE52DA00B64D3D /* DetailViewController.m */,
+				DA96F10711EE52DA00B64D3D /* RootViewController.h */,
+				DA96F10811EE52DA00B64D3D /* RootViewController.m */,
+				DA96F10911EE52DA00B64D3D /* SettingsAppDelegate.h */,
+				DA96F10A11EE52DA00B64D3D /* SettingsAppDelegate.m */,
+			);
+			name = "Settings Code";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -305,6 +401,8 @@
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
 				2899E5220DE3E06400AC0155 /* TinCanViewController.xib in Resources */,
 				3AA06D1411AAD1C500C3D279 /* Icon.png in Resources */,
+				DA96F0F711EE525500B64D3D /* greyButton-1.png in Resources */,
+				DA96F10211EE525500B64D3D /* tin_can_phone.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,6 +438,19 @@
 				3AA06B7411A9C1DA00C3D279 /* DragManager.m in Sources */,
 				3A57217F11EB7515004C2687 /* MeetingViewController.m in Sources */,
 				3A57237811EBDE0B004C2687 /* TinCanViewController.m in Sources */,
+				DA96F0F811EE525500B64D3D /* HeaderView.m in Sources */,
+				DA96F0F911EE525500B64D3D /* LocationCell.m in Sources */,
+				DA96F0FA11EE525500B64D3D /* LocationCellView.m in Sources */,
+				DA96F0FB11EE525500B64D3D /* LocationViewController.m in Sources */,
+				DA96F0FC11EE525500B64D3D /* LoginAppDelegate.m in Sources */,
+				DA96F0FD11EE525500B64D3D /* LoginMasterViewController.m in Sources */,
+				DA96F0FE11EE525500B64D3D /* LogoView.m in Sources */,
+				DA96F0FF11EE525500B64D3D /* RoomCell.m in Sources */,
+				DA96F10011EE525500B64D3D /* RoomCellView.m in Sources */,
+				DA96F10111EE525500B64D3D /* RoomViewController.m in Sources */,
+				DA96F10B11EE52DA00B64D3D /* DetailViewController.m in Sources */,
+				DA96F10C11EE52DA00B64D3D /* RootViewController.m in Sources */,
+				DA96F10D11EE52DA00B64D3D /* SettingsAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -385,7 +496,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PREBINDING = NO;
 				SDKROOT = iphonesimulator3.2;
 				TARGETED_DEVICE_FAMILY = 2;
