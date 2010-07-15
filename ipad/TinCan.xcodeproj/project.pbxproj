@@ -62,6 +62,7 @@
 		DA96F10B11EE52DA00B64D3D /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F10611EE52DA00B64D3D /* DetailViewController.m */; };
 		DA96F10C11EE52DA00B64D3D /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F10811EE52DA00B64D3D /* RootViewController.m */; };
 		DA96F10D11EE52DA00B64D3D /* SettingsAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F10A11EE52DA00B64D3D /* SettingsAppDelegate.m */; };
+		DA99A6E111EF6411001148E2 /* rightarrow.png in Resources */ = {isa = PBXBuildFile; fileRef = DA99A6E011EF6411001148E2 /* rightarrow.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -169,6 +170,7 @@
 		DA96F10811EE52DA00B64D3D /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		DA96F10911EE52DA00B64D3D /* SettingsAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsAppDelegate.h; sourceTree = "<group>"; };
 		DA96F10A11EE52DA00B64D3D /* SettingsAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsAppDelegate.m; sourceTree = "<group>"; };
+		DA99A6E011EF6411001148E2 /* rightarrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightarrow.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -354,6 +356,7 @@
 			isa = PBXGroup;
 			children = (
 				DA96F0E111EE525500B64D3D /* greyButton-1.png */,
+				DA99A6E011EF6411001148E2 /* rightarrow.png */,
 				DA96F0E211EE525500B64D3D /* HeaderView.h */,
 				DA96F0E311EE525500B64D3D /* HeaderView.m */,
 				DA96F0E411EE525500B64D3D /* LocationCell.h */,
@@ -439,6 +442,7 @@
 				3AA06D1411AAD1C500C3D279 /* Icon.png in Resources */,
 				DA96F0F711EE525500B64D3D /* greyButton-1.png in Resources */,
 				DA96F10211EE525500B64D3D /* tin_can_phone.jpg in Resources */,
+				DA99A6E111EF6411001148E2 /* rightarrow.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

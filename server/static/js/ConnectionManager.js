@@ -65,10 +65,12 @@ ConnectionManager.prototype = {
                 var self = this;
                 this.currentConnectRequest=setTimeout(
                     function() {self.startPersistentConnection();}, 10);
-                    
-                for(var i=0; i<events.length; i++) {
-                    this.dispatchEvent(events[i]);
-                }
+                   
+                if (events!=null){
+                    for(var i=0; i<events.length; i++) {
+                        this.dispatchEvent(events[i]);
+                    }
+                } 
                 
                 // Not generating events here because dispatch is almost
                 // certainly going to be generating them. 

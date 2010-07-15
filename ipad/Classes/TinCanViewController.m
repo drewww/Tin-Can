@@ -8,7 +8,7 @@
 
 #import "TinCanViewController.h"
 #import "MeetingViewController.h"
-
+#import "LoginMasterViewController.h"
 
 @implementation TinCanViewController
 
@@ -17,7 +17,7 @@
     
     if(currentViewController == nil) {
         // Make the initial one and load it. For now, that's just the MeetingView.
-        currentViewController = [[[MeetingViewController alloc] init] retain];
+        currentViewController = [[[LoginMasterViewController alloc] init] retain];
         
         // Make sure the viewcontroller has a reference back here, so it can send us 
         // messages if we need it.

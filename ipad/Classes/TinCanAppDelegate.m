@@ -8,6 +8,8 @@
 
 #import "TinCanAppDelegate.h"
 #import "ParticipantView.h"
+#import "TinCanViewController.h"
+#import "LoginMasterViewController.h"
 
 @implementation TinCanAppDelegate
 
@@ -16,11 +18,25 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
-
-    [window addSubview:viewController.view];
+	
+    //TinCanViewController *tableViewController = [TinCanViewController alloc];
+	LoginMasterViewController *tableViewController = [LoginMasterViewController alloc];
+	CGAffineTransform transform = CGAffineTransformMakeRotation(M_PI/2);
+	
+	[window setTransform:transform];
+	
+	[window setBackgroundColor:[UIColor blackColor]];
+	
+    [window addSubview:tableViewController.view];
+	
     [window makeKeyAndVisible];
-    
+	
 	return YES;
+	
+   // [window addSubview:viewController.view];
+   // [window makeKeyAndVisible];
+    
+	//return YES;
 }
 
 

@@ -368,6 +368,10 @@ class Actor(YarnBaseType):
         self._devices.add(device)
         device.actor = self
     
+    def removeDevice(self, device):
+        self._devices.remove(device)
+        device.actor = None
+    
     def getDevices(self):
         """Returns all the devices present at this location.
         
