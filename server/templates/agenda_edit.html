@@ -188,20 +188,23 @@
 			console.log(currentItem);
 			console.log(currentClicked);
 			
-			// update the items array to reflect the new order of items
-			// remove the item to be queued from array, set as temp, then insert in the new position
-			clickedIndex = items.indexOf(currentClicked[0].id);
-			temp = items[clickedIndex];
-			items.splice(clickedIndex, 1);
-			currentIndex = items.indexOf(currentItem);
-			tempindex = currentIndex + 1;
-			items.splice(tempindex,0,temp);
-			
-			console.log('updated items list: ');
-			console.log(items);			
-			(currentClicked).insertAfter($("#"+currentItem));
-			// document.getElementById(currentItem).after(currentClicked);
-			
+			if (currentItem == currentClicked[0].id) {
+				return;
+			}
+			else{
+				// update the items array to reflect the new order of items
+				// remove the item to be queued from array, set as temp, then insert in the new position
+				clickedIndex = items.indexOf(currentClicked[0].id);
+				temp = items[clickedIndex];
+				items.splice(clickedIndex, 1);
+				currentIndex = items.indexOf(currentItem);
+				tempindex = currentIndex + 1;
+				items.splice(tempindex,0,temp);
+				console.log('updated items list: ');
+				console.log(items);			
+				(currentClicked).insertAfter($("#"+currentItem));
+				// document.getElementById(currentItem).after(currentClicked);
+			}
 		}
 		
 		function updateCurrent() { 
