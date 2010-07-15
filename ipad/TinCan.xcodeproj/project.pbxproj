@@ -196,9 +196,9 @@
 				1D3623250D0F684500981E51 /* TinCanAppDelegate.m */,
 				3A57237611EBDE0B004C2687 /* TinCanViewController.h */,
 				3A57237711EBDE0B004C2687 /* TinCanViewController.m */,
-				DA96F10311EE526D00B64D3D /* Login Code */,
-				DA96F10411EE528900B64D3D /* Settings Code */,
-				DA96EFF811EE51E500B64D3D /* Meeting Code */,
+				DA96F10311EE526D00B64D3D /* Login */,
+				DA96F10411EE528900B64D3D /* Settings */,
+				DA96EFF811EE51E500B64D3D /* Meeting */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -320,7 +320,7 @@
 			path = ASIHTTPRequest;
 			sourceTree = "<group>";
 		};
-		DA96EFF811EE51E500B64D3D /* Meeting Code */ = {
+		DA96EFF811EE51E500B64D3D /* Meeting */ = {
 			isa = PBXGroup;
 			children = (
 				3A57217D11EB7515004C2687 /* MeetingViewController.h */,
@@ -342,10 +342,10 @@
 				3AC2B91A119871670071F912 /* Todo.h */,
 				3AC2B91B119871670071F912 /* Todo.m */,
 			);
-			name = "Meeting Code";
+			name = Meeting;
 			sourceTree = "<group>";
 		};
-		DA96F10311EE526D00B64D3D /* Login Code */ = {
+		DA96F10311EE526D00B64D3D /* Login */ = {
 			isa = PBXGroup;
 			children = (
 				DA96F0E111EE525500B64D3D /* greyButton-1.png */,
@@ -371,10 +371,10 @@
 				DA96F0F511EE525500B64D3D /* RoomViewController.m */,
 				DA96F0F611EE525500B64D3D /* tin_can_phone.jpg */,
 			);
-			name = "Login Code";
+			name = Login;
 			sourceTree = "<group>";
 		};
-		DA96F10411EE528900B64D3D /* Settings Code */ = {
+		DA96F10411EE528900B64D3D /* Settings */ = {
 			isa = PBXGroup;
 			children = (
 				DA96F10511EE52DA00B64D3D /* DetailViewController.h */,
@@ -384,7 +384,7 @@
 				DA96F10911EE52DA00B64D3D /* SettingsAppDelegate.h */,
 				DA96F10A11EE52DA00B64D3D /* SettingsAppDelegate.m */,
 			);
-			name = "Settings Code";
+			name = Settings;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
