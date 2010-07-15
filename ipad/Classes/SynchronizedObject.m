@@ -13,13 +13,15 @@
 
 @synthesize uuid;
 
-- (id) initWithUUID:NSString *uuid {
+- (id) initWithUUID:(NSString *)myUuid {
     self = [super init];
     
-    self.uuid = uuid;
+    self.uuid = myUuid;
     
     // Register this object with the main object store.
     [[StateManager sharedInstance] putObj:self withKey:self.uuid];
+    
+    return self;
 }
 
 @end

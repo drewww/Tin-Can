@@ -17,6 +17,7 @@
 		3A2A6A3C11EE5ED300FF373C /* SynchronizedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A3B11EE5ED300FF373C /* SynchronizedObject.m */; };
 		3A2A6A3F11EE696000FF373C /* StateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A3E11EE696000FF373C /* StateManager.m */; };
 		3A2A6A5A11EE73F800FF373C /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A5911EE73F800FF373C /* User.m */; };
+		3A2A6A5D11EE74A500FF373C /* Actor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A5C11EE74A500FF373C /* Actor.m */; };
 		3A57217F11EB7515004C2687 /* MeetingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57217E11EB7515004C2687 /* MeetingViewController.m */; };
 		3A57237811EBDE0B004C2687 /* TinCanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57237711EBDE0B004C2687 /* TinCanViewController.m */; };
 		3AA06B7411A9C1DA00C3D279 /* DragManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AA06B7311A9C1DA00C3D279 /* DragManager.m */; };
@@ -64,6 +65,8 @@
 		3A2A6A3E11EE696000FF373C /* StateManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StateManager.m; sourceTree = "<group>"; };
 		3A2A6A5811EE73F800FF373C /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		3A2A6A5911EE73F800FF373C /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
+		3A2A6A5B11EE74A500FF373C /* Actor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Actor.h; sourceTree = "<group>"; };
+		3A2A6A5C11EE74A500FF373C /* Actor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Actor.m; sourceTree = "<group>"; };
 		3A57217D11EB7515004C2687 /* MeetingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeetingViewController.h; sourceTree = "<group>"; };
 		3A57217E11EB7515004C2687 /* MeetingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeetingViewController.m; sourceTree = "<group>"; };
 		3A57237611EBDE0B004C2687 /* TinCanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TinCanViewController.h; sourceTree = "<group>"; };
@@ -235,6 +238,8 @@
 				3A2A6A3E11EE696000FF373C /* StateManager.m */,
 				3A2A6A5811EE73F800FF373C /* User.h */,
 				3A2A6A5911EE73F800FF373C /* User.m */,
+				3A2A6A5B11EE74A500FF373C /* Actor.h */,
+				3A2A6A5C11EE74A500FF373C /* Actor.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -366,6 +371,7 @@
 				3A2A6A3C11EE5ED300FF373C /* SynchronizedObject.m in Sources */,
 				3A2A6A3F11EE696000FF373C /* StateManager.m in Sources */,
 				3A2A6A5A11EE73F800FF373C /* User.m in Sources */,
+				3A2A6A5D11EE74A500FF373C /* Actor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

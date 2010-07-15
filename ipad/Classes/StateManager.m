@@ -41,7 +41,7 @@ static StateManager *sharedInstance = nil;
     if([obj isKindOfClass:aClass]) {
         return obj;
     } else {
-        NSLog(@"Object UUID %@ is type %@ not the specified type.", uuid, [obj className]);
+        NSLog(@"Object UUID %@ is type %@ not the specified type.", uuid, obj.class);
         return nil;
     }
 }
