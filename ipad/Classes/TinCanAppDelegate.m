@@ -20,14 +20,12 @@
     
 	
     //TinCanViewController *tableViewController = [TinCanViewController alloc];
-	LoginMasterViewController *tableViewController = [LoginMasterViewController alloc];
-	CGAffineTransform transform = CGAffineTransformMakeRotation(M_PI/2);
-	
-	[window setTransform:transform];
-	
+	viewController = [TinCanViewController alloc];
+    	
+    [window setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 	[window setBackgroundColor:[UIColor blackColor]];
 	
-    [window addSubview:tableViewController.view];
+    [window addSubview:viewController.view];
 	
     [window makeKeyAndVisible];
 	

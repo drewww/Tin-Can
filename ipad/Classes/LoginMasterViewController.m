@@ -316,6 +316,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+	CGAffineTransform transform = CGAffineTransformMakeRotation(M_PI/2);
+    NSLog(@"self.view.superview: %@", self.view.superview);
+    [self.view.superview setTransform:transform];
+
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
