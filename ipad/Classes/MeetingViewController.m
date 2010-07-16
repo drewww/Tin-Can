@@ -154,13 +154,13 @@
         NSString *uuid;
         switch(i) {
             case 0:
-                point = CGPointMake(256, 1060-150);
+                point = CGPointMake(256, 1060-135);
                 rotation = 0.0;
                 color = [UIColor redColor];
                 uuid = @"p1";
                 break;
             case 1:
-                point = CGPointMake(512, 1060-150);
+                point = CGPointMake(512, 1060-135);
                 rotation = 0.0;
                 color = [UIColor redColor];
                 uuid = @"p2";
@@ -202,13 +202,13 @@
                 uuid = @"p8";
                 break;
             case 8:
-                point = CGPointMake(256, -30+150);
+                point = CGPointMake(256, -30+125);
                 rotation = M_PI;
                 color = [UIColor greenColor];
                 uuid = @"p9";
                 break;
             case 9:        
-                point = CGPointMake(512, -30+150);
+                point = CGPointMake(512, -30+125);
                 rotation = M_PI;
                 color = [UIColor purpleColor];
                 uuid = @"p10";
