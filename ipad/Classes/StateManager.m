@@ -71,7 +71,7 @@ static StateManager *sharedInstance = nil;
         
         Location *newLocation = [[Location alloc] initWithUUID:[location objectForKey:@"uuid"]
                                                       withName:[location objectForKey:@"name"]
-                                                   withMeeting:[location objectForKey:@"meeting"]
+                                                   withMeeting:[location objectForKey:@"meetingUUID"]
                                                      withUsers:[location objectForKey:@"users"]];
         [actors addObject:newLocation];
     }
