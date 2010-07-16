@@ -21,6 +21,8 @@
 		3A2A6AAC11EF65C400FF373C /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6AAB11EF65C400FF373C /* Location.m */; };
 		3A2A6AC811EFDAF500FF373C /* Meeting.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6AC711EFDAF500FF373C /* Meeting.m */; };
 		3A2A6ACB11EFDB0E00FF373C /* Room.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6ACA11EFDB0E00FF373C /* Room.m */; };
+		3A2A6BF011F0B5FD00FF373C /* greyButton-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A2A6BEE11F0B5FD00FF373C /* greyButton-1.png */; };
+		3A2A6BF111F0B5FD00FF373C /* rightarrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A2A6BEF11F0B5FD00FF373C /* rightarrow.png */; };
 		3A57217F11EB7515004C2687 /* MeetingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57217E11EB7515004C2687 /* MeetingViewController.m */; };
 		3A57237811EBDE0B004C2687 /* TinCanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57237711EBDE0B004C2687 /* TinCanViewController.m */; };
 		3AA06B7411A9C1DA00C3D279 /* DragManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AA06B7311A9C1DA00C3D279 /* DragManager.m */; };
@@ -49,7 +51,6 @@
 		3AC2C22B11A5B7520071F912 /* libz.1.2.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC2C22A11A5B7520071F912 /* libz.1.2.3.dylib */; };
 		3AC2C23911A5B9890071F912 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC2C23811A5B9890071F912 /* Reachability.m */; };
 		3AC2C25A11A5BA500071F912 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC2C25911A5BA500071F912 /* CFNetwork.framework */; };
-		DA96F0F711EE525500B64D3D /* greyButton-1.png in Resources */ = {isa = PBXBuildFile; fileRef = DA96F0E111EE525500B64D3D /* greyButton-1.png */; };
 		DA96F0F811EE525500B64D3D /* HeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E311EE525500B64D3D /* HeaderView.m */; };
 		DA96F0F911EE525500B64D3D /* LocationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E511EE525500B64D3D /* LocationCell.m */; };
 		DA96F0FA11EE525500B64D3D /* LocationCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E711EE525500B64D3D /* LocationCellView.m */; };
@@ -64,7 +65,6 @@
 		DA96F10B11EE52DA00B64D3D /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F10611EE52DA00B64D3D /* DetailViewController.m */; };
 		DA96F10C11EE52DA00B64D3D /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F10811EE52DA00B64D3D /* RootViewController.m */; };
 		DA96F10D11EE52DA00B64D3D /* SettingsAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F10A11EE52DA00B64D3D /* SettingsAppDelegate.m */; };
-		DA99A6E111EF6411001148E2 /* rightarrow.png in Resources */ = {isa = PBXBuildFile; fileRef = DA99A6E011EF6411001148E2 /* rightarrow.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -93,6 +93,8 @@
 		3A2A6AC911EFDB0E00FF373C /* Room.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Room.h; sourceTree = "<group>"; };
 		3A2A6ACA11EFDB0E00FF373C /* Room.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Room.m; sourceTree = "<group>"; };
 		3A2A6B8B11F0B15600FF373C /* tincan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tincan.h; sourceTree = "<group>"; };
+		3A2A6BEE11F0B5FD00FF373C /* greyButton-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "greyButton-1.png"; sourceTree = "<group>"; };
+		3A2A6BEF11F0B5FD00FF373C /* rightarrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightarrow.png; sourceTree = "<group>"; };
 		3A57217D11EB7515004C2687 /* MeetingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeetingViewController.h; sourceTree = "<group>"; };
 		3A57217E11EB7515004C2687 /* MeetingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeetingViewController.m; sourceTree = "<group>"; };
 		3A57237611EBDE0B004C2687 /* TinCanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TinCanViewController.h; sourceTree = "<group>"; };
@@ -149,7 +151,6 @@
 		3AC2C23811A5B9890071F912 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		3AC2C25911A5BA500071F912 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* TinCan-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "TinCan-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
-		DA96F0E111EE525500B64D3D /* greyButton-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "greyButton-1.png"; sourceTree = "<group>"; };
 		DA96F0E211EE525500B64D3D /* HeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeaderView.h; sourceTree = "<group>"; };
 		DA96F0E311EE525500B64D3D /* HeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeaderView.m; sourceTree = "<group>"; };
 		DA96F0E411EE525500B64D3D /* LocationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationCell.h; sourceTree = "<group>"; };
@@ -177,7 +178,6 @@
 		DA96F10811EE52DA00B64D3D /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		DA96F10911EE52DA00B64D3D /* SettingsAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsAppDelegate.h; sourceTree = "<group>"; };
 		DA96F10A11EE52DA00B64D3D /* SettingsAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsAppDelegate.m; sourceTree = "<group>"; };
-		DA99A6E011EF6411001148E2 /* rightarrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightarrow.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -367,8 +367,8 @@
 		DA96F10311EE526D00B64D3D /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				DA96F0E111EE525500B64D3D /* greyButton-1.png */,
-				DA99A6E011EF6411001148E2 /* rightarrow.png */,
+				3A2A6BEE11F0B5FD00FF373C /* greyButton-1.png */,
+				3A2A6BEF11F0B5FD00FF373C /* rightarrow.png */,
 				DA96F0E211EE525500B64D3D /* HeaderView.h */,
 				DA96F0E311EE525500B64D3D /* HeaderView.m */,
 				DA96F0E411EE525500B64D3D /* LocationCell.h */,
@@ -452,9 +452,9 @@
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
 				2899E5220DE3E06400AC0155 /* TinCanViewController.xib in Resources */,
 				3AA06D1411AAD1C500C3D279 /* Icon.png in Resources */,
-				DA96F0F711EE525500B64D3D /* greyButton-1.png in Resources */,
 				DA96F10211EE525500B64D3D /* tin_can_phone.jpg in Resources */,
-				DA99A6E111EF6411001148E2 /* rightarrow.png in Resources */,
+				3A2A6BF011F0B5FD00FF373C /* greyButton-1.png in Resources */,
+				3A2A6BF111F0B5FD00FF373C /* rightarrow.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
