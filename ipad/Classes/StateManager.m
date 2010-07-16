@@ -48,7 +48,8 @@ static StateManager *sharedInstance = nil;
     }
 }
 
-- (void) initWithLocations:(NSArray *)newLocations withUsers:(NSArray *)newUsers withMeetings:(NSArray *)newMeetings withRooms:(NSArray *)newRooms {
+- (void) initWithLocations:(NSArray *)newLocations withUsers:(NSArray *)newUsers
+              withMeetings:(NSArray *)newMeetings withRooms:(NSArray *)newRooms {
 
     db = [NSMutableDictionary dictionary];
     actors = [NSMutableSet set];
@@ -98,8 +99,18 @@ static StateManager *sharedInstance = nil;
     
 //    NSLog(@"actors: %@", actors);
 //    NSLog(@"rooms: %@", rooms);
-//    NSLog(@"meetings: %@", meetings);
+    NSLog(@"meetings: %@", meetings);
     
+    // Unswizzle in the proper order.
+//    [self unswizzleGroup:actors];
+//    [self unswizzleGroup:rooms];
+//    [self unswizzleGroup:meetings];
+}
+
+- (void) unswizzleGroup:(NSSet *)groupToUnswizzle {
+    for(SynchronizedObject *object in groupToUnswizzle) {
+            [object unswizzle];   
+        }
 }
 
 

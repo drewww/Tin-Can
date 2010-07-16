@@ -14,6 +14,7 @@
 }
 
 - (id) initWithUUID:(UUID *) uuid;
+- (void) unswizzle;
 
 @property(nonatomic, retain) UUID *uuid;
 

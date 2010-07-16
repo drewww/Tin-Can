@@ -57,7 +57,7 @@
     // the job of the code calling this method to retain it if they want it. But
     // will it get garbage collected before it returns if I autorelease it? I think
     // not, but I'm not 100% sure.
-    NSMutableSet *currentParticipants = [[NSMutableSet set] autorelease];
+    NSMutableSet *currentParticipants = [NSMutableSet set];
     
     for (Location *location in self.locations) {
         [currentParticipants addObjectsFromArray:[location.users allObjects]];

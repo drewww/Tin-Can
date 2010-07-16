@@ -22,6 +22,8 @@
 
 - (void) initWithLocations:(NSArray *)newLocations withUsers:(NSArray *)newUsers withMeetings:(NSArray *)newMeetings withRooms:(NSArray *)newRooms;
 
+- (void) unswizzleGroup:(NSSet *)groupToUnswizzle;
+
 
 + (StateManager*)sharedInstance;
 
