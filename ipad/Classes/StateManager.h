@@ -12,6 +12,9 @@
 @interface StateManager : NSObject {
     NSMutableDictionary *db;
     
+    NSMutableSet *actors;
+    NSMutableSet *rooms;
+    NSMutableSet *meetings;
 }
 
 - (void) putObj:(NSObject *)obj withUUID:(UUID *)uuid;

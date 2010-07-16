@@ -47,6 +47,9 @@ static StateManager *sharedInstance = nil;
     }
 }
 
+
+
+
 #pragma mark -
 #pragma mark Singleton methods
 
