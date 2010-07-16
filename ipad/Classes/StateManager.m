@@ -10,6 +10,7 @@
 // http://stackoverflow.com/questions/145154/what-does-your-objective-c-singleton-look-like
 
 #import "StateManager.h"
+#import "User.h"
 #import "tincan.h"
 
 static StateManager *sharedInstance = nil;
@@ -47,7 +48,26 @@ static StateManager *sharedInstance = nil;
     }
 }
 
+- (void) initWithLocations:(NSArray *)newLocations withUsers:(NSArray *)newUsers withMeetings:(NSArray *)newMeetings withRooms:(NSArray *)newRooms {
 
+    db = [NSMutableDictionary dictionary];
+    actors = [NSMutableSet set];
+    rooms = [NSMutableSet set];
+    meetings = [NSMutableSet set];
+    
+    
+    // Do this in two passes. Make the objects first, then
+    // unswizzle them to convert UUIDs into actual objects.
+    for(NSDictionary *user in newUsers) {
+        User *newUser = [[User alloc] initWithUUID:[user objectForKey:@"uuid"]
+                                          withName:[user objectForKey:@"name"]
+                                      withLocation:[user objectForKey:@"location"]];
+        
+        [actors addObject:newUser];
+    }
+    
+    NSLog(@"actors: %@",actors);
+}
 
 
 #pragma mark -

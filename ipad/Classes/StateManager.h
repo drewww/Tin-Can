@@ -20,6 +20,8 @@
 - (void) putObj:(NSObject *)obj withUUID:(UUID *)uuid;
 - (NSObject *) getObjWithUUID:(UUID *)uuid withType:(Class) aClass;
 
+- (void) initWithLocations:(NSArray *)newLocations withUsers:(NSArray *)newUsers withMeetings:(NSArray *)newMeetings withRooms:(NSArray *)newRooms;
+
 
 + (StateManager*)sharedInstance;
 
