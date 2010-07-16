@@ -42,7 +42,6 @@
     else
         return [NSString stringWithFormat:@"[user.%@ %@ loc:null]", [self.uuid substringToIndex:6],
                 self.name, self.location];
-
 }
 
 @end

@@ -38,5 +38,9 @@
 //    }
 }
 
+- (NSString *) description {
+    return [NSString stringWithFormat:@"[room.%@ %@ meet:%@]", [self.uuid substringToIndex:6],
+            self.name, self.currentMeeting];
+}
 
 @end

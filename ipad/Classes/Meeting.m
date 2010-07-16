@@ -74,5 +74,9 @@
     self.room.currentMeeting = self;
 }
 
+- (NSString *) description {
+    return [NSString stringWithFormat:@"[meeting.%@ %@ locs:%d users:%d]", [self.uuid substringToIndex:6],
+            self.title, [self.locations count], [[self getCurrentParticipants] count]];
+}
 
 @end

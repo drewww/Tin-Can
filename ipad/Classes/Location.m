@@ -71,5 +71,15 @@
     }
 }
 
+- (NSString *)description {
+    
+    if([self isInMeeting]) 
+        return [NSString stringWithFormat:@"[loc.%@ %@ meet:%@ users:%d]", [self.uuid substringToIndex:6],
+            self.name, self.meeting, [self.users count]];
+    else 
+        return [NSString stringWithFormat:@"[loc.%@ %@ meet:null users:%d]", [self.uuid substringToIndex:6],
+                self.name, [self.users count]];
+
+}
 
 @end

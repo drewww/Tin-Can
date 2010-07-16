@@ -66,7 +66,40 @@ static StateManager *sharedInstance = nil;
         [actors addObject:newUser];
     }
     
-    NSLog(@"actors: %@",actors);
+    for(NSDictionary *location in newLocations) {
+
+        Location *newLocation = [[Location alloc] initWithUUID:[location objectForKey:@"uuid"]
+                                                      withName:[location objectForKey:@"name"]
+                                                   withMeeting:[location objectForKey:@"meeting"]
+                                                     withUsers:[location objectForKey:@"users"]];
+        [actors addObject:newLocation];
+    }
+    
+    
+    for(NSDictionary *room in newRooms) {
+        
+        // We're not handling the with-meetings clause here. Might we need to? Not sure.
+        // Hoping it happens during unswizzle instead. Not sure if that's the right strategy
+        // for this.
+        Room *newRoom = [[Room alloc] initWithUUID:[room objectForKey:@"uuid"]
+                                          withName:[room objectForKey:@"name"]];
+        
+        [rooms addObject:newRoom];
+    }
+    
+    for(NSDictionary *meeting in newMeetings) {
+     
+        Meeting *newMeeting = [[Meeting alloc] initWithUUID:[meeting objectForKey:@"uuid"]
+                                                  withTitle:[meeting objectForKey:@"title"]
+                                               withRoomUUID:[meeting objectForKey:@"room"]];
+        
+        [meetings addObject:newMeeting];
+    }
+    
+//    NSLog(@"actors: %@", actors);
+//    NSLog(@"rooms: %@", rooms);
+//    NSLog(@"meetings: %@", meetings);
+    
 }
 
 
