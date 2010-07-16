@@ -20,7 +20,11 @@ User.prototype = {
     },
     
     isInMeeting: function() {
-        return this.loc.isInMeeting();
+        if(this.isInLocation) {
+            return this.loc.isInMeeting();
+        } else {
+            return false;
+        }
     },
     
     unswizzle: function() {
@@ -62,11 +66,11 @@ Location.prototype = {
     
     
     leftMeeting: function (meeting) {
-        
+        this.meeting = null;
     },
     
     isInMeeting: function() {
-        return this.loc.isInMeeting();
+        return this.meeting != null;
     },
     
     unswizzle: function() {
@@ -147,7 +151,7 @@ Meeting.prototype = {
         loc.joinedMeeting(this);
         
         for(key in loc.users) {
-            this.allParticipants.push(loc.users[key]);
+            this.userJoinedLocation(loc.users[key]);
         }
     },
     

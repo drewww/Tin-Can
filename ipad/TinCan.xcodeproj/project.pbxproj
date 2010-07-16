@@ -19,6 +19,8 @@
 		3A2A6A5A11EE73F800FF373C /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A5911EE73F800FF373C /* User.m */; };
 		3A2A6A5D11EE74A500FF373C /* Actor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A5C11EE74A500FF373C /* Actor.m */; };
 		3A2A6AAC11EF65C400FF373C /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6AAB11EF65C400FF373C /* Location.m */; };
+		3A2A6AC811EFDAF500FF373C /* Meeting.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6AC711EFDAF500FF373C /* Meeting.m */; };
+		3A2A6ACB11EFDB0E00FF373C /* Room.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6ACA11EFDB0E00FF373C /* Room.m */; };
 		3A57217F11EB7515004C2687 /* MeetingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57217E11EB7515004C2687 /* MeetingViewController.m */; };
 		3A57237811EBDE0B004C2687 /* TinCanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57237711EBDE0B004C2687 /* TinCanViewController.m */; };
 		3AA06B7411A9C1DA00C3D279 /* DragManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AA06B7311A9C1DA00C3D279 /* DragManager.m */; };
@@ -86,6 +88,10 @@
 		3A2A6A5C11EE74A500FF373C /* Actor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Actor.m; sourceTree = "<group>"; };
 		3A2A6AAA11EF65C400FF373C /* Location.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Location.h; sourceTree = "<group>"; };
 		3A2A6AAB11EF65C400FF373C /* Location.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Location.m; sourceTree = "<group>"; };
+		3A2A6AC611EFDAF500FF373C /* Meeting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Meeting.h; sourceTree = "<group>"; };
+		3A2A6AC711EFDAF500FF373C /* Meeting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Meeting.m; sourceTree = "<group>"; };
+		3A2A6AC911EFDB0E00FF373C /* Room.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Room.h; sourceTree = "<group>"; };
+		3A2A6ACA11EFDB0E00FF373C /* Room.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Room.m; sourceTree = "<group>"; };
 		3A57217D11EB7515004C2687 /* MeetingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeetingViewController.h; sourceTree = "<group>"; };
 		3A57217E11EB7515004C2687 /* MeetingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeetingViewController.m; sourceTree = "<group>"; };
 		3A57237611EBDE0B004C2687 /* TinCanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TinCanViewController.h; sourceTree = "<group>"; };
@@ -279,6 +285,10 @@
 				3A2A6A5C11EE74A500FF373C /* Actor.m */,
 				3A2A6AAA11EF65C400FF373C /* Location.h */,
 				3A2A6AAB11EF65C400FF373C /* Location.m */,
+				3A2A6AC611EFDAF500FF373C /* Meeting.h */,
+				3A2A6AC711EFDAF500FF373C /* Meeting.m */,
+				3A2A6AC911EFDB0E00FF373C /* Room.h */,
+				3A2A6ACA11EFDB0E00FF373C /* Room.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -496,6 +506,8 @@
 				3A2A6A5A11EE73F800FF373C /* User.m in Sources */,
 				3A2A6A5D11EE74A500FF373C /* Actor.m in Sources */,
 				3A2A6AAC11EF65C400FF373C /* Location.m in Sources */,
+				3A2A6AC811EFDAF500FF373C /* Meeting.m in Sources */,
+				3A2A6ACB11EFDB0E00FF373C /* Room.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

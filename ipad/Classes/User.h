@@ -7,10 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Actor.h"
+#import "Location.h"
 
+@class Location;
 
-@interface User : NSObject {
-
+@interface User : Actor {
+    Location *location;
 }
+
+- (id) initWithUUID:(NSString *)myUuid withName:(NSString *)myName withLocation:(Location *)myLocation;
+- (BOOL) isInLocation;
+- (BOOL) isinMeeting;
+
+@property(nonatomic, retain) Location *location;
 
 @end
