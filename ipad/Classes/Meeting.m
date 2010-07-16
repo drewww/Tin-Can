@@ -9,6 +9,7 @@
 #import "Meeting.h"
 #import "Location.h"
 #import "StateManager.h"
+#import "Room.h"
 
 
 @implementation Meeting
@@ -69,7 +70,7 @@
     self.room = [[StateManager sharedInstance] getObjWithUUID:self.room withType:Room.class];
     
     // Turn this on when the room class is written.
-//    self.room.currentMeeting = self;
+    self.room.currentMeeting = self;
 }
 
 

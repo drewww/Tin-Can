@@ -7,10 +7,22 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "SynchronizedObject.h"
+#import "Meeting.h"
 
+@class Meeting;
 
-@interface Room : NSObject {
-    
+@interface Room : SynchronizedObject {
+    Meeting *currentMeeting;
+    NSString *name;
 }
+
+- (id) initWithUUID:(NSString *)myUuid withName:(NSString *)myName;
+
+- (void) setMeeting:(Meeting *)myMeeting;
+- (void) unswizzle;
+
+@property(nonatomic, retain) Meeting *currentMeeting;
+@property(nonatomic, retain) NSString *name;
 
 @end
