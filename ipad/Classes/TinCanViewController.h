@@ -12,5 +12,5 @@
 @interface TinCanViewController : UIViewController {
     UIViewController *currentViewController;
 }
-
+-(void) switchToViewController:(UIViewController *)c;
 @end

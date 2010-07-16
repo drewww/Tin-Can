@@ -9,22 +9,24 @@
 #import "TinCanViewController.h"
 #import "MeetingViewController.h"
 #import "LoginMasterViewController.h"
-
+@class LoginMasterViewController;
 @implementation TinCanViewController
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
+    self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 768, 1024)];
     
     if(currentViewController == nil) {
         // Make the initial one and load it. For now, that's just the MeetingView.
-        currentViewController = [[[LoginMasterViewController alloc] init] retain];
+        currentViewController = [[[LoginMasterViewController alloc] initWithController:self] retain];
         
         // Make sure the viewcontroller has a reference back here, so it can send us 
         // messages if we need it.
         //currentViewController.parentViewController = self;
     }
-    
-    self.view = currentViewController.view;
+
+    [self.view addSubview:currentViewController.view];
+//    self.view = currentViewController.view;
 }
 
 // Per advice here: http://stackoverflow.com/questions/2270835/best-practices-for-displaying-new-view-controllers-iphone
@@ -33,7 +35,7 @@
 
 -(void) switchToViewController:(UIViewController *)c {
     if(c == currentViewController) return;
-    
+
     [currentViewController.view removeFromSuperview];
     [self.view addSubview:c.view];
     [currentViewController release];

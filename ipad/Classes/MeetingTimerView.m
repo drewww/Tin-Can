@@ -175,7 +175,7 @@
 	
 	
     // Puts it in landscape mode, basically - so the top of the clock is to the right in portrait mode
-    CGContextRotateCTM(ctx, M_PI/2);
+    CGContextRotateCTM(ctx, 0);
 	
     // Draw the outline of the clock.
     CGContextSetRGBStrokeColor(ctx, 1, 1, 1, 1.0);

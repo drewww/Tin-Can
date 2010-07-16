@@ -35,9 +35,15 @@ ConnectionManager.prototype = {
                this.isConnected = true;
                this.publishEvent(this.generateEvent("LOGIN_COMPLETE", {}));
                
+               // Before we start a new connection, make sure to clear the
+               // previous one.
+               if(this.currentConnectRequest!=null) {
+                   console.log("Aborting existing connection.");
+                   this.currentConnectRequest.abort();
+               }
+               
                var self = this;
-               this.currentConnectRequest=setTimeout(
-                   function() {self.startPersistentConnection();}, 10);
+               setTimeout(function() {self.startPersistentConnection();}, 50);
                },
            error: function () { console.log("FAIL (login)");},
            context: this,
@@ -61,14 +67,16 @@ ConnectionManager.prototype = {
             type: "GET",
             dataType: "JSON",
             success: function (data) {
+                console.log("/connect/ succeded.");
                 events = $.parseJSON(data);
                 var self = this;
-                this.currentConnectRequest=setTimeout(
-                    function() {self.startPersistentConnection();}, 10);
-                    
-                for(var i=0; i<events.length; i++) {
-                    this.dispatchEvent(events[i]);
-                }
+                setTimeout(function(){self.startPersistentConnection();}, 10);
+                   
+                if (events!=null){
+                    for(var i=0; i<events.length; i++) {
+                        this.dispatchEvent(events[i]);
+                    }
+                } 
                 
                 // Not generating events here because dispatch is almost
                 // certainly going to be generating them. 

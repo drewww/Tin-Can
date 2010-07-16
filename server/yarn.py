@@ -215,7 +215,7 @@ class ConnectionHandler(BaseHandler):
             # connected to. (TODO figure out how to deal with a smooth
             # switch between meetings. Can you do that without forcing
             # a log out event from the previous one? Deal with this later)
-            logging.info("Actor %s already logged in. Connection saved."%
+            logging.info("Actor %s already logged in. Saving connection."%
                 actor.name)
             device.setConnection(self)            
         

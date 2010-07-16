@@ -352,6 +352,11 @@ def _handleAddActorDevice(event):
     actor = event.params["actor"]
     device = event.params["device"]
     
+    # need to remove device from previous actor.
+    
+    if device.actor!=None:
+        device.actor.removeDevice(device)
+        
     actor.addDevice(device)
     
     return event
