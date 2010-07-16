@@ -10,6 +10,7 @@
 #import "LogoView.h"
 #import "LocationViewController.h"
 #import "RoomViewController.h"
+#import "TinCanViewController.h"
 
 @class LoginMasterViewController;
 @class LocationViewController;
@@ -41,8 +42,9 @@
 	
 	LocationViewController *locViewController;
 	RoomViewController *roomViewController;
+	TinCanViewController *controller;
 }
-
+- (id)initWithController:(TinCanViewController *)control;
 -(void)moveWithBegin:(CGFloat)begin withEnd:(CGFloat)end;
 -(void)infoButtonPressed:(id)sender;
 -(void)chooseLocationWithLocation:(NSString *)loc;

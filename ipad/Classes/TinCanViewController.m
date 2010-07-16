@@ -9,7 +9,7 @@
 #import "TinCanViewController.h"
 #import "MeetingViewController.h"
 #import "LoginMasterViewController.h"
-
+@class LoginMasterViewController;
 @implementation TinCanViewController
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
@@ -18,7 +18,7 @@
     
     if(currentViewController == nil) {
         // Make the initial one and load it. For now, that's just the MeetingView.
-        currentViewController = [[[MeetingViewController alloc] init] retain];
+        currentViewController = [[[LoginMasterViewController alloc] initWithController:self] retain];
         
         // Make sure the viewcontroller has a reference back here, so it can send us 
         // messages if we need it.
