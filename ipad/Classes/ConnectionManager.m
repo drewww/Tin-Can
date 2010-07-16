@@ -88,12 +88,15 @@ static ConnectionManager *sharedInstance = nil;
         NSDictionary *result = [parser objectWithString:[request responseString] error:nil];
         
         
-        NSArray *locations = [result objectForKey:@"location"];
+        NSArray *locations = [result objectForKey:@"locations"];
         NSArray *users = [result objectForKey:@"users"];
         NSArray *meetings = [result objectForKey:@"meetings"];
         NSArray *rooms = [result objectForKey:@"rooms"];
         
-        [[StateManager sharedInstance] initWithLocations:locations withUsers:users withMeetings:meetings withRooms:rooms]; 
+        [[StateManager sharedInstance] initWithLocations:locations
+                                               withUsers:users
+                                            withMeetings:meetings
+                                               withRooms:rooms]; 
     }
      
 }

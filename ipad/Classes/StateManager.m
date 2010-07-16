@@ -62,13 +62,13 @@ static StateManager *sharedInstance = nil;
     for(NSDictionary *user in newUsers) {
         User *newUser = [[User alloc] initWithUUID:[user objectForKey:@"uuid"]
                                           withName:[user objectForKey:@"name"]
-                                      withLocation:[user objectForKey:@"location"]];
+                                  withLocationUUID:[user objectForKey:@"location"]];
         
         [actors addObject:newUser];
     }
     
     for(NSDictionary *location in newLocations) {
-
+        
         Location *newLocation = [[Location alloc] initWithUUID:[location objectForKey:@"uuid"]
                                                       withName:[location objectForKey:@"name"]
                                                    withMeeting:[location objectForKey:@"meeting"]
@@ -97,14 +97,15 @@ static StateManager *sharedInstance = nil;
         [meetings addObject:newMeeting];
     }
     
-//    NSLog(@"actors: %@", actors);
-//    NSLog(@"rooms: %@", rooms);
-    NSLog(@"meetings: %@", meetings);
     
     // Unswizzle in the proper order.
-//    [self unswizzleGroup:actors];
-//    [self unswizzleGroup:rooms];
-//    [self unswizzleGroup:meetings];
+    [self unswizzleGroup:actors];
+    [self unswizzleGroup:rooms];
+    [self unswizzleGroup:meetings];
+    
+    NSLog(@"actors: %@", actors);
+    NSLog(@"rooms: %@", rooms);
+    NSLog(@"meetings: %@", meetings);    
 }
 
 - (void) unswizzleGroup:(NSSet *)groupToUnswizzle {

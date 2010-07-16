@@ -29,7 +29,7 @@
             
 - (void) unswizzle {
     
-    NSLog(@"Rooms don't need to be unswizzled.");
+    //NSLog(@"Rooms don't need to be unswizzled.");
     // As currently architected, there's no need for this. You can't init rooms with a meeting
     // at the moment. When you can, this will need to get turned back on. But to turn it on,
     // we need to add a currentMeetingUUID indirection and I don't feel like doing it right now.

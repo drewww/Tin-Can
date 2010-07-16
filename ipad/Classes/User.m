@@ -15,10 +15,10 @@
 
 @synthesize location;
 
-- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withLocation:(Location *)myLocation {
+- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withLocationUUID:(UUID *)myLocationUUID {
     self = [super initWithUUID:myUuid withName:myName];
     
-    self.location = myLocation;
+    locationUUID = myLocationUUID;
     
     return self;
 }
@@ -42,6 +42,17 @@
     else
         return [NSString stringWithFormat:@"[user.%@ %@ loc:null]", [self.uuid substringToIndex:6],
                 self.name, self.location];
+}
+
+
+- (void) unswizzle {
+    
+    // Don't need to do this. When the location unswizzles, it will set its users' location
+    // pointer to itself. 
+//    if(locationUUID != nil) {
+//        self.location = [[StateManager sharedInstance] getObjWithUUID:locationUUID withType:Location.class];
+//    }
+    
 }
 
 @end

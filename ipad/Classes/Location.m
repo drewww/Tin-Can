@@ -16,7 +16,7 @@
 @synthesize meeting;
 @synthesize users;
 
-- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withMeeting:(UUID *)myMeetingUUID withUsers:(NSSet *)myUsers {
+- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withMeeting:(UUID *)myMeetingUUID withUsers:(NSArray *)myUsers {
     self = [super initWithUUID:myUuid withName:myName];
     
     meetingUUID = myMeetingUUID;
@@ -27,7 +27,7 @@
     // and we don't care because we'll construct a fresh one for
     // our use.
     self.users = [NSMutableSet set];
-    [self.users addObjectsFromArray:[myUsers allObjects]];
+    [self.users addObjectsFromArray:myUsers];
     
     return self;
 }
@@ -59,13 +59,15 @@
     NSMutableSet *newUsersList = [[NSMutableSet set] autorelease];
     for(NSString *userUUID in self.users) {
         User *user = (User *)[[StateManager sharedInstance] getObjWithUUID:userUUID withType:User.class];
+        
+
         [newUsersList addObject:user];
         user.location = self;
     }
     [self.users release];
     self.users = newUsersList;
     
-    if(self.meeting != nil) {
+    if(meetingUUID != nil) {
         self.meeting = (Meeting *)[[StateManager sharedInstance] getObjWithUUID:meetingUUID withType:Meeting.class];
         [self.meeting locationJoined:self];
     }
