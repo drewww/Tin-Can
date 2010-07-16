@@ -8,13 +8,14 @@
 
 #import "User.h"
 #import "Location.h"
+#import "tincan.h"
 
 
 @implementation User
 
 @synthesize location;
 
-- (id) initWithUUID:(NSString *)myUuid withName:(NSString *)myName withLocation:(Location *)myLocation {
+- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withLocation:(Location *)myLocation {
     self = [super initWithUUID:myUuid withName:myName];
     
     self.location = myLocation;
@@ -27,10 +28,10 @@
 }
 
 - (BOOL) isinMeeting {
-    if ([self isinLocation]) {
+    if ([self isInLocation]) {
         return [self.location isInMeeting];
     } else {
-        return nil;
+        return FALSE;
     }
 }
 

@@ -14,7 +14,7 @@
 @synthesize name;
 @synthesize currentMeeting;
 
-- (id) initWithUUID:(NSString *)myUuid withName:(NSString *)myName {
+- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName {
     self = [super initWithUUID:myUuid];
  
     self.name = myName;
@@ -28,9 +28,14 @@
 }
             
 - (void) unswizzle {
-    if(self.currentMeeting != nil) {
-        self.currentMeeting = [[StateManager sharedInstance] getObjWithUUID:self.currentMeeting withType:Meeting.class];
-    }
+    
+    NSLog(@"Rooms don't need to be unswizzled.");
+    // As currently architected, there's no need for this. You can't init rooms with a meeting
+    // at the moment. When you can, this will need to get turned back on. But to turn it on,
+    // we need to add a currentMeetingUUID indirection and I don't feel like doing it right now.
+//    if(self.currentMeeting != nil) {
+//        self.currentMeeting =  (Meeting *)[[StateManager sharedInstance] getObjWithUUID:self.currentMeeting withType:Meeting.class];
+//    }
 }
 
 

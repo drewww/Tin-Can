@@ -9,17 +9,17 @@
 #import "Location.h"
 #import "StateManager.h"
 #import "Meeting.h"
-
+#import "tincan.h"
 
 @implementation Location
 
 @synthesize meeting;
 @synthesize users;
 
-- (id) initWithUUID:(NSString *)myUuid withName:(NSString *)myName withMeeting:(Meeting *)myMeeting withUsers:(NSSet *)myUsers {
+- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withMeeting:(UUID *)myMeetingUUID withUsers:(NSSet *)myUsers {
     self = [super initWithUUID:myUuid withName:myName];
     
-    self.meeting = myMeeting;
+    meetingUUID = myMeetingUUID;
     
     // Make the mutable version of the set, then populate it
     // by unioning in the initialization set. self allows people
@@ -27,7 +27,7 @@
     // and we don't care because we'll construct a fresh one for
     // our use.
     self.users = [NSMutableSet set];
-    self.users = [self.users setByAddingObjectsFromSet:myUsers];
+    [self.users addObjectsFromArray:[myUsers allObjects]];
     
     return self;
 }
@@ -58,7 +58,7 @@
        
     NSMutableSet *newUsersList = [[NSMutableSet set] autorelease];
     for(NSString *userUUID in self.users) {
-        User *user = [[StateManager sharedInstance] getObjWithUUID:userUUID withType:User.class];
+        User *user = (User *)[[StateManager sharedInstance] getObjWithUUID:userUUID withType:User.class];
         [newUsersList addObject:user];
         user.location = self;
     }
@@ -66,7 +66,7 @@
     self.users = newUsersList;
     
     if(self.meeting != nil) {
-        self.meeting = [[StateManager sharedInstance] getObjWithUUID:self.meeting withType:Meeting.class];
+        self.meeting = (Meeting *)[[StateManager sharedInstance] getObjWithUUID:meetingUUID withType:Meeting.class];
         [self.meeting locationJoined:self];
     }
 }

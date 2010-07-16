@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "tincan.h"
 #import "Actor.h"
 #import "Meeting.h"
 #import "User.h"
@@ -16,10 +17,12 @@
 
 @interface Location : Actor {
     Meeting *meeting;
+    UUID *meetingUUID;
+    
     NSMutableSet *users;
 }
 
-- (id) initWithUUID:(NSString *)myUuid withName:(NSString *)myName withMeeting:(Meeting *)myMeeting withUsers:(NSMutableSet *)myUsers;
+- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withMeeting:(UUID *)myMeeting withUsers:(NSSet *)myUsers;
 - (void) userJoined:(User *)theUser;
 - (void) userLeft:(User *)theUser;
 - (void) joinedMeeting:(Meeting *)theMeeting;
@@ -27,7 +30,7 @@
 - (BOOL) isInMeeting;
 - (void) unswizzle;
 
-@property(nonatomic, retain) NSSet *users;
+@property(nonatomic, retain) NSMutableSet *users;
 @property(nonatomic, retain) Meeting *meeting;
 
 @end

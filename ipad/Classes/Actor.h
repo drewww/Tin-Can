@@ -13,7 +13,7 @@
     NSString *name;
 }
 
-- (id) initWithUUID:(NSString *)myUuid withName:(NSString *)myName;
+- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName;
 
 @property(nonatomic, retain) NSString *name;
 

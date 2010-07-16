@@ -13,7 +13,7 @@
 
 @synthesize name;
 
-- (id) initWithUUID:(NSString *)myUuid withName:(NSString *)myName {
+- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName {
     self = [super initWithUUID:myUuid];
     
     self.name = myName;

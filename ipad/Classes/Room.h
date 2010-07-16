@@ -17,7 +17,7 @@
     NSString *name;
 }
 
-- (id) initWithUUID:(NSString *)myUuid withName:(NSString *)myName;
+- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName;
 
 - (void) setMeeting:(Meeting *)myMeeting;
 - (void) unswizzle;

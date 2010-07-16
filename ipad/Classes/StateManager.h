@@ -7,14 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "tincan.h"
 
 @interface StateManager : NSObject {
     NSMutableDictionary *db;
     
 }
 
-- (void) putObj:(NSObject *)obj withUUID:(NSString *)uuid;
-- (NSObject *) getObjWithUUID:(NSString *)uuid withType:(Class) aClass;
+- (void) putObj:(NSObject *)obj withUUID:(UUID *)uuid;
+- (NSObject *) getObjWithUUID:(UUID *)uuid withType:(Class) aClass;
 
 
 + (StateManager*)sharedInstance;

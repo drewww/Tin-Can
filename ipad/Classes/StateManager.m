@@ -10,6 +10,7 @@
 // http://stackoverflow.com/questions/145154/what-does-your-objective-c-singleton-look-like
 
 #import "StateManager.h"
+#import "tincan.h"
 
 static StateManager *sharedInstance = nil;
 
@@ -25,11 +26,11 @@ static StateManager *sharedInstance = nil;
 }
 
 
-- (void) putObj:(NSObject *)obj withUUID:(NSString *) uuid {
+- (void) putObj:(NSObject *)obj withUUID:(UUID *) uuid {
     [db setObject:obj forKey:uuid];
 }
 
-- (NSObject *) getObjWithUUID:(NSString *) uuid withType:(Class) aClass {
+- (NSObject *) getObjWithUUID:(UUID *) uuid withType:(Class) aClass {
     
     NSObject *obj = [db objectForKey:uuid];
     

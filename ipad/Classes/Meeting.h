@@ -11,6 +11,7 @@
 #import "Room.h"
 #import "User.h"
 #import "Location.h"
+#import "tincan.h"
 
 @class Room;
 @class User;
@@ -18,6 +19,7 @@
 
 @interface Meeting : SynchronizedObject {
     Room *room;
+    UUID *roomUUID;
     
     NSString *title;
     
@@ -25,7 +27,7 @@
     NSMutableSet *locations;
 }
 
-- (id) initWithUUID:(NSString *)myUuid withTitle:(NSString *)myTitle withRoom:(Room *)myRoom;
+- (id) initWithUUID:(UUID *)myUuid withTitle:(NSString *)myTitle withRoomUUID:(UUID *)myRoomUUID;
 
 - (void) userJoined:(User *)theUser theLocation:(Location *)theLocation;
 - (void) userLeft:(User *)theUser theLocation:(Location *)theLocation;

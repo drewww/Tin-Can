@@ -19,11 +19,12 @@
 @synthesize locations;
 @synthesize allParticipants;
 
-- (id) initWithUUID:(NSString *)myUuid withTitle:(NSString *)myTitle withRoom:(Room *)myRoom {
+- (id) initWithUUID:(NSString *)myUuid withTitle:(NSString *)myTitle withRoomUUID:(NSString *)myRoomUUID {
     self = [super initWithUUID:myUuid];
  
     self.title = myTitle;
-    self.room = myRoom;
+    self.room = nil;
+    roomUUID = myRoomUUID;
     
     return self;
 }
@@ -67,7 +68,7 @@
 
 - (void) unswizzle {
 
-    self.room = [[StateManager sharedInstance] getObjWithUUID:self.room withType:Room.class];
+    self.room = (Room *)[[StateManager sharedInstance] getObjWithUUID:roomUUID withType:Room.class];
     
     // Turn this on when the room class is written.
     self.room.currentMeeting = self;

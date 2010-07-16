@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Actor.h"
 #import "Location.h"
+#import "tincan.h"
 
 @class Location;
 
@@ -16,7 +17,7 @@
     Location *location;
 }
 
-- (id) initWithUUID:(NSString *)myUuid withName:(NSString *)myName withLocation:(Location *)myLocation;
+- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withLocation:(Location *)myLocation;
 - (BOOL) isInLocation;
 - (BOOL) isinMeeting;
 

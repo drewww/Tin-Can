@@ -7,14 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "tincan.h"
 
 @interface SynchronizedObject : NSObject {
-    NSString *uuid;
+    UUID *uuid;
 }
 
-- (id) initWithUUID:(NSString *) uuid;
+- (id) initWithUUID:(UUID *) uuid;
 
-@property(nonatomic, retain) NSString *uuid;
+@property(nonatomic, retain) UUID *uuid;
 
 @end

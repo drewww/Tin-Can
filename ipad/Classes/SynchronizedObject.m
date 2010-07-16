@@ -8,18 +8,20 @@
 
 #import "SynchronizedObject.h"
 #import "StateManager.h"
+#import "tincan.h"
+
 
 @implementation SynchronizedObject
 
 @synthesize uuid;
 
-- (id) initWithUUID:(NSString *)myUuid {
+- (id) initWithUUID:(UUID *)myUuid {
     self = [super init];
     
     self.uuid = myUuid;
     
     // Register this object with the main object store.
-    [[StateManager sharedInstance] putObj:self withKey:self.uuid];
+    [[StateManager sharedInstance] putObj:self withUUID:self.uuid];
     
     return self;
 }
