@@ -1,4 +1,8 @@
-<html>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <meta name="viewport" content="width=300" />
 	<script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
@@ -10,117 +14,44 @@
 	<script type ="text/javascript">
 	var itemCounter = 0; // number of items ever created
 	var items = [];  // array of agenda items
-	var currentItem; // current item's id - string
-	var lastClicked = 'item0';
-	var currentClicked; // object
-
-
-	//Turn on drag and drop sorting and constrain to y axis	
-		// $(function() {
-		// 	$("#container").sortable({placeholder: 'ui-state-highlight',
-		// 	axis: 'y'});
-		// 
-		// });
-	
-		// $(document).ready(function(){
-		// 	template = $("#doneTemplate");
-		// 	itemList = $("#container");
-		// 	$("#newItem").hide();
-		// })
-		
-		
-
+	var currentItemId; // current item's id - string
+	var lastClicked = 'item0'; 
+	var currentClicked; // element
 	
 	// visibility toggle for new item textbox input
-		function add(){
-			newItem = $("#newItem")[0];
-			if (newItem.style.display!="block"){
-				newItem.style.display="block";
+		function showTextbox(){
+			newItemInput = $("#newItemInput")[0];
+			if (newItemInput.style.display!="block"){
+				newItemInput.style.display="block";
 			}
 			else{
-				$("#itemInput").value="";
-				newItem.style.display="none";
+				$("#itemTextbox").value="";
+				newItemInput.style.display="none";
 			}
 
 		}
-		
-		
-	//crash test dummy item
-		// function makeCurrentItem() {
-		// 	templateCurrent = $("#currentTemplate");
-		// 	itemList = $("#container");
-		// 	clone = templateCurrent.clone();
-		// 	itemList.append(clone);
-		// 	clone.show();
-		// 	itemCounter = itemCounter + 1;
-		// 	clone[0].id = 'item' + itemCounter;
-		// 	items.push(clone[0].id);
-		// 	// $('.drag').addTouch();
-		// 	
-		// 	clone.click(function (e) {
-		// 		template = $("#extraOptionsTemplate");
-		// 		currentClicked = $(this);
-		// 		if (lastClicked == currentClicked.get(0).id){
-		// 			template.hide();
-		// 			lastClicked = 'item0';
-		// 			// currentClicked[0].style.height = "40px";
-		// 		}
-		// 		else{
-		// 			lastClicked = currentClicked.get(0).id;
-		// 			$(this).append(template);
-		// 			// currentClicked[0].style.height = "60px";
-		// 			template.show();
-		// 		}
-		// 	})	
-		// }
-
-	//crash test dummy item		
-		// function makeDoneItem(doneItem) {
-		// 	templateDone = $("#doneTemplate");
-		// 	itemList = $("#container");
-		// 	clone = templateDone.clone();
-		// 	itemList.append(clone);
-		// 	clone.show();
-		// 	$('.drag').addTouch();	
-		// 	clone.click(function (e) {
-		// 		template = $("#extraOptionsTemplate");
-		// 		currentClicked = $(this);
-		// 		currentClicked.doneItem=true;
-		// 		if (lastClicked == currentClicked.get(0).id){
-		// 			template.hide();
-		// 			lastClicked = 'item0';
-		// 			currentClicked[0].style.height = "40px";
-		// 		}
-		// 		else{
-		// 			lastClicked = currentClicked.get(0).id;
-		// 			$(this).append(template);
-		// 			currentClicked[0].style.height = "60px";
-		// 			template.show();
-		// 		}
-		// 	})	
-		// }
-	
+			
 	//grab input from textbox and generate item in list
 		function makeFutureItem(name) {
-			var check = document.getElementById("futureCheck");
-			templateFuture = $("#futureTemplate");
+			
+			futureTemplate = $("#futureTemplate");
 			itemList = $("#container");
-			newItem=$("#itemInput")[0].value;  // assign user input in textbox to newItem
-			check.style.visibility = "hidden";
-			clone = templateFuture.clone();
+			newItem=$("#itemTextbox")[0].value;  // assign user input in textbox to newItem
+			
+			clone = futureTemplate.clone();
 			clone.find("span").html(newItem);
-			itemList.append(clone);
 			clone.show();
 			itemCounter = itemCounter + 1;
 			clone[0].id = 'item' + itemCounter;  // generate unique id's for every item based on how many items have ever been created
+			itemList.append(clone);
 			items.push(clone[0].id);
-			// $('.drag').addTouch();
-			$("#itemInput")[0].value="";
-			$("#newItem")[0].style.display="none"
+			$("#itemTextbox")[0].value="";
+			$("#newItemInput")[0].style.display="none"
 			updateCurrent();
 
-			clone.click(function (e) {
-				template = $("#extraOptionsTemplate");
+			
+				clone.click(function (e) {
+				extraOptions = $("#extraOptions");
 				currentClicked = $(this);
 				console.log('items: ' + items);
 				console.log('index of current clicked is ' + items.indexOf(currentClicked[0].id));
@@ -129,50 +60,52 @@
 							
 				// toggle showing the extra options
 				// first, if item is not in items array, then it has been marked done - do nothing i.e. don't show extra options
-				if (items.indexOf(currentClicked[0].id) == -1){
-					console.log('clicked on an item that is done');
-				}
 				
-				// if an item has been clicked on an even number of times (i.e. twice), hide the options
-				// otherwise show the options when clicked an odd number of times (i.e. first click)
-				else{
+				// if (items.indexOf(currentClicked[0].id) == -1){
+				// 	console.log('clicked on an item that is done');
+				// }
+				
+				// only update click handler if item is active, not done items
+				if ($.inArray(currentClicked[0].id, items)) console.log("currentClicked is in ITEMS");
+				
+					// if an item has been clicked on an even number of times (i.e. twice), hide the options
+					// otherwise show the options when clicked an odd number of times (i.e. first click)
 					if (lastClicked == currentClicked.get(0).id){
-					template.hide();
-					lastClicked = 'item0';
-					currentClicked[0].style.height = "40px";
-				}
-					else{
-					lastClicked = currentClicked.get(0).id;
-					$(this).append(template);
-					currentClicked[0].style.height = "60px";
-					
-					// if the current item is clicked, show the "Done" button, otherwise hide it
-					if (currentClicked[0].id == currentItem) {
-						$("#doneButton").show();
-						template.show();
+						extraOptions.hide();
+						lastClicked = 'item0';
+						currentClicked[0].style.height = "40px";
 					}
 					else{
-						$("#doneButton").hide()
-						template.show();
+						lastClicked = currentClicked.get(0).id;
+						$(this).append(extraOptions);
+						currentClicked[0].style.height = "60px";	
+						// if the current item is clicked, show the "Done" button, otherwise hide it
+						if (currentClicked[0].id == currentItemId) {
+							$("#doneButton").show();
+							extraOptions.show();
+						}
+						else{
+							$("#doneButton").hide()
+							extraOptions.show();
+						}
 					}
-				}
-				}
+				
 			})				
 		}
 		
 		function deleteItem() {
 		//	if (currentClicked.doneItem){}
 	
-				template = $("#extraOptionsTemplate");
-				template.hide();
-				$("#container").append(template);
+				extraOptions = $("#extraOptions");
+				extraOptions.hide();
+				$("#container").append(extraOptions);
 				currentIndex = items.indexOf(currentClicked[0].id);
 				items.splice(currentIndex, 1);
 				currentClicked.remove();
 				
-				// if user deleted the current item on the agenda, update currentItem to be next on the agenda
-				if (currentClicked[0].id == currentItem) {
-					currentItem = items[currentIndex];
+				// if user deleted the current item on the agenda, update currentItemId to be next on the agenda
+				if (currentClicked[0].id == currentItemId) {
+					currentItemId = items[currentIndex];
 				}
 				
 				updateCurrent();	
@@ -180,28 +113,30 @@
 			
 		}
 		
-		// FIX
-		// bad juju if you try to queue the current item as the next item
+
 		
 		function queueNext() {
-			console.log('current ITEM is ' + currentItem);
-			console.log(currentItem);
+			console.log('current ITEM is ' + currentItemId);
+			console.log(currentItemId);
 			console.log(currentClicked);
 			
-			// update the items array to reflect the new order of items
-			// remove the item to be queued from array, set as temp, then insert in the new position
-			clickedIndex = items.indexOf(currentClicked[0].id);
-			temp = items[clickedIndex];
-			items.splice(clickedIndex, 1);
-			currentIndex = items.indexOf(currentItem);
-			tempindex = currentIndex + 1;
-			items.splice(tempindex,0,temp);
-			
-			console.log('updated items list: ');
-			console.log(items);			
-			(currentClicked).insertAfter($("#"+currentItem));
-			// document.getElementById(currentItem).after(currentClicked);
-			
+			if (currentItemId == currentClicked[0].id) {
+				return;
+			}
+			else{
+				// update the items array to reflect the new order of items
+				// remove the item to be queued from array, set as temp, then insert in the new position
+				clickedIndex = items.indexOf(currentClicked[0].id);
+				temp = items[clickedIndex];
+				items.splice(clickedIndex, 1);
+				currentIndex = items.indexOf(currentItemId);
+				tempindex = currentIndex + 1;
+				items.splice(tempindex,0,temp);
+				console.log('updated items list: ');
+				console.log(items);			
+				(currentClicked).insertAfter($("#"+currentItemId));
+
+			}
 		}
 		
 		function updateCurrent() { 
@@ -210,26 +145,28 @@
 			// if there's only one item left, make that the current item (mainly for the initial case when first adding items to agenda)
 			if (items.length == 1) {
 				console.log('length is 1 and item is ' + items[0]);
-				currentItem = items[0];
-				document.getElementById(currentItem).style.background = "#0000FF";
+				currentItemId = items[0];
+				document.getElementById(currentItemId).style.background = "#0000FF";
 			}
 			else{
-				 document.getElementById(currentItem).style.background = "#0000FF";
-				//$("#"+currentItem).style.background = "0000FF";
+				 document.getElementById(currentItemId).style.background = "#0000FF";
 			}
 		}
 			
 	// removes item marked 'done' from the items array, colors it grey, and sets the next item in agenda as the current item
 		function itemDone() {
-			console.log($("#"+currentItem));
+			console.log($("#"+currentItemId));
 			console.log(currentClicked);
-			template = $("#extraOptionsTemplate");
+			extraOptions = $("#extraOptions");
 			currentIndex = items.indexOf(currentClicked[0].id);
-			document.getElementById(currentItem).style.background = "#C0C0C0";			
+			document.getElementById(currentItemId).style.background = "#C0C0C0";			
 			items.splice(currentIndex, 1);
-			template.hide();
-			currentItem = items[currentIndex];
+			extraOptions.hide();
+			// currentClicked.click();
+			currentItemId = items[currentIndex];
 			updateCurrent();
+			
+			
 		
 		}
 	</script>
@@ -281,11 +218,11 @@
 		display: none;
 	}
 	
-	#newItem{
+	#newItemInput{
 		display:none;
 	}
 
-	#extraOptionsTemplate{
+	#extraOptions{
 		display:none;
 	}
 	</style>
@@ -294,46 +231,27 @@
 <div id="border">
 	
 	<div id="header">Edit 
-		<!-- <input type="button" value="Done" onclick="itemDone()">
-		<input type="button" value="Current" onclick="makeCurrentItem()"> -->
-		<input type="button" value="Add" onclick="add()"> </div>
+
+		<input type="button" value="Add" onclick="showTextbox()"> </div>
 	
-	<div id="newItem">
-		<input type="text" name="item" value="" id="itemInput" class="textbox">
+	<div id="newItemInput">
+		<input type="text" name="item" value="" id="itemTextbox" class="textbox">
 		<button type = "submit" onclick="makeFutureItem();">Submit</button>
 	</div>		
 	
 <div id="container">
-	
-			
-	<div id="currentTemplate" class="template">
-		<img src="{{ static_url("images/delete.png")}}" class="delete">
-		--->
-		<span id="text">current Item</span>
-		<img src ="{{ static_url("images/drag.png")}}" class="drag">		
-	</div>
-
-	<div id="doneTemplate" class="template">
-		<img src="{{ static_url("images/delete.png")}}" class="delete">
-		<img src="{{ static_url("images/accept.png")}}" class="check">
-		<span id="text">Done Item</span>
-		<img src ="{{ static_url("images/drag.png")}}" class="drag">		
-	</div>	
 
 	<div id="futureTemplate" class="template">
-		<img src="{{ static_url("images/delete.png")}}" class="delete">
-		<img src="{{ static_url("images/accept.png")}}" class="check" id="futureCheck">
 		<span id="text"></span>
-		<img src ="{{ static_url("images/drag.png")}}" class="drag">		
 	</div>
 	
-	<div id="extraOptionsTemplate">
+	<div id="extraOptions">
 		<button type="submit" onclick="deleteItem();">Delete</button>
 		<button type="submit" onclick="queueNext();">Queue Next</button>
 		<button type="submit" id="doneButton" onclick="itemDone();"> Done</button>
 	</div>
 </div>
-Done
+
 
 </div>
 </body>
