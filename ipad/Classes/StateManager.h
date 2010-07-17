@@ -24,6 +24,7 @@
 
 - (void) unswizzleGroup:(NSSet *)groupToUnswizzle;
 
+- (NSSet *) getLocations;
 
 + (StateManager*)sharedInstance;
 

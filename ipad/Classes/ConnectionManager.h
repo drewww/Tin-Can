@@ -71,4 +71,8 @@
 
 - (void) addLocationWithName:(NSString *)locationName;
 
+
+
++ (ConnectionManager*)sharedInstance;
+
 @end

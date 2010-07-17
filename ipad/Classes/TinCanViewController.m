@@ -10,6 +10,8 @@
 #import "MeetingViewController.h"
 #import "LoginMasterViewController.h"
 #import "ConnectionManager.h"
+#import "Location.h"
+#import "StateManager.h"
 
 
 @class LoginMasterViewController;
@@ -38,8 +40,17 @@
     // commenting it out first, so if you're looking at this and it's uncommented and
     // causing problems, just comment it out.
     
-    ConnectionManager *conMan = [ConnectionManager sharedInstance];
-    [conMan getState];
+//    ConnectionManager *conMan = [ConnectionManager sharedInstance];
+//    [conMan getState];
+    
+    
+    // pick a random location
+//    Location *myLocation = [[[StateManager sharedInstance] getLocations] anyObject];
+//    NSLog(@"picking location arbitarily: %@", myLocation);
+//    [conMan setLocation:myLocation.uuid];
+//    [conMan connect];
+    
+    
 }
 
 // Per advice here: http://stackoverflow.com/questions/2270835/best-practices-for-displaying-new-view-controllers-iphone

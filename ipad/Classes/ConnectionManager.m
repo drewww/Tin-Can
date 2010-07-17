@@ -22,6 +22,9 @@ static ConnectionManager *sharedInstance = nil;
     self = [super init];
     
     parser = [[[SBJSON alloc] init] retain];
+    
+    eventListeners = [NSMutableSet set];
+    
     return self;
 }
 
@@ -57,11 +60,26 @@ static ConnectionManager *sharedInstance = nil;
 }
 
 - (void) startPersistentConnection {
+ 
+    [self stopPersistentConnection];
     
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@?actorUUID=%@", SERVER, PORT, @"/connect/", locationUUID]];
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    
+    // hour long timeout, since this is the long-running connection.
+    [request setTimeOutSeconds:3600];
+    [request setDelegate:self];
+    [request startAsynchronous];
+    
+    currentPersistentConnection = request;
+    [currentPersistentConnection retain];
 }
 
 - (void) stopPersistentConnection {
-    
+    if(currentPersistentConnection != nil) {
+        [currentPersistentConnection cancel];
+        [currentPersistentConnection release];
+    }
 }   
 
 - (void) requestFinished:(ASIHTTPRequest *)request {
@@ -75,11 +93,6 @@ static ConnectionManager *sharedInstance = nil;
         NSLog(@"Login request successful.");
         
         // Start the persistent connection here.
-        
-        if(currentPersistentConnection!=nil) {
-            [currentPersistentConnection cancel];
-        }
-        
         [self startPersistentConnection];
         
     } else if ([path rangeOfString:@"/connect/state"].location != NSNotFound) {
@@ -97,8 +110,23 @@ static ConnectionManager *sharedInstance = nil;
                                                withUsers:users
                                             withMeetings:meetings
                                                withRooms:rooms]; 
+    } else if ([path isEqualToString:@"/connect/"]) {
+        
+        // Handle events being transmitted from an ending persistent connection.
+        NSArray *result = [parser objectWithString:[request responseString] error:nil];
+    
+        NSLog(@"event results: %@", result);
+    
+        for(NSDictionary *eventDict in result) {
+            Event *event = [[Event alloc] initEventFromDictionary:eventDict];
+            NSLog(@"event: %@", event);
+        }
+        
+        
+        
+        
+        [self startPersistentConnection];
     }
-     
 }
 
 - (void) requestFailed:(ASIHTTPRequest *)request {
@@ -114,11 +142,11 @@ static ConnectionManager *sharedInstance = nil;
 }
 
 - (void) addListener:(NSObject *)listener {
-    
+    [eventListeners addObject:listener];
 }
 
 - (void) removeListener:(NSObject *)listener {
-    
+    [eventListeners removeObject:listener];
 }
 
 - (void) publishEvent:(Event *)e {

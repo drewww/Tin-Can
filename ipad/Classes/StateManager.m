@@ -114,6 +114,19 @@ static StateManager *sharedInstance = nil;
         }
 }
 
+- (NSSet *) getLocations {
+    NSLog(@"in getLocations");
+    NSMutableArray *allLocations = [NSMutableArray array];
+    for(Actor *actor in actors) {
+        if([actor isKindOfClass:[Location class]]) {
+            NSLog(@"found a location! %@", actor);
+            [allLocations addObject:actor];
+        }
+    }
+    
+    return [NSSet setWithArray:allLocations];
+}
+
 
 #pragma mark -
 #pragma mark Singleton methods
