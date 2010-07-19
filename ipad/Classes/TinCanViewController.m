@@ -35,13 +35,41 @@
 
 -(void) switchToViewController:(UIViewController *)c {
     if(c == currentViewController) return;
-
-    [currentViewController.view removeFromSuperview];
+	c.view.alpha =0.0;
     [self.view addSubview:c.view];
-    [currentViewController release];
+	
+	[UIView beginAnimations:@"move_to_assigned_participant" context:c];
+    
+    [UIView setAnimationDuration:1.0f];
+    
+    //c.view.backgroundColor=[UIColor blackColor];
+    c.view.alpha = 1.0;
+    
+	//    CGAffineTransform transform = CGAffineTransformMakeRotation(M_PI/2);
+    CGAffineTransform transform = c.view.transform;
+    //transform = CGAffineTransformScale(transform, 0.4, 0.4);
+    [self.view setTransform:transform];  
+    
+    // Now set the callback. 
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(animateToAssignedParticipantDidStop:finished:context:)];
+    
+    [UIView commitAnimations];
+	[currentViewController.view removeFromSuperview];
+	[currentViewController release];
     currentViewController = [c retain];
+
 }
 
+- (void) animateNewViewDidStop:(NSString *)animationId finished:(NSNumber *)finished context:(void *)context{
+	 UIViewController *c = (UIViewController *)context;
+	[currentViewController.view removeFromSuperview];
+	
+	
+    [currentViewController release];
+    currentViewController = [c retain];
+	
+}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Overriden to allow any orientation.
