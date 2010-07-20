@@ -42,7 +42,7 @@
     
     [UIView setAnimationDuration:1.0f];
     
-    //c.view.backgroundColor=[UIColor blackColor];
+    c.view.backgroundColor=[UIColor blackColor];
     c.view.alpha = 1.0;
     
 	//    CGAffineTransform transform = CGAffineTransformMakeRotation(M_PI/2);
@@ -52,23 +52,19 @@
     
     // Now set the callback. 
     [UIView setAnimationDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(animateToAssignedParticipantDidStop:finished:context:)];
+    [UIView setAnimationDidStopSelector:@selector(animateNewViewDidStop:finished:context:)];
     
     [UIView commitAnimations];
-	[currentViewController.view removeFromSuperview];
-	[currentViewController release];
-    currentViewController = [c retain];
+	
 
 }
 
 - (void) animateNewViewDidStop:(NSString *)animationId finished:(NSNumber *)finished context:(void *)context{
 	 UIViewController *c = (UIViewController *)context;
 	[currentViewController.view removeFromSuperview];
-	
-	
-    [currentViewController release];
+	[currentViewController release];
     currentViewController = [c retain];
-	
+
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {

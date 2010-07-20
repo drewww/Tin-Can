@@ -22,8 +22,8 @@
     //TinCanViewController *tableViewController = [TinCanViewController alloc];
 	viewController = [TinCanViewController alloc];
     	
-    [window setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-	[window setBackgroundColor:[UIColor blackColor]];
+//    [window setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+	[window setBackgroundColor:[UIColor greenColor]];
 	
     [window addSubview:viewController.view];
 	
