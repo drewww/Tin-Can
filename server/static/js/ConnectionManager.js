@@ -99,7 +99,9 @@ ConnectionManager.prototype = {
                     function() {self.startPersistentConnection();}, 500);
                     
                 },
-            data: { "actorUUID": this.userUUID },
+                // Adding this extra time factor seems to help with the double
+                // request issue.
+            data: { "actorUUID": this.userUUID, "time": new Date().getTime() },
             context: this,
             timeout: 3600000   // 60 minute timeout. Ludicrous - there will
                                // definitely be responses faster than this, 

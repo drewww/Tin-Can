@@ -116,10 +116,10 @@ class BaseHandler(tornado.web.RequestHandler):
         
         return device
 
-
 class StateHandler(tornado.web.RequestHandler):
     
     def get(self):
+        
         # We want to dump all current information (deep search-ly) onto
         # the channel so a new client can initialize their internal state
         # representation of users, locations, rooms, and meetings.
@@ -161,6 +161,7 @@ class RoomsHandler(tornado.web.RequestHandler):
 
 class AllUsersHandler(tornado.web.RequestHandler):
     def get(self):
+        
         self.write(json.dumps(state.get_users(), cls=YarnModelJSONEncoder))
 
 class ConnectTestHandler(tornado.web.RequestHandler):
