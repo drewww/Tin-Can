@@ -48,6 +48,7 @@
 		[locList addObject:@"Fight a Bear"];
 		[locList addObject:@"With Your Chair"];
 		
+		[self.view setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 		
 	}
 	return self;

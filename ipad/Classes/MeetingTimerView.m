@@ -14,7 +14,7 @@
 
 - (id)initWithFrame:(CGRect)frame withStartTime:(NSDate *)time{
     if ((self = [super initWithFrame:frame])) {
-        self.bounds = CGRectMake(-165, -165, 325, 325);
+        self.bounds = CGRectMake(-165, -165, 326, 326);
         self.center = CGPointMake(384, 512);
         self.clearsContextBeforeDrawing = YES;
         hourCounter=0;

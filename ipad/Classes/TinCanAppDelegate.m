@@ -23,7 +23,7 @@
 	viewController = [TinCanViewController alloc];
     	
 //    [window setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-	[window setBackgroundColor:[UIColor greenColor]];
+	[window setBackgroundColor:[UIColor clearColor]];
 	
     [window addSubview:viewController.view];
 	

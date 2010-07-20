@@ -17,7 +17,7 @@
        
 		[self setNeedsDisplay];
 		self.frame = frame;
-		
+		[self setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 		
     }
 	return self;  

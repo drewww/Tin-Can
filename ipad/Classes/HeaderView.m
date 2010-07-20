@@ -23,7 +23,7 @@
 
 //Creates our custom header
 - (void)drawRect:(CGRect)rect {
-	
+	[self setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:0 green:.3 blue:.8 alpha:1].CGColor);
 	CGContextFillRect(ctx, CGRectMake(0,0, self.frame.size.width, self.frame.size.height));

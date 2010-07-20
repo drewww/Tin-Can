@@ -80,6 +80,8 @@
 		[countedList addObject:@"0"];
 		[countedList addObject:@"0"];
 		[countedList addObject:@"5"];
+		
+		[self.view setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 	}
 	return self;
 }
