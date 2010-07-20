@@ -153,6 +153,8 @@
 
 
 - (void)drawRect:(CGRect)rect {
+	[self setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+	
 	// for testing
 	testDate= [[ testDate addTimeInterval:120] retain];
 	

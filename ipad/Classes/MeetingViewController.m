@@ -154,61 +154,61 @@
         NSString *uuid;
         switch(i) {
             case 0:
-                point = CGPointMake(256, 1060-135);
+                point = CGPointMake(256, 1060);
                 rotation = 0.0;
                 color = [UIColor redColor];
                 uuid = @"p1";
                 break;
             case 1:
-                point = CGPointMake(512, 1060-135);
+                point = CGPointMake(512, 1060);
                 rotation = 0.0;
                 color = [UIColor redColor];
                 uuid = @"p2";
                 break;
             case 2:
-                point = CGPointMake(-30-125, 256);
+                point = CGPointMake(-30, 256);
                 rotation = M_PI/2;
                 color = [UIColor redColor];
                 uuid = @"p3";
                 break;
             case 3:
-                point = CGPointMake(-30-125, 512);
+                point = CGPointMake(-30, 512);
                 rotation = M_PI/2;
                 color = [UIColor blueColor];
                 uuid = @"p4";
                 break;
             case 4:
-                point = CGPointMake(-30-125, 768);
+                point = CGPointMake(-30, 768);
                 rotation = M_PI/2;
                 color = [UIColor blueColor];
                 uuid = @"p5";
                 break;
             case 5:
-                point = CGPointMake(798+125, 256);
+                point = CGPointMake(798, 256);
                 rotation = -M_PI/2;
                 color = [UIColor blueColor];
                 uuid = @"p6";
                 break;
             case 6:
-                point = CGPointMake(798+125, 512);
+                point = CGPointMake(798, 512);
                 rotation = -M_PI/2;
                 color = [UIColor yellowColor];
                 uuid = @"p7";
                 break;
             case 7:
-                point = CGPointMake(798+125, 768);
+                point = CGPointMake(798, 768);
                 rotation = -M_PI/2;
                 color = [UIColor yellowColor];
                 uuid = @"p8";
                 break;
             case 8:
-                point = CGPointMake(256, -30+125);
+                point = CGPointMake(256, -30);
                 rotation = M_PI;
                 color = [UIColor greenColor];
                 uuid = @"p9";
                 break;
             case 9:        
-                point = CGPointMake(512, -30+125);
+                point = CGPointMake(512, -30);
                 rotation = M_PI;
                 color = [UIColor purpleColor];
                 uuid = @"p10";
