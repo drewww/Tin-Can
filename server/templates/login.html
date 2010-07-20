@@ -62,6 +62,7 @@
 		$("#newname").keypress(enter);
 		$("#searchname").keyup(searchForUser);
 		
+		update();
 		//because js files take forever to load
 		//var t = setTimeout("update()",50);
 		connection.addListener({connectionEvent: function(e) {
@@ -71,10 +72,12 @@
 					update();
 					break;
 					
-	            case "LOGIN_COMPLETE":
+				case "LOGIN_COMPLETE":
+					t=setTimeout("tempfunction()",500);
+					
+	            case "ADD_ACTOR_DEVICE":
 	                //only sent to one device, so this event shouldn't trigger anything on other devices
-					displayLocList();
-					selectUser();
+					update();
 	                break;
 
 	            case "NEW_MEETING":
@@ -86,9 +89,14 @@
 	                break;
 
 	            case "USER_JOINED_LOCATION":
-					displayRoomList();
+					update();
 					if (e.actorUUID==connection.userUUID){
-						selectLoc();
+						for (key in users){
+							if (users[key].uuid==connection.userUUID){
+								user=users[key]
+							}
+						}
+						selectLoc(user);
 					}
 	                break;
 
@@ -97,8 +105,7 @@
 	                break;
 
 	            case "LOCATION_JOINED_MEETING":
-					console.log("hi");
-	                displayRoomList();
+	                update();
 	                break;
 
 	            case "LOCATION_LEFT_MEETING":
@@ -112,6 +119,16 @@
 	        }
 		}});
 	});
+	
+	function tempfunction(){
+		update();
+		for (key in users){
+			if (users[key].uuid==connection.userUUID){
+				user=users[key]
+			}
+		}
+		selectUser(user);
+	}
 	
 	//in theory, I'd like to use this to update pages from the server, but I don't know how
 	//to do it without clearing the bg color for the selected item. currently it's only used 
@@ -330,7 +347,6 @@
 		$(".name").css("background","white");
 		if (select){
 			item.style.background="#00CCFF";
-			$("#locs").show();
 			username = $(item).find("div").html();
 			user=users[$.inArray(username,names)];
 			$("#currentuser").html("logged in as: " + user.name);
@@ -347,14 +363,40 @@
 		
 	}
 	
-	//sets the "logged in as" and calls itself in a setTimeout to slide left. also sends information
-	//to server and starts the connection
-	function selectUser(){
+	//calls itself in a setTimeout to slide left. called after a LOGIN_COMPLETE event is triggered,
+	//which only 
+	function selectUser(user){
+		console.log(user);
+		if (user.isInLocation()){
+			$("#rooms").css({left:320,top:0});
+			selectLoc(user);
+		//	$("#users").hide();
+		//	$("#locs").hide();
+			//this is really hacky...it doesn't let me set the css to -320 and -640 
+			//(maybe because they're negative?), so I'm just making them move again
+			$("#users").animate({"left": "-=320px"},"fast");
+			$("#locs").animate({"left": "-=320px"},"fast");
+		}
+		else{
+		//	selectUserAnimation();
+			$("#locs").show();
+			
+			if ($("#locs").offset().left>=0){
+				$("#locs").animate({"left": "-=320px"},"slow");
+				$("#users").animate({"left": "-=320px"},"slow");
+				$("#rooms").animate({"left": "-=320px"},"slow");
+				console.log($("#rooms").offset().left)
+			}
+		}
+	}
+	
+	function selectUserAnimation(){
+		$("#locs").show();
 		if($("#locs").offset().left>=5){
 			slideLeft($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
-			var t = setTimeout("selectUser()", 2);
+			var t = setTimeout("selectUserAnimation()", 2);
 		}
-		
+
 		else{
 			$("#users").hide();
 			$("#locs").offset({left:0,top:0});
@@ -367,7 +409,6 @@
 	function highlightLoc(item){
 		$(".loc").css("background","white");
 		item.style.background="#00CCFF";
-		$("#rooms").show();
 		locname = $(item).find("div").html();
 		loc=locs[$.inArray(locname,locNames)];
 		$("#currentloc").html("location: " + loc.name);
@@ -378,10 +419,23 @@
 	
 	//sets the "location:" and calls itself in a setTimeout to slide left. also sends information
 	//to server
-	function selectLoc(){
+	function selectLoc(user){
+		$("#rooms").show();
+		$("#currentloc").html("location: " + user.loc.name);
+		//selectLocAnimation();
+		console.log($("#rooms").offset().left>=0)
+		if($("#rooms").offset().left>=0){
+			console.log("hi");
+			$("#users").animate({"left": "-=320px"},"slow");
+			$("#locs").animate({"left": "-=320px"},"slow");
+			$("#rooms").animate({"left": "-=320px"},"slow");
+		}
+	}
+	
+	function selectLocAnimation(){
 		if($("#rooms").offset().left>=5){
 			slideLeft($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
-			var t = setTimeout("selectLoc()", 2);
+			var t = setTimeout("selectLocAnimation()", 2);
 		}
 		
 		else{
@@ -416,8 +470,11 @@
 	//slides right 
 	function backToUsers(){
 		$("#users").show();
-		
-		if($("#users").offset().left<=-5){
+		$("#users").animate({"left": "+=320px"},"slow");
+		$("#locs").animate({"left": "+=320px"},"slow");
+		$("#rooms").animate({"left": "+=320px"},"slow");
+		$("#locs").hide();
+	/*	if($("#users").offset().left<=-5){
 			slideRight($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
 			var t = setTimeout("backToUsers()", 2);
 		}
@@ -427,14 +484,17 @@
 			$("#rooms").offset({left:0,top:0});
 			$("#locs").offset({left:0,top:0});
 			$("#users").offset({left:0,top:0});
-		}
+		}*/
 	}
 	
 	//slides right
 	function backToLocs(){
 		$("#locs").show();
-		
-		if($("#locs").offset().left<=-5){
+		$("#users").animate({"left": "+=320px"},"slow");
+		$("#locs").animate({"left": "+=320px"},"slow");
+		$("#rooms").animate({"left": "+=320px"},"slow");
+		$("#rooms").hide();
+	/*	if($("#locs").offset().left<=-5){
 			slideRight($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
 			var t = setTimeout("backToLocs()", 2);
 		}
@@ -445,7 +505,7 @@
 			$("#locs").offset({left:0,top:0});
 			$("#users").offset({left:0,top:0});
 			//connection.
-		}
+		}*/
 	}
 	
 </script>
