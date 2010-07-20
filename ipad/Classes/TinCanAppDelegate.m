@@ -19,10 +19,10 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
 	
-    //TinCanViewController *tableViewController = [TinCanViewController alloc];
+   
 	viewController = [TinCanViewController alloc];
     	
-//    [window setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+
 	[window setBackgroundColor:[UIColor clearColor]];
 	
     [window addSubview:viewController.view];
@@ -31,10 +31,7 @@
 	
 	return YES;
 	
-   // [window addSubview:viewController.view];
-   // [window makeKeyAndVisible];
-    
-	//return YES;
+
 }
 
 

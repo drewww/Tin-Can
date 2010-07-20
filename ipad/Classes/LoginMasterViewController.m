@@ -67,7 +67,7 @@
 	// Initializes Login Button
 	loginButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
 	[loginButton setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-	loginButton.frame = CGRectMake(self.view.frame.size.width/2.0-200+100,self.view.frame.size.height/2.0-250+600+475, 100,150);
+	loginButton.frame = CGRectMake(self.view.frame.size.width/2.0-200+150,self.view.frame.size.height/2.0-250+600+475, 100,150);
 	loginButton.backgroundColor = [UIColor clearColor];
 	[loginButton setTitle:@"Login" forState: UIControlStateNormal];
 	[loginButton setFont:[UIFont boldSystemFontOfSize:30.0f]];
@@ -96,10 +96,10 @@
 	
 	
 	// Headers
-	//HeaderView *headerLocation =[[[HeaderView alloc] 
-	//							  initWithFrame:CGRectMake() withTitle:@"Locations"] retain];
-//	HeaderView *headerRoom =[[[HeaderView alloc] 
-	//						  initWithFrame:CGRectMake() withTitle:@"Rooms"] retain];
+	HeaderView *headerLocation =[[[HeaderView alloc] 
+								  initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0-30, 400,60) withTitle:@"Locations"] retain];
+	HeaderView *headerRoom =[[[HeaderView alloc] 
+							  initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0+600-30, 400,60) withTitle:@"Rooms"] retain];
 	
 	
 	
@@ -114,41 +114,33 @@
 	
 	// Instruction text
 	logoSlide = [[UILabel alloc] 
-				 initWithFrame:CGRectMake(-50,325, 200,50)];
+				 initWithFrame:CGRectMake(-200 ,325, 500,100)];
 	logoSlide.text = @"Slide";
 	logoSlide.numberOfLines = 0;
 	logoSlide.textAlignment = UITextAlignmentCenter;
 	logoSlide.textColor = [UIColor whiteColor];
 	logoSlide.backgroundColor = [UIColor clearColor];
-	logoSlide.font = [UIFont systemFontOfSize:50.0f];
+	logoSlide.font = [UIFont systemFontOfSize:30.0f];
 	[logoSlide setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 	
-	locationSlide = [[UILabel alloc] 
-					 initWithFrame:CGRectMake(-50,self.view.frame.size.height/2.0-25,200,50)];
-	locationSlide.text = @"Slide";
-	locationSlide.numberOfLines = 0;
-	locationSlide.textAlignment = UITextAlignmentCenter;
-	locationSlide.textColor = [UIColor whiteColor];
-	locationSlide.backgroundColor = [UIColor clearColor];
-	locationSlide.font = [UIFont systemFontOfSize:50.0f];
-	[locationSlide setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+	locationInstructions = [[UILabel alloc] 
+					 initWithFrame:CGRectMake(-200,self.view.frame.size.height/2.0-50,500,100)];
+	locationInstructions.text = @"Choose your physical location \n Then Slide";
+	locationInstructions.numberOfLines = 0;
+	locationInstructions.textAlignment = UITextAlignmentCenter;
+	locationInstructions.textColor = [UIColor whiteColor];
+	locationInstructions.backgroundColor = [UIColor clearColor];
+	locationInstructions.font = [UIFont systemFontOfSize:30.0f];
+	[locationInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 	
-//	locationInstructions = [[UILabel alloc] initWithFrame:CGRectMake()];
-//	locationInstructions.numberOfLines = 0;
-//	locationInstructions.text = @"Choose your physical location";
-//	locationInstructions.textAlignment = UITextAlignmentCenter;
-//	locationInstructions.textColor = [UIColor whiteColor];
-//	locationInstructions.backgroundColor = [UIColor blackColor];
-//	locationInstructions.font = [UIFont boldSystemFontOfSize:20.0f];
-//	
-//	roomInstructions = [[UILabel alloc] initWithFrame:CGRectMake()];
-//	roomInstructions.numberOfLines = 0;
-//	roomInstructions.text = @"Choose a virtual room";
-//	roomInstructions.textAlignment = UITextAlignmentCenter;
-//	roomInstructions.textColor = [UIColor whiteColor];
-//	roomInstructions.backgroundColor = [UIColor blackColor];
-//	roomInstructions.font = [UIFont boldSystemFontOfSize:20.0f];
-	
+	roomInstructions = [[UILabel alloc] initWithFrame:CGRectMake(-200,self.view.frame.size.height/2.0-50 +600,500,100)];
+	roomInstructions.numberOfLines = 0;
+	roomInstructions.text = @"Choose a virtual room";
+	roomInstructions.textAlignment = UITextAlignmentCenter;
+	roomInstructions.textColor = [UIColor whiteColor];
+	roomInstructions.backgroundColor = [UIColor blackColor];
+	roomInstructions.font = [UIFont systemFontOfSize:30.0f];
+	[roomInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 	
 	// Add Elements to View
 	[self.view addSubview:picView];
@@ -157,14 +149,13 @@
 	[self.view addSubview:arrowView2];
 	[self.view addSubview:roomInstructions];
 	[self.view addSubview:locationInstructions];
-	[self.view addSubview:locationSlide];
 	[self.view addSubview:logoSlide];
 	//[self.view addSubview:roomBorder];
 	//[self.view addSubview:locationBorder];
 	[self.view addSubview:locViewController.view];
 	[self.view addSubview:roomViewController.view];
-	//[self.view addSubview:headerLocation];
-	//[self.view addSubview:headerRoom];
+	[self.view addSubview:headerLocation];
+	[self.view addSubview:headerRoom];
 	[self.view setNeedsDisplay];
 	
 	
