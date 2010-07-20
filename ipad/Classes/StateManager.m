@@ -10,6 +10,7 @@
 // http://stackoverflow.com/questions/145154/what-does-your-objective-c-singleton-look-like
 
 #import "StateManager.h"
+#import "User.h"
 #import "tincan.h"
 
 static StateManager *sharedInstance = nil;
@@ -46,6 +47,86 @@ static StateManager *sharedInstance = nil;
         return nil;
     }
 }
+
+- (void) initWithLocations:(NSArray *)newLocations withUsers:(NSArray *)newUsers
+              withMeetings:(NSArray *)newMeetings withRooms:(NSArray *)newRooms {
+
+    db = [NSMutableDictionary dictionary];
+    actors = [NSMutableSet set];
+    rooms = [NSMutableSet set];
+    meetings = [NSMutableSet set];
+    
+    
+    // Do this in two passes. Make the objects first, then
+    // unswizzle them to convert UUIDs into actual objects.
+    for(NSDictionary *user in newUsers) {
+        User *newUser = [[User alloc] initWithUUID:[user objectForKey:@"uuid"]
+                                          withName:[user objectForKey:@"name"]
+                                  withLocationUUID:[user objectForKey:@"location"]];
+        
+        [actors addObject:newUser];
+    }
+    
+    for(NSDictionary *location in newLocations) {
+        
+        Location *newLocation = [[Location alloc] initWithUUID:[location objectForKey:@"uuid"]
+                                                      withName:[location objectForKey:@"name"]
+                                                   withMeeting:[location objectForKey:@"meetingUUID"]
+                                                     withUsers:[location objectForKey:@"users"]];
+        [actors addObject:newLocation];
+    }
+    
+    
+    for(NSDictionary *room in newRooms) {
+        
+        // We're not handling the with-meetings clause here. Might we need to? Not sure.
+        // Hoping it happens during unswizzle instead. Not sure if that's the right strategy
+        // for this.
+        Room *newRoom = [[Room alloc] initWithUUID:[room objectForKey:@"uuid"]
+                                          withName:[room objectForKey:@"name"]];
+        
+        [rooms addObject:newRoom];
+    }
+    
+    for(NSDictionary *meeting in newMeetings) {
+     
+        Meeting *newMeeting = [[Meeting alloc] initWithUUID:[meeting objectForKey:@"uuid"]
+                                                  withTitle:[meeting objectForKey:@"title"]
+                                               withRoomUUID:[meeting objectForKey:@"room"]];
+        
+        [meetings addObject:newMeeting];
+    }
+    
+    
+    // Unswizzle in the proper order.
+    [self unswizzleGroup:actors];
+    [self unswizzleGroup:rooms];
+    [self unswizzleGroup:meetings];
+    
+    NSLog(@"actors: %@", actors);
+    NSLog(@"rooms: %@", rooms);
+    NSLog(@"meetings: %@", meetings);    
+}
+
+- (void) unswizzleGroup:(NSSet *)groupToUnswizzle {
+    for(SynchronizedObject *object in groupToUnswizzle) {
+            [object unswizzle];   
+        }
+}
+
+- (NSSet *) getLocations {
+    NSLog(@"in getLocations");
+    NSMutableArray *allLocations = [NSMutableArray array];
+    for(Actor *actor in actors) {
+        if([actor isKindOfClass:[Location class]]) {
+            NSLog(@"found a location! %@", actor);
+            [allLocations addObject:actor];
+        }
+    }
+    
+    return [NSSet setWithArray:allLocations];
+}
+
 
 #pragma mark -
 #pragma mark Singleton methods

@@ -83,7 +83,7 @@ StateManager.prototype = {
         this.db = {};
         this.actors = [];
         this.rooms = [];
-        this.meetings = []
+        this.meetings = [];
         
         // We need to do this in two passes - one pass where we make all the
         // objects using uuids as references between them, and then a 

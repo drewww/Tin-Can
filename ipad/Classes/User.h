@@ -15,9 +15,11 @@
 
 @interface User : Actor {
     Location *location;
+    
+    UUID *locationUUID;
 }
 
-- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withLocation:(Location *)myLocation;
+- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withLocationUUID:(UUID *)myLocation;
 - (BOOL) isInLocation;
 - (BOOL) isinMeeting;
 

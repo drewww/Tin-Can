@@ -43,7 +43,13 @@ ConnectionManager.prototype = {
                }
                
                var self = this;
-               setTimeout(function() {self.startPersistentConnection();}, 50);
+               setTimeout(function() {self.startPersistentConnection();}, 0);
+               
+               // Make sure we have an up-to-date state to work with. Doing 
+               // this after we start the persistent connection so we don't
+               // miss any state changes in the interim time between the
+               // getState and persistentConnection starting. 
+               this.getState();
                },
            error: function () { console.log("FAIL (login)");},
            context: this,

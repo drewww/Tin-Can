@@ -22,7 +22,7 @@
     NSMutableSet *users;
 }
 
-- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withMeeting:(UUID *)myMeeting withUsers:(NSSet *)myUsers;
+- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withMeeting:(UUID *)myMeeting withUsers:(NSArray *)myUsers;
 - (void) userJoined:(User *)theUser;
 - (void) userLeft:(User *)theUser;
 - (void) joinedMeeting:(Meeting *)theMeeting;
