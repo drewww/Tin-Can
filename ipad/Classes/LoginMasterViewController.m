@@ -52,9 +52,9 @@
 	LogoView *picView= [[[LogoView alloc] initWithImage:[UIImage imageNamed:@"tin_can_phone.jpg"] 
 											  withFrame: CGRectMake(self.view.frame.size.width/2.0-250, 100, 500, 500) ] retain];
 	
-	locViewController = [[[LocationViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250, 300,600) withController:self] retain];
+	locViewController = [[[LocationViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250, 400,500) withController:self] retain];
 	
-	roomViewController = [[[RoomViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600, 300,600) withController:self] retain];
+	roomViewController = [[[RoomViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600, 400,500) withController:self] retain];
 	
 	
 	// Arrows
@@ -104,11 +104,11 @@
 	
 	
 	// Borders
-	//UIView *locationBorder = [[UIView alloc] initWithFrame:CGRectMake()];
+	//UIView *locationBorder = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200-50-2,self.view.frame.size.height/2.0-250+50-2, 564,404)];
 	//[locationBorder setBackgroundColor:[UIColor grayColor]];
 	
 	//UIView *roomBorder = [[UIView alloc] initWithFrame:
-	//					  CGRectMake()];
+	//					  CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600, 600,300)];
 	//[roomBorder setBackgroundColor:[UIColor grayColor]];
 	
 	
