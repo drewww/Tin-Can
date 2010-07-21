@@ -62,9 +62,8 @@
 		$("#newname").keypress(enter);
 		$("#searchname").keyup(searchForUser);
 		
-		update();
+		//update();
 		//because js files take forever to load
-		//var t = setTimeout("update()",50);
 		connection.addListener({connectionEvent: function(e) {
 			console.log("event: " + e.eventType);
 			switch(e.eventType) {
@@ -118,6 +117,7 @@
 				
 	        }
 		}});
+		connection.getState();
 	});
 	
 	function tempfunction(){
@@ -368,23 +368,24 @@
 	function selectUser(user){
 		console.log(user);
 		if (user.isInLocation()){
-			$("#rooms").css({left:320,top:0});
+			console.log("hi");
+			$("#rooms").css({left:324,top:0});
 			selectLoc(user);
 		//	$("#users").hide();
 		//	$("#locs").hide();
 			//this is really hacky...it doesn't let me set the css to -320 and -640 
 			//(maybe because they're negative?), so I'm just making them move again
-			$("#users").animate({"left": "-=320px"},"fast");
-			$("#locs").animate({"left": "-=320px"},"fast");
+			$("#users").animate({"left": "-=324px"},"fast");
+			$("#locs").animate({"left": "-=324px"},"fast");
 		}
 		else{
 		//	selectUserAnimation();
 			$("#locs").show();
 			
 			if ($("#locs").offset().left>=0){
-				$("#locs").animate({"left": "-=320px"},"slow");
-				$("#users").animate({"left": "-=320px"},"slow");
-				$("#rooms").animate({"left": "-=320px"},"slow");
+				$("#locs").animate({"left": "-=324px"},"slow");
+				$("#users").animate({"left": "-=324px"},"slow");
+				$("#rooms").animate({"left": "-=324px"},"slow");
 				console.log($("#rooms").offset().left)
 			}
 		}
@@ -424,12 +425,12 @@
 		$("#currentloc").html("location: " + user.loc.name);
 		//selectLocAnimation();
 		console.log($("#rooms").offset().left>=0)
-		if($("#rooms").offset().left>=0){
+	//	if($("#rooms").offset().left>=0){
 			console.log("hi");
-			$("#users").animate({"left": "-=320px"},"slow");
-			$("#locs").animate({"left": "-=320px"},"slow");
-			$("#rooms").animate({"left": "-=320px"},"slow");
-		}
+			$("#users").animate({"left": "-=324px"},"slow");
+			$("#locs").animate({"left": "-=324px"},"slow");
+			$("#rooms").animate({"left": "-=324px"},"slow");
+	//	}
 	}
 	
 	function selectLocAnimation(){
@@ -470,9 +471,9 @@
 	//slides right 
 	function backToUsers(){
 		$("#users").show();
-		$("#users").animate({"left": "+=320px"},"slow");
-		$("#locs").animate({"left": "+=320px"},"slow");
-		$("#rooms").animate({"left": "+=320px"},"slow");
+		$("#users").animate({"left": "+=324px"},"slow");
+		$("#locs").animate({"left": "+=324px"},"slow");
+		$("#rooms").animate({"left": "+=324px"},"slow");
 		$("#locs").hide();
 	/*	if($("#users").offset().left<=-5){
 			slideRight($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
@@ -490,9 +491,9 @@
 	//slides right
 	function backToLocs(){
 		$("#locs").show();
-		$("#users").animate({"left": "+=320px"},"slow");
-		$("#locs").animate({"left": "+=320px"},"slow");
-		$("#rooms").animate({"left": "+=320px"},"slow");
+		$("#users").animate({"left": "+=324px"},"slow");
+		$("#locs").animate({"left": "+=324px"},"slow");
+		$("#rooms").animate({"left": "+=324px"},"slow");
 		$("#rooms").hide();
 	/*	if($("#locs").offset().left<=-5){
 			slideRight($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
@@ -537,13 +538,13 @@
 		float:left;
 		position:absolute;
 		top:0px;
-		left:320px;
+		left:324px;
 	}
 	#rooms{
 		float:left;
 		position:absolute;
 		top:0px;
-		left:640px;
+		left:648px;
 	}
 	li{
 		border-bottom: 1px solid black;
