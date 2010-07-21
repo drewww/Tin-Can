@@ -33,6 +33,8 @@ static ConnectionManager *sharedInstance = nil;
 #pragma mark Connection Management
 
 - (void) setLocation:(UUID *)newLocationUUID {
+    if(locationUUID!=nil) [locationUUID release];
+    
     locationUUID = newLocationUUID;
     [locationUUID retain];
     NSLog(@"Set local location: %@", locationUUID);
@@ -43,6 +45,7 @@ static ConnectionManager *sharedInstance = nil;
         NSLog(@"Must call setLocation before connecting.");
     }
     
+    NSLog(@"logging in...");
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/connect/login"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:locationUUID forKey:@"actorUUID"];    
@@ -61,6 +64,7 @@ static ConnectionManager *sharedInstance = nil;
 - (void) startPersistentConnection {
  
     [self stopPersistentConnection];
+    NSLog(@"/CONNECT/ING");
     
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@?actorUUID=%@", SERVER, PORT, @"/connect/", locationUUID]];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
@@ -76,18 +80,20 @@ static ConnectionManager *sharedInstance = nil;
 
 - (void) stopPersistentConnection {
     if(currentPersistentConnection != nil) {
+        NSLog(@"releaseing connection");
         [currentPersistentConnection cancel];
         [currentPersistentConnection release];
     }
 }   
 
 - (void) requestFinished:(ASIHTTPRequest *)request {
-    NSLog(@"Request finished: %@", request.url);
+    NSLog(@"Request finished: %@", [request.url path]);
     
     NSString *path = [request.url path];
     
     // We should have some fancier way of figuring this out, but for now
-    // just decide which request it is based on the url.
+    // just decide which request it is based on the url. This is really
+    // fragile, but I'm not sure how to work around it.
     if([path rangeOfString:@"/connect/login"].location != NSNotFound) {
         NSLog(@"Login request successful.");
         
@@ -113,10 +119,10 @@ static ConnectionManager *sharedInstance = nil;
                                             withMeetings:meetings
                                                withRooms:rooms]; 
 //        
-//        Event *e = [[Event alloc] initWithType:kGET_STATE_COMPLETE withLocal:true withParams:nil withResults:nil];                    
-//        [self publishEvent:e];
+        Event *e = [[Event alloc] initWithType:kGET_STATE_COMPLETE withLocal:true withParams:nil withResults:nil];                    
+        [self publishEvent:e];
         NSLog(@"Done with GET_STATE");
-    } else if ([path isEqualToString:@"/connect/"]) {
+    } else if ([path isEqualToString:@"/connect"]) {
         
         // Handle events being transmitted from an ending persistent connection.
         NSArray *result = [parser objectWithString:[request responseString] error:nil];
@@ -154,6 +160,7 @@ static ConnectionManager *sharedInstance = nil;
         case kLOCATION_LEFT_MEETING:
         case kLOCATION_JOINED_MEETING:
         case kNEW_DEVICE:
+            NSLog(@"received known event type, but am not doing anything about it");
             break;
             
         default:

@@ -46,7 +46,7 @@
                                                                     @"LOCATION_LEFT_MEETING",
                                                                     @"NEW_DEVICE",
                                                                     @"ADD_ACTOR_DEVICE",
-                                                                    @"NEW_LOCATION", nil] autorelease];
+                                                                    @"NEW_LOCATION", nil] retain];
     
     
     self.type = (EventType)[enumMapping objectForKey:stringType];
@@ -56,6 +56,8 @@
     
     self.params = [eventDictionary objectForKey:@"params"];
     self.results = [eventDictionary objectForKey:@"results"];
+    
+    [enumMapping release];
     
     return self;
 }
