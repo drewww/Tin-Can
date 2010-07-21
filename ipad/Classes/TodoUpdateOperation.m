@@ -60,7 +60,7 @@
     // We're expecting an array with a single dictionary in it.
     // Dump the fields we're expecting.
     NSDictionary *entry = [result objectAtIndex:0];
-    NSLog(@"dictionary: %@", entry);
+    //NSLog(@"dictionary: %@", entry);
     
     if(entry != nil)
         // TODO change this to a callSelectorOnMainThread call.
