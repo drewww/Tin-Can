@@ -31,15 +31,15 @@
 	var nameElements = [];
 	var roomElements = [];
 	var locElements = [];
-	var select=true; //keeps track of whether you can select usernames
-	var selected;
-	var user1;
+	var addIsToggled=false; //keeps track of whether you can select usernames
+	var clickEnabled=true;
 	
 	$(document).ready(function(){
 		//initializes variables
 		//locTemplate and locationTemplate have similar names - not sure how to distunguish.
 		//locTemplate is for the location page, locationTemplate is for the rooms page (the 
 		//squares that show number of people in each location in the rooms).
+		
 		userListElement = $("#usernamelist");
 		nameTemplate = $("#nametemplate");
 		locListElement=$("#loclist");
@@ -62,8 +62,7 @@
 		$("#newname").keypress(enter);
 		$("#searchname").keyup(searchForUser);
 		
-		//update();
-		//because js files take forever to load
+		//wait for state to be updated before function is executed
 		connection.addListener({connectionEvent: function(e) {
 			console.log("event: " + e.eventType);
 			switch(e.eventType) {
@@ -72,10 +71,10 @@
 					break;
 					
 				case "LOGIN_COMPLETE":
-					t=setTimeout("tempfunction()",500);
+				//only sent to one device, so this event shouldn't trigger anything on other devices
+					t=setTimeout("tempfunction()",100);
 					
 	            case "ADD_ACTOR_DEVICE":
-	                //only sent to one device, so this event shouldn't trigger anything on other devices
 					update();
 	                break;
 
@@ -112,7 +111,7 @@
 	                break;
 
 	            case "NEW_DEVICE":
-	                // I don't think we care about this, do we?
+	
 	                break;
 				
 	        }
@@ -120,6 +119,8 @@
 		connection.getState();
 	});
 	
+	//needs a better name. need to wait for getState to finish after logging in
+	//so setTimeout is necessary
 	function tempfunction(){
 		update();
 		for (key in users){
@@ -130,9 +131,7 @@
 		selectUser(user);
 	}
 	
-	//in theory, I'd like to use this to update pages from the server, but I don't know how
-	//to do it without clearing the bg color for the selected item. currently it's only used 
-	//to initialize the page
+	//updates room/user/loc lists from state and redisplays them
 	function update(){
 		displayNameList();
 		displayLocList();
@@ -215,7 +214,7 @@
 	
 	function createNewRoomItem(room){
 		newRoomElement = roomTemplate.clone();
-		if (room.currentMeeting!=null){ //assume every room has a current meeting for now
+		if (room.currentMeeting!=null){ 
 			newRoomElement.find("strong").html(room.name);
 			newRoomElement.find("div.room").append(" - " + room.currentMeeting.title);
 			console.log(room.currentMeeting.locs)
@@ -231,6 +230,7 @@
 			newRoomElement.find("em").html(room.name);
 		}
 		
+		//associates timeline with room
 		newRoomElement.data("timeline",new Timeline(newRoomElement.find("canvas")[0]));
 		newRoomElement.data("timeline").start();
 		newRoomElement.show();
@@ -257,12 +257,12 @@
 		if (addName.style.display!="block"){
 			addName.style.display="block";
 			$("#newname").focus();
-			select=false;
+			addIsToggled=true;
 		}
 		else{
 			$("#newname")[0].value="";
 			addName.style.display="none";
-			select=true;
+			addIsToggled=false;
 		}
 	}
 	
@@ -274,10 +274,7 @@
 		}
 	}
 	
-	//should eventually be able to submit new users to the server. currently updates
-	//names and nameElements. unfortunately, updating names screws things up in selectUser
-	//because the new name is in names but there's no user object, so it sends the wrong info
-	//to the server. I would change it, but I can't create new users yet
+	//submits new users to the server. 
 	function submitNewUser(){
 		var newName=$("#newname")[0].value;
 		if (newName!=""){
@@ -342,37 +339,32 @@
 		$("#rooms").offset({left:roomspos+5,top:0});
 	}
 	
-	//highlights the clicked user (if add is not toggled), refreshes loc page, and calls selectUser
+	//highlights the clicked user and logs in (if add is not toggled)
 	function highlightUser(item){
 		$(".name").css("background","white");
-		if (select){
-			item.style.background="#00CCFF";
-			username = $(item).find("div").html();
-			user=users[$.inArray(username,names)];
-			$("#currentuser").html("logged in as: " + user.name);
-			connection.setUser(user.uuid);
-			connection.connect();
-			console.log(user);
-			user1=user;
+		if (!addIsToggled){
+			if (clickEnabled){
+				item.style.background="#00CCFF";
+				username = $(item).find("div").html();
+				user=users[$.inArray(username,names)];
+				$("#currentuser").html("logged in as: " + user.name);
+				connection.setUser(user.uuid);
+				connection.connect();
+				console.log(user);
+			}	
 		}
 		else{
 			toggleAdd();
-		}
-	//	connection.getState(); //I hope this is how you update the state
-	//	var t = setTimeout("tempUser()",200);
-		
+		}		
 	}
 	
-	//calls itself in a setTimeout to slide left. called after a LOGIN_COMPLETE event is triggered,
-	//which only 
+	//if user is in a location, slide to rooms page; otherwise, slide to locs page
 	function selectUser(user){
 		console.log(user);
 		if (user.isInLocation()){
 			console.log("hi");
 			$("#rooms").css({left:324,top:0});
 			selectLoc(user);
-		//	$("#users").hide();
-		//	$("#locs").hide();
 			//this is really hacky...it doesn't let me set the css to -320 and -640 
 			//(maybe because they're negative?), so I'm just making them move again
 			$("#users").animate({"left": "-=324px"},"fast");
@@ -381,12 +373,14 @@
 		else{
 		//	selectUserAnimation();
 			$("#locs").show();
-			
+			clickEnabled=false;
 			if ($("#locs").offset().left>=0){
 				$("#locs").animate({"left": "-=324px"},"slow");
 				$("#users").animate({"left": "-=324px"},"slow");
-				$("#rooms").animate({"left": "-=324px"},"slow");
-				console.log($("#rooms").offset().left)
+				//$("#rooms").animate({"left": "-=324px"},"slow");
+				$("#rooms").css({left:324,top:0});
+				console.log($("#rooms").offset().left);
+				var t = setTimeout("clickEnabled=true",600);
 			}
 		}
 	}
@@ -406,31 +400,36 @@
 		}
 	}
 	
-	//highlights the clicked user, refreshes the room page, and calls selectLoc
+	//highlights the clicked loc and joins the loc
 	function highlightLoc(item){
-		$(".loc").css("background","white");
-		item.style.background="#00CCFF";
-		locname = $(item).find("div").html();
-		loc=locs[$.inArray(locname,locNames)];
-		$("#currentloc").html("location: " + loc.name);
-	//	connection.getState(); //I hope this is how you update the state
-		connection.joinLocation(loc.uuid);
-		
+		if (clickEnabled){
+			$(".loc").css("background","white");
+			item.style.background="#00CCFF";
+			locname = $(item).find("div").html();
+			loc=locs[$.inArray(locname,locNames)];
+			$("#currentloc").html("location: " + loc.name);
+			connection.joinLocation(loc.uuid);
+		}
 	}
 	
-	//sets the "location:" and calls itself in a setTimeout to slide left. also sends information
-	//to server
+	//sets the "location:" and slides to the room page. if the loc is in a meeting, sets "room:" as well
 	function selectLoc(user){
 		$("#rooms").show();
+		clickEnabled=false;
 		$("#currentloc").html("location: " + user.loc.name);
 		//selectLocAnimation();
 		console.log($("#rooms").offset().left>=0)
-	//	if($("#rooms").offset().left>=0){
+		if($("#rooms").offset().left>=0){
 			console.log("hi");
 			$("#users").animate({"left": "-=324px"},"slow");
 			$("#locs").animate({"left": "-=324px"},"slow");
 			$("#rooms").animate({"left": "-=324px"},"slow");
-	//	}
+			var t = setTimeout("clickEnabled=true",600);
+		}
+		if (user.loc.isInMeeting()){
+		//	connection.joinRoom(user.loc.meeting.room.uuid);
+			$("#currentloc").append("\nroom: " + user.loc.meeting.room.name);
+		}
 	}
 	
 	function selectLocAnimation(){
@@ -447,19 +446,28 @@
 		}
 	}
 	
-	//highlights the current room and sends information to the server. also updates the statusbar
-	//on clicks (but makes the server yell a lot) to test the timeline library
+	//if the location is not in a meeting, the loc joins the selected meeting; otherwise, nothing happens
 	function selectRoom(item){
 		$(".meetingroom").css("background","white");
 		
-		roomname = $(item).find("div").find("strong").html();
-		if (roomname==""){
-			roomname = $(item).find("div").find("em").html();
+		for (key in users){
+			if (users[key].uuid==connection.userUUID){
+				user=users[key]
+			}
 		}
 		
-		room=rooms[$.inArray(roomname,roomNames)];
-		connection.joinRoom(room.uuid);
-		
+		if (!user.loc.isInMeeting()){
+			roomname = $(item).find("div").find("strong").html();
+			if (roomname==""){
+				roomname = $(item).find("div").find("em").html();
+			}
+
+			$("#currentloc").append("\nroom: " + roomname);
+
+			room=rooms[$.inArray(roomname,roomNames)];
+			connection.joinRoom(room.uuid);
+		}
+
 		//item.style.background="#00CCFF";
 		//statusbar($(item));
 	}
@@ -468,13 +476,17 @@
 		item.data("timeline").draw();
 	}
 	
-	//slides right 
+	//slides to users page
 	function backToUsers(){
-		$("#users").show();
-		$("#users").animate({"left": "+=324px"},"slow");
-		$("#locs").animate({"left": "+=324px"},"slow");
-		$("#rooms").animate({"left": "+=324px"},"slow");
-		$("#locs").hide();
+		if (clickEnabled){
+			$("#users").show();
+			clickEnabled=false;
+			$("#users").animate({"left": "+=324px"},"slow");
+			$("#locs").animate({"left": "+=324px"},"slow");
+			$("#rooms").animate({"left": "+=324px"},"slow");
+			var t = setTimeout("$('#locs').hide();clickEnabled=true;",600);
+		}
+	
 	/*	if($("#users").offset().left<=-5){
 			slideRight($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
 			var t = setTimeout("backToUsers()", 2);
@@ -488,13 +500,17 @@
 		}*/
 	}
 	
-	//slides right
+	//slides to locs page
 	function backToLocs(){
-		$("#locs").show();
-		$("#users").animate({"left": "+=324px"},"slow");
-		$("#locs").animate({"left": "+=324px"},"slow");
-		$("#rooms").animate({"left": "+=324px"},"slow");
-		$("#rooms").hide();
+		if (clickEnabled){
+			$("#locs").show();
+			clickEnabled=false;
+			$("#users").animate({"left": "+=324px"},"slow");
+			$("#locs").animate({"left": "+=324px"},"slow");
+			$("#rooms").animate({"left": "+=324px"},"slow");
+			var t = setTimeout("$('#rooms').hide();clickEnabled=true;",600);
+		}
+		
 	/*	if($("#locs").offset().left<=-5){
 			slideRight($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
 			var t = setTimeout("backToLocs()", 2);
