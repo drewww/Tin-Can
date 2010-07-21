@@ -121,7 +121,7 @@
 - (void)clk {
     [meetingTimerView setNeedsDisplay];
 }   
--(NSArray *)getParticpantLocationsForNumberOfPeople:(int)totalNumberOfPeople{    
+-(NSMutableArray *)getParticpantLocationsForNumberOfPeople:(int)totalNumberOfPeople{    
 	int i = 0;
 	int arrayCounter=0;
 	int sideLimit= round(totalNumberOfPeople/4.0);
@@ -156,6 +156,7 @@
 	}
 	//Forms points from side assignments
 	NSMutableArray *points=[[NSMutableArray alloc] initWithCapacity:totalNumberOfPeople];
+	NSMutableArray *rotations=[[NSMutableArray alloc] initWithCapacity:totalNumberOfPeople];
 	for (i=0; i<4; i++) {
 		int c =1;
 		while (c<=[[sides objectAtIndex:i] intValue]) {
@@ -164,28 +165,36 @@
 				float yVal= (divisions*c) -(divisions/2.0);
 				if (i==0) {
 					[points addObject:[NSValue valueWithCGPoint:CGPointMake(-30, yVal)]];
+					[rotations addObject:[NSNumber numberWithFloat:M_PI/2]];
+					
 				}	
 				else{
 					[points addObject:[NSValue valueWithCGPoint:CGPointMake(798, yVal)]];
+					
+					[rotations addObject:[NSNumber numberWithFloat:-M_PI/2]]; 
 				}
 			}
 			else if (i==1 || i==3) {
 				float divisions=768/[[sides objectAtIndex:i] intValue];
 				float xVal= (divisions*(c)) -(divisions/2.0);
 				if (i==1) {
-					[points addObject:[NSValue valueWithCGPoint:CGPointMake(xVal, 1060)]];
+					[points addObject:[NSValue valueWithCGPoint:CGPointMake(xVal, -30)]]; 
+					[rotations addObject:[NSNumber numberWithFloat:M_PI]];
 				}	
 				else{
-					[points addObject:[NSValue valueWithCGPoint:CGPointMake(xVal, -30)]];
+					[points addObject:[NSValue valueWithCGPoint:CGPointMake(xVal, 1060)]];
+					[rotations addObject:[NSNumber numberWithFloat:0.0]];
 				}
 			}
 			c++;
 		}
 	}
-	
+	NSMutableArray *position=[[NSMutableArray alloc] initWithCapacity:2];
+	[position addObject:points];
+	[position addObject:rotations];
 	NSLog(@"Sides:%@", sides);
 	NSLog(@"points:%@", points);
-	return points;
+	return position;
 }	
 - (void)initParticipantsView {
 	
@@ -206,7 +215,7 @@
     [names addObject:@"Paulina"];
     [names addObject:@"Dori"];
     
-	[self getParticpantLocationsForNumberOfPeople:[names count]];
+	NSMutableArray *position= [self getParticpantLocationsForNumberOfPeople:[names count]];
 	
 	
 	
@@ -216,69 +225,48 @@
         // This is going to get really ugly for now, since we don't
         // have a nice participant layout manager. Just hardcode
         // positions.
-        
-        CGPoint point;
-        CGFloat rotation;
         UIColor *color;
         NSString *uuid;
         switch(i) {
             case 0:
-                point = CGPointMake(256, 1060);
-                rotation = 0.0;
+                
                 color = [UIColor redColor];
                 uuid = @"p1";
                 break;
             case 1:
-                point = CGPointMake(512, 1060);
-                rotation = 0.0;
-                color = [UIColor redColor];
+                                color = [UIColor redColor];
                 uuid = @"p2";
                 break;
             case 2:
-                point = CGPointMake(-30, 256);
-                rotation = M_PI/2;
+               
                 color = [UIColor redColor];
                 uuid = @"p3";
                 break;
             case 3:
-                point = CGPointMake(-30, 512);
-                rotation = M_PI/2;
-                color = [UIColor blueColor];
+				color = [UIColor blueColor];
                 uuid = @"p4";
                 break;
             case 4:
-                point = CGPointMake(-30, 768);
-                rotation = M_PI/2;
                 color = [UIColor blueColor];
                 uuid = @"p5";
                 break;
             case 5:
-                point = CGPointMake(798, 256);
-                rotation = -M_PI/2;
                 color = [UIColor blueColor];
                 uuid = @"p6";
                 break;
             case 6:
-                point = CGPointMake(798, 512);
-                rotation = -M_PI/2;
                 color = [UIColor yellowColor];
                 uuid = @"p7";
                 break;
             case 7:
-                point = CGPointMake(798, 768);
-                rotation = -M_PI/2;
                 color = [UIColor yellowColor];
                 uuid = @"p8";
                 break;
             case 8:
-                point = CGPointMake(256, -30);
-                rotation = M_PI;
                 color = [UIColor greenColor];
                 uuid = @"p9";
                 break;
             case 9:        
-                point = CGPointMake(512, -30);
-                rotation = M_PI;
                 color = [UIColor purpleColor];
                 uuid = @"p10";
                 break;
@@ -289,7 +277,11 @@
         [participants setObject:p forKey:p.uuid];
         
         // Now make the matching view.
-        ParticipantView *newParticipantView = [[ParticipantView alloc] initWithParticipant:p withPosition:point withRotation:rotation withColor:color];
+        ParticipantView *newParticipantView = [[ParticipantView alloc] 
+											   initWithParticipant:p 
+											   withPosition:[[[position objectAtIndex:0] objectAtIndex:i]CGPointValue]
+											   withRotation:[[[position objectAtIndex:1] objectAtIndex:i]floatValue]
+											   withColor:color];
         p.view = newParticipantView;
         [participantsContainer addSubview:newParticipantView];
         [participantsContainer bringSubviewToFront:newParticipantView];
