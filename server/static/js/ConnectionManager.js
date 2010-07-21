@@ -357,8 +357,6 @@ ConnectionManager.prototype = {
     },
     
     getState: function() {
-        // callback is a function that we'll hand the three chunks of state
-        // to when we get a response.
         $.ajax({
             url: '/connect/state',
             type: "GET",

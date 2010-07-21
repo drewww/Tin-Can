@@ -27,9 +27,6 @@
 function StateManager() {
     // Setup the major data structures.
     this.db = {};
-        
-    // Kick off an initialization request to the server.
-    connection.getState(this.initStateManager, this);
 }
 
 StateManager.prototype = {
