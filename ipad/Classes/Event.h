@@ -18,10 +18,18 @@ typedef enum {
     kUSER_LEFT_LOCATION,
     kNEW_USER,
     kLOCATION_JOINED_MEETING,
-    kLOCATION_LEFT_ROOM,
+    kLOCATION_LEFT_MEETING,
     kNEW_DEVICE,
     kADD_ACTOR_DEVICE,
-    kNEW_LOCATION
+    kNEW_LOCATION,
+    
+    // These are the internal events that ConnectionManager generates.
+    kGET_STATE_COMPLETE,
+    kNEW_USER_COMPLETE,
+    kLEAVE_ROOM_COMPLETE,
+    kJOIN_ROOM_COMPLETE,
+    kLOGIN_COMPLETE,
+    kCONNECT_COMPLETE
 } EventType;
 
 @interface Event : NSObject {
@@ -29,14 +37,19 @@ typedef enum {
     UUID *actorUUID;
     UUID *meetingUUID;
     
+    BOOL localEvent;
+    
     NSDictionary *params;
     NSDictionary *results;
 }
 
-- (id) initEventFromDictionary:(NSDictionary *)eventDictionary;
-
+- (id) initFromDictionary:(NSDictionary *)eventDictionary;
+- (id) initWithType:(EventType)myType withLocal:(BOOL)isLocalEvent withParams:(NSDictionary *)myParams
+             withResults:(NSDictionary *)results;
 
 @property(nonatomic) EventType type;
+@property(nonatomic) BOOL localEvent;
+
 @property(nonatomic, retain) UUID *actorUUID;
 @property(nonatomic, retain) UUID *meetingUUID;
 @property(nonatomic, retain) NSDictionary *params;

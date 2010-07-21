@@ -23,7 +23,7 @@ static ConnectionManager *sharedInstance = nil;
     
     parser = [[[SBJSON alloc] init] retain];
     
-    eventListeners = [NSMutableSet set];
+    eventListeners = [[NSMutableSet set] retain];
     
     return self;
 }
@@ -33,7 +33,6 @@ static ConnectionManager *sharedInstance = nil;
 #pragma mark Connection Management
 
 - (void) setLocation:(UUID *)newLocationUUID {
-    
     locationUUID = newLocationUUID;
     [locationUUID retain];
     NSLog(@"Set local location: %@", locationUUID);
@@ -92,6 +91,9 @@ static ConnectionManager *sharedInstance = nil;
     if([path rangeOfString:@"/connect/login"].location != NSNotFound) {
         NSLog(@"Login request successful.");
         
+        Event *e = [[Event alloc] initWithType:kLOGIN_COMPLETE withLocal:true withParams:nil withResults:nil];                    
+        [self publishEvent:e];
+
         // Start the persistent connection here.
         [self startPersistentConnection];
         
@@ -110,6 +112,10 @@ static ConnectionManager *sharedInstance = nil;
                                                withUsers:users
                                             withMeetings:meetings
                                                withRooms:rooms]; 
+//        
+//        Event *e = [[Event alloc] initWithType:kGET_STATE_COMPLETE withLocal:true withParams:nil withResults:nil];                    
+//        [self publishEvent:e];
+        NSLog(@"Done with GET_STATE");
     } else if ([path isEqualToString:@"/connect/"]) {
         
         // Handle events being transmitted from an ending persistent connection.
@@ -118,13 +124,14 @@ static ConnectionManager *sharedInstance = nil;
         NSLog(@"event results: %@", result);
     
         for(NSDictionary *eventDict in result) {
-            Event *event = [[Event alloc] initEventFromDictionary:eventDict];
+            Event *event = [[Event alloc] initFromDictionary:eventDict];
             NSLog(@"event: %@", event);
         }
         
         
-        
-        
+        Event *e = [[Event alloc] initWithType:kCONNECT_COMPLETE withLocal:true withParams:nil withResults:nil];                    
+        [self publishEvent:e];
+
         [self startPersistentConnection];
     }
 }
@@ -138,11 +145,26 @@ static ConnectionManager *sharedInstance = nil;
 #pragma mark Event Methods
 
 - (void) dispatchEvent:(Event *)e {
-
+    switch(e.type) {
+        case kADD_ACTOR_DEVICE:
+        case kNEW_USER:
+        case kNEW_MEETING:
+        case kUSER_LEFT_LOCATION:
+        case kUSER_JOINED_LOCATION:
+        case kLOCATION_LEFT_MEETING:
+        case kLOCATION_JOINED_MEETING:
+        case kNEW_DEVICE:
+            break;
+            
+        default:
+            NSLog(@"Received an unknown event type: %d", e.type);
+            break;
+    }
 }
 
 - (void) addListener:(NSObject *)listener {
     [eventListeners addObject:listener];
+    NSLog(@"Added listener. Total listeners: %@", eventListeners);
 }
 
 - (void) removeListener:(NSObject *)listener {
@@ -150,7 +172,15 @@ static ConnectionManager *sharedInstance = nil;
 }
 
 - (void) publishEvent:(Event *)e {
-    
+    NSLog(@"listeners: %@", eventListeners);
+    for(NSObject *listener in eventListeners) {
+        NSLog(@"publishing to: %@", listener);
+        if([listener respondsToSelector:@selector(handleConnectionEvent:)])
+            [listener handleConnectionEvent:e];
+        else {
+            NSLog(@"One of our event listeners didn't respond to 'handleConnectionEvent:'");
+        }
+    }
 }
 
 

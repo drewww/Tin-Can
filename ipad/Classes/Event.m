@@ -18,8 +18,9 @@
 @synthesize meetingUUID;
 @synthesize params;
 @synthesize results;
+@synthesize localEvent;
 
-- (id) initEventFromDictionary:(NSDictionary *)eventDictionary {
+- (id) initFromDictionary:(NSDictionary *)eventDictionary {
     self = [super init];
     
     // unpack the type into an enum.
@@ -32,7 +33,7 @@
                                                                     kUSER_LEFT_LOCATION,
                                                                     kNEW_USER,
                                                                     kLOCATION_JOINED_MEETING,
-                                                                    kLOCATION_LEFT_ROOM,
+                                                                    kLOCATION_LEFT_MEETING,
                                                                     kNEW_DEVICE,
                                                                     kADD_ACTOR_DEVICE,
                                                                     kNEW_LOCATION,
@@ -42,7 +43,7 @@
                                                                     @"USER_LEFT_LOCATION",
                                                                     @"NEW_USER",
                                                                     @"LOCATION_JOINED_MEETING",
-                                                                    @"LOCATION_LEFT_ROOM",
+                                                                    @"LOCATION_LEFT_MEETING",
                                                                     @"NEW_DEVICE",
                                                                     @"ADD_ACTOR_DEVICE",
                                                                     @"NEW_LOCATION", nil] autorelease];
@@ -55,6 +56,25 @@
     
     self.params = [eventDictionary objectForKey:@"params"];
     self.results = [eventDictionary objectForKey:@"results"];
+    
+    return self;
+}
+
+- (id) initWithType:(EventType)myType withLocal:(BOOL)isLocalEvent withParams:(NSDictionary *)myParams
+withResults:(NSDictionary *)myResults {
+    
+    self = [super init];
+    
+    self.type = myType;
+    
+    
+    // TODO Should these be set to the local meeting? Or just assume that clients
+    // won't look too closely at these? 
+    self.meetingUUID = nil;
+    self.actorUUID = nil;
+    
+    self.params = myParams;
+    self.results = myResults;
     
     return self;
 }
