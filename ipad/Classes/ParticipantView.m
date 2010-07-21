@@ -21,7 +21,7 @@
 - (id) initWithParticipant:(Participant *)newParticipant withPosition:(CGPoint)pos withRotation:(CGFloat)rot withColor:(UIColor *)c {
 	self = [super initWithFrame:CGRectMake(0,0, 280, 280)];
 	
-	NSLog(@"initing participant view");
+	//NSLog(@"initing participant view");
 	hover = false;
 	self.bounds = CGRectMake(-140, -140, 280, 280);
 	self.center = pos;

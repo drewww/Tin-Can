@@ -121,8 +121,75 @@
 - (void)clk {
     [meetingTimerView setNeedsDisplay];
 }   
-
+-(NSArray *)getParticpantLocationsForNumberOfPeople:(int)totalNumberOfPeople{    
+	int i = 0;
+	int arrayCounter=0;
+	int sideLimit= round(totalNumberOfPeople/4.0);
+	int topLimit=trunc(totalNumberOfPeople/4.0);
+	//assigns number of participants to a side
+	NSMutableArray *sides=[[NSMutableArray arrayWithObjects:[NSNumber numberWithInt: 0],[NSNumber numberWithInt:0],
+							[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],nil]retain];
+	
+	while (i<totalNumberOfPeople) {
+		if (arrayCounter==1 && ([[sides objectAtIndex:arrayCounter] intValue]>=topLimit)) {
+			arrayCounter++;
+		}
+		else if ((arrayCounter==0 || arrayCounter==2)&&([[sides objectAtIndex:arrayCounter] intValue] >=sideLimit)){
+			arrayCounter++;
+		}
+		else if(arrayCounter==3){
+			if ([[sides objectAtIndex:arrayCounter] intValue]>sideLimit) {
+				break;
+			}
+			else {
+				[sides replaceObjectAtIndex: arrayCounter withObject:[NSNumber numberWithInt:[[sides objectAtIndex:arrayCounter] intValue] +1.0]];
+				arrayCounter=0;	
+				i++;
+			}
+		}
+		else {
+			[sides replaceObjectAtIndex: arrayCounter withObject:[NSNumber numberWithInt:[[sides objectAtIndex:arrayCounter] intValue] +1.0]];
+			i++;
+			arrayCounter++;
+		}	
+		
+	}
+	//Forms points from side assignments
+	NSMutableArray *points=[[NSMutableArray alloc] initWithCapacity:totalNumberOfPeople];
+	for (i=0; i<4; i++) {
+		int c =1;
+		while (c<=[[sides objectAtIndex:i] intValue]) {
+			if (i==0|| i==2) {
+				float divisions=1024.0/[[sides objectAtIndex:i] intValue];
+				float yVal= (divisions*c) -(divisions/2.0);
+				if (i==0) {
+					[points addObject:[NSValue valueWithCGPoint:CGPointMake(-30, yVal)]];
+				}	
+				else{
+					[points addObject:[NSValue valueWithCGPoint:CGPointMake(798, yVal)]];
+				}
+			}
+			else if (i==1 || i==3) {
+				float divisions=768/[[sides objectAtIndex:i] intValue];
+				float xVal= (divisions*(c)) -(divisions/2.0);
+				if (i==1) {
+					[points addObject:[NSValue valueWithCGPoint:CGPointMake(xVal, 1060)]];
+				}	
+				else{
+					[points addObject:[NSValue valueWithCGPoint:CGPointMake(xVal, -30)]];
+				}
+			}
+			c++;
+		}
+	}
+	
+	NSLog(@"Sides:%@", sides);
+	NSLog(@"points:%@", points);
+	return points;
+}	
 - (void)initParticipantsView {
+	
+	
     
     participants = [[NSMutableDictionary dictionary] retain];
         
@@ -139,11 +206,13 @@
     [names addObject:@"Paulina"];
     [names addObject:@"Dori"];
     
-    
-    
-    // Now loop through that set.
-    int i = 0;
-    for (NSString *name in names) {
+	[self getParticpantLocationsForNumberOfPeople:[names count]];
+	
+	
+	
+	int i = 0;
+	
+	for (NSString *name in names) {
         // This is going to get really ugly for now, since we don't
         // have a nice participant layout manager. Just hardcode
         // positions.

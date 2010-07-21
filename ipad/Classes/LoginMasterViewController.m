@@ -21,14 +21,14 @@
 	if ((self = [super init])) {
 
 	controller=control;
-	NSLog(@"is being called with %@:", controller);
+	//NSLog(@"is being called with %@:", controller);
 	} 
 	return self;
 		
 }
 - (void)loadView {
 	
-	NSLog(@"View is being called");
+	//NSLog(@"View is being called");
 	// Initializers
 	// Sets the frame and then sets the center of the view to be at the location our our Logo.
 	// The currentPage variable tracks which part of the view the user is seeing
@@ -322,7 +322,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	CGAffineTransform transform = CGAffineTransformMakeRotation(M_PI/2);
-    NSLog(@"self.view.superview: %@", self.view.superview);
+    //NSLog(@"self.view.superview: %@", self.view.superview);
     [self.view.superview setTransform:transform];
 
 }
