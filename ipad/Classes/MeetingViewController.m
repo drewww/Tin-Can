@@ -124,8 +124,10 @@
 -(NSMutableArray *)getParticpantLocationsForNumberOfPeople:(int)totalNumberOfPeople{    
 	int i = 0;
 	int arrayCounter=0;
-	int sideLimit= round(totalNumberOfPeople/4.0);
+	int sideLimit= ceil(totalNumberOfPeople/4.0);
 	int topLimit=trunc(totalNumberOfPeople/4.0);
+	NSLog(@"Sides:%d", sideLimit);
+	NSLog(@"points:%d", topLimit);
 	//assigns number of participants to a side
 	NSMutableArray *sides=[[NSMutableArray arrayWithObjects:[NSNumber numberWithInt: 0],[NSNumber numberWithInt:0],
 							[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],nil]retain];
@@ -138,7 +140,7 @@
 			arrayCounter++;
 		}
 		else if(arrayCounter==3){
-			if ([[sides objectAtIndex:arrayCounter] intValue]>sideLimit) {
+			if ([[sides objectAtIndex:arrayCounter] intValue]>topLimit) {
 				break;
 			}
 			else {
@@ -209,11 +211,11 @@
     [names addObject:@"Jaewoo"];
     [names addObject:@"Charlie"];
     [names addObject:@"Chris"];
-    [names addObject:@"Paula"];
-    [names addObject:@"Ig-Jae"];
-    [names addObject:@"Trevor"];
-    [names addObject:@"Paulina"];
-    [names addObject:@"Dori"];
+//    [names addObject:@"Paula"];
+//    [names addObject:@"Ig-Jae"];
+//    [names addObject:@"Trevor"];
+//    [names addObject:@"Paulina"];
+//    [names addObject:@"Dori"];
     
 	NSMutableArray *position= [self getParticpantLocationsForNumberOfPeople:[names count]];
 	
