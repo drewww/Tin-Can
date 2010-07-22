@@ -27,30 +27,23 @@
     // unpack the type into an enum.
     NSString *stringType = [eventDictionary objectForKey:@"eventType"];
     
-    NSDictionary *enumMapping = [[NSDictionary dictionaryWithObjectsAndKeys:kNEW_MEETING,
-                                                                    kJOINED_MEETING,
-                                                                    kLEFT_ROOM,
-                                                                    kUSER_JOINED_LOCATION,
-                                                                    kUSER_LEFT_LOCATION,
-                                                                    kNEW_USER,
-                                                                    kLOCATION_JOINED_MEETING,
-                                                                    kLOCATION_LEFT_MEETING,
-                                                                    kNEW_DEVICE,
-                                                                    kADD_ACTOR_DEVICE,
-                                                                    kNEW_LOCATION,
-                                                                    @"NEW_MEETING",
-                                                                    @"JOINED_MEETING",
-                                                                    @"USER_JOINED_LOCATION",
-                                                                    @"USER_LEFT_LOCATION",
-                                                                    @"NEW_USER",
-                                                                    @"LOCATION_JOINED_MEETING",
-                                                                    @"LOCATION_LEFT_MEETING",
-                                                                    @"NEW_DEVICE",
-                                                                    @"ADD_ACTOR_DEVICE",
-                                                                    @"NEW_LOCATION", nil] retain];
+    // We're cheating a bit here, assuming that the enum orders itself
+    // in order of the defined keys (which it does). Be careful
+    // not to insert keys out of order, or this system will break.
+    // This was originally a nice Dictionary, but enums aren't objects
+    // so that wasn't working.
+    NSArray *enumMapping = [[NSArray arrayWithObjects:@"NEW_MEETING",
+                                                     @"JOINED_MEETING",
+                                                     @"USER_JOINED_LOCATION",
+                                                     @"USER_LEFT_LOCATION",
+                                                     @"NEW_USER",
+                                                     @"LOCATION_JOINED_MEETING",
+                                                     @"LOCATION_LEFT_MEETING",
+                                                     @"NEW_DEVICE",
+                                                     @"ADD_ACTOR_DEVICE",
+                                                     @"NEW_LOCATION", nil] retain];
     
-    
-    self.type = (EventType)[enumMapping objectForKey:stringType];
+    self.type = (EventType)[enumMapping indexOfObject:stringType];
     
     self.uuid = [eventDictionary objectForKey:@"uuid"];
     

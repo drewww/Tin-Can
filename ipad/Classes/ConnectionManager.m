@@ -152,15 +152,87 @@ static ConnectionManager *sharedInstance = nil;
 
 - (void) dispatchEvent:(Event *)e {
     NSLog(@"DISPATCH: %@", e);
+    StateManager *state = [StateManager sharedInstance];
+        
+    User *user;
+    Meeting *meeting;
+    Location *location;
+    //Room *room;
+    
+    NSDictionary *results;
     
     switch(e.type) {
         case kADD_ACTOR_DEVICE:
+            // Don't need to do anything here.
+            break;
+            
         case kNEW_USER:
+            NSLog(@"NEW_USER");
+            results = (NSDictionary *)[e.results objectForKey:@"user"];
+            
+            user = [[User alloc] initWithUUID:[results objectForKey:@"uuid"]
+                                     withName:[results objectForKey:@"name"]
+                             withLocationUUID:[results objectForKey:@"location"]];
+            [user unswizzle];
+        
+            [state addActor:user];  
+            NSLog(@"NEW_USER: %@", user);
+            break;
+            
         case kNEW_MEETING:
+            NSLog(@"NEW_MEETING");
+            results = [e.results objectForKey:@"meeting"];
+            
+            meeting = [[Meeting alloc] initWithUUID:[results objectForKey:@"uuid"]
+                                          withTitle:[results objectForKey:@"title"]
+                                       withRoomUUID:[results objectForKey:@"room"]];
+            [meeting unswizzle];
+            
+            [state addMeeting:meeting];                                            
+            NSLog(@"NEW_MEETING: %@", meeting);
+            break;
+            
         case kUSER_LEFT_LOCATION:
+            
+            location = (Location *)[state getObjWithUUID:[e.params objectForKey:@"location"]
+                                              withType:[Meeting class]];
+            user = (User *)[state getObjWithUUID:e.actorUUID withType:[User class]];
+            
+            [location userLeft:user];                  
+            NSLog(@"USER_LEFT_LOCATION: %@ left %@", user, location);
+            break;
+            
         case kUSER_JOINED_LOCATION:
+            location = (Location *)[state getObjWithUUID:[e.params objectForKey:@"location"]
+                                              withType:[Meeting class]];
+            
+            user = (User *)[state getObjWithUUID:e.actorUUID withType:[User class]];
+            
+            [location userJoined:user];                  
+            NSLog(@"USER_JOINED_LOCATION: %@ joined %@", user, location);
+            break;
+            
         case kLOCATION_LEFT_MEETING:
+            meeting = (Meeting *)[state getObjWithUUID:e.meetingUUID withType:[Meeting class]];
+            
+            location = (Location *)[state getObjWithUUID:[e.params objectForKey:@"location"] withType:[Location class]];
+            
+            [meeting locationLeft:location];
+            
+            NSLog(@"LOCATION_LEFT_MEETING: %@ left %@", location, meeting);
+            break;
+            
+            
         case kLOCATION_JOINED_MEETING:
+            meeting = (Meeting *)[state getObjWithUUID:e.meetingUUID withType:[Meeting class]];
+            
+            location = (Location *)[state getObjWithUUID:[e.params objectForKey:@"location"] withType:[Location class]];
+            
+            [meeting locationLeft:location];
+            
+            NSLog(@"LOCATION_LEFT_MEETING: %@ left %@", location, meeting);
+            break;            
+            
         case kNEW_DEVICE:
             NSLog(@"received known event type, but am not doing anything about it");
             break;
