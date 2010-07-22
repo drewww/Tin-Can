@@ -34,6 +34,7 @@ typedef enum {
 
 @interface Event : NSObject {
     EventType type;
+    UUID *uuid;
     UUID *actorUUID;
     UUID *meetingUUID;
     
@@ -44,11 +45,15 @@ typedef enum {
 }
 
 - (id) initFromDictionary:(NSDictionary *)eventDictionary;
+- (id) initWithType:(EventType)myType withUUID:(UUID *)myUUID withLocal:(BOOL)isLocalEvent
+         withParams:(NSDictionary *)myParams withResults:(NSDictionary *)myResults;
 - (id) initWithType:(EventType)myType withLocal:(BOOL)isLocalEvent withParams:(NSDictionary *)myParams
              withResults:(NSDictionary *)results;
 
 @property(nonatomic) EventType type;
 @property(nonatomic) BOOL localEvent;
+
+@property(nonatomic, retain) UUID *uuid;
 
 @property(nonatomic, retain) UUID *actorUUID;
 @property(nonatomic, retain) UUID *meetingUUID;

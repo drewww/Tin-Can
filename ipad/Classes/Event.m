@@ -13,6 +13,7 @@
 @implementation Event
 
 
+@synthesize uuid;
 @synthesize type;
 @synthesize actorUUID;
 @synthesize meetingUUID;
@@ -51,24 +52,38 @@
     
     self.type = (EventType)[enumMapping objectForKey:stringType];
     
+    self.uuid = [eventDictionary objectForKey:@"uuid"];
+    
     self.meetingUUID = [eventDictionary objectForKey:@"meetingUUID"];
     self.actorUUID = [eventDictionary objectForKey:@"actorUUID"];
     
     self.params = [eventDictionary objectForKey:@"params"];
     self.results = [eventDictionary objectForKey:@"results"];
     
+    
+    localEvent = false;
+    
     [enumMapping release];
     
     return self;
 }
 
+// This one is just sugar for the main one. 
 - (id) initWithType:(EventType)myType withLocal:(BOOL)isLocalEvent withParams:(NSDictionary *)myParams
+        withResults:(NSDictionary *)myResults {
+    return [self initWithType:myType withUUID:nil withLocal:isLocalEvent withParams:myParams withResults:myResults];
+}
+
+- (id) initWithType:(EventType)myType withUUID:(UUID *)myUUID withLocal:(BOOL)isLocalEvent withParams:(NSDictionary *)myParams
 withResults:(NSDictionary *)myResults {
     
     self = [super init];
     
     self.type = myType;
     
+    localEvent = isLocalEvent;
+    
+    self.uuid = myUUID;
     
     // TODO Should these be set to the local meeting? Or just assume that clients
     // won't look too closely at these? 
@@ -81,5 +96,16 @@ withResults:(NSDictionary *)myResults {
     return self;
 }
 
+- (NSString *) description {
+    if(self.uuid!=nil && ![self.uuid isKindOfClass:[NSNull class]]) {
+        return [NSString stringWithFormat:@"[event.%@ %d meet:%@ actor:%@ params:%d results:%d]", [self.uuid substringToIndex:6],
+                self.type, self.meetingUUID, self.actorUUID, [self.params count], [self.results count]];
+    }
+    else {
+        NSLog(@"printing without");
+        return [NSString stringWithFormat:@"[event.000000 %d meet:%@ actor:%@ params:%d results:%d]", [self.uuid substringToIndex:6],
+                self.type, self.meetingUUID, self.actorUUID, [self.params count], [self.results count]];
+    }
+}
 
 @end

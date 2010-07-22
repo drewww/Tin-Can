@@ -131,7 +131,7 @@ static ConnectionManager *sharedInstance = nil;
     
         for(NSDictionary *eventDict in result) {
             Event *event = [[Event alloc] initFromDictionary:eventDict];
-            NSLog(@"event: %@", event);
+            [self dispatchEvent:event];
         }
         
         
@@ -151,6 +151,8 @@ static ConnectionManager *sharedInstance = nil;
 #pragma mark Event Methods
 
 - (void) dispatchEvent:(Event *)e {
+    NSLog(@"DISPATCH: %@", e);
+    
     switch(e.type) {
         case kADD_ACTOR_DEVICE:
         case kNEW_USER:
