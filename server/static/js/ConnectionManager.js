@@ -142,7 +142,7 @@ ConnectionManager.prototype = {
                 break;
                 
             case "NEW_USER":
-                userData = ev["results"]["user"];
+                userData = ev["results"]["actor"];
                 user = new User(userData["uuid"], userData["name"],
                     userData["location"]);
                 user.unswizzle();
@@ -150,7 +150,16 @@ ConnectionManager.prototype = {
                 state.actors.push(user);
                 console.log("New user: " + user.name);
                 break;
-                
+            
+            case "NEW_LOCATION":
+                locData = ev["results"]["actor"];
+                loc = new Location(locData["uuid"], locData["name"],
+                    locData["meetingUUID"], locData["users"]);
+                loc.unswizzle();
+                state.actors.push(loc);
+                console.log("New location: " + loc.name);
+                break;
+            
             case "USER_JOINED_LOCATION":
                 loc = state.getObj(ev["params"]["location"], Location);
                 user = state.getObj(ev["actorUUID"], User);

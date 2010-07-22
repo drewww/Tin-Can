@@ -55,11 +55,13 @@
 		locationTemplate.hide();
 		$("#searchtype").hide();
 		$("#newuser").hide();
+		$("#newlocation").hide();
 		$("#locs").hide();
 		$("#rooms").hide();
 		
 		//handlers for add user and searching
-		$("#newname").keypress(enter);
+		$("#newname").keypress(enterUser);
+		$("#newloc").keypress(enterLoc);
 		$("#searchname").keyup(searchForUser);
 		
 		//wait for state to be updated before function is executed
@@ -78,8 +80,8 @@
 					update();
 	                break;
 
-	            case "NEW_MEETING":
-	                
+	            case "NEW_LOCATION":
+	                update();
 	                break;
 
 	            case "NEW_USER":
@@ -249,7 +251,7 @@
 	}
 	
 	//hides and shows the "add new user" box
-	function toggleAdd(){
+	function toggleAddUser(){
 		clearSearch();
 		var addName=$("#newuser")[0];
 		$("#searchtype").hide();
@@ -267,7 +269,7 @@
 	}
 	
 	//allows enter to submit the name of the new user instead of having to click the button
-	function enter(e){
+	function enterUser(e){
 		if (e.which==13){
 			$("#submit").focus();
 			submitNewUser();
@@ -283,8 +285,47 @@
 			names.splice(0,0,newName);
 			newNameElement.insertAfter("#nametemplate");
 			nameElements.splice(0,0,newNameElement);*/
-			toggleAdd();
+			toggleAddUser();
 			connection.addUser(newName,true);
+		}
+	}
+	
+	//hides and shows the "add new user" box
+	function toggleAddLoc(){
+		clearSearch();
+		var addLoc=$("#newlocation")[0];
+		
+		if (addLoc.style.display!="block"){
+			addLoc.style.display="block";
+			$("#newloc").focus();
+			addIsToggled=true;
+		}
+		else{
+			$("#newloc")[0].value="";
+			addLoc.style.display="none";
+			addIsToggled=false;
+		}
+	}
+	
+	//allows enter to submit the name of the new user instead of having to click the button
+	function enterLoc(e){
+		if (e.which==13){
+			$("#submit").focus();
+			submitNewLoc();
+		}
+	}
+	
+	//submits new users to the server. 
+	function submitNewLoc(){
+		var newLoc=$("#newloc")[0].value;
+		if (newLoc!=""){
+			$("#newloc")[0].value="";
+		/*	var newNameElement = createNewNameItem(newName);
+			names.splice(0,0,newName);
+			newNameElement.insertAfter("#nametemplate");
+			nameElements.splice(0,0,newNameElement);*/
+			toggleAddLoc();
+			connection.addLocation(newLoc);
 		}
 	}
 	
@@ -354,7 +395,7 @@
 			}	
 		}
 		else{
-			toggleAdd();
+			toggleAddUser();
 		}		
 	}
 	
@@ -402,13 +443,18 @@
 	
 	//highlights the clicked loc and joins the loc
 	function highlightLoc(item){
-		if (clickEnabled){
-			$(".loc").css("background","white");
-			item.style.background="#00CCFF";
-			locname = $(item).find("div").html();
-			loc=locs[$.inArray(locname,locNames)];
-			$("#currentloc").html("location: " + loc.name);
-			connection.joinLocation(loc.uuid);
+		if (!addIsToggled){
+			if (clickEnabled){
+				$(".loc").css("background","white");
+				item.style.background="#00CCFF";
+				locname = $(item).find("div").html();
+				loc=locs[$.inArray(locname,locNames)];
+				$("#currentloc").html("location: " + loc.name);
+				connection.joinLocation(loc.uuid);
+			}
+		}
+		else{
+			toggleAddLoc();
 		}
 	}
 	
@@ -469,7 +515,7 @@
 		}
 
 		//item.style.background="#00CCFF";
-		//statusbar($(item));
+		statusbar($(item));
 	}
 	
 	function statusbar(item){
@@ -621,7 +667,13 @@
 		top:70px;
 		left:5px;
 	}
-	#back{
+	#backtousers{
+		float:left;
+		padding-top:10px;
+		padding-bottom:10px;
+		margin-left:5px;
+	}
+	#backtolocs{
 		width:100px;
 		float:left;
 		padding-top:10px;
@@ -677,8 +729,14 @@
 		padding-right:5px;
 		padding-left:5px;
 	}
-	#add{
+	#adduser{
 		width:100px;
+		text-align:right;
+		float:left;
+		padding-top:10px;
+		padding-bottom:10px;
+	}
+	#addloc{
 		text-align:right;
 		float:left;
 		padding-top:10px;
@@ -712,7 +770,7 @@
 		margin-top:7px;
 		margin-bottom:7px;
 		margin-left:5px;
-		width:150px;
+		width:200px;
 		font-size:17px;
 	}
 	#newuser{
@@ -729,7 +787,7 @@
 <body>
 	<div id = "users">
 	<div id="header">
-		<div id = "add"><button id="addbutton" onclick = "toggleAdd();">Add</button></div>
+		<div id = "adduser"><button id="addbutton" onclick = "toggleAddUser();">Add</button></div>
 		<div id ="title">Users</div>
 		<div id ="search"><button id="searchbutton" onclick = "toggleSearch();">Find</button></div>
 	</div>
@@ -756,11 +814,16 @@
 	
 	<div id = "locs">
 	<div id="header">
-		<div id = "back"><button id="backbutton" onclick="backToUsers();">< Users</button></div>
+		<div id = "backtousers"><button id="backbutton" onclick="backToUsers();">< Users</button></div>
+		<div id = "addloc"><button id="addbutton" onclick = "toggleAddLoc();">Add</button></div>
 		<div id ="title">Locations</div>
 		<div id = "currentuser">logged in as: </div>
 	</div>
 	<ul id = "loclist">
+		<li id = "newlocation" class = "loc">
+			<label for="name"></label><input type="text" name="name" value="" id="newloc" class="textbox">
+			<button id = "submit" onclick="submitNewLoc();">Create!</button>
+		</li>
 		<li id ="loctemplate" class="loc name" onclick = "highlightLoc(this);">
 			<div class = "locname"></div>
 			<img class = "next" src = "{{ static_url("images/next.png")}}">
@@ -770,7 +833,7 @@
 	
 	<div id = "rooms">
 	<div id="header">
-		<div id = "back"><button id="backbutton" onclick="backToLocs();">< Locations</button></div>
+		<div id = "backtolocs"><button id="backbutton" onclick="backToLocs();">< Locations</button></div>
 		<div id ="title">Rooms</div>
 		<div id = "currentloc">location: </div>
 	</div>
