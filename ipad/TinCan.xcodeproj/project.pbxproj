@@ -53,6 +53,7 @@
 		3AC2C22B11A5B7520071F912 /* libz.1.2.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC2C22A11A5B7520071F912 /* libz.1.2.3.dylib */; };
 		3AC2C23911A5B9890071F912 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC2C23811A5B9890071F912 /* Reachability.m */; };
 		3AC2C25A11A5BA500071F912 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC2C25911A5BA500071F912 /* CFNetwork.framework */; };
+		DA767ACC11F78D9D00184827 /* TimerBar.m in Sources */ = {isa = PBXBuildFile; fileRef = DA767ACB11F78D9D00184827 /* TimerBar.m */; };
 		DA96F0F811EE525500B64D3D /* HeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E311EE525500B64D3D /* HeaderView.m */; };
 		DA96F0F911EE525500B64D3D /* LocationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E511EE525500B64D3D /* LocationCell.m */; };
 		DA96F0FA11EE525500B64D3D /* LocationCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E711EE525500B64D3D /* LocationCellView.m */; };
@@ -157,6 +158,8 @@
 		3AC2C23811A5B9890071F912 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		3AC2C25911A5BA500071F912 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* TinCan-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "TinCan-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		DA767ACA11F78D9D00184827 /* TimerBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimerBar.h; sourceTree = "<group>"; };
+		DA767ACB11F78D9D00184827 /* TimerBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimerBar.m; sourceTree = "<group>"; };
 		DA96F0E211EE525500B64D3D /* HeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeaderView.h; sourceTree = "<group>"; };
 		DA96F0E311EE525500B64D3D /* HeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeaderView.m; sourceTree = "<group>"; };
 		DA96F0E411EE525500B64D3D /* LocationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationCell.h; sourceTree = "<group>"; };
@@ -400,6 +403,8 @@
 				DA96F0F411EE525500B64D3D /* RoomViewController.h */,
 				DA96F0F511EE525500B64D3D /* RoomViewController.m */,
 				DA96F0F611EE525500B64D3D /* tin_can_phone.jpg */,
+				DA767ACA11F78D9D00184827 /* TimerBar.h */,
+				DA767ACB11F78D9D00184827 /* TimerBar.m */,
 			);
 			name = Login;
 			sourceTree = "<group>";
@@ -522,6 +527,7 @@
 				3A2A6ACB11EFDB0E00FF373C /* Room.m in Sources */,
 				3A2A6C7C11F0D86500FF373C /* ConnectionManager.m in Sources */,
 				3A2A6C9811F0F68300FF373C /* Event.m in Sources */,
+				DA767ACC11F78D9D00184827 /* TimerBar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,6 +7,7 @@
 //
 
 #import "RoomCellView.h"
+#import "TimerBar.h"
 
 
 @implementation RoomCellView
@@ -16,8 +17,7 @@
         
         self.opaque = YES;
         self.backgroundColor = [UIColor clearColor];
-	
-
+		
     }
     return self;
 }

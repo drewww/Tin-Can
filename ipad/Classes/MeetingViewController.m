@@ -211,11 +211,11 @@
     [names addObject:@"Jaewoo"];
     [names addObject:@"Charlie"];
     [names addObject:@"Chris"];
-//    [names addObject:@"Paula"];
-//    [names addObject:@"Ig-Jae"];
-//    [names addObject:@"Trevor"];
-//    [names addObject:@"Paulina"];
-//    [names addObject:@"Dori"];
+    [names addObject:@"Paula"];
+    [names addObject:@"Ig-Jae"];
+    [names addObject:@"Trevor"];
+    [names addObject:@"Paulina"];
+    [names addObject:@"Dori"];
     
 	NSMutableArray *position= [self getParticpantLocationsForNumberOfPeople:[names count]];
 	

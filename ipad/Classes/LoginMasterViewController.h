@@ -40,6 +40,7 @@
 	UIButton *loginButton;
 	
 	
+	
 	LocationViewController *locViewController;
 	RoomViewController *roomViewController;
 	TinCanViewController *controller;

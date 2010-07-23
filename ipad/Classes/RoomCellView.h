@@ -7,13 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "TimerBar.h"
 
 
 @interface RoomCellView : UIView {
 	NSString *room;
 	NSString *meeting;
 	NSString *counted;
+
 }
 
 @end
