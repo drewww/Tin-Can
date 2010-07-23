@@ -18,11 +18,31 @@
 	var lastClicked = 'item0'; 
 	var currentClicked; // element
 	
+	$(document).ready(function(){
+		$("#doneButton").click(function (e) {
+			e.stopPropagation();
+			console.log("stop propagation");
+			console.log($("#"+currentItemId));
+			console.log(currentClicked);
+			extraOptions = $("#extraOptions");
+			currentIndex = items.indexOf($("#"+currentItemId)[0].id);
+			$("#"+currentItemId)[0].className = "doneItem";
+			$("#"+currentItemId).click(function() {
+				extraOptions.hide();
+			});			
+			items.splice(currentIndex, 1);
+			currentItemId = items[currentIndex];
+			updateCurrent();
+			currentClicked = $("#"+currentItemId);
+		});
+	});
+	
 	// visibility toggle for new item textbox input
 		function showTextbox(){
 			newItemInput = $("#newItemInput")[0];
 			if (newItemInput.style.display!="block"){
 				newItemInput.style.display="block";
+				$("#itemTextbox").focus();
 			}
 			else{
 				$("#itemTextbox").value="";
@@ -47,6 +67,7 @@
 			items.push(clone[0].id);
 			$("#itemTextbox")[0].value="";
 			$("#newItemInput")[0].style.display="none"
+			clone[0].className = "futureItem";
 			updateCurrent();
 
 			
@@ -61,10 +82,6 @@
 				// toggle showing the extra options
 				// first, if item is not in items array, then it has been marked done - do nothing i.e. don't show extra options
 				
-				// if (items.indexOf(currentClicked[0].id) == -1){
-				// 	console.log('clicked on an item that is done');
-				// }
-				
 				// only update click handler if item is active, not done items
 				if ($.inArray(currentClicked[0].id, items)) console.log("currentClicked is in ITEMS");
 				
@@ -73,28 +90,26 @@
 					if (lastClicked == currentClicked.get(0).id){
 						extraOptions.hide();
 						lastClicked = 'item0';
-						currentClicked[0].style.height = "40px";
 					}
 					else{
 						lastClicked = currentClicked.get(0).id;
 						$(this).append(extraOptions);
-						currentClicked[0].style.height = "60px";	
-						// if the current item is clicked, show the "Done" button, otherwise hide it
-						if (currentClicked[0].id == currentItemId) {
-							$("#doneButton").show();
+						if (currentClicked[0].id == currentItemId){  //hide deleteButton if click on the current item
+							$("#deleteButton")[0].style.visibility="hidden";
 							extraOptions.show();
 						}
+						// else if (currentClicked[0].className = "doneItem"){
+						// 						extraOptions.hide();
+						// 					}
 						else{
-							$("#doneButton").hide()
+							$("#deleteButton")[0].style.visibility="visible";
 							extraOptions.show();
-						}
+						}				
 					}
-				
 			})				
 		}
 		
 		function deleteItem() {
-		//	if (currentClicked.doneItem){}
 	
 				extraOptions = $("#extraOptions");
 				extraOptions.hide();
@@ -115,7 +130,7 @@
 		
 
 		
-		function queueNext() {
+		function makeNext() {
 			console.log('current ITEM is ' + currentItemId);
 			console.log(currentItemId);
 			console.log(currentClicked);
@@ -141,41 +156,31 @@
 		
 		function updateCurrent() { 
 			console.log('length is ' + items.length);
-			
+
 			// if there's only one item left, make that the current item (mainly for the initial case when first adding items to agenda)
 			if (items.length == 1) {
 				console.log('length is 1 and item is ' + items[0]);
 				currentItemId = items[0];
-				document.getElementById(currentItemId).style.background = "#0000FF";
+				$("#"+currentItemId)[0].className = "currentItem";
+				$(".currentItem").append($("#doneButton"));
 			}
 			else{
-				 document.getElementById(currentItemId).style.background = "#0000FF";
+				$("#"+currentItemId)[0].className = "currentItem";
+				$(".currentItem").append($("#doneButton"));		
 			}
 		}
-			
-	// removes item marked 'done' from the items array, colors it grey, and sets the next item in agenda as the current item
-		function itemDone() {
-			console.log($("#"+currentItemId));
-			console.log(currentClicked);
-			extraOptions = $("#extraOptions");
-			currentIndex = items.indexOf(currentClicked[0].id);
-			document.getElementById(currentItemId).style.background = "#C0C0C0";			
-			items.splice(currentIndex, 1);
-			extraOptions.hide();
-			// currentClicked.click();
-			currentItemId = items[currentIndex];
-			updateCurrent();
-			
-			
 		
-		}
 	</script>
 
 
 	<style type="text/css">
 	
+	
+	
 	#container{
-		font-family: Helvetica, sans-serif;
+		font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", sans-serif;
+		font-weight: 300;
+		font-size: 18px;
 		margin: 0px;
 		padding: 0px;
 	}
@@ -184,16 +189,21 @@
 		border:1px solid;
 		margin: 0px;
 		padding: 0px;
-		height: 480px;
+		min-height: 480px;
 		width: 320px;
 	}
 	#container > div{
-		height: 40px;
+		min-height: 50px;
 		border: 1px solid;
 		margin: .07em;
-		padding: 0px;
+		padding:15px;
+		overflow: hidden;
 	}
 	
+	#container > div > span{
+		white-space: nowrap;
+		overflow: hidden;
+	}
 	.delete{
 		float: left;
 		margin-top: 2px;
@@ -212,6 +222,9 @@
 	
 	#header{
 		text-align: center;
+		font-family: Helvetica, sans-serif;
+		font-size: 18px;
+		margin: 10px;
 	}
 	
 	.template{
@@ -224,6 +237,19 @@
 
 	#extraOptions{
 		display:none;
+	}
+	
+	.doneItem{
+		background-color: #9C9C9C;
+	}
+	
+	.currentItem{
+		background-color: #25AED9;
+		color: white;
+	}
+	
+	.futureItem{
+		background-color: #DFEAED;
 	}
 	</style>
 </head>
@@ -243,12 +269,13 @@
 
 	<div id="futureTemplate" class="template">
 		<span id="text"></span>
+		
 	</div>
 	
 	<div id="extraOptions">
-		<button type="submit" onclick="deleteItem();">Delete</button>
-		<button type="submit" onclick="queueNext();">Queue Next</button>
-		<button type="submit" id="doneButton" onclick="itemDone();"> Done</button>
+		<button type="submit" id="deleteButton" onclick="deleteItem();">Delete</button>
+		<button type="submit" onclick="makeNext();">Make Next</button>
+		<button type="submit" id="doneButton"> Done</button>
 	</div>
 </div>
 

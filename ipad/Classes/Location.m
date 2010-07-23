@@ -19,15 +19,18 @@
 - (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withMeeting:(UUID *)myMeetingUUID withUsers:(NSArray *)myUsers {
     self = [super initWithUUID:myUuid withName:myName];
     
-    meetingUUID = myMeetingUUID;
+    meetingUUID = [myMeetingUUID retain];
+
     
     // Make the mutable version of the set, then populate it
-    // by unioning in the initialization set. self allows people
+    // by unioning in the initialization set. this allows people
     // calling self constructor to use NSMutableSet or NSSet
     // and we don't care because we'll construct a fresh one for
     // our use.
     self.users = [NSMutableSet set];
     [self.users addObjectsFromArray:myUsers];
+    
+    NSLog(@"users during init: %@", self.users);
     
     return self;
 }
@@ -48,7 +51,7 @@
 
 - (void) leftMeeting:(Meeting *)theMeeting {
     self.meeting = nil;
-}
+}   
 
 - (BOOL) isInMeeting {
     return self.meeting != nil;
@@ -56,21 +59,29 @@
 
 - (void) unswizzle {
        
-    NSMutableSet *newUsersList = [[NSMutableSet set] autorelease];
+    NSLog(@"unswizzling location");
+    
+    NSMutableSet *newUsersList = [[NSMutableSet set] retain];
     for(NSString *userUUID in self.users) {
         User *user = (User *)[[StateManager sharedInstance] getObjWithUUID:userUUID withType:User.class];
         
-
+        
         [newUsersList addObject:user];
         user.location = self;
     }
-    [self.users release];
     self.users = newUsersList;
+    [newUsersList release];
     
-    if(meetingUUID != nil) {
+    // This test checks to see if it's a UUID object. If it's not, 
+    // it's probably an NSNull object, which means we don't have a UUID set.
+    if([meetingUUID isKindOfClass:[UUID class]]) {
+        if(self.meeting!=nil) {
+            [self.meeting release];
+        }
         self.meeting = (Meeting *)[[StateManager sharedInstance] getObjWithUUID:meetingUUID withType:Meeting.class];
         [self.meeting locationJoined:self];
     }
+    [meetingUUID release];
 }
 
 - (NSString *)description {

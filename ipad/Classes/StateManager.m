@@ -21,13 +21,15 @@ static StateManager *sharedInstance = nil;
 #pragma mark class instance methods
 - (id) init {
     self = [super init];
-    db = [NSMutableDictionary dictionary];
-    
+    db = [[NSMutableDictionary dictionary] retain];
+
+    NSLog(@"db: %@", db);
     return self;
 }
 
 
 - (void) putObj:(NSObject *)obj withUUID:(UUID *) uuid {
+    NSLog(@"obj: %@ uuid: %@", obj, uuid);
     [db setObject:obj forKey:uuid];
 }
 
@@ -51,11 +53,10 @@ static StateManager *sharedInstance = nil;
 - (void) initWithLocations:(NSArray *)newLocations withUsers:(NSArray *)newUsers
               withMeetings:(NSArray *)newMeetings withRooms:(NSArray *)newRooms {
 
-    db = [NSMutableDictionary dictionary];
+    db = [[NSMutableDictionary dictionary] retain];
     actors = [NSMutableSet set];
     rooms = [NSMutableSet set];
     meetings = [NSMutableSet set];
-    
     
     // Do this in two passes. Make the objects first, then
     // unswizzle them to convert UUIDs into actual objects.
@@ -68,7 +69,6 @@ static StateManager *sharedInstance = nil;
     }
     
     for(NSDictionary *location in newLocations) {
-        
         Location *newLocation = [[Location alloc] initWithUUID:[location objectForKey:@"uuid"]
                                                       withName:[location objectForKey:@"name"]
                                                    withMeeting:[location objectForKey:@"meetingUUID"]
@@ -100,8 +100,8 @@ static StateManager *sharedInstance = nil;
     
     // Unswizzle in the proper order.
     [self unswizzleGroup:actors];
-    [self unswizzleGroup:rooms];
-    [self unswizzleGroup:meetings];
+//    [self unswizzleGroup:rooms];
+//    [self unswizzleGroup:meetings];
     
     NSLog(@"actors: %@", actors);
     NSLog(@"rooms: %@", rooms);
@@ -127,6 +127,22 @@ static StateManager *sharedInstance = nil;
     return [NSSet setWithArray:allLocations];
 }
 
+
+- (void) addActor:(Actor *)newActor {
+    [actors addObject:newActor];
+}
+
+- (void) addMeeting:(Meeting *)newMeeting {
+    [meetings addObject:newMeeting];
+}
+
+- (void) removeActor:(Actor *)actorToRemove {
+    [actors removeObject:actorToRemove];
+}
+
+- (void) removeMeeting:(Meeting *)meetingToRemove {
+    [actors removeObject:meetingToRemove];
+}
 
 #pragma mark -
 #pragma mark Singleton methods

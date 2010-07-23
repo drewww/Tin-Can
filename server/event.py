@@ -23,7 +23,7 @@ import model
 # kept together, instead of in three places. 
 EVENT_TYPES = ["NEW_MEETING", "JOINED_MEETING", "LEFT_ROOM",
     "USER_JOINED_LOCATION", "USER_LEFT_LOCATION", "NEW_USER", "LOCATION_JOINED_MEETING",
-    "LOCATION_LEFT_ROOM", "NEW_DEVICE", "ADD_ACTOR_DEVICE", "NEW_LOCATION"
+    "LOCATION_LEFT_MEETING", "NEW_DEVICE", "ADD_ACTOR_DEVICE", "NEW_LOCATION"
     ]
 
 # Stores the required paramters for each event type. We'll use this

@@ -40,17 +40,25 @@
     // commenting it out first, so if you're looking at this and it's uncommented and
     // causing problems, just comment it out.
     
-//    ConnectionManager *conMan = [ConnectionManager sharedInstance];
-//    [conMan getState];
-    
+    ConnectionManager *conMan = [ConnectionManager sharedInstance];
+    [conMan addListener:self];
+    [conMan getState];
     
     // pick a random location
-//    Location *myLocation = [[[StateManager sharedInstance] getLocations] anyObject];
-//    NSLog(@"picking location arbitarily: %@", myLocation);
-//    [conMan setLocation:myLocation.uuid];
-//    [conMan connect];
     
     
+}
+
+- (void) handleConnectionEvent:(Event *)event {
+    NSLog(@"Received event: %d", event.type);
+    
+    if(event.type==kGET_STATE_COMPLETE) {
+            ConnectionManager *conMan = [ConnectionManager sharedInstance];
+            Location *myLocation = [[[StateManager sharedInstance] getLocations] anyObject];
+            [conMan setLocation:myLocation.uuid];
+            NSLog(@"Done setting connection.");
+            [conMan connect];
+    }
 }
 
 // Per advice here: http://stackoverflow.com/questions/2270835/best-practices-for-displaying-new-view-controllers-iphone
