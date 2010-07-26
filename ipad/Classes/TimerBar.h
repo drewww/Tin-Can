@@ -23,12 +23,15 @@
 	CGFloat timeToCompare;
 	CGFloat lastPoint;
 	CGFloat lengthOfSecond;
+	CGFloat differenceInTime;
+	NSMutableArray *timesToMarkHours;
 	
 }
 
 - (id)initWithFrame:(CGRect)frame withStartTime:(NSDate *)time withEventTimes:(NSArray *)times;
 -(UIColor *)findNewColor;
 -(void)drawBarWithTimes:(NSMutableArray *)times withContext:(CGContextRef) context;
+-(void)markHoursWithTimes:(NSMutableArray *)times withContext:(CGContextRef) ctx;
 -(void)setLength;
 
 @end

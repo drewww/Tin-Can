@@ -24,28 +24,23 @@
 		indexForColorWheel=0;
 		currentTimerColor=[colorWheel objectAtIndex: indexForColorWheel];
 		lastPoint=0.0;
+		timesToMarkHours=[[NSMutableArray array] retain];
 		lengthOfSecond=0;
+		differenceInTime=0;
 		
     }
     return self;
 }
 -(void)setLength{
-	NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *dateComponentsStart = [gregorian components:(NSHourCalendarUnit  | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:startTime];
-    NSInteger secondStart = [dateComponentsStart second]; 
-	
-	//current Time
-    NSDateComponents *dateComponents = [gregorian components:(NSHourCalendarUnit  | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:testDate];
-    NSInteger second = [dateComponents second];
-	
-    CGRectMake(0, 0, self.frame.size.width, self.frame.size.height); //We'll follow stephs model and divide up this space. 
-	float diff=abs(secondStart-second);
-	if (diff>=3600){
-	lengthOfSecond= 300/ceil(diff/3600.0);
-	}
-	else{
-		lengthOfSecond= 300/3600.0;
-	}
+	CGFloat diff=abs([ startTime  timeIntervalSinceDate:testDate ]);
+	//if (diff>=3600){
+	lengthOfSecond= (300/ceil(diff/3600.0))/3600.0;
+	differenceInTime=diff;
+	//}
+	//else{
+	//	lengthOfSecond= 300/3600.0;
+	//}
+	NSLog(@"lengthOfSecond:%f",lengthOfSecond);
 	NSLog(@"diff:%f",diff);
 	
 }	
@@ -58,14 +53,23 @@
 	
 	
 }	
+-(void)markHoursWithTimes:(NSMutableArray *)times withContext:(CGContextRef) ctx{
+	for(NSNumber *time in times){
+		float elapsedTime = abs([ startTime  timeIntervalSinceDate:time ]);
+		CGContextSetFillColorWithColor(ctx,  [UIColor whiteColor].CGColor);
+		CGContextFillRect(ctx, CGRectMake(lengthOfSecond*elapsedTime, 0, 5, self.frame.size.height));
+	}
 	
+}
 //Creates a Time bar from an array of times
 -(void)drawBarWithTimes:(NSMutableArray *)timelist withContext:(CGContextRef) ctx{
 	int i =0;
 	NSDate *tempEndTime;
 	NSDate *tempStartTime;
 	float elapsedTime;
-	while (i< [timelist count]) {
+	CGContextSetFillColorWithColor(ctx,  [UIColor blackColor].CGColor);
+	CGContextFillRect(ctx, CGRectMake(0, 0, self.frame.size.width, self.frame.size.height));
+	while (i<= [timelist count]) {
 		if (i==0){
 		tempEndTime=[timelist objectAtIndex:i];
 		tempStartTime=startTime;
@@ -73,18 +77,14 @@
 		CGContextSetFillColorWithColor(ctx,  [UIColor redColor].CGColor);
 		CGContextFillRect(ctx, CGRectMake(0, 0, elapsedTime*lengthOfSecond, self.frame.size.height));
 		lastPoint=	elapsedTime*lengthOfSecond;
-		}//
-//		else if (i==[timelist count]-1){
-//			tempStartTime=[timelist objectAtIndex:i-1] ;
-//			tempEndTime=[timelist objectAtIndex:i] ;
-//			elapsedTime = abs([ tempStartTime  timeIntervalSinceDate:tempEndTime ]);
-//			CGContextSetFillColorWithColor(ctx, [self findNewColor].CGColor);
-//			CGContextFillRect(ctx, CGRectMake(lastPoint, 0, (elapsedTime*lengthOfSecond), self.frame.size.height));	
-//
-//			lastPoint=	elapsedTime*lengthOfSecond;
-//		
-//			
-//		}
+		}
+		else if(i==[timelist count]){
+			CGContextSetFillColorWithColor(ctx, [self findNewColor].CGColor);
+			elapsedTime= abs([ testDate  timeIntervalSinceDate:tempEndTime ]);
+			CGContextFillRect(ctx, CGRectMake(lastPoint, 0, (elapsedTime*lengthOfSecond), self.frame.size.height));
+			
+		}
+		
 		else{
 			tempStartTime=[timelist objectAtIndex:i-1] ;
 			tempEndTime=[timelist objectAtIndex:i];
@@ -94,31 +94,32 @@
 			lastPoint=	lastPoint+ elapsedTime*lengthOfSecond;
 		}
 		i++;
-		
-		NSLog(@"elapsed time:%f",elapsedTime);
-		NSLog(@"LastPoint:%f",lastPoint);
-		
-		NSLog(@"i:%d",i);
-	}
-	if(i==[timelist count]){
-		CGContextSetFillColorWithColor(ctx, [self findNewColor].CGColor);
-		elapsedTime= abs([ testDate  timeIntervalSinceDate:tempEndTime ]);
-		CGContextFillRect(ctx, CGRectMake(lastPoint, 0, (elapsedTime*lengthOfSecond), self.frame.size.height));
 	}
 }
 
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect {
-	// for testing
-	testDate= [[ testDate addTimeInterval:10] retain];
-	[self setLength];
-	//testDate= [[ testDate addTimeInterval:120] retain];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
-	//CGContextSetFillColorWithColor(ctx, [UIColor blueColor].CGColor);
-	//CGContextFillRect(ctx, CGRectMake(0,0, self.frame.size.width, self.frame.size.height));
+	// for testing
+	testDate= [[ testDate addTimeInterval:60] retain];
+	 
+	
+	
+	[self setLength];
+	[self setNeedsDisplay];
+	
 	[self drawBarWithTimes:selectedTimes withContext:ctx];
-		
+	
+	
+	int diff=(int)differenceInTime% 3600;
+	//Maybe use time rather than point
+	if(diff ==0){
+		[timesToMarkHours addObject: testDate];
+	}
+	[self markHoursWithTimes:timesToMarkHours withContext:ctx];
+	
+	
 	
 }
 
