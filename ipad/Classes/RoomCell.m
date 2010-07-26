@@ -7,7 +7,7 @@
 //
 
 #import "RoomCell.h"
-
+#import "TimerBar.h"
 
 @implementation RoomCell
 
@@ -24,12 +24,29 @@
         roomCellView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         
         [self.contentView addSubview:roomCellView];
+		
+		clock = [NSTimer scheduledTimerWithTimeInterval:.5 target:self selector:@selector(clk) userInfo:nil repeats:YES];
+		[clock retain]; 
+		NSDate *startingTime = [NSDate date];
+		NSLog(@"starting time in seconds: %f", [startingTime timeIntervalSince1970]);
+		NSTimeInterval startingTimeInSeconds = [startingTime timeIntervalSince1970] -1800;
+		
+		NSMutableArray *times=[[NSMutableArray alloc] initWithCapacity:6];
+		[times addObject:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-1000]];
+		[times addObject:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-600]];
+		[times addObject:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-400]];
+		timerBar=[[TimerBar alloc]initWithFrame: CGRectMake(0, 20, 300, 10) withStartTime:[NSDate dateWithTimeIntervalSince1970:startingTimeInSeconds] 
+					 withEventTimes:times];
+		[self.contentView addSubview:timerBar];
+		
 
 		
     }
     return self;
 }
-
+- (void)clk {
+    [timerBar setNeedsDisplay];
+} 
 - (void)setRoom:(NSString *)newRoom {
     
     [roomCellView setRoom:newRoom];
