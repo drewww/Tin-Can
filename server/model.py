@@ -517,62 +517,101 @@ class Location(Actor):
             
 
 
-class MeetingObjectType(YarnBaseType):
+class MeetingObject(YarnBaseType):
     """Defines some basic properties that are shared by meeting objects."""
 
-    def __init__(self, creatorUUID, meetingUUID):
-        YarnBaseType.__init__(self)
+    def __init__(self, creatorUUID, meetingUUID, createdAt=None,
+        meetingObjUUID=None):
+        
+        YarnBaseType.__init__(self, meetingObjUUID)
 
         # TODO we almost certainly want to unswizzle these UUIDS
         # to their actual objects. When we do that, we'll need to
         # switch all the getDict methods to getting the UUID instead
         # of just taking the whole object like it does now.
-        self.createdBy = creatorUUID
-        self.createdAt = time.time()
-
-        self.meeting = meetingUUID
+        self.createdBy = state.get_obj(creatorUUID, Actor)
+        
+        if createdAt==None:
+            self.createdAt = time.time()
+        else:
+            self.createdAt = createdAt
+        
+        self.meeting = state.get_obj(meetingUUID, Meeting)
+        
     
     def getDict(self):
         d = YarnBaseType.getDict(self)
         d["createdBy"] = self.createdBy.uuid
-        d["createdat"] = self.createdAt
+        d["createdAt"] = self.createdAt
         d["meeting"] = self.meeting.uuid
         return d
 
-class Task(MeetingObjectType):
+class Task(MeetingObject):
     """Store information about a task."""
     
-    def __init__(self, meetingUUID, creatorUUID, text):
-        self.uuid=None
-
-        MeetingObjectType.__init__(self, creatorUUID, meetingUUID)
+    def __init__(self, meetingUUID, creatorUUID, text, taskUUID=None):
+        MeetingObject.__init__(self, creatorUUID, meetingUUID, taskUUID)
         self.text = text
         self.ownedBy = None
         
     def getDict(self):
-        d = MeetingObjectType.getDict(self)
+        d = MeetingObject.getDict(self)
         d["text"] = self.text
         d["ownedBy"] = self.ownedBy.uuid
         return d
 
-class Topic(MeetingObjectType):
+class Topic(MeetingObject):
     """Store information about a topic."""
+    
+    # These are possible status options for a topic. Declared as static
+    # members because python doesn't have enums and the various enum work-
+    # arounds on the web are obnoxious.
+    PAST="PAST"
+    CURRENT="CURRENT"
+    FUTURE="FUTURE"
+    
 
-    def __init__(self, meetingUUID, creatorUUID, text, timeStarted=None,
-        timeEnded=None):
-        self.uuid=None
-
-        MeetingObjectType.__init__(self, creatorUUID, meetingUUID)
+    def __init__(self, meetingUUID, creatorUUID, text, startTime=None,
+        stopTime=None, status=None, startActorUUID=None, stopActorUUID=None,
+        color=None, topicUUID=None):
+        MeetingObject.__init__(self, creatorUUID, meetingUUID, topicUUID)
+        
         self.text = text
-        self.timeStarted = timeStarted
-        self.timeEnded = timeEnded
+        
+        self.startTime = startTime
+        self.startActor = state.get_obj(startActor, Actor)
+        
+        self.stopTime = stopTime
+        self.stopActor = state.get_obj(stopActor, Actor)
+        
+        # Need to decide later how to represent color. Almost certainly
+        # going to just use HTML hex colors for ease, although I need to
+        # check and see if there's an easy way to convert those to something
+        # that objC can use.
+        self.color = color
+        
+    
+    def setStatus(self, status):
+        if(status in [PAST, CURRENT, FUTURE]):
+           self.status = status
+        else:
+           logging.warning("Tried to set a topic with an unknown\
+status: " + str(status))
+
+           # this is for initialization routines - default to something.
+           if(self.status==None):
+               self.status = FUTURE
+    
+    def setText(self, text):
+        self.text = text
 
     def getDict(self):
-        d = MeetingObjectType.getDict(self)
+        d = MeetingObject.getDict(self)
         d["text"] = self.text
         d["timeStarted"] = self.timeStarted
         d["timeEnded"] = self.timeEnded
         return d
+
 
 
 class YarnModelJSONEncoder(json.JSONEncoder):

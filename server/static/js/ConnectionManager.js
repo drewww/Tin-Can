@@ -175,15 +175,15 @@ ConnectionManager.prototype = {
                 break;
                 
             case "LOCATION_JOINED_MEETING":
-                meeting = state.getObj(ev["meetingUUID"], Meeting);
-                loc = state.getObj(ev["params"]["location"], Location);
+                meeting = state.getObj(ev["params"]["meeting"], Meeting);
+                loc = state.getObj(ev.actorUUID, Location);
                 meeting.locJoined(loc);
                 console.log(loc.name + " joined " + meeting.title);
                 break;
                 
             case "LOCATION_LEFT_MEETING":
-                meeting = state.getObj(ev["meetingUUID"], Meeting);
-                loc = state.getObj(ev["params"]["location"], Location);
+                meeting = state.getObj(ev["params"]["meeting"], Meeting);
+                loc = state.getObj(ev.actorUUID, Location);
                 meeting.locLeft(loc);
                 
                 console.log(loc.name + " left " + meeting.title);

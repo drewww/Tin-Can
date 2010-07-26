@@ -296,7 +296,7 @@ class JoinRoomHandler(BaseHandler):
             # exist yet. Going to check this in without
             # that chunk. The earlier stuff is working great.
             locationJoinedMeetingEvent = Event("LOCATION_JOINED_MEETING",
-            location.uuid, meeting.uuid, {"location":location})
+            location.uuid, None, {"meeting":meeting})
             locationJoinedMeetingEvent.dispatch()
               
         else: 
