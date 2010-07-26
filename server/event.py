@@ -14,6 +14,8 @@ import logging
 import state
 import time
 import uuid
+import traceback
+import sys
 import simplejson as json
 
 import model
@@ -101,16 +103,18 @@ self.actor to be None.")
         # TODO Figure out how to merge these event details into the main
         # event specification data structure, too.
         if(not self.eventType.isGlobal):
-            
             # any event other than NEW MEETING needs to have a meeting param
             self.meeting = state.get_obj(meetingUUID, model.Meeting)
+            logging.warning("Set meeting to: " + str(self.meeting))
             if(self.meeting==None):
                 # TODO We need to raise an exception here, not return none.
                 # Returning None doesn't seem to do anything except end
                 # the constructor. 
                 logging.error("""Tried to create an event with invalid 
                                 meetingUUID %s"""%meetingUUID)
-                return None        
+                return None
+        else:
+            self.meeting = None
        
         
         
@@ -161,7 +165,7 @@ self.actor to be None.")
 failed" + str(self.params[paramKey]))
             except Exception, e:
                 logging.debug("Failed to convert a param into a UUID, probably\
-wasn't an object to begin with. exception: " + str(e) + ", object: "
+ wasn't an object to begin with. exception: " + str(e) + ", object: "
 + str(self.params[paramKey]))
                 
             
@@ -213,7 +217,6 @@ wasn't an object to begin with. exception: " + str(e) + ", object: "
         
         try:
             handler = self.eventType.handler
-            logging.error("HANDLER: " + str(handler))
         except KeyError:
             logging.error("Tried to dispatch event type %s but no handler\
                 was found."%self.eventType)
@@ -221,18 +224,22 @@ wasn't an object to begin with. exception: " + str(e) + ", object: "
         
         # invoke the handler on this event.
         event = handler(self)
+        logging.warning("self.meeting: " + str(self.meeting) + "; event: " + str(event))
         
         # SEND EVENT TO APPROPRIATE CLIENTS
         if(self.eventType.isGlobal):
             sendEventsToDevices(state.get_devices(), [event])
         else:
-            try:
-                event.meeting.sendEvent(event)
-            except:
-                logging.error("Tried to send event to a meeting, but this\
-                event didn't have a meeting set. Falling back to sending\
-                to all devices.")
-                sendEventsToDevices(state.get_devices(), [event])
+            # try:
+            event.meeting.sendEvent(event)
+            # except Exception, e:
+            #            
+            #            logging.error("Tried to send event to a meeting, but this\
+            #            event didn't have a meeting set. Falling back to sending\
+            #            to all devices.")
+            #            logging.error("exception: " + str(e))
+            #            
+            #            sendEventsToDevices(state.get_devices(), [event])
                 
         
         # RETURN THE RESULT

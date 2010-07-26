@@ -392,6 +392,40 @@ ConnectionManager.prototype = {
         });
     },
     
+    addTopic: function(text) {
+        $.ajax({
+            url: '/topics/add',
+            type: "POST",
+            context: this,
+            data: {"text":text},
+            success: function () {
+                this.publishEvent(this.generateEvent("NEW_TOPIC_COMPLETE",
+                    {}));
+            },
+            error: function() {
+                this.publishEvent(this.generateEvent("NEW_TOPIC_COMPLETE",
+                    {}, false));
+            }
+        });
+    },
+    
+    removeTopic: function(topicUUID) {
+        $.ajax({
+            url: '/topics/remove',
+            type: "POST",
+            context: this,
+            data: {"topicUUID":topicUUID},
+            success: function () {
+                this.publishEvent(this.generateEvent("DELETE_TOPIC_COMPLETE",
+                    {}));
+            },
+            error: function() {
+                this.publishEvent(this.generateEvent("DELETE_TOPIC_COMPLETE",
+                    {}, false));
+            }
+        });
+    },
+    
     addListener: function(callback) {
         // Pass in an object that you connectEvent called on when there is
         // a connection event. 

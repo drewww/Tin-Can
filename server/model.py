@@ -109,6 +109,8 @@ class Meeting(YarnBaseType):
                 
         self.eventHistory = []
         
+        self.topics = []
+        
         
     def userJoinedLocation(self, user, location):
         logging.info("User %s joined meeting %s in room %s"%(user.name,
@@ -147,12 +149,28 @@ class Meeting(YarnBaseType):
                 location.getUsers())
         
         return currentParticipants
+        
+    def addTopic(self, topic):
+        self.topics.append(topic)
+        
+    def removeTopic(self, topic):
+        self.topics.remove(topic)
+    
+    def setTopicList(self, topicList):
+        # we need to figure out exactly what this is going to do. Is it going
+        # to get a UUID list or a list of objects?
+        pass
+        
+        
     
     def getDevices(self):
         devices = set()
         
         for location in self.locations:
-            devices.add(location.getDevices())
+            # there's probably some tricky list comprehension way to do this,
+            # but I don't feel like working it out right now.
+            for device in location.getDevices():
+                devices.add(device)
         
         return devices
     
@@ -167,10 +185,14 @@ class Meeting(YarnBaseType):
         
         d["locations"] = [location.uuid for location in self.locations]
         
+        d["topics"] = [topic.uuid for topic in self.topics]
+        
         # Should these be just UUIDs of participants? Doing everything about
         # them, for now.
         d["allParticipants"] = [user.uuid for user in self.allParticipants]
-        d["currentParticipants"] = [user.uuid for user in self.getCurrentParticipants()]
+        d["currentParticipants"] = [user.uuid for user in
+            self.getCurrentParticipants()]
+        
         
         return d
     
@@ -178,7 +200,7 @@ class Meeting(YarnBaseType):
         """Sends the 'event' to all participants in 'meeting'."""
         
         logging.info("About to send to all users in meeting: %s"
-            %eventToSend.meeting.currentParticipants)
+            %eventToSend.meeting.getCurrentParticipants())
             
         if(eventToSend.eventType == "JOINED"):
             # This is tricky - we want to (in the JOINED event message)
@@ -201,9 +223,10 @@ class Meeting(YarnBaseType):
         self.eventHistory.append(eventToSend)
         
     def __str__(self):
-        return "[meet.%s@%s %s locs:%d users:%d events:%d]"%(self.uuid[0:6], 
-            self.room.name, self.title, len(self.locations),
-            len(self.getCurrentParticipants()), len(self.eventHistory))
+        return "[meet.%s@%s %s locs:%d users:%d events:%d topics:%d]"%(
+            self.uuid[0:6], self.room.name, self.title, len(self.locations),
+            len(self.getCurrentParticipants()), len(self.eventHistory),
+            len(self.topics))
             
 
 class Device(YarnBaseType):
@@ -373,6 +396,11 @@ class Actor(YarnBaseType):
         self._devices.remove(device)
         device.actor = None
     
+    def getMeeting(self):
+        logging.warning("Called getMeeting on Actor. Should only ever be\
+called on Users or Locations (the concerete subclasses of Actor.)")
+        return None
+    
     def getDevices(self):
         """Returns all the devices present at this location.
         
@@ -410,6 +438,9 @@ class User(Actor):
     
     def isInMeeting(self):
         return self.location.isInMeeting()
+    
+    def getMeeting(self):
+        return self.location.getMeeting()
         
     def __str__(self):
         if(self.isInLocation()):
@@ -462,6 +493,9 @@ class Location(Actor):
     
     def getUsers(self):
         return list(self.users)
+    
+    def getMeeting(self):
+        return self.meeting
     
     def isInMeeting(self):
         return self.meeting != None
@@ -524,7 +558,8 @@ class MeetingObject(YarnBaseType):
     def __init__(self, creatorUUID, meetingUUID, createdAt=None,
         meetingObjUUID=None):
         
-        YarnBaseType.__init__(self, meetingObjUUID)
+        self.uuid = meetingObjUUID
+        YarnBaseType.__init__(self)
 
         # TODO we almost certainly want to unswizzle these UUIDS
         # to their actual objects. When we do that, we'll need to
@@ -580,10 +615,18 @@ class Topic(MeetingObject):
         self.text = text
         
         self.startTime = startTime
-        self.startActor = state.get_obj(startActor, Actor)
+        
+        if(startActorUUID!=None):
+            self.startActor = state.get_obj(startActorUUID, Actor)
+        else:
+            self.startActor = None
         
         self.stopTime = stopTime
-        self.stopActor = state.get_obj(stopActor, Actor)
+        
+        if(stopActorUUID != None):
+            self.stopActor = state.get_obj(stopActorUUID, Actor)
+        else:
+            self.stopActor = None
         
         # Need to decide later how to represent color. Almost certainly
         # going to just use HTML hex colors for ease, although I need to
@@ -609,8 +652,20 @@ status: " + str(status))
     def getDict(self):
         d = MeetingObject.getDict(self)
         d["text"] = self.text
-        d["timeStarted"] = self.timeStarted
-        d["timeEnded"] = self.timeEnded
+        d["startTime"] = self.startTime
+        d["stopTime"] = self.stopTime
+        d["color"] = self.color
+        
+        if(self.startActor!=None):
+            d["startActor"] = self.startActor.uuid
+        else:
+            d["startActor"] = None
+        
+        if(self.stopActor!=None):
+            d["stopActor"] = self.stopActor.uuid
+        else:
+            d["stopActor"] = None
+            
         return d
 
 
