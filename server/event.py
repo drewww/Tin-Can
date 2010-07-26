@@ -17,28 +17,8 @@ import uuid
 import simplejson as json
 
 import model
+from event_types import *
 
-# TODO Merge EVENT_TYPES, EVENT_PARAMS, and DISPATCH (way at the bottom) 
-# into one happy data structure. All the metadata about events should be
-# kept together, instead of in three places. 
-EVENT_TYPES = ["NEW_MEETING", "JOINED_MEETING", "LEFT_ROOM",
-    "USER_JOINED_LOCATION", "USER_LEFT_LOCATION", "NEW_USER", "LOCATION_JOINED_MEETING",
-    "LOCATION_LEFT_MEETING", "NEW_DEVICE", "ADD_ACTOR_DEVICE", "NEW_LOCATION"
-    ]
-
-# Stores the required paramters for each event type. We'll use this
-# to enforce complete intialization of events, and also to remind ourselves
-# what's required for each event.
-EVENT_PARAMS = {"NEW_MEETING":["room"],
-                "NEW_USER":["name"],
-                "NEW_LOCATION":["name"],
-                "USER_JOINED_LOCATION":["location"],
-                "USER_LEFT_LOCATION": ["location"],
-                "LOCATION_JOINED_MEETING": ["location"],
-                "LOCATION_LEFT_MEETING": ["location"],
-                "NEW_DEVICE": [],
-                "ADD_ACTOR_DEVICE": ["actor", "device"]
-                }
 
 class Event:    
     def __init__(self, eventType, actorUUID=None, meetingUUID=None, params={}):
@@ -49,11 +29,12 @@ class Event:
         # 
         # Which arguments are valid is specified for a given event type
         # is (nominally) on the wiki.
-        if(eventType not in EVENT_TYPES):
+        if(eventType not in EventType.types):
             logging.error("""Attempted to create event with
                             unknown type %s"""%eventType)
         
-        self.eventType = eventType
+        # look up the appropriate event type object from the event type list
+        self.eventType = EventType.types[eventType]
         
         
         # For a discussion of what this is for, check self.addResult
@@ -72,7 +53,7 @@ class Event:
         # event.EVENT_PARAMS. We're going to store them as a dict locally,
         # but first we'll validate that we have at least the minimum expected
         # for our event type.
-        expectedParams = EVENT_PARAMS[self.eventType]
+        expectedParams = self.eventType.params
         hasAllRequiredParams = True
         for param in expectedParams:
             if(param not in params.keys()):
@@ -92,14 +73,17 @@ class Event:
         # If this is a NEW_DEVICE event, we're not going to have any actor
         # information yet, so ditch out of the constructor now instead of 
         # failing on that stuff later. 
-        if(self.eventType=="NEW_DEVICE"):
+        
+        # TODO what, exactly, is this checking for? is there a nice way
+        # to fold it into the logic below?
+        if(self.eventType.type=="NEW_DEVICE"):
             self.meeting = None
             return
             
         # Eventually we'll be rigorous about checking these, but for now
         # if we get key errors, just eat them and set them to None. Too hard
         # to test without this for now.
-        if(not self.eventType in ["NEW_USER"]):
+        if(self.eventType.requiresActor):
             self.actor = state.get_obj(actorUUID, model.Actor)
             if(self.actor==None):
                 logging.error("""Tried to create an event with
@@ -116,9 +100,8 @@ self.actor to be None.")
         # event to create the UUID at that point and pass it down the chain.
         # TODO Figure out how to merge these event details into the main
         # event specification data structure, too.
-        if(not self.eventType in ["NEW_MEETING", "ADD_ACTOR_DEVICE",
-            "USER_JOINED_LOCATION", "USER_LEFT_LOCATION", "NEW_USER",
-            "NEW_LOCATION"]):
+        if(not self.eventType.isGlobal):
+            
             # any event other than NEW MEETING needs to have a meeting param
             self.meeting = state.get_obj(meetingUUID, model.Meeting)
             if(self.meeting==None):
@@ -155,7 +138,7 @@ self.actor to be None.")
         # I think I could do some fancy self-referential loop-through-own-keys
         # thing here, but I kinda like the explicitness of doing it by hand
         # to remind what will actually be in this dictionary.
-        d["eventType"] = self.eventType
+        d["eventType"] = self.eventType.type
         d["timestamp"] = self.timestamp
         d["uuid"] = self.uuid
         
@@ -229,7 +212,8 @@ wasn't an object to begin with. exception: " + str(e) + ", object: "
         # we're going to something different with it.
         
         try:
-            handler = DISPATCH[self.eventType]
+            handler = self.eventType.handler
+            logging.error("HANDLER: " + str(handler))
         except KeyError:
             logging.error("Tried to dispatch event type %s but no handler\
                 was found."%self.eventType)
@@ -239,9 +223,7 @@ wasn't an object to begin with. exception: " + str(e) + ", object: "
         event = handler(self)
         
         # SEND EVENT TO APPROPRIATE CLIENTS
-        if(self.eventType in ["NEW_MEETING","NEW_USER","NEW_DEVICE",
-            "NEW_LOCATION", "ADD_ACTOR_DEVICE", "USER_JOINED_LOCATION",
-            "USER_LEFT_LOCATION", "LOCATION_JOINED_MEETING"]):
+        if(self.eventType.isGlobal):
             sendEventsToDevices(state.get_devices(), [event])
         else:
             try:
@@ -280,158 +262,6 @@ def sendEventsToDevices(devices, events):
     for device in devices:
         for curEvent in events:
             device.enqueueEvent(curEvent)
-
-
-# DISPATCH METHODS
-# These methods will not be called by anyone other than the event dispatch
-# method. They determine what happens to internal state based on the event.
-
-def _handleNewMeeting(event):
-    newMeeting = model.Meeting(event.params["room"].uuid)
-    
-    # once we have the meeting, push it back into the event object.
-    # pushing it into params because the outer meeting value is
-    # just for specifying which meeting an event is taking place in, 
-    # and this event type happens outside of a meeting context.
-    event.addResult("meeting", newMeeting)
-    
-    # now register that meeting with the room.
-    event.params["room"].set_meeting(newMeeting)
-    
-    # add this event to the meeting, so it's included at the beginning of
-    # every meeting history.
-    newMeeting.eventHistory.append(event)
-    
-    
-    return event
-
-# def _handleJoinedRoom(event):
-#     event.meeting.userJoined(event.actor)
-#     
-#     # this is a little wonky, but the way the event system works, it doesn't
-#     # include the full user object (ie event.user) in every event because
-#     # most of the time all we need to know is what their UUID is. But in this
-#     # case it's a new user, so we need to give clients all the info they need
-#     # to create a new local user object. 
-#     event.addResult("actor", event.actor)
-#     return event
-    
-def _handleLeftRoom(event):
-    event.meeting.userLeft(event.actor)
-    
-    # We DON'T need to include the actor in the result object (as above)
-    # because clients will already know about this actor, so the UUID in the
-    # event itself is enough.
-    return event
-    
-def _handleNewUser(event):
-    newUser = model.User(event.params["name"])
-
-    # Make sure to do this for new locations, too. 
-    state.add_actor(newUser)
-    
-    event.addResult("actor", newUser)
-    return event
-    
-def _handleNewLocation(event):
-    newLocation = model.Location(event.params["name"])
-    state.add_actor(newLocation)
-    
-    event.addResult("actor", newLocation)
-    return event
-
-def _handleNewDevice(event):
-    device = model.Device()
-
-    event.addResult("device", device)
-
-    return event
-
-def _handleAddActorDevice(event):
-    # connects devices with their actors.
-    actor = event.params["actor"]
-    device = event.params["device"]
-    
-    # need to remove device from previous actor.
-    
-    if device.actor!=None:
-        device.actor.removeDevice(device)
-        
-    actor.addDevice(device)
-    
-    return event
-    
-
-def _handleJoinedLocation(event):
-    location = event.params["location"]
-    location.userJoined(event.actor)
-    
-    # event.addResult("user", event.actor)
-    
-    # Turning this off for now - I think we can live without it.
-    # The USER_JOINED_LOCATION event will fire, and clients should be able
-    # to imply the rest. 
-    # if location.isInMeeting():
-    #      actorJoinedEvent = Event("JOINED_MEETING", event.actor.uuid,
-    #          location.meeting.uuid)
-    # 
-    #      # TODO Need to do something about dispatch order here. This joined
-    #      # event is going to finish dispatching before the joined_location
-    #      # event does, which might cause some trouble. Need a way for events
-    #      # to dispatch in the order they're created, not the order they're 
-    #      # executed. 
-    #      actorJoinedEvent.dispatch()
-    
-    return event
-
-def _handleLeftLocation(event):
-    location = event.params["location"]
-    location.userLeft(event.actor)
-
-    # Turning this off for now - I think we can live without it.
-    # The USER_JOINED_LOCATION event will fire, and clients should be able
-    # to imply the rest.
-    # if location.isInMeeting():
-    #     userLeftEvent = Event("LEFT_ROOM", event.user.uuid,
-    #         location.meeting.uuid)
-    # 
-    #     # TODO Need to do something about dispatch order here. This joined
-    #     # event is going to finish dispatching before the joined_location
-    #     # event does, which might cause some trouble. Need a way for events
-    #     # to dispatch in the order they're created, not the order they're 
-    #     # executed. 
-    #     userLeftEvent.dispatch()
-    
-    return event
-
-
-def _handleLocationJoinedMeeting(event):
-    # For all the users in this location, fire joined messages
-    location = event.params["location"]
-    meeting = event.meeting
-    
-    location.joinedMeeting(meeting)
-    return event
-
-def _handleLocationLeftMeeting(event):
-    location = event.params["location"]
-    meeting = event.meeting
-
-    location.leftMeeting(meeting)
-    return event
-
-# Maps EVENT_TYPES to the functions that handle those events. Used in 
-# Event.dispatch. 
-DISPATCH = {"NEW_MEETING":_handleNewMeeting,
-            "NEW_USER":_handleNewUser,
-            "NEW_LOCATION":_handleNewLocation,
-            "USER_JOINED_LOCATION":_handleJoinedLocation,
-            "USER_LEFT_LOCATION": _handleLeftLocation,
-            "LOCATION_JOINED_MEETING": _handleLocationJoinedMeeting,
-            "LOCATION_LEFT_MEETING": None,
-            "NEW_DEVICE": _handleNewDevice,
-            "ADD_ACTOR_DEVICE": _handleAddActorDevice
-            }
 
 if __name__ == '__main__':
     main()

@@ -101,7 +101,10 @@
 	                break;
 
 	            case "USER_LEFT_LOCATION":
-	                
+	                update();
+					if (e.actorUUID==connection.userUUID){
+						backToLocs();
+					}
 	                break;
 
 	            case "LOCATION_JOINED_MEETING":
@@ -109,9 +112,22 @@
 	                break;
 
 	            case "LOCATION_LEFT_MEETING":
-	                
+	                update();
 	                break;
-
+				
+				case "LEAVE_MEETING_COMPLETE":
+					update();
+					if (leftloc){
+						for (key in users){
+							if (users[key].uuid==connection.userUUID){
+								user=users[key]
+							}
+						}
+						if (user.loc.users.length==1){
+							connection.leaveLocation(user.loc.uuid);
+						}
+					}
+				
 	            case "NEW_DEVICE":
 	
 	                break;
@@ -443,14 +459,31 @@
 	
 	//highlights the clicked loc and joins the loc
 	function highlightLoc(item){
+	/*	for (key in users){
+			if (users[key].uuid==connection.userUUID){
+				user=users[key]
+			}
+		}	*/	
+		
 		if (!addIsToggled){
 			if (clickEnabled){
 				$(".loc").css("background","white");
 				item.style.background="#00CCFF";
 				locname = $(item).find("div").html();
+				console.log(locname);
 				loc=locs[$.inArray(locname,locNames)];
+				console.log(loc);
+				console.log(user.loc);
 				$("#currentloc").html("location: " + loc.name);
-				connection.joinLocation(loc.uuid);
+				//if (user.loc!=loc){
+				//	if (user.isInLocation()){
+				//		connection.leaveLocation(user.loc.uuid);
+				//	}
+					connection.joinLocation(loc.uuid);
+				//}
+				//else{
+				//	selectLoc(user);
+				//}
 			}
 		}
 		else{
@@ -502,17 +535,25 @@
 			}
 		}
 		
+		roomname = $(item).find("div").find("strong").html();
+		if (roomname==""){
+			roomname = $(item).find("div").find("em").html();
+		}
+
+		room=rooms[$.inArray(roomname,roomNames)];
+		
 		if (!user.loc.isInMeeting()){
-			roomname = $(item).find("div").find("strong").html();
-			if (roomname==""){
-				roomname = $(item).find("div").find("em").html();
-			}
-
+			$("#currentloc").html("location: " + user.loc.name);
 			$("#currentloc").append("\nroom: " + roomname);
-
-			room=rooms[$.inArray(roomname,roomNames)];
 			connection.joinRoom(room.uuid);
 		}
+		else{
+			//need condition to make sure you don't leave too quickly?
+			$("#currentloc").html("location: " + user.loc.name);
+			connection.leaveMeeting(user.loc.meeting.uuid);
+		}
+		
+		
 
 		//item.style.background="#00CCFF";
 		statusbar($(item));
@@ -547,14 +588,36 @@
 	}
 	
 	//slides to locs page
+	//should separate this into two functions eventually...
 	function backToLocs(){
 		if (clickEnabled){
+			leftloc=true;
+			for (key in users){
+				if (users[key].uuid==connection.userUUID){
+					user=users[key]
+				}
+			}
+
+			if (user.isInLocation()){
+				if (user.isInMeeting()){
+					if (loc.users.length==1){
+						connection.leaveMeeting(user.loc.meeting.uuid)
+					}
+					else{
+						connection.leaveLocation(user.loc.uuid);
+					}
+				}
+				else{
+					connection.leaveLocation(user.loc.uuid);
+				}
+			}
+			
 			$("#locs").show();
 			clickEnabled=false;
 			$("#users").animate({"left": "+=324px"},"slow");
 			$("#locs").animate({"left": "+=324px"},"slow");
 			$("#rooms").animate({"left": "+=324px"},"slow");
-			var t = setTimeout("$('#rooms').hide();clickEnabled=true;",600);
+			var t = setTimeout("$('#rooms').hide();clickEnabled=true;leftloc=false;",600);
 		}
 		
 	/*	if($("#locs").offset().left<=-5){
