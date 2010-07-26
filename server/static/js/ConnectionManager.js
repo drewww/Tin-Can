@@ -260,6 +260,25 @@ ConnectionManager.prototype = {
         });
     },
     
+    leaveLocation: function(locationUUID) {
+        if(!this.validateConnected()) {return;}
+        
+        console.log("Leaving location: " + locationUUID);
+        
+        $.ajax({
+           url: '/locations/leave',
+           type: "POST",
+           success: function () {
+               this.publishEvent(this.generateEvent("LEAVE_LOCATION_COMPLETE",
+                {}));
+               },
+           error: function () { this.publishEvent(this.generateEvent(
+               "LEAVE_LOCATION_COMPLETE", false));},
+           context: this,
+           data: { "locationUUID": locationUUID }
+        });
+    },
+    
     joinRoom: function(roomUUID) {
         if(!this.validateConnected()) {return''}
         
@@ -296,6 +315,25 @@ ConnectionManager.prototype = {
            },
            context: this,
            data: { "roomUUID": roomUUID}
+        });
+    },
+    
+    leaveMeeting: function(meetingUUID) {
+        if(!this.validateConnected()) {return;}
+        
+        console.log("Leaving meeting: " + meetingUUID);
+        
+        $.ajax({
+           url: '/rooms/leave',
+           type: "POST",
+           success: function () {
+               this.publishEvent(this.generateEvent("LEAVE_MEETING_COMPLETE",
+                {}));
+               },
+           error: function () { this.publishEvent(this.generateEvent(
+               "LEAVE_MEETING_COMPLETE", false));},
+           context: this,
+           data: { "meetingUUID": meetingUUID }
         });
     },
     

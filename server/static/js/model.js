@@ -56,7 +56,7 @@ Location.prototype = {
     },
     
     userLeft: function(user) {
-        array_remove(users, user);
+        array_remove(this.users, user);
         user.loc = null;
     },
     
@@ -157,7 +157,7 @@ Meeting.prototype = {
     
     locLeft: function(loc) {
         loc.leftMeeting(this);
-        array_remove(locs, loc);
+        array_remove(this.locs, loc);
     },
     
     getCurrentParticipants: function() {

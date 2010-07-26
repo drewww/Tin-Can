@@ -40,7 +40,7 @@ class YarnApplication(tornado.web.Application):
         handlers = [
             (r"/rooms/list", RoomsHandler),
             (r"/rooms/join", JoinRoomHandler),
-            (r"/rooms/leave", LeaveRoomHandler),
+            (r"/rooms/leave", LeaveMeetingHandler),
             
             (r"/locations/list", LocationsHandler),
             (r"/locations/add", AddLocationHandler),
@@ -243,7 +243,7 @@ class JoinRoomHandler(BaseHandler):
             
             location = user.location
             logging.debug("User %s is trying to join a room on their behalf\
-            of their location %s", (user.name, location.name))
+            of their location %s"%(user.name, location.name))
         else:
             location = actor
             logging.debug("Actor is a location: " + location.name)
@@ -303,6 +303,50 @@ class JoinRoomHandler(BaseHandler):
             raise HTTPError(400, "Specified room UUID %s \
             didn't exist or wasn't a valid room."%roomUUID)
             return
+
+class LeaveMeetingHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    def post(self):
+
+        # TODO Check if the current actor has a location set yet. If not, 
+        # do we want to reject the query? I think so...
+
+        actor = self.get_current_actor()
+
+        location = None
+        if isinstance(actor, model.User):
+            # If we've got a user, make sure they have a location set alrady.
+            # If they don't, reject the request outright.
+            user = actor
+            if user.location == None:
+                raise HTTPError(400, "Specified user " + user.name + 
+                " isn't yet in a location, so can not leave meeting.")
+                return
+
+            location = user.location
+            logging.debug("User %s is trying to leave a meeting on their behalf\
+            of their location %s"%(user.name, location.name))
+        else:
+            location = actor
+            logging.debug("Actor is a location: " + location.name)
+
+
+        # from this point forward, we're telling the location what to join,
+        # not the user. the location is the user's location
+        if(not location.isInMeeting()):
+            logging.warning("Location has no meeting: %s. Join a meeting first.",
+            location)
+
+        meetingUUID = self.get_argument("meetingUUID")
+        meeting = state.get_obj(meetingUUID, Meeting)
+        if (location.meeting !=meeting):
+            logging.warning("Location %s is not in meeting %s."
+            %(location.name,meeting.uuid))
+        else:
+            locationLeftMeetingEvent = Event("LOCATION_LEFT_MEETING",
+            location.uuid, None, {"meeting":meeting})
+            locationLeftMeetingEvent.dispatch()
 
 class LeaveRoomHandler(BaseHandler):
 
@@ -399,9 +443,23 @@ class JoinLocationHandler(BaseHandler):
             params={"location":location})
         joinLocationEvent.dispatch()
 
-class LeaveLocationHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.write(json.puts(state.get_locations, cls=YarnModelJSONEncoder))
+class LeaveLocationHandler(BaseHandler):
+    
+    @tornado.web.authenticated
+    def post(self):
+        actor = self.get_current_actor()
+        
+        locationUUID = self.get_argument("locationUUID")
+        location = state.get_obj(locationUUID, Location)
+        if(location==None):
+            raise HTTPError(400, "Specified location UUID %s\
+            didn't exist or wasn't a valid location."%locationUUID)
+            return None
+        
+        # Trigger the actual event.
+        leaveLocationEvent = Event("USER_LEFT_LOCATION", actor.uuid,
+            params={"location":location})
+        leaveLocationEvent.dispatch()
 
 
 class AddTopicHandler(tornado.web.RequestHandler):

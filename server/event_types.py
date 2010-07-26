@@ -13,6 +13,7 @@ Copyright (c) 2010 MIT Media Lab. All rights reserved.
 
 import model
 import logging
+import state
 
 # DISPATCH METHODS
 # These methods will not be called by anyone other than the event dispatch
@@ -138,7 +139,7 @@ def _handleLocationLeftMeeting(event):
     location = event.actor
     meeting = event.params["meeting"]
 
-    location.leftMeeting(meeting)
+    meeting.locationLeft(location)
     return event
 
 

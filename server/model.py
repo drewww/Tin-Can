@@ -136,6 +136,7 @@ class Meeting(YarnBaseType):
         self.title, self.room.name, len(location.users)))
 
         self.locations.remove(location)
+        location.meeting=None
         
     def getCurrentParticipants(self):
         """Returns a list of the current list of Users in this meeting."""
