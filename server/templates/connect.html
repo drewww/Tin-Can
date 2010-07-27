@@ -67,6 +67,11 @@
 					$('#add_topic_button').click(function() {
 						conn.addTopic($('#topic_input')[0].value);
 					})
+					
+					$('#set_status').click(function() {
+						conn.updateTopic($('#topics')[0].value, 
+						$('#status')[0].value);
+					})
 				});
 		
 	</script>

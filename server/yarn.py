@@ -503,6 +503,7 @@ class UpdateTopicHandler(BaseHandler):
             params={"topicUUID":self.get_argument("topicUUID"),
             "status":self.get_argument("status")})
         updateTopicEvent.dispatch()
+        
         return
 
 class ListTopicHandler(BaseHandler):

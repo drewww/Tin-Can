@@ -238,7 +238,7 @@ ConnectionManager.prototype = {
                 topic = state.getObj(ev["params"]["topicUUID"], Topic);
                 status = ev["params"]["status"];
                 
-                topic.setStatus(status);
+                topic.status=status;
                 
                 console.log("Set topic status to " + status)
                 
@@ -287,13 +287,13 @@ ConnectionManager.prototype = {
         for(key in this.eventListeners) {
             listener = this.eventListeners[key];
             
-            // try {
+         try {
                 listener.connectionEvent(ev);
-            // } catch (err) {
-            //                 console.log("Tried to send event " + ev.eventType + " to "
-            //                 + listener + " but connectionEvent method was missing. You " +
-            //                 " must declare that method to receive connectionEvents.");
-            //             }
+            } catch (err) {
+                console.log("Tried to send event " + ev.eventType + " to "
+                + listener + " but connectionEvent method was missing. You " +
+                " must declare that method to receive connectionEvents.");
+            }
         }
     },
     
@@ -460,6 +460,23 @@ ConnectionManager.prototype = {
             },
             error: function() {
                 this.publishEvent(this.generateEvent("NEW_TOPIC_COMPLETE",
+                    {}, false));
+            }
+        });
+    },
+    
+    updateTopic: function(topicUUID, status) {
+        $.ajax({
+            url: '/topics/update',
+            type: "POST",
+            context: this,
+            data: {"status":status, "topicUUID":topicUUID},
+            success: function () {
+                this.publishEvent(this.generateEvent("UPDATE_TOPIC_COMPLETE",
+                    {}));
+            },
+            error: function() {
+                this.publishEvent(this.generateEvent("UPDATE_TOPIC_COMPLETE",
                     {}, false));
             }
         });

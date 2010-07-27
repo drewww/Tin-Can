@@ -637,7 +637,7 @@ class Topic(MeetingObject):
         
     
     def setStatus(self, status):
-        if(status in [PAST, CURRENT, FUTURE]):
+        if(status in [Topic.PAST, Topic.CURRENT, Topic.FUTURE]):
            self.status = status
         else:
            logging.warning("Tried to set a topic with an unknown\
