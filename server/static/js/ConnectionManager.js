@@ -220,7 +220,15 @@ ConnectionManager.prototype = {
                 // we should only be getting this message for our current
                 // meeting.
                 topicData = ev["results"]["topic"];
-                
+
+                topic = new Topic(topicData["uuid"], topicData["meeting"],
+                    topicData["creator"], topicData["text"],
+                    topicData["status"], topicData["startTime"],
+                    topicData["stopTime"], topicData["startActor"],
+                    topicData["stopActor"], topicData["color"]);
+                topic.unswizzle();
+
+                console.log("Made a new topic!");
                 break;
                 
             case "NEW_DEVICE":
