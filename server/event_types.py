@@ -161,7 +161,11 @@ def _handleDeleteTopic(event):
     return event
     
 def _handleUpdateTopic(event):
-    logger.warning("Topic update not implemented.")
+    topic = state.get_obj(event.params["topicUUID"], Topic)
+    status = event.params["status"]
+    
+    topic.setStatus(status)
+    
     return event
 
 def _handleTopicList(event):

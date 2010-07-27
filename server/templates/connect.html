@@ -23,7 +23,20 @@
 
 					conn.addListener({connectionEvent: function(e) {
 						console.log("event: " + e.eventType);
-					}});
+						
+						switch(e.eventType) {
+							case "NEW_TOPIC":
+								topic = state.getObj(e.results.topic.uuid,
+									Topic);
+								
+								$('#topics').append("<option value='" + 
+									topic.uuid + "'>" + topic.text
+									+ "</option>");
+								break;
+						}
+					}
+					
+					});
 					
 					// Setup the button actions.
 					$("#login").click(function() {
@@ -96,6 +109,17 @@
 
 <input type="text" name="topic" value="topic" id="topic_input">
 <button id="add_topic_button">Add Topic</button>
+
+<br/>
+<select name="topics" id="topics" size="1">
+</select>
+<select name="status" id="status" size="1">
+<option value="PAST">PAST</option>
+<option value="CURRENT">CURRENT</option>
+<option value="FUTURE">FUTURE</option>
+</select>
+<button id="set_status">Set Status</button>
+
 
 
 <div id="response">

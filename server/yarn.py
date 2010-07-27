@@ -492,10 +492,18 @@ class DeleteTopicHandler(BaseHandler):
         
         
 class UpdateTopicHandler(BaseHandler):
+    
+    @tornado.web.authenticated
     def post(self):
-        userUUID = self.get_argument("userUUID")
-        meetingUUID = self.get_argument("")
-        topic = self.get_argument("topic")
+        
+        actor = self.get_current_actor()
+        
+        updateTopicEvent = Event("UPDATE_TOPIC", actor.uuid,
+            actor.getMeeting().uuid, 
+            params={"topicUUID":self.get_argument("topicUUID"),
+            "status":self.get_argument("status")})
+        updateTopicEvent.dispatch()
+        return
 
 class ListTopicHandler(BaseHandler):
     def post(self):
