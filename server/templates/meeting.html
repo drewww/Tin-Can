@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta name="viewport" content="width=320; initial-scale=1.0; minimum-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+	<title>login</title>
+<script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
+<script type = "text/javascript" src = "../static/js/Timeline.js"></script>
+<script type="text/javascript" src="{{static_url('js/util.js')}}"></script>
+<script type="text/javascript" src="{{static_url('js/ConnectionManager.js')}}"></script>
+<script type="text/javascript" src="{{static_url('js/StateManager.js')}}"></script>
+<script type="text/javascript" src="{{static_url('js/model.js')}}"></script>
+<script type="text/javascript" charset="utf-8">
+	var users;
+	var names=[];
+	var nameElements=[];
+	var nameTemplate;
+	
+	var locs;
+	var locNames=[];
+	var locElements=[];
+	var locTemplate;
+	
+	var rooms;
+	var set = false;
+	$(document).ready(function() {
+
+		//When page loads...
+		$(".tab_content").hide(); //Hide all content
+		$("ul.tabs li:first").addClass("active").show(); //Activate first tab
+		$(".tab_content:first").show(); //Show first tab content
+
+		//On Click Event
+		$("ul.tabs li").click(function() {
+
+			$("ul.tabs li").removeClass("active"); //Remove any "active" class
+			$(this).addClass("active"); //Add "active" class to selected tab
+			$(".tab_content").hide(); //Hide all tab content
+
+			var activeTab = $(this).find("a").attr("href"); //Find the href attribute value to identify the active tab + content
+			$(activeTab).fadeIn(); //Fade in the active ID content
+			return false;
+		});
+		
+		nameTemplate=$("#name");
+		locTemplate=$("#loc");
+		nameTemplate.hide();
+		locTemplate.hide();
+		
+		connection.addListener({connectionEvent: function(e) {
+			console.log("event: " + e.eventType);
+			switch(e.eventType) {
+				case "GET_STATE_COMPLETE":
+					update();
+					if (!set){
+						connection.setUser(users[0].uuid);
+						connection.connect();
+						set=true;
+					}
+					break;
+				case "ADD_ACTOR_DEVICE":
+					update();
+					connection.joinLocation(locs[0].uuid);
+		            break;
+		        case "NEW_LOCATION":
+	                update();
+	                break;	
+				case "NEW_USER":
+		            
+		            break;
+
+		        case "USER_JOINED_LOCATION":
+					update();
+					connection.joinRoom(rooms[0].uuid);
+					break;
+
+		        case "USER_LEFT_LOCATION":
+		            update();
+					break;
+
+		        case "LOCATION_JOINED_MEETING":
+		            update();
+					for (key in users){
+						if (users[key].uuid==connection.userUUID){
+							user=users[key]
+						}
+					}
+					$("#header").append(user.loc.meeting.room.name + ": " + user.loc.meeting.name)
+		            break;
+
+		        case "LOCATION_LEFT_MEETING":
+		            update();
+		            break;
+				
+	        }
+		}});
+		connection.getState();
+	});
+	
+	function update(){
+		users=state.getUsers();
+		locs=state.getLocations();
+		rooms=state.rooms;
+		displayUsers();
+		displayLocs();
+		
+	}
+	
+	function displayUsers(){
+		for (nameElement in nameElements){
+			nameElements[nameElement].remove();
+		}
+		
+		names=[];
+		nameElements=[];
+		for (user in users){
+			names.push(users[user].name);
+		}
+		
+		for (var name in names){
+			var newNameElement = nameTemplate.clone();
+			newNameElement.find("div").html(names[name]);
+			$("#names").append(newNameElement);
+			newNameElement.show();
+			nameElements.push(newNameElement);
+		}
+	}
+	
+	function displayLocs(){
+		for (locElement in locElements){
+			locElements[locElement].remove();
+		}
+		
+		locNames=[];
+		locElements=[];
+		for (loc in locs){
+			locNames.push(locs[loc].name);
+		}
+		
+		for (var key in locNames){
+			var newLocElement = locTemplate.clone();
+			newLocElement.find("div").html(locNames[key]);
+			$("#locs").append(newLocElement);
+			newLocElement.show();
+			locElements.push(newLocElement);
+		}
+	}
+</script>
+
+<style type="text/css" media="screen">
+	body{
+		margin:0px;
+	}
+	#header{
+		width:320px;
+		border-bottom: 2px solid black;
+		font-size:12px;
+		font-family:"Arial",sans-serif;
+		margin-bottom:5px;
+	}
+	ul.tabs {
+		margin: 0;
+		padding: 0;
+		float: left;
+		list-style: none;
+		height: 25px; /*--Set height of tabs--*/
+		border-bottom: 1px solid #999;
+		border-left: 1px solid #999;
+		width: 320px;
+		font-family:"Arial",sans-serif;
+	}
+	ul.tabs li {
+		float: left;
+		margin: 0;
+		padding: 0;
+		height: 24px; /*--Subtract 1px from the height of the unordered list--*/
+		line-height: 24px; /*--Vertically aligns the text within the tab--*/
+		border: 1px solid #999;
+		border-left: none;
+		margin-bottom: -1px; /*--Pull the list item down 1px--*/
+		overflow: hidden;
+		position: relative;
+		background: #e0e0e0;
+	}
+	ul.tabs li a {
+		text-decoration: none;
+		color: #000;
+		display: block;
+		font-size: 17px;
+		padding: 0 20px;
+		border: 1px solid #fff; /*--Gives the bevel look with a 1px white border inside the list item--*/
+		outline: none;
+	}
+	ul.tabs li a:hover {
+		background: #ccc;
+	}
+	html ul.tabs li.active, html ul.tabs li.active a:hover  { /*--Makes sure that the active tab does not listen to the hover properties--*/
+		background: #fff;
+		border-bottom: 1px solid #fff; /*--Makes the active tab look like it's connected with its content--*/
+	}
+	.tab_container {
+		border: 1px solid #999;
+		border-top: none;
+		overflow: hidden;
+		clear: both;
+		float: left;
+		width: 320px;
+		background: #fff;
+	}
+	.tab_content {
+		padding: 5px;
+		font-size: 15px;
+		font-family:"Arial",sans-serif;
+		width:320px;
+		
+	}
+	#names,#locs{
+		padding-left:15px;
+		margin:0px;
+		list-style-type:disc;
+		margin-bottom: 15px;
+	}
+
+</style>
+</head>
+
+<body>
+	<div id = "header"><strong>Tin-Can</strong> - </div>
+	
+	<ul class="tabs">
+	    <li><a href="#tab1">Tasks</a></li>
+	    <li><a href="#tab2">Topics</a></li>
+		<li><a href="#tab3">Attendance</a></li>
+	</ul>
+
+	<div class="tab_container">
+	    <div id="tab1" class="tab_content">
+	        List of tasks here!
+	    </div>
+	    <div id="tab2" class="tab_content">
+	        List of topics here!
+	    </div>
+		<div id ="tab3" class="tab_content">
+			Users
+			<ul id = "names">
+				<li id = "name"><div>hi</div></li>
+			</ul>
+			Locations
+			<ul id = "locs">
+				<li id = "loc"><div>hi</div></li>
+			</ul>
+		</div>
+	</div>
+	
+</body>
+</html>

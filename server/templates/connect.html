@@ -51,7 +51,9 @@
 						conn.addLocation($('#new_input')[0].value);
 					})
 
-					
+					$('#add_topic_button').click(function() {
+						conn.addTopic($('#topic_input')[0].value);
+					})
 				});
 		
 	</script>
@@ -90,7 +92,10 @@
 <input type="text" name="new_user" value="" id="new_input">
 <button id="add_user_button">Add User</button>
 <button id="add_location_button">Add Location</button>
+<br/>
 
+<input type="text" name="topic" value="topic" id="topic_input">
+<button id="add_topic_button">Add Topic</button>
 
 
 <div id="response">

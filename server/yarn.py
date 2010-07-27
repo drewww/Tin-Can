@@ -47,6 +47,11 @@ class YarnApplication(tornado.web.Application):
             (r"/locations/join", JoinLocationHandler),
             (r"/locations/leave", LeaveLocationHandler),
             
+            (r"/topics/add", AddTopicHandler),
+            (r"/topics/delete", DeleteTopicHandler),
+            (r"/topics/update", UpdateTopicHandler),
+            (r"/topics/list", ListTopicHandler),
+            
             (r"/users/", AllUsersHandler),
             (r"/users/add", AddUserHandler),
             
@@ -61,7 +66,8 @@ class YarnApplication(tornado.web.Application):
             
             (r"/status/", StatusHandler),
             
-            (r"/rooms/",ChooseRoomsHandler)
+            (r"/rooms/",ChooseRoomsHandler),
+            (r"/meeting/",MeetingHandler),
             ]
         
         settings = dict(
@@ -462,12 +468,42 @@ class LeaveLocationHandler(BaseHandler):
         leaveLocationEvent.dispatch()
 
 
-class AddTopicHandler(tornado.web.RequestHandler):
+class AddTopicHandler(BaseHandler):
+    
+    @tornado.web.authenticated
+    def post(self):
+        actor = self.get_current_actor()
+        
+        newTopicEvent = Event("NEW_TOPIC", actor.uuid ,
+            actor.getMeeting().uuid,
+            params={"text": self.get_argument("text")})
+        newTopicEvent.dispatch()
+        return
+
+class DeleteTopicHandler(BaseHandler):
+    def post(self):
+        actor = self.get_current_actor()
+        
+        deleteTopicEvent = Event("DELETE_TOPIC", actor.uuid,
+            actor.getMeeting().uuid,
+            params={"text":self.get_argument("topicUUID")})
+        deleteTopicEvent.dispatch()
+        return
+        
+        
+class UpdateTopicHandler(BaseHandler):
     def post(self):
         userUUID = self.get_argument("userUUID")
         meetingUUID = self.get_argument("")
         topic = self.get_argument("topic")
-        
+
+class ListTopicHandler(BaseHandler):
+    def post(self):
+        userUUID = self.get_argument("userUUID")
+        meetingUUID = self.get_argument("")
+        topic = self.get_argument("topic")
+
+
 
 class AgendaHandler(tornado.web.RequestHandler):
     def get(self):
@@ -484,6 +520,10 @@ class ChooseRoomsHandler(tornado.web.RequestHandler):
 class AgendaJQTHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("agenda_jqtouch.html")
+
+class MeetingHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("meeting.html")
 
 
 

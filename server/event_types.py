@@ -35,7 +35,6 @@ def _handleNewMeeting(event):
     # every meeting history.
     newMeeting.eventHistory.append(event)
     
-    
     return event
 
 def _handleLeftRoom(event):
@@ -142,6 +141,34 @@ def _handleLocationLeftMeeting(event):
     meeting.locationLeft(location)
     return event
 
+def _handleNewTopic(event):
+    text = event.params["text"]
+    
+    # TODO write a real color picker here.
+    newTopic = model.Topic(event.meeting.uuid, event.actor.uuid, text,
+        status=model.Topic.FUTURE, color="006600")
+        
+    event.meeting.addTopic(newTopic)
+    event.addResult("topic", newTopic)
+    return event
+    
+def _handleDeleteTopic(event):
+    text = event.params["text"]
+    topic = state.get_obj(event.params["topicUUID"], Topic)
+    
+    event.meeting.removeTopic(topic)
+    
+    return event
+    
+def _handleUpdateTopic(event):
+    logger.warning("Topic update not implemented.")
+    return event
+
+def _handleTopicList(event):
+    logger.warning("Topic list not implemented.")
+    return event
+
+
 
 # This class just wraps the different features of an event into a nice 
 # container. Different events expect different parameters and are dispatched
@@ -167,6 +194,7 @@ class EventType:
     def __str__(self):
         return self.type
 
+
 # Defines each event type, what parameters it expects, the name of its
 # handler, whether or not it is a global event, and whether it requires
 # an actor to be defined.
@@ -190,3 +218,11 @@ EventType("LOCATION_JOINED_MEETING",["meeting"], _handleLocationJoinedMeeting,
 EventType("LOCATION_LEFT_MEETING",  ["meeting"], _handleLocationLeftMeeting,
     True, True)
 
+EventType("NEW_TOPIC",      ["text"],               _handleNewTopic, False,
+    True)
+EventType("DELETE_TOPIC",   ["topicUUID"],          _handleDeleteTopic, False,
+    True)
+EventType("UPDATE_TOPIC",   ["topicUUID", "status"],_handleUpdateTopic, False,
+    True)
+EventType("SET_TOPIC_LIST", ["text"],               _handleTopicList, False,
+    True)

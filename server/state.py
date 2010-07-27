@@ -10,6 +10,7 @@ Copyright (c) 2010 MIT Media Lab. All rights reserved.
 import model
 import simplejson as json
 import logging
+import traceback
 
 # This dictionary stores all known major types. This is used primarily so 
 # we can cheaply bridge UUIDs into objects. When any of these major types
@@ -57,13 +58,16 @@ def get_obj(key, type=None):
         obj = db[key];
     except KeyError:
         logging.warning("No object for UUID: %s (class: %s)"%(key, type))
+        traceback.print_stack()
         return None
     
     # If no type is specified, assume we don't care what the type of the
     # return is. This is bad form, though - we should ALWAYS be enforcing
     # proper types out of this method.
     if type==None:
-        logging.warning("No type specified in get_obj. This is dangerous. Key:%s"%key)
+        logging.warning("No type specified in get_obj. This is dangerous.\
+Key:%s"%key)
+
         return obj
     
     # Otherwise, check that it's the right type. If it is, return it.
@@ -72,6 +76,7 @@ def get_obj(key, type=None):
         return obj
     else:
         logging.warning("Object with UUID %s not instance of %s" %(key, type))
+        traceback.print_stack()
         return None
 
 def put_obj(key, value):
