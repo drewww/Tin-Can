@@ -134,6 +134,8 @@ function Meeting(uuid, title, room) {
     
     this.locs = [];
     
+    this.topics = [];
+    
     state.putObj(this.uuid, this);
 }
 
@@ -171,6 +173,14 @@ Meeting.prototype = {
         return currentParticipants;
     },
     
+    addTopic: function(topic) {
+        this.topics.push(topic);
+    },
+    
+    removeTopic: function(topic) {
+        this.topics = array_remove(this.topics, topic);
+    },
+    
     unswizzle: function() {
         
         // This can't be null.
@@ -183,5 +193,38 @@ Meeting.prototype = {
     
 };
 
+function Topic(uuid, meetingUUID, creatorUUID, text, status, startTime, stopTime, startActorUUID,
+    stopActorUUID, color) {
+        
+        this.uuid = uuid;
+        this.meeting = meetingUUID;
+        this.creator = creatorUUID;
+        this.text = text;
+        this.status = status;
+        this.startTime = startTime;
+        this.stopTime = stopTime;
+        this.startActor = startActorUUID;
+        this.stopActor = stopActorUUID;
+        this.color = color;
+        
+        state.putObj(this.uuid, this);
+}
+
+Topic.prototype = {
+    
+    unswizzle: function() {
+        
+        this.meeting = state.getObj(this.meeting, Meeting);
+        this.creator = state.getObj(this.creator, User);
+        
+        if(this.startActor != null)
+            this.startActor = state.getObj(this.startActor, User);
+
+        if(this.stopActor != null)
+            this.stopActor = state.getObj(this.stopActor, User);
+        
+        this.meeting.addTopic(this);
+    }
+}
 
 

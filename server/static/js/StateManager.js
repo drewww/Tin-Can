@@ -58,9 +58,20 @@ StateManager.prototype = {
         if(obj instanceof type) {
             return obj;
         } else {
-            console.log("Object with UUID " + uuid + " not instance of type"+
-            type + ".");
-            return null;
+            
+            // This is terrible horrible hack, but since I haven't found
+            // and inhertence system in javascript that I like and the only
+            // REAL place where I want/need inheretence is location/user,
+            // I'm just going to hack it in here.
+            if(type==User && obj instanceof Location) {
+                return obj;
+            } else if(type==Location && obj instanceof User) {
+                return obj;
+            } else {            
+                console.log("Object with UUID " + uuid + " not instance of type"+
+                type + ".");
+                return null;
+            }
         }
     },
     

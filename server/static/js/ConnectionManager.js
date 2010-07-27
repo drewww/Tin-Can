@@ -16,6 +16,10 @@ ConnectionManager.prototype = {
    
    eventListeners: [],
    
+   user: null,
+   meeting: null,
+   loc: null,
+   
    setUser: function(userUUID) {
         console.log("Setting userUUID: " + userUUID);
         this.userUUID = userUUID;
@@ -164,6 +168,15 @@ ConnectionManager.prototype = {
                 loc = state.getObj(ev["params"]["location"], Location);
                 user = state.getObj(ev["actorUUID"], User);
                 loc.userJoined(user);
+                
+                if(user.uuid == this.userUUID){
+                    this.user = user;
+                    this.loc = loc;
+                    
+                    console.log("LOCAL location and user set: " +
+                        this.loc + " / " + this.user);
+                }
+                
                 console.log(user.name + " joined " + loc.name);
                 break;
                 
@@ -171,6 +184,13 @@ ConnectionManager.prototype = {
                 loc = state.getObj(ev["params"]["location"], Location);
                 user = state.getObj(ev["actorUUID"], User);
                 loc.userLeft(user);
+                
+                if(user.uuid = this.user.uuid) {
+                    // means WE'VE left a location.
+                    this.loc = null;
+                    console.log("Local location set to null.");
+                }
+                
                 console.log(user.name + " left " + loc.name);
                 break;
                 
@@ -178,6 +198,13 @@ ConnectionManager.prototype = {
                 meeting = state.getObj(ev["params"]["meeting"], Meeting);
                 loc = state.getObj(ev.actorUUID, Location);
                 meeting.locJoined(loc);
+
+                console.log("my loc: " + this.loc.uuid + " / " + loc.uuid);
+                if(loc.uuid == this.loc.uuid) {
+                    this.meeting = meeting;
+                    console.log("LOCAL meeting set: " + meeting);
+                }
+                
                 console.log(loc.name + " joined " + meeting.title);
                 break;
                 
@@ -188,9 +215,18 @@ ConnectionManager.prototype = {
                 
                 console.log(loc.name + " left " + meeting.title);
                 break;
+            
+            case "NEW_TOPIC":
+                // we should only be getting this message for our current
+                // meeting.
+                topicData = ev["results"]["topic"];
+                
+                break;
                 
             case "NEW_DEVICE":
                 // I don't think we care about this, do we?
+                
+                // maybe capture this.user here? not sure.
                 break;
             
         }
