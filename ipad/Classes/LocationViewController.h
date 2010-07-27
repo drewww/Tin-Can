@@ -7,7 +7,8 @@
 //
 #import "LoginMasterViewController.h"
 #import <UIKit/UIKit.h>
-
+#import "ConnectionManager.h"
+#import "StateManager.h"
 
 @class LoginMasterViewController;
 
@@ -18,7 +19,7 @@
 	LoginMasterViewController *controller;
 	
 }
-
+- (void)handleConnectionEvent:(Event *)event;
 - (id)initWithFrame:(CGRect)frame withController:(LoginMasterViewController *)control;
 @property (nonatomic, retain) NSMutableArray *locList;
 

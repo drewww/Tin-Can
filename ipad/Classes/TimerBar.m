@@ -40,8 +40,8 @@
 	//else{
 	//	lengthOfSecond= 300/3600.0;
 	//}
-	NSLog(@"lengthOfSecond:%f",lengthOfSecond);
-	NSLog(@"diff:%f",diff);
+	//NSLog(@"lengthOfSecond:%f",lengthOfSecond);
+	//NSLog(@"diff:%f",diff);
 	
 }	
 -(UIColor *)findNewColor{

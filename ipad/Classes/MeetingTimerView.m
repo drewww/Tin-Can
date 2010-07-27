@@ -157,7 +157,7 @@
 	[self setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 	
 	// for testing
-	testDate= [[ testDate addTimeInterval:5] retain];
+	testDate= [[ testDate addTimeInterval:60] retain];
 	
 	
 	

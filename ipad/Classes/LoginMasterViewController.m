@@ -14,6 +14,9 @@
 #import "headerView.h"
 #import "TinCanViewController.h"
 #import "MeetingViewController.h"
+#import "StateManager.h"
+#import "ConnectionManager.h"
+#import "Location.h"
 @class TinCanViewController;
 
 @implementation LoginMasterViewController
@@ -22,16 +25,135 @@
 
 	controller=control;
 	//NSLog(@"is being called with %@:", controller);
+		
 	} 
 	return self;
 		
 }
+- (void) handleConnectionEvent:(Event *)event {
+	NSLog(@"Received event: %d", event.type);
+	
+	if(event.type==kGET_STATE_COMPLETE) {
+		// Elements in the Login page (Our Logo, Our Location Table and Our Room Table)
+		LogoView *picView= [[[LogoView alloc] initWithImage:[UIImage imageNamed:@"tin_can_phone.jpg"] 
+												  withFrame: CGRectMake(self.view.frame.size.width/2.0-250, 100, 500, 500) ] retain];
+		
+		locViewController = [[[LocationViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250, 400,500) withController:self] retain];
+		
+		roomViewController = [[[RoomViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600, 400,500) withController:self] retain];
+		
+		
+		// Arrows
+		LogoView *arrowView= [[[LogoView alloc] initWithImage:[UIImage imageNamed:@"rightarrow.png"] 
+													withFrame: CGRectMake(self.view.frame.size.width/2.0-25,625, 50,100) ] retain];
+		LogoView *arrowView2= [[[LogoView alloc] initWithImage:[UIImage imageNamed:@"rightarrow.png"] 
+													 withFrame: CGRectMake(self.view.frame.size.width/2.0-25,625+600, 50,100) ] retain];
+		
+		
+		// Initializes Login Button
+		loginButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+		[loginButton setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+		loginButton.frame = CGRectMake(self.view.frame.size.width/2.0-200+150,self.view.frame.size.height/2.0-250+600+475, 100,150);
+		loginButton.backgroundColor = [UIColor clearColor];
+		[loginButton setTitle:@"Login" forState: UIControlStateNormal];
+		[loginButton setFont:[UIFont boldSystemFontOfSize:30.0f]];
+		[loginButton addTarget:self action:@selector(infoButtonPressed:)forControlEvents:UIControlEventTouchUpInside];
+		[loginButton setEnabled: NO];
+		
+		// Disabled Settings for Login Button
+		
+		[loginButton setBackgroundImage:[UIImage imageNamed:@"greyButton-1.png"] forState:UIControlStateDisabled];
+		loginButton.adjustsImageWhenDisabled = YES;
+		if( loginButton.enabled==NO){
+			
+			// sets user intructions for login
+			loginInstructions = [[UILabel alloc]
+								 initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200-100,self.view.frame.size.height/2.0-250+600+250, 300,600)];
+			[loginInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+			loginInstructions.text = @"Have not chosen \n a Location \nAND\n a Room";
+			loginInstructions.numberOfLines = 0;
+			loginInstructions.textAlignment = UITextAlignmentCenter;
+			loginInstructions.textColor = [UIColor redColor];
+			loginInstructions.backgroundColor = [UIColor clearColor];
+			loginInstructions.font = [UIFont boldSystemFontOfSize:20.0f];
+			[self.view addSubview:loginInstructions];
+			
+		}
+		
+		
+		
+		
+		// Headers
+		HeaderView *headerLocation =[[[HeaderView alloc] 
+									  initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0-30, 400,60) withTitle:@"Locations"] retain];
+		HeaderView *headerRoom =[[[HeaderView alloc] 
+								  initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0+600-30, 400,60) withTitle:@"Rooms"] retain];
+		
+		
+		
+		// Instruction text
+		logoSlide = [[UILabel alloc] 
+					 initWithFrame:CGRectMake(-200 ,325, 500,100)];
+		logoSlide.text = @"Slide";
+		logoSlide.numberOfLines = 0;
+		logoSlide.textAlignment = UITextAlignmentCenter;
+		logoSlide.textColor = [UIColor whiteColor];
+		logoSlide.backgroundColor = [UIColor clearColor];
+		logoSlide.font = [UIFont systemFontOfSize:30.0f];
+		[logoSlide setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+		
+		locationInstructions = [[UILabel alloc] 
+								initWithFrame:CGRectMake(-200,self.view.frame.size.height/2.0-50,500,100)];
+		locationInstructions.text = @"Choose your physical location \n Then Slide";
+		locationInstructions.numberOfLines = 0;
+		locationInstructions.textAlignment = UITextAlignmentCenter;
+		locationInstructions.textColor = [UIColor whiteColor];
+		locationInstructions.backgroundColor = [UIColor clearColor];
+		locationInstructions.font = [UIFont systemFontOfSize:30.0f];
+		[locationInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+		
+		roomInstructions = [[UILabel alloc] initWithFrame:CGRectMake(-200,self.view.frame.size.height/2.0-50 +600,500,100)];
+		roomInstructions.numberOfLines = 0;
+		roomInstructions.text = @"Choose a virtual room";
+		roomInstructions.textAlignment = UITextAlignmentCenter;
+		roomInstructions.textColor = [UIColor whiteColor];
+		roomInstructions.backgroundColor = [UIColor blackColor];
+		roomInstructions.font = [UIFont systemFontOfSize:30.0f];
+		[roomInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+		
+		// Add Elements to View
+		[self.view addSubview:picView];
+		[self.view addSubview:loginButton];
+		[self.view addSubview:arrowView];
+		[self.view addSubview:arrowView2];
+		[self.view addSubview:roomInstructions];
+		[self.view addSubview:locationInstructions];
+		[self.view addSubview:logoSlide];
+		//[self.view addSubview:roomBorder];
+		//[self.view addSubview:locationBorder];
+		[self.view addSubview:locViewController.view];
+		[self.view addSubview:roomViewController.view];
+		[self.view addSubview:headerLocation];
+		[self.view addSubview:headerRoom];
+		[self.view setNeedsDisplay];
+		
+		
+	}
+	
+		
+}		
 - (void)loadView {
 	
 	//NSLog(@"View is being called");
 	// Initializers
 	// Sets the frame and then sets the center of the view to be at the location our our Logo.
 	// The currentPage variable tracks which part of the view the user is seeing
+	ConnectionManager *conMan = [ConnectionManager sharedInstance];
+	[conMan addListener:self];
+	[conMan getState];
+	
+	
+	
 	self.view= [[UIView alloc] initWithFrame:CGRectMake(0,0, 700.0, 2000.0) ];
 	self.view.center= CGPointMake(768/2.0, 1024/2.0+600);
 	[self.view setBackgroundColor:[UIColor blackColor]]; 
@@ -48,121 +170,7 @@
 	
 	
 	
-	// Elements in the Login page (Our Logo, Our Location Table and Our Room Table)
-	LogoView *picView= [[[LogoView alloc] initWithImage:[UIImage imageNamed:@"tin_can_phone.jpg"] 
-											  withFrame: CGRectMake(self.view.frame.size.width/2.0-250, 100, 500, 500) ] retain];
-	
-	locViewController = [[[LocationViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250, 400,500) withController:self] retain];
-	
-	roomViewController = [[[RoomViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600, 400,500) withController:self] retain];
-	
-	
-	// Arrows
-	LogoView *arrowView= [[[LogoView alloc] initWithImage:[UIImage imageNamed:@"rightarrow.png"] 
-												withFrame: CGRectMake(self.view.frame.size.width/2.0-25,625, 50,100) ] retain];
-	LogoView *arrowView2= [[[LogoView alloc] initWithImage:[UIImage imageNamed:@"rightarrow.png"] 
-												 withFrame: CGRectMake(self.view.frame.size.width/2.0-25,625+600, 50,100) ] retain];
-	
-	
-	// Initializes Login Button
-	loginButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-	[loginButton setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-	loginButton.frame = CGRectMake(self.view.frame.size.width/2.0-200+150,self.view.frame.size.height/2.0-250+600+475, 100,150);
-	loginButton.backgroundColor = [UIColor clearColor];
-	[loginButton setTitle:@"Login" forState: UIControlStateNormal];
-	[loginButton setFont:[UIFont boldSystemFontOfSize:30.0f]];
-	[loginButton addTarget:self action:@selector(infoButtonPressed:)forControlEvents:UIControlEventTouchUpInside];
-	[loginButton setEnabled: NO];
-	
-	// Disabled Settings for Login Button
-	
-	[loginButton setBackgroundImage:[UIImage imageNamed:@"greyButton-1.png"] forState:UIControlStateDisabled];
-	loginButton.adjustsImageWhenDisabled = YES;
-	if( loginButton.enabled==NO){
-		
-	// sets user intructions for login
-		loginInstructions = [[UILabel alloc]
-							 initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200-100,self.view.frame.size.height/2.0-250+600+250, 300,600)];
-		[loginInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-		loginInstructions.text = @"Have not chosen \n a Location \nAND\n a Room";
-		loginInstructions.numberOfLines = 0;
-		loginInstructions.textAlignment = UITextAlignmentCenter;
-		loginInstructions.textColor = [UIColor redColor];
-		loginInstructions.backgroundColor = [UIColor clearColor];
-		loginInstructions.font = [UIFont boldSystemFontOfSize:20.0f];
-		[self.view addSubview:loginInstructions];
-		
-	}
-	
-	
-
-	
-	// Headers
-	HeaderView *headerLocation =[[[HeaderView alloc] 
-								  initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0-30, 400,60) withTitle:@"Locations"] retain];
-	HeaderView *headerRoom =[[[HeaderView alloc] 
-							  initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0+600-30, 400,60) withTitle:@"Rooms"] retain];
-	
-	
-	
-	// Borders
-	//UIView *locationBorder = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200-50-2,self.view.frame.size.height/2.0-250+50-2, 564,404)];
-	//[locationBorder setBackgroundColor:[UIColor grayColor]];
-	
-	//UIView *roomBorder = [[UIView alloc] initWithFrame:
-	//					  CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600, 600,300)];
-	//[roomBorder setBackgroundColor:[UIColor grayColor]];
-	
-	
-	// Instruction text
-	logoSlide = [[UILabel alloc] 
-				 initWithFrame:CGRectMake(-200 ,325, 500,100)];
-	logoSlide.text = @"Slide";
-	logoSlide.numberOfLines = 0;
-	logoSlide.textAlignment = UITextAlignmentCenter;
-	logoSlide.textColor = [UIColor whiteColor];
-	logoSlide.backgroundColor = [UIColor clearColor];
-	logoSlide.font = [UIFont systemFontOfSize:30.0f];
-	[logoSlide setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-	
-	locationInstructions = [[UILabel alloc] 
-					 initWithFrame:CGRectMake(-200,self.view.frame.size.height/2.0-50,500,100)];
-	locationInstructions.text = @"Choose your physical location \n Then Slide";
-	locationInstructions.numberOfLines = 0;
-	locationInstructions.textAlignment = UITextAlignmentCenter;
-	locationInstructions.textColor = [UIColor whiteColor];
-	locationInstructions.backgroundColor = [UIColor clearColor];
-	locationInstructions.font = [UIFont systemFontOfSize:30.0f];
-	[locationInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-	
-	roomInstructions = [[UILabel alloc] initWithFrame:CGRectMake(-200,self.view.frame.size.height/2.0-50 +600,500,100)];
-	roomInstructions.numberOfLines = 0;
-	roomInstructions.text = @"Choose a virtual room";
-	roomInstructions.textAlignment = UITextAlignmentCenter;
-	roomInstructions.textColor = [UIColor whiteColor];
-	roomInstructions.backgroundColor = [UIColor blackColor];
-	roomInstructions.font = [UIFont systemFontOfSize:30.0f];
-	[roomInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-	
-	// Add Elements to View
-	[self.view addSubview:picView];
-	[self.view addSubview:loginButton];
-	[self.view addSubview:arrowView];
-	[self.view addSubview:arrowView2];
-	[self.view addSubview:roomInstructions];
-	[self.view addSubview:locationInstructions];
-	[self.view addSubview:logoSlide];
-	//[self.view addSubview:roomBorder];
-	//[self.view addSubview:locationBorder];
-	[self.view addSubview:locViewController.view];
-	[self.view addSubview:roomViewController.view];
-	[self.view addSubview:headerLocation];
-	[self.view addSubview:headerRoom];
-	[self.view setNeedsDisplay];
-	
-	
-	}
-
+}	
 
 // Dictates what action to take when a User makes a selection
 -(void)infoButtonPressed:(id)sender{

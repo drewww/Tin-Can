@@ -42,7 +42,7 @@
     
     ConnectionManager *conMan = [ConnectionManager sharedInstance];
     [conMan addListener:self];
-    [conMan getState];
+    //Should Check and see if getstate is done. ******
     
     // pick a random location
     
@@ -53,11 +53,11 @@
     NSLog(@"Received event: %d", event.type);
     
     if(event.type==kGET_STATE_COMPLETE) {
-            ConnectionManager *conMan = [ConnectionManager sharedInstance];
-            Location *myLocation = [[[StateManager sharedInstance] getLocations] anyObject];
-            [conMan setLocation:myLocation.uuid];
-            NSLog(@"Done setting connection.");
-            [conMan connect];
+           // ConnectionManager *conMan = [ConnectionManager sharedInstance];
+            //Location *myLocation = [[[StateManager sharedInstance] getLocations] anyObject];
+            //[conMan setLocation:myLocation.uuid];
+        //    NSLog(@"Done setting connection.");
+           // [conMan connect];
     }
 }
 
