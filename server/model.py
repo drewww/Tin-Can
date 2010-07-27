@@ -609,8 +609,9 @@ class Topic(MeetingObject):
 
     def __init__(self, meetingUUID, creatorUUID, text, startTime=None,
         stopTime=None, status=None, startActorUUID=None, stopActorUUID=None,
-        color=None, topicUUID=None):
-        MeetingObject.__init__(self, creatorUUID, meetingUUID, topicUUID)
+        color=None, topicUUID=None, createdAt=None):
+        MeetingObject.__init__(self, creatorUUID, meetingUUID, createdAt,
+            topicUUID)
         
         self.text = text
         

@@ -193,12 +193,13 @@ Meeting.prototype = {
     
 };
 
-function Topic(uuid, meetingUUID, creatorUUID, text, status, startTime, stopTime, startActorUUID,
-    stopActorUUID, color) {
+function Topic(uuid, meetingUUID, creatorUUID, text, status, startTime,
+    stopTime, startActorUUID, stopActorUUID, color, createdAt) {
         
         this.uuid = uuid;
         this.meeting = meetingUUID;
         this.creator = creatorUUID;
+        this.createdAt = new Date(createdAt*1000);
         this.text = text;
         this.status = status;
         this.startTime = startTime;
