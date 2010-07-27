@@ -236,7 +236,21 @@ ConnectionManager.prototype = {
             case "UPDATE_TOPIC":
                 
                 topic = state.getObj(ev["params"]["topicUUID"], Topic);
+                actor = state.getObj(ev.actorUUID, User);
+                
                 status = ev["params"]["status"];
+                
+                if(topic.status=="FUTURE" && status=="CURRENT") {
+                    // This means that we're starting this item,
+                    // so we should mark it as such in the client.
+                    topic.startActor = actor;
+                    topic.startTime = new Date();
+                } else if(topic.status=="CURRENT" && status=="FUTURE") {
+                        // This means that we're starting this item,
+                        // so we should mark it as such in the client.
+                        topic.stopActor = actor;
+                        topic.stopTime = new Date();
+                }
                 
                 topic.status=status;
                 

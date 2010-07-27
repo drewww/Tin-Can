@@ -164,7 +164,7 @@ def _handleUpdateTopic(event):
     topic = state.get_obj(event.params["topicUUID"], model.Topic)
     status = event.params["status"]
     
-    topic.setStatus(status)
+    topic.setStatus(status, event.actor)
     
     return event
 
