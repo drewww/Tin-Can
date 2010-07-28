@@ -154,14 +154,18 @@ def _handleNewTopic(event):
     
 def _handleDeleteTopic(event):
     text = event.params["text"]
-    topic = state.get_obj(event.params["topicUUID"], Topic)
+    topic = state.get_obj(event.params["topicUUID"], model.Topic)
     
     event.meeting.removeTopic(topic)
     
     return event
     
 def _handleUpdateTopic(event):
-    logger.warning("Topic update not implemented.")
+    topic = state.get_obj(event.params["topicUUID"], model.Topic)
+    status = event.params["status"]
+    
+    topic.setStatus(status, event.actor)
+    
     return event
 
 def _handleTopicList(event):

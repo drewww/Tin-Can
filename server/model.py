@@ -617,6 +617,11 @@ class Topic(MeetingObject):
         
         self.startTime = startTime
         
+        if(status==None):
+            self.status = Topic.FUTURE
+        else:
+            self.status = status
+        
         if(startActorUUID!=None):
             self.startActor = state.get_obj(startActorUUID, Actor)
         else:
@@ -636,9 +641,18 @@ class Topic(MeetingObject):
         self.color = color
         
     
-    def setStatus(self, status):
-        if(status in [PAST, CURRENT, FUTURE]):
-           self.status = status
+    def setStatus(self, status, actor):
+        if(status in [Topic.PAST, Topic.CURRENT, Topic.FUTURE]):
+            
+            # look for some specific transitions
+            if(self.status==Topic.FUTURE and status==Topic.CURRENT):
+                self.startActor = actor
+                self.startTime = time.time()
+            elif(self.status==Topic.CURRENT and status==Topic.PAST):
+                self.stopActor = actor
+                self.stopTime = time.time()
+                
+            self.status = status
         else:
            logging.warning("Tried to set a topic with an unknown\
 status: " + str(status))

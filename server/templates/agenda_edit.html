@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=300" />
 	<script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
   <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
   <script src="../static/js/jquery.iphoneui.js" type="text/javascript" charset="utf-8"></script>
 
@@ -31,11 +30,28 @@
 				extraOptions.hide();
 			});			
 			items.splice(currentIndex, 1);
-			currentItemId = items[currentIndex];
-			updateCurrent();
-			currentClicked = $("#"+currentItemId);
+			$("#doneButton").hide();
+			$(".startButton").show();
+			// currentItemId = items[currentIndex];
+			// currentClicked = $("#"+currentItemId);
+			
+			
+
+
 		});
+		
 	});
+	
+		// function startNewItem(){
+		// 	console.log("THIS IS");
+		// 	console.log(this);
+		// 	
+		// 	$("#startButton").click(function(event) {
+		// 		
+		// 	})
+		// 	
+		// }
+		// 
 	
 	// visibility toggle for new item textbox input
 		function showTextbox(){
@@ -68,7 +84,7 @@
 			$("#itemTextbox")[0].value="";
 			$("#newItemInput")[0].style.display="none"
 			clone[0].className = "futureItem";
-			updateCurrent();
+
 
 			
 				clone.click(function (e) {
@@ -106,8 +122,39 @@
 							extraOptions.show();
 						}				
 					}
-			})				
+				})				
+			defineStartButtonClick();	
+
 		}
+		
+		function defineStartButtonClick() {
+			$(".startButton").click(function (e) {
+				console.log("THIS IS");
+				console.log(this.parentNode);
+				e.stopPropagation();
+				currentClicked = $(this.parentNode);
+				clickedIndex = items.indexOf(currentClicked[0].id);
+				temp = items[clickedIndex];
+				console.log("temp is............" + temp);
+				items.splice(clickedIndex, 1);
+				items.splice(0,0,temp);
+				lastCurrentElement = $("#"+currentItemId);
+				console.log("LAST CURRENT ELEMENT");
+				console.log(lastCurrentElement);
+				
+				currentItemId = $(this.parentNode)[0].id;
+				
+				firstFutureItem = items[1];
+				firstFutureItem = $("#"+firstFutureItem);
+				currentClicked.insertBefore(firstFutureItem);
+				currentClicked[0].className = "currentItem";
+				currentClicked.append($("#doneButton"));
+				$("#doneButton").show();
+				$(".startButton").hide();
+			});
+			
+		}
+			
 		
 		function deleteItem() {
 	
@@ -122,9 +169,6 @@
 				if (currentClicked[0].id == currentItemId) {
 					currentItemId = items[currentIndex];
 				}
-				
-				updateCurrent();	
-			
 			
 		}
 		
@@ -151,22 +195,6 @@
 				console.log(items);			
 				(currentClicked).insertAfter($("#"+currentItemId));
 
-			}
-		}
-		
-		function updateCurrent() { 
-			console.log('length is ' + items.length);
-
-			// if there's only one item left, make that the current item (mainly for the initial case when first adding items to agenda)
-			if (items.length == 1) {
-				console.log('length is 1 and item is ' + items[0]);
-				currentItemId = items[0];
-				$("#"+currentItemId)[0].className = "currentItem";
-				$(".currentItem").append($("#doneButton"));
-			}
-			else{
-				$("#"+currentItemId)[0].className = "currentItem";
-				$(".currentItem").append($("#doneButton"));		
 			}
 		}
 		
@@ -251,12 +279,24 @@
 	.futureItem{
 		background-color: #DFEAED;
 	}
+	
+	.startButton{
+/*		visibility: hidden;*/
+	}
+	
+	.currentItem > .startButton{
+		visibility: hidden;
+	}
+	
+	.doneItem > .startButton{
+		visibility: hidden;
+	}
 	</style>
 </head>
 <body>
 <div id="border">
 	
-	<div id="header">Edit 
+	<div id="header">Topics 
 
 		<input type="button" value="Add" onclick="showTextbox()"> </div>
 	
@@ -268,14 +308,15 @@
 <div id="container">
 
 	<div id="futureTemplate" class="template">
-		<span id="text"></span>
-		
+		<span id="text"></span><br />
+		<button type="submit" class="startButton">Start</button>
 	</div>
 	
 	<div id="extraOptions">
 		<button type="submit" id="deleteButton" onclick="deleteItem();">Delete</button>
 		<button type="submit" onclick="makeNext();">Make Next</button>
-		<button type="submit" id="doneButton"> Done</button>
+		<button type="submit" id="doneButton">Done</button>
+		
 	</div>
 </div>
 

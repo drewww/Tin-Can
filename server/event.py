@@ -164,9 +164,11 @@ self.actor to be None.")
                     logging.debug("Tried to convert a param into a uuid and\
 failed" + str(self.params[paramKey]))
             except Exception, e:
-                logging.debug("Failed to convert a param into a UUID, probably\
- wasn't an object to begin with. exception: " + str(e) + ", object: "
-+ str(self.params[paramKey]))
+                # Fall back to just using the object directly. 
+#                 logging.debug("Failed to convert a param into a UUID, probably\
+#  wasn't an object to begin with. exception: " + str(e) + ", object: "
+# + str(self.params[paramKey]))
+                d["params"][paramKey] = self.params[paramKey]
                 
             
         

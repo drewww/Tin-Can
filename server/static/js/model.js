@@ -201,7 +201,13 @@ function Topic(uuid, meetingUUID, creatorUUID, text, status, startTime,
         this.creator = creatorUUID;
         this.createdAt = new Date(createdAt*1000);
         this.text = text;
-        this.status = status;
+        
+        if(status==null) {
+            this.status = "FUTURE";
+        } else {
+            this.status = status;
+        }
+        
         this.startTime = startTime;
         this.stopTime = stopTime;
         this.startActor = startActorUUID;
