@@ -232,6 +232,30 @@ ConnectionManager.prototype = {
 
                 console.log("Made a new topic!");
                 break;
+            
+            case "UPDATE_TOPIC":
+                
+                topic = state.getObj(ev["params"]["topicUUID"], Topic);
+                actor = state.getObj(ev.actorUUID, User);
+                
+                status = ev["params"]["status"];
+                
+                if(topic.status=="FUTURE" && status=="CURRENT") {
+                    // This means that we're starting this item,
+                    // so we should mark it as such in the client.
+                    topic.startActor = actor;
+                    topic.startTime = new Date();
+                } else if(topic.status=="CURRENT" && status=="FUTURE") {
+                        // This means that we're starting this item,
+                        // so we should mark it as such in the client.
+                        topic.stopActor = actor;
+                        topic.stopTime = new Date();
+                }
+                
+                topic.status=status;
+                
+                console.log("Set topic status to " + status)
+                break;
                 
             case "NEW_TASK":
                 // we should only be getting this message for our current
@@ -317,7 +341,7 @@ ConnectionManager.prototype = {
         for(key in this.eventListeners) {
             listener = this.eventListeners[key];
             
-            try {
+         try {
                 listener.connectionEvent(ev);
             } catch (err) {
                 console.log("Tried to send event " + ev.eventType + " to "
@@ -490,6 +514,23 @@ ConnectionManager.prototype = {
             },
             error: function() {
                 this.publishEvent(this.generateEvent("NEW_TOPIC_COMPLETE",
+                    {}, false));
+            }
+        });
+    },
+    
+    updateTopic: function(topicUUID, status) {
+        $.ajax({
+            url: '/topics/update',
+            type: "POST",
+            context: this,
+            data: {"status":status, "topicUUID":topicUUID},
+            success: function () {
+                this.publishEvent(this.generateEvent("UPDATE_TOPIC_COMPLETE",
+                    {}));
+            },
+            error: function() {
+                this.publishEvent(this.generateEvent("UPDATE_TOPIC_COMPLETE",
                     {}, false));
             }
         });

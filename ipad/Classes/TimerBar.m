@@ -28,6 +28,8 @@
 		lengthOfSecond=0;
 		differenceInTime=0;
 		
+		clock = [NSTimer scheduledTimerWithTimeInterval:.5 target:self selector:@selector(clk) userInfo:nil repeats:YES];
+		[clock retain]; 
     }
     return self;
 }
@@ -40,8 +42,8 @@
 	//else{
 	//	lengthOfSecond= 300/3600.0;
 	//}
-	NSLog(@"lengthOfSecond:%f",lengthOfSecond);
-	NSLog(@"diff:%f",diff);
+	//NSLog(@"lengthOfSecond:%f",lengthOfSecond);
+	//NSLog(@"diff:%f",diff);
 	
 }	
 -(UIColor *)findNewColor{
@@ -52,7 +54,12 @@
 	return [colorWheel objectAtIndex:indexForColorWheel];
 	
 	
-}	
+}
+
+- (void)clk {
+    [self updateTime];
+	[self setNeedsDisplay];
+} 
 -(void)markHoursWithTimes:(NSMutableArray *)times withContext:(CGContextRef) ctx{
 	for(NSNumber *time in times){
 		float elapsedTime = abs([ startTime  timeIntervalSinceDate:time ]);
@@ -96,15 +103,16 @@
 		i++;
 	}
 }
-
+-(void)updateTime{
+	// for testing
+	testDate= [[ testDate addTimeInterval:60] retain];
+}
+	
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect {
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
-	// for testing
-	testDate= [[ testDate addTimeInterval:60] retain];
-	 
-	
+
 	
 	[self setLength];
 	[self setNeedsDisplay];

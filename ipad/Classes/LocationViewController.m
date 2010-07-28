@@ -9,7 +9,9 @@
 #import "LocationViewController.h"
 #import "LocationCell.h"
 #import "LoginMasterViewController.h"
-
+#import "StateManager.h"
+#import "ConnectionManager.h"
+#import "Location.h"
 @implementation LocationViewController
 
 @class LoginMasterViewController;
@@ -21,7 +23,8 @@
 - (id)initWithFrame:(CGRect)frame withController:(LoginMasterViewController *)control{
 	if (self = [super init]) {
 		
-		self.view = [[[UITableView alloc] initWithFrame:CGRectMake(CGRectGetMinX(frame), CGRectGetMinY(frame), 400, 500) style:UITableViewStyleGrouped] autorelease];
+		self.view = [[[UITableView alloc] 
+					  initWithFrame:CGRectMake(CGRectGetMinX(frame), CGRectGetMinY(frame), 400, 500) style:UITableViewStyleGrouped] autorelease];
 		[self.view setBackgroundColor:[UIColor clearColor]];
 		
 		[(UITableView *)self.view setDelegate:self];
@@ -30,24 +33,12 @@
 		
 		controller=control;
 		
+		ConnectionManager *conMan = [ConnectionManager sharedInstance];
+		[conMan addListener:self];
 		
-		//fills our List of Possible Locations
-		self.locList = [NSMutableArray array];
-		[locList addObject:@"Here"];
-		[locList addObject:@"There"];
-		[locList addObject:@"Everywhere"];
-		[locList addObject:@"Underwear"];
-		[locList addObject:@"In Your Hair"];
-		[locList addObject:@"Fight a Bear"];
-		[locList addObject:@"With Your Chair"];
-		[locList addObject:@"Here"];
-		[locList addObject:@"There"];
-		[locList addObject:@"Everywhere"];
-		[locList addObject:@"Underwear"];
-		[locList addObject:@"In Your Hair"];
-		[locList addObject:@"Fight a Bear"];
-		[locList addObject:@"With Your Chair"];
-		
+		self.locList = [[NSMutableArray alloc] initWithArray:[[[StateManager sharedInstance] getLocations] allObjects]];
+		NSLog(@" Locations list: %@", [[StateManager sharedInstance] getLocations]);
+
 		[self.view setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 		
 	}
@@ -100,10 +91,11 @@
         testCell = [[[LocationCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
         testCell.frame = CGRectMake(0.0, 0.0, 320.0, ROW_HEIGHT);
     }
-    
-    NSString *loc = [locList objectAtIndex:indexPath.row];
-	testCell.loc = loc;
- 	
+    //
+    Location *loc = [locList objectAtIndex:indexPath.row];
+	testCell.loc = loc.name;
+ 	NSLog(@" Location names: %@", loc.name);
+
     return testCell;
 }
 

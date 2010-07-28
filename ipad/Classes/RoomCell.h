@@ -17,13 +17,12 @@
 	NSString *counted;
 	
 	TimerBar *timerBar;
-	NSTimer *clock;
+	
 }
 
 - (void) setRoom:(NSString *)room;
 - (void) setMeeting:(NSString *)meeting;
 - (void) setCounted:(NSString *)counted;
-- (void)clk;
 @property (nonatomic, retain) NSString *room;
 @property (nonatomic, retain) NSString *meeting;
 @property (nonatomic, retain) NSString *counted;

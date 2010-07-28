@@ -25,8 +25,7 @@
         
         [self.contentView addSubview:roomCellView];
 		
-		clock = [NSTimer scheduledTimerWithTimeInterval:.5 target:self selector:@selector(clk) userInfo:nil repeats:YES];
-		[clock retain]; 
+		
 		NSDate *startingTime = [NSDate date];
 		NSLog(@"starting time in seconds: %f", [startingTime timeIntervalSince1970]);
 		NSTimeInterval startingTimeInSeconds = [startingTime timeIntervalSince1970] -1800;
@@ -44,9 +43,7 @@
     }
     return self;
 }
-- (void)clk {
-    [timerBar setNeedsDisplay];
-} 
+
 - (void)setRoom:(NSString *)newRoom {
     
     [roomCellView setRoom:newRoom];

@@ -190,8 +190,10 @@ class Meeting(YarnBaseType):
         
         d["locations"] = [location.uuid for location in self.locations]
         
-        d["topics"] = [topic.uuid for topic in self.topics]
-        d["tasks"] = [task.uuid for task in self.tasks]
+
+        d["tasks"] = [task.getDict() for task in self.tasks]
+        d["topics"] = [topic.getDict() for topic in self.topics]
+
         
         # Should these be just UUIDs of participants? Doing everything about
         # them, for now.
@@ -644,12 +646,18 @@ class Topic(MeetingObject):
     def __init__(self, meetingUUID, creatorUUID, text, startTime=None,
         stopTime=None, status=None, startActorUUID=None, stopActorUUID=None,
         color=None, topicUUID=None, createdAt=None):
+        
         MeetingObject.__init__(self, creatorUUID, meetingUUID, createdAt,
             topicUUID)
         
         self.text = text
         
         self.startTime = startTime
+        
+        if(status==None):
+            self.status = Topic.FUTURE
+        else:
+            self.status = status
         
         if(startActorUUID!=None):
             self.startActor = state.get_obj(startActorUUID, Actor)
@@ -670,9 +678,18 @@ class Topic(MeetingObject):
         self.color = color
         
     
-    def setStatus(self, status):
-        if(status in [PAST, CURRENT, FUTURE]):
-           self.status = status
+    def setStatus(self, status, actor):
+        if(status in [Topic.PAST, Topic.CURRENT, Topic.FUTURE]):
+            
+            # look for some specific transitions
+            if(self.status==Topic.FUTURE and status==Topic.CURRENT):
+                self.startActor = actor
+                self.startTime = time.time()
+            elif(self.status==Topic.CURRENT and status==Topic.PAST):
+                self.stopActor = actor
+                self.stopTime = time.time()
+                
+            self.status = status
         else:
            logging.warning("Tried to set a topic with an unknown\
 status: " + str(status))
@@ -686,6 +703,7 @@ status: " + str(status))
 
     def getDict(self):
         d = MeetingObject.getDict(self)
+        
         d["text"] = self.text
         d["startTime"] = self.startTime
         d["stopTime"] = self.stopTime

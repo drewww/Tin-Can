@@ -244,15 +244,21 @@ static ConnectionManager *sharedInstance = nil;
 }
 
 - (void) addListener:(NSObject *)listener {
+    @synchronized(self) {
     [eventListeners addObject:listener];
     NSLog(@"Added listener. Total listeners: %@", eventListeners);
+    }
+
 }
 
 - (void) removeListener:(NSObject *)listener {
+    @synchronized(self) {
     [eventListeners removeObject:listener];
+    }
 }
 
 - (void) publishEvent:(Event *)e {
+    @synchronized(self) {
     NSLog(@"listeners: %@", eventListeners);
     for(NSObject *listener in eventListeners) {
         NSLog(@"publishing to: %@", listener);
@@ -261,6 +267,7 @@ static ConnectionManager *sharedInstance = nil;
         else {
             NSLog(@"One of our event listeners didn't respond to 'handleConnectionEvent:'");
         }
+    }
     }
 }
 

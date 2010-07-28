@@ -154,14 +154,18 @@ def _handleNewTopic(event):
     
 def _handleDeleteTopic(event):
     text = event.params["text"]
-    topic = state.get_obj(event.params["topicUUID"], Topic)
+    topic = state.get_obj(event.params["topicUUID"], model.Topic)
     
     event.meeting.removeTopic(topic)
     
     return event
     
 def _handleUpdateTopic(event):
-    logger.warning("Topic update not implemented.")
+    topic = state.get_obj(event.params["topicUUID"], model.Topic)
+    status = event.params["status"]
+    
+    topic.setStatus(status, event.actor)
+    
     return event
 
 def _handleTopicList(event):
@@ -259,7 +263,7 @@ EventType("UPDATE_TOPIC",   ["topicUUID", "status"],_handleUpdateTopic, False,
     True)
 EventType("SET_TOPIC_LIST", ["text"],               _handleTopicList, False,
     True)
-    
+
 EventType("NEW_TASK",      ["text"],                _handleNewTask, False,
     True)
 EventType("DELETE_TASK",   ["taskUUID"],            _handleDeleteTask, False,
@@ -268,3 +272,4 @@ EventType("EDIT_TASK",   ["taskUUID", "text"],      _handleEditTask, False,
     True)
 EventType("ASSIGN_TASK", ["taskUUID", "assignedTo"],_handleAssignTask, False,
     True)
+
