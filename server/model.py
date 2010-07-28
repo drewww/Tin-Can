@@ -185,7 +185,7 @@ class Meeting(YarnBaseType):
         
         d["locations"] = [location.uuid for location in self.locations]
         
-        d["topics"] = [topic.uuid for topic in self.topics]
+        d["topics"] = [topic.getDict() for topic in self.topics]
         
         # Should these be just UUIDs of participants? Doing everything about
         # them, for now.
@@ -610,6 +610,7 @@ class Topic(MeetingObject):
     def __init__(self, meetingUUID, creatorUUID, text, startTime=None,
         stopTime=None, status=None, startActorUUID=None, stopActorUUID=None,
         color=None, topicUUID=None, createdAt=None):
+        
         MeetingObject.__init__(self, creatorUUID, meetingUUID, createdAt,
             topicUUID)
         
@@ -666,6 +667,7 @@ status: " + str(status))
 
     def getDict(self):
         d = MeetingObject.getDict(self)
+        
         d["text"] = self.text
         d["startTime"] = self.startTime
         d["stopTime"] = self.stopTime

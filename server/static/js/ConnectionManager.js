@@ -255,7 +255,7 @@ ConnectionManager.prototype = {
                 topic.status=status;
                 
                 console.log("Set topic status to " + status)
-                
+                break;
                 
             case "NEW_DEVICE":
                 // I don't think we care about this, do we?
