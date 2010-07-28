@@ -9,6 +9,9 @@
 #import "RoomViewController.h"
 #import "RoomCell.h"
 #import "LoginMasterViewController.h"
+#import "Room.h"
+#import "StateManager.h"
+#import "ConnectionManager.h"
 
 
 @implementation RoomViewController
@@ -32,6 +35,12 @@
 		self.roomList = [NSMutableArray array];
 		self.meetingList = [NSMutableArray array];
 		self.countedList = [NSMutableArray array];
+		
+		//ConnectionManager *conMan = [ConnectionManager sharedInstance];
+		//[conMan addListener:self];
+		
+		//self.roomList = [[NSMutableArray alloc] initWithArray:[[[StateManager sharedInstance] getRooms] allObjects]];
+		//NSLog(@" Locations list: %@", [[StateManager sharedInstance] getLocations]);
 		
 		[roomList addObject:@"Queen's Garden"];
 		[roomList addObject:@"Chessboard Forest"];

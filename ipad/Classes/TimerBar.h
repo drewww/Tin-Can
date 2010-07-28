@@ -25,6 +25,7 @@
 	CGFloat lengthOfSecond;
 	CGFloat differenceInTime;
 	NSMutableArray *timesToMarkHours;
+	NSTimer *clock;
 	
 }
 
@@ -33,5 +34,6 @@
 -(void)drawBarWithTimes:(NSMutableArray *)times withContext:(CGContextRef) context;
 -(void)markHoursWithTimes:(NSMutableArray *)times withContext:(CGContextRef) ctx;
 -(void)setLength;
-
+-(void)updateTime;
+- (void)clk;
 @end

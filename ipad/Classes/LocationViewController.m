@@ -45,13 +45,7 @@
 	return self;
 }
 
-//- (void) handleConnectionEvent:(Event *)event {
-//	NSLog(@"Received event: %d", event.type);
-	
-//	if(event.type==kGET_STATE_COMPLETE) {
-				
-//	}
-//}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
 	return NO;
 }
