@@ -7,21 +7,24 @@
 //
 
 #import "BaseMeetingObject.h"
+#import "StateManager.h"
 
 
+@implementation BaseMeetingObject
 @synthesize creator;
 @synthesize createdAt;
 @synthesize meeting;
 
-@implementation BaseMeetingObject
 
-- (id) initWithUUID:(UUID *)myUUID withCreatorUUID:(UUID *)myCreatorUUID createdAt:(NSDate *)myCreatedAt 
-    withMeetingUUID:(UUID *)myMeetingUUID {
+- (id) initWithUUID:(UUID *)myUUID withCreatorUUID:(UUID *)myCreatorUUID withMeetingUUID:(UUID *)myMeetingUUID
+          createdAt:(NSDate *)myCreatedAt {
     
     self = [super initWithUUID:myUUID];
     
     creatorUUID = myCreatorUUID;
     meetingUUID = myMeetingUUID;
+    
+    return self;
 }
 
 - (void) unswizzle {
