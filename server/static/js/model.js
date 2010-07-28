@@ -135,6 +135,7 @@ function Meeting(uuid, title, room) {
     this.locs = [];
     
     this.topics = [];
+    this.tasks = [];
     
     state.putObj(this.uuid, this);
 }
@@ -179,6 +180,14 @@ Meeting.prototype = {
     
     removeTopic: function(topic) {
         this.topics = array_remove(this.topics, topic);
+    },
+    
+    addTask: function(task) {
+        this.tasks.push(task);
+    },
+    
+    removeTask: function(task) {
+        this.tasks = array_remove(this.tasks, task);
     },
     
     unswizzle: function() {
@@ -231,6 +240,37 @@ Topic.prototype = {
             this.stopActor = state.getObj(this.stopActor, User);
         
         this.meeting.addTopic(this);
+    }
+}
+
+function Task(uuid, meetingUUID, creatorUUID, text, assignedToUUID, 
+    assignedByUUID, createdAt) {
+        
+        this.uuid = uuid;
+        this.meeting = meetingUUID;
+        this.creator = creatorUUID;
+        this.createdAt = new Date(createdAt*1000);
+        this.text = text;
+        this.assignedTo = assignedToUUID;
+        this.assignedBy = assignedByUUID;
+        
+        state.putObj(this.uuid, this);
+}
+
+Task.prototype = {
+    
+    unswizzle: function() {
+        
+        this.meeting = state.getObj(this.meeting, Meeting);
+        this.creator = state.getObj(this.creator, User);
+        
+        if(this.assignedTo != null)
+            this.assignedTo = state.getObj(this.assignedTo, User);
+
+        if(this.assignedBy != null)
+            this.assignedBy = state.getObj(this.assignedBy, Actor);
+        
+        this.meeting.addTask(this);
     }
 }
 

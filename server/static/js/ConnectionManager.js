@@ -125,7 +125,7 @@ ConnectionManager.prototype = {
         
         // Depending on the event type, update the internal state
         // appropriately
-        
+        console.log(ev);
         switch(ev.eventType) {
             case "ADD_ACTOR_DEVICE":
                 // We don't really care about this one, actually.
@@ -256,6 +256,46 @@ ConnectionManager.prototype = {
                 
                 console.log("Set topic status to " + status)
                 break;
+                
+            case "NEW_TASK":
+                // we should only be getting this message for our current
+                // meeting.
+                taskData = ev["results"]["task"];
+                console.log("Task data coming next");
+                console.log(taskData);
+                task = new Task(taskData["uuid"], taskData["meeting"],
+                    taskData["createdBy"], taskData["text"],
+                    taskData["status"], taskData["startTime"],
+                    taskData["stopTime"], taskData["startActor"],
+                    taskData["stopActor"], taskData["color"],
+                    taskData["createdAt"]);
+                task.unswizzle();
+
+                console.log("Made a new task!");
+                break;
+            
+            case "DELETE_TASK":
+                task = state.getObj(ev["params"]["taskUUID"],Task);
+                console.log(ev["params"]["taskUUID"]);
+                meeting = task.meeting
+                console.log("Deleting task:" + task.uuid)
+                
+                meeting.removeTask(task);
+                
+            case "EDIT_TASK":
+                task = state.getObj(ev["params"]["taskUUID"],Task);
+                text = ev["params"]["text"];
+                
+                console.log("Task "+task.uuid+ " is "+text);
+                task.text=text;
+                
+            case "ASSIGN_TASK":
+                task = state.getObj(ev["params"]["taskUUID"],Task);
+                assignedBy = state.getObj(ev.actorUUID,Actor);
+                assignedTo = state.getObj(ev["params"]["assignedToUUID"],User);
+                
+                task.assignedBy=assignedBy;
+                task.assignedTo=assignedTo;
                 
             case "NEW_DEVICE":
                 // I don't think we care about this, do we?
@@ -508,6 +548,74 @@ ConnectionManager.prototype = {
             },
             error: function() {
                 this.publishEvent(this.generateEvent("DELETE_TOPIC_COMPLETE",
+                    {}, false));
+            }
+        });
+    },
+    
+    addTask: function(text) {
+        $.ajax({
+            url: '/tasks/add',
+            type: "POST",
+            context: this,
+            data: {"text":text},
+            success: function () {
+                this.publishEvent(this.generateEvent("NEW_TASK_COMPLETE",
+                    {}));
+            },
+            error: function() {
+                this.publishEvent(this.generateEvent("NEW_TASK_COMPLETE",
+                    {}, false));
+            }
+        });
+    },
+    
+    deleteTask: function(taskUUID) {
+        $.ajax({
+            url: '/tasks/delete',
+            type: "POST",
+            context: this,
+            data: {"taskUUID":taskUUID},
+            success: function () {
+                this.publishEvent(this.generateEvent("DELETE_TASK_COMPLETE",
+                    {}));
+            },
+            error: function() {
+                this.publishEvent(this.generateEvent("DELETE_TASK_COMPLETE",
+                    {}, false));
+            }
+        });
+    },
+    
+    editTask: function(taskUUID, text) {
+        $.ajax({
+            url: '/tasks/edit',
+            type: "POST",
+            context: this,
+            data: {"taskUUID":taskUUID,"text":text},
+            success: function () {
+                this.publishEvent(this.generateEvent("EDIT_TASK_COMPLETE",
+                    {}));
+            },
+            error: function() {
+                this.publishEvent(this.generateEvent("EDIT_TASK_COMPLETE",
+                    {}, false));
+            }
+        });
+    },
+    
+    assignTask: function(taskUUID,assignedToUUID) {
+        $.ajax({
+            url: '/tasks/assign',
+            type: "POST",
+            context: this,
+            data: {"taskUUID":taskUUID,"assignedToUUID":assignedToUUID},
+            success: function () {
+                this.publishEvent(this.generateEvent("ASSIGN_TASK_COMPLETE",
+                    {}));
+            },
+            error: function() {
+                this.publishEvent(this.generateEvent("ASSIGN_TASK_COMPLETE",
                     {}, false));
             }
         });

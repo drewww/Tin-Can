@@ -172,7 +172,40 @@ def _handleTopicList(event):
     logger.warning("Topic list not implemented.")
     return event
 
+def _handleNewTask(event):
+    text = event.params["text"]
 
+    # TODO write a real color picker here.
+    newTask = model.Task(event.meeting.uuid, event.actor.uuid, text)
+
+    event.meeting.addTask(newTask)
+    event.addResult("task", newTask)
+    return event
+
+def _handleDeleteTask(event):
+    logging.debug(event.params["taskUUID"])
+    task = state.get_obj(event.params["taskUUID"], model.Task)
+    logging.debug(task)
+    
+    event.meeting.removeTask(task)
+
+    return event
+
+def _handleEditTask(event):
+    text = event.params["text"]
+    task = state.get_obj(event.params["taskUUID"], model.Task)
+    
+    task.setText(text)
+    return event
+    
+def _handleAssignTask(event):
+    task = state.get_obj(event.params["taskUUID"], model.Task)
+    assignedBy = state.get_obj(event.actor.uuid, model.Actor)
+    assignedTo = event.params["assignedTo"]
+    
+    task.assign(assignedBy,assignedTo)
+    
+    return event
 
 # This class just wraps the different features of an event into a nice 
 # container. Different events expect different parameters and are dispatched
@@ -230,6 +263,13 @@ EventType("UPDATE_TOPIC",   ["topicUUID", "status"],_handleUpdateTopic, False,
     True)
 EventType("SET_TOPIC_LIST", ["text"],               _handleTopicList, False,
     True)
-    
-    
-    
+
+EventType("NEW_TASK",      ["text"],                _handleNewTask, False,
+    True)
+EventType("DELETE_TASK",   ["taskUUID"],            _handleDeleteTask, False,
+    True)
+EventType("EDIT_TASK",   ["taskUUID", "text"],      _handleEditTask, False,
+    True)
+EventType("ASSIGN_TASK", ["taskUUID", "assignedTo"],_handleAssignTask, False,
+    True)
+

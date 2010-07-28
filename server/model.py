@@ -110,6 +110,7 @@ class Meeting(YarnBaseType):
         self.eventHistory = []
         
         self.topics = []
+        self.tasks = []
         
         
     def userJoinedLocation(self, user, location):
@@ -161,7 +162,11 @@ class Meeting(YarnBaseType):
         # to get a UUID list or a list of objects?
         pass
         
-        
+    def addTask(self, task):
+        self.tasks.append(task)
+
+    def removeTask(self, task):
+        self.tasks.remove(task)
     
     def getDevices(self):
         devices = set()
@@ -185,7 +190,10 @@ class Meeting(YarnBaseType):
         
         d["locations"] = [location.uuid for location in self.locations]
         
+
+        d["tasks"] = [task.getDict() for task in self.tasks]
         d["topics"] = [topic.getDict() for topic in self.topics]
+
         
         # Should these be just UUIDs of participants? Doing everything about
         # them, for now.
@@ -223,10 +231,10 @@ class Meeting(YarnBaseType):
         self.eventHistory.append(eventToSend)
         
     def __str__(self):
-        return "[meet.%s@%s %s locs:%d users:%d events:%d topics:%d]"%(
+        return "[meet.%s@%s %s locs:%d users:%d events:%d topics:%d tasks:%d]"%(
             self.uuid[0:6], self.room.name, self.title, len(self.locations),
             len(self.getCurrentParticipants()), len(self.eventHistory),
-            len(self.topics))
+            len(self.topics), len(self.tasks))
             
 
 class Device(YarnBaseType):
@@ -585,16 +593,44 @@ class MeetingObject(YarnBaseType):
 class Task(MeetingObject):
     """Store information about a task."""
     
-    def __init__(self, meetingUUID, creatorUUID, text, taskUUID=None):
-        MeetingObject.__init__(self, creatorUUID, meetingUUID, taskUUID)
+    def __init__(self, meetingUUID, creatorUUID, text, assignedByUUID=None, 
+        assignedToUUID=None,taskUUID=None, createdAt=None):
+        MeetingObject.__init__(self, creatorUUID, meetingUUID, createdAt, taskUUID)
         self.text = text
-        self.ownedBy = None
+        
+        if(assignedByUUID!=None):
+            self.assignedBy = state.get_obj(assignedByUUID, Actor)
+        else:
+            self.assignedBy = None
+        
+        if(assignedToUUID!=None):
+            self.assignedTo = state.get_obj(assignedToUUID, User)
+        else:
+            self.assignedTo = None    
+        
         
     def getDict(self):
         d = MeetingObject.getDict(self)
         d["text"] = self.text
-        d["ownedBy"] = self.ownedBy.uuid
+        
+        if(self.assignedTo!=None):
+            d["assignedTo"] = self.assignedTo.uuid
+        else:
+            d["assignedTo"] = None
+        
+        if(self.assignedBy!=None):
+            d["assignedBy"] = self.assignedBy.uuid
+        else:
+            d["assignedBy"] = None
+
         return d
+    
+    def setText(self, text):
+        self.text = text
+    
+    def assign(self, assignedBy, assignedTo):
+        self.assignedBy=assignedBy
+        self.assignedTo=assignedTo
 
 class Topic(MeetingObject):
     """Store information about a topic."""
@@ -684,6 +720,8 @@ status: " + str(status))
             d["stopActor"] = None
             
         return d
+
+    
 
 
 

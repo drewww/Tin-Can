@@ -23,20 +23,30 @@
 
 					conn.addListener({connectionEvent: function(e) {
 						console.log("event: " + e.eventType);
-						
-						switch(e.eventType) {
-							case "NEW_TOPIC":
-								topic = state.getObj(e.results.topic.uuid,
-									Topic);
-								
-								$('#topics').append("<option value='" + 
-									topic.uuid + "'>" + topic.text
-									+ "</option>");
-								break;
+
+						switch(e.eventType){
+							case "NEW_TASK":
+								for (key in state.meetings){
+									for (task in state.meetings[key].tasks){
+										text = state.meetings[key].tasks[task].text;
+										uuid = state.meetings[key].tasks[task].uuid;
+										newtask = $("#tasktemplate").clone();
+										newtask.val(uuid);
+										newtask.html(text);
+										$("#tasks").append(newtask);
+									}
+								}
+								case "NEW_TOPIC":
+									topic = state.getObj(e.results.topic.uuid,
+										Topic);
+
+									$('#topics').append("<option value='" + 
+										topic.uuid + "'>" + topic.text
+										+ "</option>");
+									break;	
 						}
-					}
-					
-					});
+					}});
+
 					
 					// Setup the button actions.
 					$("#login").click(function() {
@@ -68,9 +78,25 @@
 						conn.addTopic($('#topic_input')[0].value);
 					})
 					
+					$('#add_task_button').click(function() {
+						conn.addTask($('#task_input')[0].value);
+					})
+					
+					$('#delete_task_button').click(function() {
+						console.log($('#tasks')[0].value);
+						conn.deleteTask($('#tasks')[0].value);
+					})
+					
+					$('#edit_task_button').click(function() {
+						conn.editTask($('#tasks')[0].value, $('#task_input')[0].value);
+					})
+					
+					$('#assign_task_button').click(function() {
+						conn.assignTask($('#tasks')[0].value, $('#user')[0].value);
 					$('#set_status').click(function() {
 						conn.updateTopic($('#topics')[0].value, 
 						$('#status')[0].value);
+
 					})
 				});
 		
@@ -125,6 +151,15 @@
 </select>
 <button id="set_status">Set Status</button>
 
+<input type="text" name="task" value="task" id="task_input">
+<button id="add_task_button">Add Task</button>
+<select name="tasks" id="tasks" onchange="" size="1">
+	<option id = "tasktemplate" value="option1">option1</option>
+	<option value="option2">option2</option>
+</select>
+<button id="delete_task_button">Delete Task</button>
+<button id="edit_task_button">Edit Task</button>
+<button id="assign_task_button">Assign Task</button>
 
 
 <div id="response">
