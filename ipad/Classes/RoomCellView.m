@@ -43,22 +43,22 @@
 //Fills Cell with Information on the room
 - (void)drawRect:(CGRect)rect {
 	NSString *string = room ;
-	NSString *meetings;
-	if (meeting!= NULL) {
+	//NSString *meetings;
+	//if (meeting!= NULL) {
+//	
+//		meetings = [@"        \n\n  Meeting: " stringByAppendingString:meeting];
+//	}
+//	else{
+//		meetings = [@"        \n\n  Meeting:" stringByAppendingString:@" No meeting"];
+//	}
 	
-		meetings = [@"        \n\n  Meeting: " stringByAppendingString:meeting];
-	}
-	else{
-		meetings = [@"        \n\n  Meeting:" stringByAppendingString:@" No meeting"];
-	}
-	
-	NSString *countedPeople=[counted stringByAppendingString:@"    "];
-	NSString *numberPeople = [@"             \n\n# Attending:" stringByAppendingString: countedPeople];
+	//NSString *countedPeople=[counted stringByAppendingString:@"    "];
+	//NSString *numberPeople = [@"             \n\n# Attending:" stringByAppendingString: countedPeople];
 	
 	[[UIColor blackColor] set];
     [string drawInRect:self.bounds withFont:[UIFont systemFontOfSize:18] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentLeft];
-	[numberPeople drawInRect:self.bounds withFont:[UIFont systemFontOfSize:12] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentRight];
-	[meetings drawInRect:self.bounds withFont:[UIFont systemFontOfSize:12] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentLeft];
+	//[numberPeople drawInRect:self.bounds withFont:[UIFont systemFontOfSize:12] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentRight];
+	//[meetings drawInRect:self.bounds withFont:[UIFont systemFontOfSize:12] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentLeft];
 }
 
 - (void)dealloc {

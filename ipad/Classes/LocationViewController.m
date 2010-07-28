@@ -37,7 +37,7 @@
 		[conMan addListener:self];
 		
 		self.locList = [[NSMutableArray alloc] initWithArray:[[[StateManager sharedInstance] getLocations] allObjects]];
-		NSLog(@" Locations list: %@", [[StateManager sharedInstance] getLocations]);
+		//NSLog(@" Locations list: %@", [[StateManager sharedInstance] getLocations]);
 
 		[self.view setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 		
@@ -94,7 +94,7 @@
     //
     Location *loc = [locList objectAtIndex:indexPath.row];
 	testCell.loc = loc.name;
- 	NSLog(@" Location names: %@", loc.name);
+ 	//NSLog(@" Location names: %@", loc.name);
 
     return testCell;
 }

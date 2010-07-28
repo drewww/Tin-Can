@@ -22,9 +22,9 @@ static ConnectionManager *sharedInstance = nil;
     self = [super init];
     
     parser = [[[SBJSON alloc] init] retain];
-    
+   @synchronized(self) {
     eventListeners = [[NSMutableSet set] retain];
-    
+   }
     return self;
 }
 
@@ -244,30 +244,24 @@ static ConnectionManager *sharedInstance = nil;
 }
 
 - (void) addListener:(NSObject *)listener {
-    @synchronized(self) {
     [eventListeners addObject:listener];
     NSLog(@"Added listener. Total listeners: %@", eventListeners);
-    }
-
 }
 
 - (void) removeListener:(NSObject *)listener {
-    @synchronized(self) {
     [eventListeners removeObject:listener];
-    }
 }
 
 - (void) publishEvent:(Event *)e {
-    @synchronized(self) {
+
     NSLog(@"listeners: %@", eventListeners);
-    for(NSObject *listener in eventListeners) {
+    for(NSObject *listener in [[eventListeners copy] autorelease]) {
         NSLog(@"publishing to: %@", listener);
         if([listener respondsToSelector:@selector(handleConnectionEvent:)])
             [listener handleConnectionEvent:e];
         else {
             NSLog(@"One of our event listeners didn't respond to 'handleConnectionEvent:'");
         }
-    }
     }
 }
 
