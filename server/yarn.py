@@ -52,6 +52,11 @@ class YarnApplication(tornado.web.Application):
             (r"/topics/update", UpdateTopicHandler),
             (r"/topics/list", ListTopicHandler),
             
+            (r"/tasks/add", AddTaskHandler),
+            (r"/tasks/delete", DeleteTaskHandler),
+            (r"/tasks/edit", EditTaskHandler),
+            (r"/tasks/assign", AssignTaskHandler),
+            
             (r"/users/", AllUsersHandler),
             (r"/users/add", AddUserHandler),
             
@@ -503,6 +508,49 @@ class ListTopicHandler(BaseHandler):
         meetingUUID = self.get_argument("")
         topic = self.get_argument("topic")
 
+class AddTaskHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    def post(self):
+        actor = self.get_current_actor()
+
+        newTaskEvent = Event("NEW_TASK", actor.uuid ,
+            actor.getMeeting().uuid,
+            params={"text": self.get_argument("text")})
+        newTaskEvent.dispatch()
+        return
+
+class DeleteTaskHandler(BaseHandler):
+    def post(self):
+        actor = self.get_current_actor()
+        
+        logging.debug(self.get_argument("taskUUID"))
+        deleteTaskEvent = Event("DELETE_TASK", actor.uuid,
+            actor.getMeeting().uuid,
+            params={"taskUUID":self.get_argument("taskUUID")})
+        deleteTaskEvent.dispatch()
+        return
+
+class EditTaskHandler(BaseHandler):
+    def post(self):
+        actor = self.get_current_actor()
+        
+        editTaskEvent = Event("EDIT_TASK", actor.uuid, 
+            actor.getMeeting().uuid,
+            params = {"taskUUID":self.get_argument("taskUUID"),
+                "text":self.get_argument("text")})
+        editTaskEvent.dispatch()
+        
+class AssignTaskHandler(BaseHandler):
+    def post(self):
+        actor = self.get_current_actor()
+        assignedTo = state.get_obj(self.get_argument("assignedToUUID"), User)
+        
+        assignTaskEvent = Event("ASSIGN_TASK", actor.uuid, 
+            actor.getMeeting().uuid,
+            params = {"taskUUID":self.get_argument("taskUUID"),
+                "assignedTo":assignedTo})
+        assignTaskEvent.dispatch()
 
 
 class AgendaHandler(tornado.web.RequestHandler):

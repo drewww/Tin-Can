@@ -87,7 +87,8 @@
 							user=users[key]
 						}
 					}
-					$("#header").append(user.loc.meeting.room.name + ": " + user.loc.meeting.name)
+					$("#header").html("<b>Tin-Can - </b>"+ user.loc.meeting.room.name + ": " + user.loc.meeting.name)
+					$("title").html(user.loc.meeting.room.name + ": " + user.loc.meeting.name)
 		            break;
 
 		        case "LOCATION_LEFT_MEETING":
@@ -165,7 +166,7 @@
 		padding: 0;
 		float: left;
 		list-style: none;
-		height: 25px; /*--Set height of tabs--*/
+		height: 20px; /*--Set height of tabs--*/
 		border-bottom: 1px solid #999;
 		border-left: 1px solid #999;
 		width: 320px;
@@ -175,8 +176,8 @@
 		float: left;
 		margin: 0;
 		padding: 0;
-		height: 24px; /*--Subtract 1px from the height of the unordered list--*/
-		line-height: 24px; /*--Vertically aligns the text within the tab--*/
+		height: 19px; /*--Subtract 1px from the height of the unordered list--*/
+		line-height: 19px; /*--Vertically aligns the text within the tab--*/
 		border: 1px solid #999;
 		border-left: none;
 		margin-bottom: -1px; /*--Pull the list item down 1px--*/
@@ -188,7 +189,7 @@
 		text-decoration: none;
 		color: #000;
 		display: block;
-		font-size: 17px;
+		font-size: 13px;
 		padding: 0 20px;
 		border: 1px solid #fff; /*--Gives the bevel look with a 1px white border inside the list item--*/
 		outline: none;
@@ -210,7 +211,7 @@
 		background: #fff;
 	}
 	.tab_content {
-		padding: 5px;
+		padding: 0px;
 		font-size: 15px;
 		font-family:"Arial",sans-serif;
 		width:320px;
@@ -221,6 +222,40 @@
 		margin:0px;
 		list-style-type:disc;
 		margin-bottom: 15px;
+	}
+	#tasks{
+		width:320px;
+		list-style-type:none;
+		padding:0px;
+		margin:0px;
+	}
+	.task{
+		height:75px;
+		width:320px;
+		margin:0px;
+		padding:0px;
+		border-bottom:1px solid black;
+	}
+	.creator{
+		text-align:right;
+		width:315px;
+		height:15px;
+		font-size:10px;
+		padding-top:5px;
+	}
+	.taskname{
+		padding-left:10px;
+		margin-top:7px;
+		height:20px;
+		font-size:17px;
+	}
+	.assignee{
+		padding-left:10px;
+		height:15px;
+		font-size:12px;
+	}
+	.next{
+		float:right;
 	}
 
 </style>
@@ -237,7 +272,40 @@
 
 	<div class="tab_container">
 	    <div id="tab1" class="tab_content">
-	        List of tasks here!
+	        <ul id = "tasks">
+				<li class = "task">
+					<div class = "creator">Drew</div>
+					<div class = "taskname">
+						this task name is really long
+						<img class = "next" src = "{{ static_url("images/next.png")}}">
+					</div>
+					<div class = "assignee"><em>Unassigned</em></div>
+				</li>
+				<li class = "task">
+					<div class = "creator">Paula</div>
+					<div class = "taskname">
+						short task
+						<img class = "next" src = "{{ static_url("images/next.png")}}">
+					</div>
+					<div class = "assignee"><em>Unassigned</em></div>
+				</li>
+				<li class = "task">
+					<div class = "creator">Ariel</div>
+					<div class = "taskname">
+						sleep
+						<img class = "next" src = "{{ static_url("images/next.png")}}">
+					</div>
+					<div class = "assignee"><em>Drew</em></div>
+				</li>
+				<li class = "task">
+					<div class = "creator">Stephanie</div>
+					<div class = "taskname">
+						drink bubble tea every freaking day!
+						<img class = "next" src = "{{ static_url("images/next.png")}}">
+					</div>
+					<div class = "assignee"><em>Ariel</em></div>
+				</li>
+			</ul>
 	    </div>
 	    <div id="tab2" class="tab_content">
 	        List of topics here!
