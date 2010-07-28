@@ -33,62 +33,62 @@
 		
 		
 		self.roomList = [NSMutableArray array];
-		self.meetingList = [NSMutableArray array];
-		self.countedList = [NSMutableArray array];
+		//self.meetingList = [NSMutableArray array];
+		//self.countedList = [NSMutableArray array];
 		
-		//ConnectionManager *conMan = [ConnectionManager sharedInstance];
-		//[conMan addListener:self];
+		ConnectionManager *conMan = [ConnectionManager sharedInstance];
+		[conMan addListener:self];
 		
-		//self.roomList = [[NSMutableArray alloc] initWithArray:[[[StateManager sharedInstance] getRooms] allObjects]];
-		//NSLog(@" Locations list: %@", [[StateManager sharedInstance] getLocations]);
+		self.roomList = [[NSMutableArray alloc] initWithArray:[[[StateManager sharedInstance] getRooms] allObjects]];
+		NSLog(@" Rooms list: %@", [[StateManager sharedInstance] getRooms]);
 		
-		[roomList addObject:@"Queen's Garden"];
-		[roomList addObject:@"Chessboard Forest"];
-		[roomList addObject:@"Bizzare Room"];
-		[roomList addObject:@"Rabbit Hole"];
-		[roomList addObject:@"Mad Hatter's House"];
-		[roomList addObject:@"March Hare's House"];
-		[roomList addObject:@"CourtRoom"];
+		//[roomList addObject:@"Queen's Garden"];
+//		[roomList addObject:@"Chessboard Forest"];
+//		[roomList addObject:@"Bizzare Room"];
+//		[roomList addObject:@"Rabbit Hole"];
+//		[roomList addObject:@"Mad Hatter's House"];
+//		[roomList addObject:@"March Hare's House"];
+//		[roomList addObject:@"CourtRoom"];
 		
-		[meetingList addObject:@"Very Important"];
-		[meetingList addObject:@"#120391"];
-		[meetingList addObject:@"#3.14159"];
-		[meetingList addObject:@"Dinner"];
-		[meetingList addObject:@"Empty"];
-		[meetingList addObject:@"Empty"];
-		[meetingList addObject:@"Trial"];
+		//[meetingList addObject:@"Very Important"];
+//		[meetingList addObject:@"#120391"];
+//		[meetingList addObject:@"#3.14159"];
+//		[meetingList addObject:@"Dinner"];
+//		[meetingList addObject:@"Empty"];
+//		[meetingList addObject:@"Empty"];
+//		[meetingList addObject:@"Trial"];
+//		
+//		[countedList addObject:@"16"];
+//		[countedList addObject:@"55"];
+//		[countedList addObject:@"1"];
+//		[countedList addObject:@"27"];
+//		[countedList addObject:@"0"];
+//		[countedList addObject:@"0"];
+//		[countedList addObject:@"5"];
 		
-		[countedList addObject:@"16"];
-		[countedList addObject:@"55"];
-		[countedList addObject:@"1"];
-		[countedList addObject:@"27"];
-		[countedList addObject:@"0"];
-		[countedList addObject:@"0"];
-		[countedList addObject:@"5"];
-		
-		[roomList addObject:@"Queen's Garden"];
-		[roomList addObject:@"Chessboard Forest"];
-		[roomList addObject:@"Bizzare Room"];
-		[roomList addObject:@"Rabbit Hole"];
-		[roomList addObject:@"Mad Hatter's House"];
-		[roomList addObject:@"March Hare's House"];
-		[roomList addObject:@"CourtRoom"];
-		
-		[meetingList addObject:@"Very Important"];
-		[meetingList addObject:@"#120391"];
-		[meetingList addObject:@"#3.14159"];
-		[meetingList addObject:@"Dinner"];
-		[meetingList addObject:@"Empty"];
-		[meetingList addObject:@"Empty"];
-		[meetingList addObject:@"Trial"];
-		
-		[countedList addObject:@"16"];
-		[countedList addObject:@"55"];
-		[countedList addObject:@"1"];
-		[countedList addObject:@"27"];
-		[countedList addObject:@"0"];
-		[countedList addObject:@"0"];
-		[countedList addObject:@"5"];
+	//	[roomList addObject:@"Queen's Garden"];
+//		[roomList addObject:@"Chessboard Forest"];
+//		[roomList addObject:@"Bizzare Room"];
+//		[roomList addObject:@"Rabbit Hole"];
+//		[roomList addObject:@"Mad Hatter's House"];
+//		[roomList addObject:@"March Hare's House"];
+//		[roomList addObject:@"CourtRoom"];
+	//	
+//		[meetingList addObject:@"Very Important"];
+//		[meetingList addObject:@"#120391"];
+//		[meetingList addObject:@"#3.14159"];
+//		[meetingList addObject:@"Dinner"];
+//		[meetingList addObject:@"Empty"];
+//		[meetingList addObject:@"Empty"];
+//		[meetingList addObject:@"Trial"];
+		//
+//		[countedList addObject:@"16"];
+//		[countedList addObject:@"55"];
+//		[countedList addObject:@"1"];
+//		[countedList addObject:@"27"];
+//		[countedList addObject:@"0"];
+//		[countedList addObject:@"0"];
+//		[countedList addObject:@"5"];
 		
 		[self.view setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 	}
@@ -134,11 +134,11 @@
         testCell.frame = CGRectMake(0.0, 0.0, 320.0, ROW_HEIGHT);
     }
     
-    NSString *room = [roomList objectAtIndex:indexPath.row];
-	testCell.room = room;
-	NSString *meeting = [meetingList objectAtIndex:indexPath.row];
-	testCell.meeting = meeting;
-	NSString *counted = [countedList objectAtIndex:indexPath.row];
+    Room *room = [roomList objectAtIndex:indexPath.row];
+	testCell.room = room.name;
+	//NSString *meeting = [meetingList objectAtIndex:indexPath.row];
+	testCell.meeting = room.currentMeeting.title;
+	NSString *counted = [[NSNumber numberWithInteger: [[room.currentMeeting getCurrentParticipants] count]] stringValue];
 	testCell.counted = counted;
  	
     return testCell;

@@ -11,6 +11,7 @@
 #import "Actor.h"
 #import "Meeting.h"
 
+
 @interface StateManager : NSObject {
     NSMutableDictionary *db;
     
@@ -24,7 +25,7 @@
 - (void) initWithLocations:(NSArray *)newLocations withUsers:(NSArray *)newUsers withMeetings:(NSArray *)newMeetings withRooms:(NSArray *)newRooms;
 - (void) unswizzleGroup:(NSSet *)groupToUnswizzle;
 - (NSSet *) getLocations;
-
+- (NSSet *) getRooms; 
 - (void) addActor:(Actor *)newActor;
 - (void) addMeeting:(Meeting *)newMeeting;
 - (void) removeActor:(Actor *)actorToRemove;

@@ -127,7 +127,16 @@ static StateManager *sharedInstance = nil;
     return [NSSet setWithArray:allLocations];
 }
 
+- (NSSet *) getRooms {
+    NSLog(@"in getRooms");
+    NSMutableArray *allRooms = [NSMutableArray array];
+    for(Room *room in [[rooms copy] autorelease]) {
+			NSLog(@"found a Room! %@", room);
+            [allRooms addObject:room];
+        }
 
+    return [NSSet setWithArray:allRooms];
+}
 - (void) addActor:(Actor *)newActor {
     [actors addObject:newActor];
 }

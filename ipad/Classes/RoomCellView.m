@@ -43,8 +43,15 @@
 //Fills Cell with Information on the room
 - (void)drawRect:(CGRect)rect {
 	NSString *string = room ;
+	NSString *meetings;
+	if (meeting!= NULL) {
 	
-	NSString *meetings = [@"        \n\n  Meeting:" stringByAppendingString:meeting];
+		meetings = [@"        \n\n  Meeting: " stringByAppendingString:meeting];
+	}
+	else{
+		meetings = [@"        \n\n  Meeting:" stringByAppendingString:@" No meeting"];
+	}
+	
 	NSString *countedPeople=[counted stringByAppendingString:@"    "];
 	NSString *numberPeople = [@"             \n\n# Attending:" stringByAppendingString: countedPeople];
 	
