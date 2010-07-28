@@ -31,7 +31,7 @@
     ASIHTTPRequest *currentPersistentConnection;
     
     SBJSON *parser;
-}
+ }
 
 #pragma mark -
 #pragma mark Connection Management

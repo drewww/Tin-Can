@@ -230,3 +230,6 @@ EventType("UPDATE_TOPIC",   ["topicUUID", "status"],_handleUpdateTopic, False,
     True)
 EventType("SET_TOPIC_LIST", ["text"],               _handleTopicList, False,
     True)
+    
+    
+    

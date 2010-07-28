@@ -117,7 +117,9 @@ static StateManager *sharedInstance = nil;
 - (NSSet *) getLocations {
     NSLog(@"in getLocations");
     NSMutableArray *allLocations = [NSMutableArray array];
-    for(Actor *actor in actors) {
+    
+    // Don't use actors directly, copy it and then iterate.
+    for(Actor *actor in [[actors copy] autorelease]) {
         if([actor isKindOfClass:[Location class]]) {
             NSLog(@"found a location! %@", actor);
             [allLocations addObject:actor];
