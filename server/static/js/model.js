@@ -231,6 +231,24 @@ function Topic(uuid, meetingUUID, creatorUUID, text, status, startTime,
 
 Topic.prototype = {
     
+    setStatus: function(status, actor) {
+        
+        if(this.status=="FUTURE" && status=="CURRENT") {
+            // This means that we're starting this item,
+            // so we should mark it as such in the client.
+            this.startActor = actor;
+            this.startTime = new Date();
+        } else if(this.status=="CURRENT" && status=="FUTURE") {
+                // This means that we're starting this item,
+                // so we should mark it as such in the client.
+                this.stopActor = actor;
+                this.stopTime = new Date();
+        }
+        
+        this.status=status;
+        
+    }
+    
     unswizzle: function() {
         
         this.meeting = state.getObj(this.meeting, Meeting);

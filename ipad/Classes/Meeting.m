@@ -20,6 +20,9 @@
 @synthesize allParticipants;
 @synthesize startedAt;
 
+@synthesize tasks;
+@synthesize topics;
+
 - (id) initWithUUID:(NSString *)myUuid withTitle:(NSString *)myTitle withRoomUUID:(NSString *)myRoomUUID startedAt:(NSDate *)myStartedAt {
     self = [super initWithUUID:myUuid];
  
@@ -29,6 +32,9 @@
     
     self.startedAt = myStartedAt;
     
+    topics = [NSMutableSet set];
+    tasks = [NSMutableSet set];
+        
     return self;
 }
 
@@ -44,7 +50,7 @@
     [self.locations addObject:theLocation];
     [theLocation joinedMeeting:self];
     
-    for(User *user in theLocation.users) {
+    for(User *user in [[theLocation.users copy] autorelease]) {
         [self userJoined:user theLocation:theLocation];
     }
 }
@@ -53,6 +59,24 @@
     [theLocation leftMeeting:self];
     [self.locations removeObject:theLocation];
 }
+
+
+- (void) addTask:(id)newTask {
+    [self.tasks addObject:newTask];
+}
+
+- (void) removeTask:(id)removeTask {
+    [self.tasks removeObject:removeTask];
+}
+
+- (void) addTopic:(id)newTopic {
+    [self.topics addObject:newTopic];
+}
+
+- (void) removeTopic:(id)removeTopic {
+    [self.topics removeObject:removeTopic];   
+}
+
 
 - (NSSet *)getCurrentParticipants {
     

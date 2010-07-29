@@ -10,6 +10,11 @@
 #import "SynchronizedObject.h"
 #import "Actor.h"
 #import "Meeting.h"
+#import "User.h"
+#import "StateManager.h"
+
+
+@class User;
 
 @interface BaseMeetingObject : SynchronizedObject {
     User *creator;
@@ -31,3 +36,4 @@
 @property (nonatomic, retain) Meeting *meeting;
 
 @end
+

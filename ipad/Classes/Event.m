@@ -32,6 +32,7 @@
     // not to insert keys out of order, or this system will break.
     // This was originally a nice Dictionary, but enums aren't objects
     // so that wasn't working.
+    
     NSArray *enumMapping = [[NSArray arrayWithObjects:@"NEW_MEETING",
                                                      @"JOINED_MEETING",
                                                      @"USER_JOINED_LOCATION",
@@ -41,7 +42,17 @@
                                                      @"LOCATION_LEFT_MEETING",
                                                      @"NEW_DEVICE",
                                                      @"ADD_ACTOR_DEVICE",
-                                                     @"NEW_LOCATION", nil] retain];
+                                                     @"NEW_LOCATION"
+                             
+                                                     @"NEW_TOPIC",
+                                                     @"DELETE_TOPIC",
+                                                     @"UPDATE_TOPIC",
+                                                     @"SET_TOPIC_LIST",                             
+                             
+                                                     @"NEW_TASK",
+                                                     @"DELETE_TASK",
+                                                     @"EDIT_TASK",
+                                                     @"ASSIGN_TASK", nil] retain];
     
     self.type = (EventType)[enumMapping indexOfObject:stringType];
     
