@@ -152,6 +152,12 @@ class StatusHandler(tornado.web.RequestHandler):
         users = state.get_users()
         locations = state.get_locations()
         rooms = state.rooms
+        tasks = []
+        
+        for meeting in state.get_meetings():
+            for task in meeting.tasks:
+                tasks = tasks + [task]
+                
         curTime = time.time()
         logging.debug("rooms: " + str(rooms) + " len: " + str(len(rooms)))
         logging.info("Providing state @%f on: %d users, %d locations, and %d\
@@ -159,7 +165,7 @@ class StatusHandler(tornado.web.RequestHandler):
         
         self.render("state.html", users=users,
             rooms=state.rooms, locations=locations,
-            curTime=curTime)
+            curTime=curTime, tasks=tasks)
         
 
 # TODO Is there a way to make json.dump default to using YarnModelJSONEncoder?

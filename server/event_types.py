@@ -204,6 +204,7 @@ def _handleAssignTask(event):
     assignedTo = event.params["assignedTo"]
     
     task.assign(assignedBy,assignedTo)
+    event.params["assignedAt"]=task.assignedAt
     
     return event
 

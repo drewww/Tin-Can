@@ -26,24 +26,20 @@
 
 						switch(e.eventType){
 							case "NEW_TASK":
-								for (key in state.meetings){
-									for (task in state.meetings[key].tasks){
-										text = state.meetings[key].tasks[task].text;
-										uuid = state.meetings[key].tasks[task].uuid;
-										newtask = $("#tasktemplate").clone();
-										newtask.val(uuid);
-										newtask.html(text);
-										$("#tasks").append(newtask);
-									}
-								}
-								case "NEW_TOPIC":
-									topic = state.getObj(e.results.topic.uuid,
-										Topic);
+								task = state.getObj(e.results.task.uuid, Task);
+								$('#tasks').append("<option value='" + 
+									task.uuid + "'>" + task.text
+									+ "</option>");
+								break;
+								
+							case "NEW_TOPIC":
+								topic = state.getObj(e.results.topic.uuid,
+									Topic);
 
-									$('#topics').append("<option value='" + 
-										topic.uuid + "'>" + topic.text
-										+ "</option>");
-									break;	
+								$('#topics').append("<option value='" + 
+									topic.uuid + "'>" + topic.text
+									+ "</option>");
+								break;	
 						}
 					}});
 
@@ -83,16 +79,17 @@
 					})
 					
 					$('#delete_task_button').click(function() {
-						console.log($('#tasks')[0].value);
 						conn.deleteTask($('#tasks')[0].value);
 					})
 					
 					$('#edit_task_button').click(function() {
+						console.log("edit?");
 						conn.editTask($('#tasks')[0].value, $('#task_input')[0].value);
 					})
 					
 					$('#assign_task_button').click(function() {
 						conn.assignTask($('#tasks')[0].value, $('#user')[0].value);
+					})
 					$('#set_status').click(function() {
 						conn.updateTopic($('#topics')[0].value, 
 						$('#status')[0].value);

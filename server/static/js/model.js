@@ -187,7 +187,8 @@ Meeting.prototype = {
     },
     
     removeTask: function(task) {
-        this.tasks = array_remove(this.tasks, task);
+        //this.tasks = array_remove(this.tasks, task);
+        array_remove(this.tasks, task);
     },
     
     unswizzle: function() {
@@ -244,7 +245,7 @@ Topic.prototype = {
 }
 
 function Task(uuid, meetingUUID, creatorUUID, text, assignedToUUID, 
-    assignedByUUID, createdAt) {
+    assignedByUUID, createdAt, assignedAt) {
         
         this.uuid = uuid;
         this.meeting = meetingUUID;
@@ -253,6 +254,7 @@ function Task(uuid, meetingUUID, creatorUUID, text, assignedToUUID,
         this.text = text;
         this.assignedTo = assignedToUUID;
         this.assignedBy = assignedByUUID;
+        this.assignedAt = assignedAt;
         
         state.putObj(this.uuid, this);
 }

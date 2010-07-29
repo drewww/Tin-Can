@@ -594,9 +594,10 @@ class Task(MeetingObject):
     """Store information about a task."""
     
     def __init__(self, meetingUUID, creatorUUID, text, assignedByUUID=None, 
-        assignedToUUID=None,taskUUID=None, createdAt=None):
+        assignedToUUID=None,taskUUID=None, createdAt=None, assignedAt=None):
         MeetingObject.__init__(self, creatorUUID, meetingUUID, createdAt, taskUUID)
         self.text = text
+        self.assignedAt=assignedAt
         
         if(assignedByUUID!=None):
             self.assignedBy = state.get_obj(assignedByUUID, Actor)
@@ -612,6 +613,7 @@ class Task(MeetingObject):
     def getDict(self):
         d = MeetingObject.getDict(self)
         d["text"] = self.text
+        d["assignedAt"] = self.assignedAt
         
         if(self.assignedTo!=None):
             d["assignedTo"] = self.assignedTo.uuid
@@ -631,6 +633,26 @@ class Task(MeetingObject):
     def assign(self, assignedBy, assignedTo):
         self.assignedBy=assignedBy
         self.assignedTo=assignedTo
+        self.assignedAt=time.time()
+        
+    def __str__(self):
+        if(self.assignedTo!=None):
+            assignedToName = self.assignedTo.name
+        else:
+            assignedToName = None
+            
+        if(self.assignedBy!=None):
+            assignedByName = self.assignedBy.name
+        else:
+            assignedByName = None
+            
+        if(self.assignedAt!=None):
+            assignedAt = self.assignedAt
+        else:
+            assignedAt = 0
+
+        return "[task.%s %s creator:%s assignedTo:%s, assignedBy:%s, assignedAt:%d]"%(self.uuid[0:6], 
+            self.text, self.createdBy.name, assignedToName, assignedByName, assignedAt)
 
 class Topic(MeetingObject):
     """Store information about a topic."""

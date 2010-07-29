@@ -265,22 +265,21 @@ ConnectionManager.prototype = {
                 console.log(taskData);
                 task = new Task(taskData["uuid"], taskData["meeting"],
                     taskData["createdBy"], taskData["text"],
-                    taskData["status"], taskData["startTime"],
-                    taskData["stopTime"], taskData["startActor"],
-                    taskData["stopActor"], taskData["color"],
-                    taskData["createdAt"]);
+                    taskData["assignedTo"], taskData["assignedBy"],
+                    taskData["createdAt"], taskData["assignedAt"]);
                 task.unswizzle();
-
+                
                 console.log("Made a new task!");
                 break;
             
             case "DELETE_TASK":
                 task = state.getObj(ev["params"]["taskUUID"],Task);
-                console.log(ev["params"]["taskUUID"]);
                 meeting = task.meeting
+                console.log(meeting);
                 console.log("Deleting task:" + task.uuid)
                 
                 meeting.removeTask(task);
+                break;
                 
             case "EDIT_TASK":
                 task = state.getObj(ev["params"]["taskUUID"],Task);
@@ -288,14 +287,18 @@ ConnectionManager.prototype = {
                 
                 console.log("Task "+task.uuid+ " is "+text);
                 task.text=text;
+                break;
                 
             case "ASSIGN_TASK":
                 task = state.getObj(ev["params"]["taskUUID"],Task);
-                assignedBy = state.getObj(ev.actorUUID,Actor);
-                assignedTo = state.getObj(ev["params"]["assignedToUUID"],User);
+                assignedBy = state.getObj(ev.actorUUID,User); //is this supposed to be user?
+                assignedTo = state.getObj(ev["params"]["assignedTo"],User);
                 
                 task.assignedBy=assignedBy;
                 task.assignedTo=assignedTo;
+                task.assignedAt = new Date(ev["params"]["assignedAt"]*1000);
+                
+                break;
                 
             case "NEW_DEVICE":
                 // I don't think we care about this, do we?
