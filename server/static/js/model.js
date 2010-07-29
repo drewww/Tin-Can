@@ -125,7 +125,7 @@ Room.prototype = {
 };
 
 
-function Meeting(uuid, title, room) {
+function Meeting(uuid, title, room, startedAt) {
     this.room = room;
     this.title = title;
     this.uuid = uuid;
@@ -136,6 +136,8 @@ function Meeting(uuid, title, room) {
     
     this.topics = [];
     this.tasks = [];
+    
+    this.startedAt = new Date(startedAt*1000);
     
     state.putObj(this.uuid, this);
 }

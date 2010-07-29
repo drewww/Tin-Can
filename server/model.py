@@ -31,7 +31,7 @@ class YarnBaseType(object):
         # left as None, then we'll generate a new UUID for it. 
         if(self.uuid==None):
             self.uuid = str(uuid.uuid4())
-        
+            
         # Register the new object with the main object store.
         state.put_obj(self.uuid, self)
         
@@ -184,6 +184,7 @@ class Meeting(YarnBaseType):
         d["endedAt"] = self.endedAt
         d["isLive"] = self.isLive
         d["room"] = self.room.uuid
+        d["startedAt"] = self.startedAt
         
         # We are pointedly NOT including eventHistory in here. It's 
         # duplicating information that will live in the on-disk caches anyway.
@@ -567,6 +568,7 @@ class MeetingObject(YarnBaseType):
         meetingObjUUID=None):
         
         self.uuid = meetingObjUUID
+
         YarnBaseType.__init__(self)
 
         # TODO we almost certainly want to unswizzle these UUIDS

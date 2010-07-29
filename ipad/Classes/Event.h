@@ -23,6 +23,16 @@ typedef enum {
     kADD_ACTOR_DEVICE,
     kNEW_LOCATION,
     
+    kNEW_TOPIC,
+    kDELETE_TOPIC,
+    kUPDATE_TOPIC,
+    kSET_TOPIC_LIST,
+    
+    kNEW_TASK,
+    kDELETE_TASK,
+    kEDIT_TASK,
+    kASSIGN_TASK,
+    
     // These are the internal events that ConnectionManager generates.
     kGET_STATE_COMPLETE,
     kNEW_USER_COMPLETE,

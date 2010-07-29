@@ -25,9 +25,11 @@
     
     NSMutableSet *allParticipants;
     NSMutableSet *locations;
+    
+    NSDate *startedAt;
 }
 
-- (id) initWithUUID:(UUID *)myUuid withTitle:(NSString *)myTitle withRoomUUID:(UUID *)myRoomUUID;
+- (id) initWithUUID:(UUID *)myUuid withTitle:(NSString *)myTitle withRoomUUID:(UUID *)myRoomUUID startedAt:(NSDate *)myStartedAt;
 
 - (void) userJoined:(User *)theUser theLocation:(Location *)theLocation;
 - (void) userLeft:(User *)theUser theLocation:(Location *)theLocation;
@@ -44,5 +46,6 @@
 @property(nonatomic, retain) NSMutableSet *allParticipants;
 @property(nonatomic, retain) Room *room;
 @property(nonatomic, retain) NSMutableSet *locations;
+@property(nonatomic, retain) NSDate *startedAt;
 
 @end
