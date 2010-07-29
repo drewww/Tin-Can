@@ -98,7 +98,9 @@
     self.room = (Room *)[[StateManager sharedInstance] getObjWithUUID:roomUUID withType:Room.class];
     
     // Turn this on when the room class is written.
+	NSLog(@"about to unswizzle, meeting uuid: %@", roomUUID);
     self.room.currentMeeting = self;
+	NSLog(@"room: %@", self.room);
 }
 
 - (NSString *) description {

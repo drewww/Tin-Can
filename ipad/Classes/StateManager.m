@@ -101,8 +101,8 @@ static StateManager *sharedInstance = nil;
     
     // Unswizzle in the proper order.
     [self unswizzleGroup:actors];
-//    [self unswizzleGroup:rooms];
-//    [self unswizzleGroup:meetings];
+    [self unswizzleGroup:rooms];
+    [self unswizzleGroup:meetings];
     
     NSLog(@"actors: %@", actors);
     NSLog(@"rooms: %@", rooms);
