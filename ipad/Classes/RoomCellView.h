@@ -13,7 +13,7 @@
 @interface RoomCellView : UIView {
 	NSString *room;
 	NSString *meeting;
-	NSString *counted;
+	int counted;
 
 }
 

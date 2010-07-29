@@ -14,7 +14,7 @@
 	RoomCellView *roomCellView;
     NSString *room;
 	NSString *meeting;
-	NSString *counted;
+	int counted;
 	
 	TimerBar *timerBar;
 	
@@ -22,8 +22,8 @@
 
 - (void) setRoom:(NSString *)room;
 - (void) setMeeting:(NSString *)meeting;
-- (void) setCounted:(NSString *)counted;
-@property (nonatomic, retain) NSString *room;
-@property (nonatomic, retain) NSString *meeting;
-@property (nonatomic, retain) NSString *counted;
+- (void) setCounted:(int)counted;
+//@property (nonatomic, retain) NSString *room;
+//@property (nonatomic, retain) NSString *meeting;
+//@property (nonatomic, retain) NSString *counted;
 @end
