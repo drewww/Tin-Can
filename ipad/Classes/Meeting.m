@@ -18,13 +18,16 @@
 @synthesize title;
 @synthesize locations;
 @synthesize allParticipants;
+@synthesize startedAt;
 
-- (id) initWithUUID:(NSString *)myUuid withTitle:(NSString *)myTitle withRoomUUID:(NSString *)myRoomUUID {
+- (id) initWithUUID:(NSString *)myUuid withTitle:(NSString *)myTitle withRoomUUID:(NSString *)myRoomUUID startedAt:(NSDate *)myStartedAt {
     self = [super initWithUUID:myUuid];
  
     self.title = myTitle;
     self.room = nil;
     roomUUID = myRoomUUID;
+    
+    self.startedAt = myStartedAt;
     
     return self;
 }
@@ -75,8 +78,8 @@
 }
 
 - (NSString *) description {
-    return [NSString stringWithFormat:@"[meeting.%@ %@ locs:%d users:%d]", [self.uuid substringToIndex:6],
-            self.title, [self.locations count], [[self getCurrentParticipants] count]];
+    return [NSString stringWithFormat:@"[meeting.%@ %@ locs:%d users:%d started:%@]", [self.uuid substringToIndex:6],
+            self.title, [self.locations count], [[self getCurrentParticipants] count], self.startedAt];
 }
 
 @end

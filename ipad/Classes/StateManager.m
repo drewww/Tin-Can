@@ -92,8 +92,9 @@ static StateManager *sharedInstance = nil;
      
         Meeting *newMeeting = [[Meeting alloc] initWithUUID:[meeting objectForKey:@"uuid"]
                                                   withTitle:[meeting objectForKey:@"title"]
-                                               withRoomUUID:[meeting objectForKey:@"room"]];
-        
+                                               withRoomUUID:[meeting objectForKey:@"room"]
+                                                  startedAt:[NSDate dateWithTimeIntervalSince1970:[[meeting objectForKey:@"startedAt"] doubleValue]]];
+    
         [meetings addObject:newMeeting];
     }
     
