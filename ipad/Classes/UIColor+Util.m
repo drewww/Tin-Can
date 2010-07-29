@@ -53,6 +53,9 @@
     
 	return retColor;
 }
+-(UIColor *)convertToUIColorWithHex:(NSString *)hexidecimal{
+	
+}
 
 - (UIColor *)colorByChangingAlphaTo:(CGFloat)newAlpha
 {
