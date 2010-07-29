@@ -30,10 +30,7 @@
 		[(UITableView *)self.view setDataSource:self];
 		
 		[self.view setBackgroundColor:[UIColor clearColor]];
-		
-		
-		//self.roomList = [NSMutableArray array];
-		//self.meetingList = [NSMutableArray array];
+
 		//self.countedList = [NSMutableArray array];
 		
 		ConnectionManager *conMan = [ConnectionManager sharedInstance];
@@ -41,47 +38,7 @@
 		
 		self.roomList = [[NSMutableArray alloc] initWithArray:[[[StateManager sharedInstance] getRooms] allObjects]];
 		NSLog(@" Rooms list: %@", [[StateManager sharedInstance] getRooms]);
-		
-		//[roomList addObject:@"Queen's Garden"];
-//		[roomList addObject:@"Chessboard Forest"];
-//		[roomList addObject:@"Bizzare Room"];
-//		[roomList addObject:@"Rabbit Hole"];
-//		[roomList addObject:@"Mad Hatter's House"];
-//		[roomList addObject:@"March Hare's House"];
-//		[roomList addObject:@"CourtRoom"];
-//		
-//		[meetingList addObject:@"Very Important"];
-//		[meetingList addObject:@"#120391"];
-//		[meetingList addObject:@"#3.14159"];
-//		[meetingList addObject:@"Dinner"];
-//		[meetingList addObject:@"Empty"];
-//		[meetingList addObject:@"Empty"];
-//		[meetingList addObject:@"Trial"];
-//		
-//		[countedList addObject:@"16"];
-//		[countedList addObject:@"55"];
-//		[countedList addObject:@"1"];
-//		[countedList addObject:@"27"];
-//		[countedList addObject:@"0"];
-//		[countedList addObject:@"0"];
-//		[countedList addObject:@"5"];
-//
-//		[roomList addObject:@"Queen's Garden"];
-//		[roomList addObject:@"Chessboard Forest"];
-//		[roomList addObject:@"Bizzare Room"];
-//		[roomList addObject:@"Rabbit Hole"];
-//		[roomList addObject:@"Mad Hatter's House"];
-//		[roomList addObject:@"March Hare's House"];
-//		[roomList addObject:@"CourtRoom"];
-//
-//		[meetingList addObject:@"Very Important"];
-//		[meetingList addObject:@"#120391"];
-//		[meetingList addObject:@"#3.14159"];
-//		[meetingList addObject:@"Dinner"];
-//		[meetingList addObject:@"Empty"];
-//		[meetingList addObject:@"Empty"];
-//		[meetingList addObject:@"Trial"];
-//		
+			
 //		[countedList addObject:@"16"];
 //		[countedList addObject:@"55"];
 //		[countedList addObject:@"1"];
@@ -137,12 +94,13 @@
     Room *room = [roomList objectAtIndex:indexPath.row];
 	testCell.room = room.name;	
 	NSLog(@" Room names: %@", room.name);
-	//NSString *meeting = [meetingList objectAtIndex:indexPath.row];
 	testCell.meeting =room.currentMeeting.title;
 	NSLog(@" Room meeting: %@", room.currentMeeting.title);
-	NSString *counted =[[NSNumber numberWithInteger: [[room.currentMeeting getCurrentParticipants] count]] stringValue];
-	testCell.counted = counted;
-	NSLog(@" Room number of People: %@", counted);
+	
+	
+	int count =[[room.currentMeeting getCurrentParticipants] count];
+	testCell.counted = count;
+	NSLog(@" Room number of People: %d", count);
  	
     return testCell;
 }

@@ -17,7 +17,7 @@
         
         self.opaque = YES;
         self.backgroundColor = [UIColor clearColor];
-		
+
     }
     return self;
 }
@@ -33,32 +33,35 @@
 - (void) setMeeting:(NSString *)newMeeting {
     meeting = newMeeting;
 }
-
 //Setter for Counted (Stores the number of members counted so far)
-- (void) setCounted:(NSString *)newCounted {
+- (void) setCounted:(int)newCounted {
+	
     counted = newCounted;
+	NSLog(@"Counted in setCounted: %d", counted);
 }
 
 
 //Fills Cell with Information on the room
 - (void)drawRect:(CGRect)rect {
+	NSLog(@"I'm Drawing!");
 	NSString *string = room ;
-	//NSString *meetings;
-	//if (meeting!= NULL) {
-//	
-//		meetings = [@"        \n\n  Meeting: " stringByAppendingString:meeting];
-//	}
-//	else{
-//		meetings = [@"        \n\n  Meeting:" stringByAppendingString:@" No meeting"];
-//	}
+	NSString *meetings;
+	if (meeting!= nil) {
 	
-	//NSString *countedPeople=[counted stringByAppendingString:@"    "];
-	//NSString *numberPeople = [@"             \n\n# Attending:" stringByAppendingString: countedPeople];
-	
+		meetings = [@"        \n\n  Meeting: " stringByAppendingString:meeting];
+	}
+	else{
+		meetings = [@"        \n\n  Meeting:" stringByAppendingString:@" No meeting"];
+	}
+		
 	[[UIColor blackColor] set];
     [string drawInRect:self.bounds withFont:[UIFont systemFontOfSize:18] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentLeft];
-	//[numberPeople drawInRect:self.bounds withFont:[UIFont systemFontOfSize:12] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentRight];
-	//[meetings drawInRect:self.bounds withFont:[UIFont systemFontOfSize:12] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentLeft];
+	[meetings drawInRect:self.bounds withFont:[UIFont systemFontOfSize:12] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentLeft];
+	
+	//NSLog(@"Counted: %@", [NSString stringWithFormat:@"%d",counted]);
+	NSString *countedPeople=[[NSString stringWithFormat:@"%d",counted] stringByAppendingString:@"    "];
+	NSString *numberPeople = [@"             \n\n# Attending:" stringByAppendingString: countedPeople];
+	[numberPeople drawInRect:self.bounds withFont:[UIFont systemFontOfSize:12] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentRight];
 }
 
 - (void)dealloc {

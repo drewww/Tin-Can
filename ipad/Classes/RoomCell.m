@@ -12,9 +12,9 @@
 @implementation RoomCell
 
 
-@synthesize room;
-@synthesize meeting;
-@synthesize counted;
+//@synthesize room;
+//@synthesize meeting;
+//@synthesize counted;
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
         
@@ -52,7 +52,7 @@
     
     [roomCellView setMeeting:newMeeting];
 }
-- (void) setCounted:(NSString *)newCounted {
+- (void) setCounted:(int)newCounted {
     [roomCellView setCounted:newCounted];
 }
 
