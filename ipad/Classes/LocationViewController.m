@@ -33,9 +33,6 @@
 		
 		controller=control;
 		
-		ConnectionManager *conMan = [ConnectionManager sharedInstance];
-		[conMan addListener:self];
-		
 		self.locList = [[NSMutableArray alloc] initWithArray:[[[StateManager sharedInstance] getLocations] allObjects]];
 		//NSLog(@" Locations list: %@", [[StateManager sharedInstance] getLocations]);
 
@@ -56,6 +53,8 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	
     [controller chooseLocationWithLocation:[locList objectAtIndex:indexPath.row]];
+	[[ConnectionManager sharedInstance] setLocation:((Location *)[locList objectAtIndex:indexPath.row]).uuid];
+	[[ConnectionManager sharedInstance] connect];
   
 }
 
@@ -93,7 +92,7 @@
     }
     //
     Location *loc = [locList objectAtIndex:indexPath.row];
-	testCell.loc = loc.name;
+	testCell.loc = loc;
  	//NSLog(@" Location names: %@", loc.name);
 
     return testCell;

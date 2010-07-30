@@ -7,7 +7,7 @@
 //
 
 #import "LocationCellView.h"
-
+#import "Location.h"
 
 @implementation LocationCellView
 
@@ -22,13 +22,13 @@
 }
 
 //Setter for Location
-- (void) setLoc:(NSString *)newLoc {
+- (void) setLoc:(Location *)newLoc {
     loc = newLoc;
 }
 
 // Fills the cell with information on Location
 - (void)drawRect:(CGRect)rect {
-    NSString *string =[@" " stringByAppendingString:loc];
+    NSString *string =[@" " stringByAppendingString:loc.name];
     [[UIColor blackColor] set];
     [string drawInRect:self.bounds withFont:[UIFont systemFontOfSize:18] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentLeft];
 }

@@ -8,14 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "LocationCellView.h"
-
+#import "Location.h"
 @interface LocationCell : UITableViewCell {
     LocationCellView *locCellView;
-    NSString *loc;
+    Location *loc;
 }
 
-- (void) setLoc:(NSString *)newLoc;
+- (void) setLoc:(Location *)newLoc;
 
-@property (nonatomic, retain) NSString *loc;
+//@property (nonatomic, retain) Location *loc;
 
 @end

@@ -17,7 +17,7 @@
 	
     NSMutableArray *locList;
 	LoginMasterViewController *controller;
-	
+
 }
 - (void)handleConnectionEvent:(Event *)event;
 - (id)initWithFrame:(CGRect)frame withController:(LoginMasterViewController *)control;

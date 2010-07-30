@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Location.h"
 
 @interface LocationCellView : UIView {
-    NSString *loc;
+    Location *loc;
 }
 
 @end

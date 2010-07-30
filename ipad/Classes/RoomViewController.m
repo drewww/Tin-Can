@@ -33,8 +33,8 @@
 
 		//self.countedList = [NSMutableArray array];
 		
-		ConnectionManager *conMan = [ConnectionManager sharedInstance];
-		[conMan addListener:self];
+		//ConnectionManager *conMan = [ConnectionManager sharedInstance];
+		//[conMan addListener:self];
 		
 		self.roomList = [[NSMutableArray alloc] initWithArray:[[[StateManager sharedInstance] getRooms] allObjects]];
 		NSLog(@" Rooms list: %@", [[StateManager sharedInstance] getRooms]);

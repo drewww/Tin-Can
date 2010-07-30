@@ -7,11 +7,11 @@
 //
 
 #import "LocationCell.h"
-
+#import "Location.h"
 
 @implementation LocationCell
 
-@synthesize loc;
+//@synthesize loc;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
@@ -28,7 +28,7 @@
 
 
 //Setter for Location
-- (void)setLoc:(NSString *)newLoc {
+- (void)setLoc:(Location *)newLoc {
     
     [locCellView setLoc:newLoc];
 }
