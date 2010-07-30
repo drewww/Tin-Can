@@ -138,8 +138,28 @@ StateManager.prototype = {
         for(key in meetings) {
             meeting = meetings[key];
             
+            // Loop through topics and tasks and construct those properly.
+            topics = [];
+            for(topicKey in meeting["topics"]) {
+                
+                topicData = meeting["topics"][topicKey];
+                console.log("unpacking topic: ");
+                console.log(topicData);
+                
+                newTopic = new Topic(topicData["uuid"], meeting["uuid"],
+                    topicData["createdBy"], topicData["text"],
+                    topicData["status"], topicData["startTime"], 
+                    topicData["stopTime"], topicData["startActor"],
+                    topicData["stopActor"], topicData["color"],
+                    topicData["createdAt"]);
+                topics.push(newTopic);
+            }
+            
+            console.log("topics:");
+            console.log(topics);
+            
             this.meetings.push(new Meeting(meeting["uuid"], meeting["title"],
-                meeting["room"]))
+                meeting["room"], meeting["startedAt"], topics));
         }
         
         // Now do an unswizzling pass. Need to do this one in order, too,

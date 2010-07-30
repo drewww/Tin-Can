@@ -134,10 +134,11 @@ ConnectionManager.prototype = {
             case "NEW_MEETING":
                 meetingData = ev["results"]["meeting"]
                 
+                // The last param is topics - we can cheat on that, since
+                // a newly created meeting isn't going to have any.
                 meeting = new Meeting(meetingData["uuid"],
-                    meetingData["title"], meetingData["room"]);
+                    meetingData["title"], meetingData["room"], []);
                 meeting.unswizzle();
-                
                 
                 
                 state.meetings.push(meeting);

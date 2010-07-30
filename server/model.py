@@ -735,6 +735,7 @@ status: " + str(status))
         d["startTime"] = self.startTime
         d["stopTime"] = self.stopTime
         d["color"] = self.color
+        d["status"] = self.status
         
         if(self.startActor!=None):
             d["startActor"] = self.startActor.uuid
