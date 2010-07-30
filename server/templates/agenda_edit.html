@@ -10,14 +10,39 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
   <script src="../static/js/jquery.iphoneui.js" type="text/javascript" charset="utf-8"></script>
 
+ <script type="text/javascript" src="{{static_url('js/util.js')}}"></script>
+<script type="text/javascript" src="{{static_url('js/ConnectionManager.js')}}"></script>
+<script type="text/javascript" src="{{static_url('js/StateManager.js')}}"></script>
+<script type="text/javascript" src="{{static_url('js/model.js')}}"></script>
+
 	<script type ="text/javascript">
 	var itemCounter = 0; // number of items ever created
 	var items = [];  // array of agenda items
 	var currentItemId; // current item's id - string
 	var lastClicked = 'item0'; 
 	var currentClicked; // element
+	var uuidDict = {};
 	
 	$(document).ready(function(){
+		connection.addListener({connectionEvent: function(e) {
+			console.log("event: " + e.eventType);
+			switch(e.eventType) {
+				case "GET_STATE_COMPLETE":
+					break;
+				case "NEW_TOPIC":
+					topic = e.results["topic"]
+					itemCounter = itemCounter + 1;
+					newId = 'item' + itemCounter;
+					uuidDict[newId] = topic.uuid;
+					makeFutureItem(newId);
+					break;
+			}
+		}});
+		
+		
+		
+		$("#itemTextbox").keypress(submitWithEnterKey);
+		
 		$("#doneButton").click(function (e) {
 			e.stopPropagation();
 			console.log("stop propagation");
@@ -32,26 +57,10 @@
 			items.splice(currentIndex, 1);
 			$("#doneButton").hide();
 			$(".startButton").show();
-			// currentItemId = items[currentIndex];
-			// currentClicked = $("#"+currentItemId);
-			
-			
-
-
 		});
-		
+		connection.getState();
 	});
 	
-		// function startNewItem(){
-		// 	console.log("THIS IS");
-		// 	console.log(this);
-		// 	
-		// 	$("#startButton").click(function(event) {
-		// 		
-		// 	})
-		// 	
-		// }
-		// 
 	
 	// visibility toggle for new item textbox input
 		function showTextbox(){
@@ -66,26 +75,29 @@
 			}
 
 		}
-			
+		
+		function sendTopicToServer() {
+			newItem=$("#itemTextbox")[0].value;
+			connection.addTopic(newItem);
+			$("#itemTextbox")[0].value="";
+			$("#newItemInput")[0].style.display="none"
+		}
+		
 	//grab input from textbox and generate item in list
-		function makeFutureItem(name) {
+		function makeFutureItem(newId) {
 			
 			futureTemplate = $("#futureTemplate");
 			itemList = $("#container");
-			newItem=$("#itemTextbox")[0].value;  // assign user input in textbox to newItem
+			  // assign user input in textbox to newItem
 			
 			clone = futureTemplate.clone();
 			clone.find("span").html(newItem);
 			clone.show();
-			itemCounter = itemCounter + 1;
-			clone[0].id = 'item' + itemCounter;  // generate unique id's for every item based on how many items have ever been created
+			clone[0].id = newId;
 			itemList.append(clone);
 			items.push(clone[0].id);
-			$("#itemTextbox")[0].value="";
-			$("#newItemInput")[0].style.display="none"
+
 			clone[0].className = "futureItem";
-
-
 			
 				clone.click(function (e) {
 				extraOptions = $("#extraOptions");
@@ -124,7 +136,7 @@
 					}
 				})				
 			defineStartButtonClick();	
-
+			
 		}
 		
 		function defineStartButtonClick() {
@@ -162,9 +174,10 @@
 				extraOptions.hide();
 				$("#container").append(extraOptions);
 				currentIndex = items.indexOf(currentClicked[0].id);
+				connection.removeTopic();
 				items.splice(currentIndex, 1);
 				currentClicked.remove();
-				
+
 				// if user deleted the current item on the agenda, update currentItemId to be next on the agenda
 				if (currentClicked[0].id == currentItemId) {
 					currentItemId = items[currentIndex];
@@ -197,7 +210,26 @@
 
 			}
 		}
+
+		function submitWithEnterKey(e){
+			if (e.which==13){
+				$("#submitButton").focus();
+				sendTopicToServer();
+			}
+		}
 		
+		function loginUser(){
+			connection.setUser(state.getUsers()[0].uuid);
+			connection.connect();
+		}
+		
+		function joinLocation(){
+			connection.joinLocation(state.getLocations()[0].uuid);
+		}
+		
+		function joinRoom(){
+			connection.joinRoom(state.rooms[0].uuid);
+		}
 	</script>
 
 
@@ -298,11 +330,15 @@
 	
 	<div id="header">Topics 
 
-		<input type="button" value="Add" onclick="showTextbox()"> </div>
-	
+		<input type="button" value="Add" onclick="showTextbox()"> 
+		<input type="button" value="User" onclick="loginUser();">
+		<input type="button" value="Location" onclick="joinLocation();">
+		<input type="button" value="Room" onclick="joinRoom();">
+		
+	</div>
 	<div id="newItemInput">
 		<input type="text" name="item" value="" id="itemTextbox" class="textbox">
-		<button type = "submit" onclick="makeFutureItem();">Submit</button>
+		<button type = "submit" id="submitButton" onclick="sendTopicToServer();">Submit</button>
 	</div>		
 	
 <div id="container">
