@@ -304,6 +304,14 @@ static ConnectionManager *sharedInstance = nil;
             task.assignedAt = [NSDate dateWithTimeIntervalSince1970:[[e.params objectForKey:@"assignedAt"] doubleValue]];
             break;
             
+        case kEDIT_MEETING:
+            meeting = (Meeting *)[state getObjWithUUID:[e.params objectForKey:@"meeting"] withType:[Meeting class]];
+            NSString *title = [e.params objectForKey:@"title"];
+            
+            meeting.title = title;
+            
+            break;
+        
         case kNEW_DEVICE:
             NSLog(@"received known event type, but am not doing anything about it");
             break;

@@ -52,7 +52,9 @@
                                                      @"NEW_TASK",
                                                      @"DELETE_TASK",
                                                      @"EDIT_TASK",
-                                                     @"ASSIGN_TASK", nil] retain];
+                                                     @"ASSIGN_TASK"
+                             
+                                                     @"EDIT_MEETING", nil] retain];
     
     self.type = (EventType)[enumMapping indexOfObject:stringType];
     
