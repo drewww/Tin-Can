@@ -412,7 +412,11 @@ class LoginHandler(BaseHandler):
         # we bounce them to the resource where they can get on.
         deviceUUID = self.get_cookie("deviceUUID")
 
-        device = state.get_obj(deviceUUID, Device)
+        if(deviceUUID==None):
+            device = None
+        else:
+            device = state.get_obj(deviceUUID, Device)
+        
         if(device==None):
             logging.debug("Received a connection that didn't have a device\
             cookie yet.")
