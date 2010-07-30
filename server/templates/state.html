@@ -9,17 +9,29 @@
 		body {
 			font-family: Helvetica, Arial, sans-serif;
 		}
+		
+		ul, li{
+			padding-top:none;
+			padding-bottom:none;
+			margin-top:none;
+			margin-bottom:none;
+		}
 	
-		.user {
+		.user, .location, .room {
 			border: 1px solid black;
 			margin: 10px;
+			padding-left:3px;
 			
 			width: 350px;
 			float: left;
 		}
 		
+		.task, .topic{
+			
+		}
+		
 		.user .name {
-			margin: 3px;
+			
 		}
 		
 		.logged-in {
@@ -39,7 +51,7 @@
 
 <div id="users">
 <h1>Users</h1>
-
+{%import time%}
 {% for user in users %}
 {% if user.isLoggedIn() %}
 <div class="user logged-in">
@@ -66,29 +78,72 @@
 <div id="locations">
 <h1>Locations</h1>
 {% for location in locations %}
-<div class="location">
-{{location}}
+
+{% if location.meeting != None %}
+<div class="location logged-in">
+<strong>{{location.name}}:</strong>
+<div>meeting: {{location.meeting.title}}@{{location.meeting.room.name}}</div>
+<div>users: {% for user in location.getUsers() %}{{user.name+", "}} {% end %}</div>
+<div>devices: {{len(location.getDevices())}}</div>
+{% else %}
+<div class="location logged-out">
+<div>{{location.name}}</div>
+{% end %}
+
 </div>
 {% end %}
+<br class="clear"/>
 </div>
 
 <div id="rooms">
 <h1>Meetings</h1>
 {% for room in rooms %}
-<div class="room">
-{{room}}
+
+{% if room.currentMeeting==None %}
+<div class="room logged-out">
+{{room.name}}: {{room.currentMeeting}}
+{% else %}
+<div class="room logged-in">
+<strong>{{room.name}}: {{room.currentMeeting.title}}</strong>
+<div>Started At: {{time.strftime("%I:%M %p", time.localtime(room.currentMeeting.startedAt))}}</div>
+<div>Locations: {% for loc in room.currentMeeting.locations %}{{loc.name+", "}}{% end %}</div>
+<div>Users: {% for user in room.currentMeeting.getCurrentParticipants() %}{{user.name+", "}}{% end %}</div>
+<div>Topics: 
+	<ul>
+	{% for topic in room.currentMeeting.topics%}
+	<li class = "topic">
+		{{topic.text}}: {{topic.status}}
+		<div>Created by {{topic.createdBy.name}} at {{time.strftime("%I:%M %p", time.localtime(topic.createdAt))}}</div>
+		{% if topic.status!= "FUTURE"%}
+		<div>Started by {{topic.startActor.name}} at {{time.strftime("%I:%M %p", time.localtime(topic.startTime))}}</div>
+		{% end %}
+		
+		{% if topic.status== "PAST"%}
+		<div>Stopped by {{topic.stopActor.name}} at {{time.strftime("%I:%M %p", time.localtime(topic.stopTime))}}</div>
+		{% end %}
+	</li>
+	{% end %}
+	</ul>
+</div>
+<div>Tasks: 
+	<ul>
+	{% for task in room.currentMeeting.tasks%}
+	<li class = "topic">
+		{{task.text}}: 
+		<div>Created by {{task.createdBy.name}} at {{time.strftime("%I:%M %p", time.localtime(task.createdAt))}}</div>
+		{% if task.assignedAt!=None%}
+		<div>Assigned by {{task.assignedBy.name}} to {{task.assignedTo.name}}
+			at {{time.strftime("%I:%M %p", time.localtime(task.assignedAt))}}</div>
+		{% end %}
+	</li>
+	{% end %}
+	</ul>
 </div>
 {% end %}
-
-</div>
-
-<div id="tasks">
-<h1>Tasks</h1>
-{% for task in tasks %}
-<div class="task">
-{{task}}
 </div>
 {% end %}
+<br class="clear"/>
+</div>
 
 </div>
 

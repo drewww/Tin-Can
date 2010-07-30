@@ -140,6 +140,13 @@ def _handleLocationLeftMeeting(event):
 
     meeting.locationLeft(location)
     return event
+    
+def _handleEditMeeting(event):
+    meeting = event.params["meeting"]
+    title = event.params["title"]
+    
+    meeting.setTitle(title)
+    return event
 
 def _handleNewTopic(event):
     text = event.params["text"]
@@ -255,6 +262,8 @@ EventType("LOCATION_JOINED_MEETING",["meeting"], _handleLocationJoinedMeeting,
     True, True)
 EventType("LOCATION_LEFT_MEETING",  ["meeting"], _handleLocationLeftMeeting,
     True, True)
+    
+EventType("EDIT_MEETING", ["meeting", "title"], _handleEditMeeting, True, False)
 
 EventType("NEW_TOPIC",      ["text"],               _handleNewTopic, False,
     True)

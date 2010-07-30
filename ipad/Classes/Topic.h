@@ -11,12 +11,14 @@
 #import "User.h"
 #import "Meeting.h"
 #import "Actor.h"
+#import "StateManager.h"
 
 typedef enum {
     kPAST,
     kCURRENT,
     kFUTURE
 } TopicStatus;
+
 
 @interface Topic : BaseMeetingObject {    
     NSString *text;
@@ -45,6 +47,8 @@ typedef enum {
        withStopTime:(NSDate *)myStopTime
         withUIColor:(UIColor *)myColor;
 
+- (void) setStatusWithString:(NSString *)stringStatus byActor:(Actor *)actor;
+
 @property (nonatomic, retain) Actor *startActor;
 @property (nonatomic, retain) Actor *stopActor;
 
@@ -53,7 +57,7 @@ typedef enum {
 
 @property (nonatomic, retain) UIColor *color;
 
-@property (nonatomic) TopicStatus status;
+@property (nonatomic, readonly) TopicStatus status;
 
 
 @end

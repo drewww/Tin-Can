@@ -11,11 +11,15 @@
 #import "Room.h"
 #import "User.h"
 #import "Location.h"
+
+
 #import "tincan.h"
 
 @class Room;
 @class User;
 @class Location;
+@class Task;
+@class Topic;
 
 @interface Meeting : SynchronizedObject {
     Room *room;
@@ -25,6 +29,9 @@
     
     NSMutableSet *allParticipants;
     NSMutableSet *locations;
+    
+    NSMutableSet *tasks;
+    NSMutableSet *topics;
     
     NSDate *startedAt;
 }
@@ -37,6 +44,12 @@
 - (void) locationJoined:(Location *)theLocation;
 - (void) locationLeft:(Location *)theLocation;
 
+- (void) addTask:(id)newTask;
+- (void) removeTask:(id)removeTask;
+
+- (void) addTopic:(id)newTopic;
+- (void) removeTopic:(id)removeTopic;
+
 - (NSSet *)getCurrentParticipants;
 
 - (void) unswizzle;
@@ -47,5 +60,8 @@
 @property(nonatomic, retain) Room *room;
 @property(nonatomic, retain) NSMutableSet *locations;
 @property(nonatomic, retain) NSDate *startedAt;
+
+@property(readonly) NSMutableSet *tasks;
+@property(readonly) NSMutableSet *topics;
 
 @end

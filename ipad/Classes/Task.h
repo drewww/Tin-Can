@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import "BaseMeetingObject.h"
+#import "User.h"
+#import "StateManager.h"
+
 
 @interface Task : BaseMeetingObject {
 

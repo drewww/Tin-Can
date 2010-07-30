@@ -7,7 +7,7 @@
 //
 
 #import "Topic.h"
-#import "StateManager.h"
+
 
 
 @implementation Topic
@@ -42,8 +42,38 @@
     self.stopTime = stopTime;
     self.color = myColor;
     
+    // How does this actually get set from the server? Worried about this
+    // not being properly connected.
+    status = kFUTURE;
+    
     return self;
 }
+
+
+
+- (void) setStatusWithString:(NSString *)stringStatus byActor:(Actor *)actor{
+    // We need to convert the string (which is how it's represented on the server) to an enum
+    // (which is how it's represented here. This is a little annoying. We'll fake it by
+    // doing lookup against a list. This list should probably be static on the object, but I'm 
+    // not 100% sure how to do that. 
+    NSArray *enumMapping = [[NSArray arrayWithObjects:@"PAST", @"CURRENT", @"FUTURE", nil] retain];
+    
+    TopicStatus newStatus = (TopicStatus)[enumMapping indexOfObject:stringStatus];
+    
+    // Manage the logic around storing actors on state change.
+    if(status==kFUTURE && newStatus==kCURRENT) {
+        self.startActor = actor;
+        self.startTime = [NSDate date];
+    } else if (status==kCURRENT && newStatus == kFUTURE) {
+        self.stopActor = actor;
+        self.stopTime = [NSDate date];
+    }
+    
+    status = newStatus;
+    
+    [enumMapping release];
+}
+
 
 - (void) unswizzle {
     if(startActorUUID!=nil && ![startActorUUID isKindOfClass:[NSNull class]]) {
@@ -55,7 +85,8 @@
         self.stopActor = (Actor *)[[StateManager sharedInstance] getObjWithUUID:stopActorUUID
                                                                         withType:[Actor class]];
     }
-        
+    
+    [self.meeting addTopic:self];
 }
 
 @end

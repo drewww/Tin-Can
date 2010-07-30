@@ -11,6 +11,8 @@
 #import "ASIHTTPRequest.h"
 #import "ASIFormDataRequest.h"
 #import "Event.h"
+#import "Topic.h"
+#import "Task.h"
 
 static ConnectionManager *sharedInstance = nil;
 
@@ -157,6 +159,9 @@ static ConnectionManager *sharedInstance = nil;
     User *user;
     Meeting *meeting;
     Location *location;
+    Topic *topic;
+    Task *task;
+    Actor *actor;
     //Room *room;
     
     NSDictionary *results;
@@ -185,7 +190,8 @@ static ConnectionManager *sharedInstance = nil;
             
             meeting = [[Meeting alloc] initWithUUID:[results objectForKey:@"uuid"]
                                           withTitle:[results objectForKey:@"title"]
-                                       withRoomUUID:[results objectForKey:@"room"]];
+                                       withRoomUUID:[results objectForKey:@"room"]
+                                          startedAt:[NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"startedAt"] doubleValue]]];
             [meeting unswizzle];
             
             [state addMeeting:meeting];                                            
@@ -233,6 +239,79 @@ static ConnectionManager *sharedInstance = nil;
             NSLog(@"LOCATION_LEFT_MEETING: %@ left %@", location, meeting);
             break;            
             
+        case kNEW_TOPIC:
+            results = (NSDictionary *)[e.results objectForKey:@"topic"];
+            
+            topic = [[Topic alloc] initWithUUID:[results objectForKey:@"uuid"]
+                                withCreatorUUID:[results objectForKey:@"createdBy"]
+                                      createdAt:[results objectForKey:@"createdAt"]
+                                withMeetingUUID:[results objectForKey:@"meeting"]
+                             withStartActorUUID:[results objectForKey:@"startActor"]
+                              withStopActorUUID:[results objectForKey:@"stopActor"]
+                                  withStartTime:[NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"startTime"] doubleValue]]
+                                   withStopTime:[NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"stopTime"] doubleValue]]
+                                    withUIColor:[UIColor blueColor]];
+            
+            // TODO hook up the color transmission. The problem is we need to decompose a hex color string
+            // into RGB values that UIColor will accept. NBD, but a bit of an annoying dance and we'll
+            // need to write a little function to do it.
+            [topic unswizzle];
+
+            break;
+            
+        case kUPDATE_TOPIC:
+            topic = (Topic *)[state getObjWithUUID:[e.params objectForKey:@"topicUUID"] withType:[Topic class]];
+            actor = (Actor *)[state getObjWithUUID:e.actorUUID withType:[Actor class]];
+            
+            NSString *status = [e.params objectForKey:@"status"];
+            
+            [topic setStatusWithString:status byActor:actor];
+            
+            break;
+            
+        
+        case kNEW_TASK:
+            results = (NSDictionary *)[e.results objectForKey:@"task"];
+            
+            task = [[Task alloc] initWithUUID:[results objectForKey:@"uuid"]
+                              withCreatorUUID:[results objectForKey:@"createdBy"]
+                                    createdAt:[results objectForKey:@"createdAt"]
+                              withMeetingUUID:[results objectForKey:@"meeting"]
+                                     withText:[results objectForKey:@"text"]
+                               assignedToUUID:[results objectForKey:@"assignedTo"]
+                               assignedByUUID:[results objectForKey:@"assignedBy"]
+                                   assignedAt:[NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"assignedAt"] doubleValue]]];
+            
+            [task unswizzle];
+            break;
+        
+        case kDELETE_TASK:
+            task = (Task *)[state getObjWithUUID:[e.params objectForKey:@"taskUUID"] withType:[Task class]];
+            meeting = task.meeting;
+            [meeting removeTask:task];
+            break;
+            
+        case kEDIT_TASK:
+            task = (Task *)[state getObjWithUUID:[e.params objectForKey:@"taskUUID"] withType:[Task class]];
+            NSString *text = [e.params objectForKey:@"text"];
+            task.text = text;
+            break;
+            
+        case kASSIGN_TASK:
+            task = (Task *)[state getObjWithUUID:[e.params objectForKey:@"taskUUID"] withType:[Task class]];
+            task.assignedBy = (Actor *)[state getObjWithUUID:e.actorUUID withType:[Actor class]];
+            task.assignedTo = (User *)[state getObjWithUUID:[e.params objectForKey:@"assignedTo"] withType:[User class]];
+            task.assignedAt = [NSDate dateWithTimeIntervalSince1970:[[e.params objectForKey:@"assignedAt"] doubleValue]];
+            break;
+            
+        case kEDIT_MEETING:
+            meeting = (Meeting *)[state getObjWithUUID:[e.params objectForKey:@"meeting"] withType:[Meeting class]];
+            NSString *title = [e.params objectForKey:@"title"];
+            
+            meeting.title = title;
+            
+            break;
+        
         case kNEW_DEVICE:
             NSLog(@"received known event type, but am not doing anything about it");
             break;

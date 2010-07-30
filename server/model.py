@@ -151,6 +151,9 @@ class Meeting(YarnBaseType):
         
         return currentParticipants
         
+    def setTitle(self, title):
+        self.title = title
+        
     def addTopic(self, topic):
         self.topics.append(topic)
         

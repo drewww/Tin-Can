@@ -7,7 +7,6 @@
 //
 
 #import "Task.h"
-#import "StateManager.h"
 
 @implementation Task
 
@@ -45,6 +44,8 @@
         self.assignedBy = (Actor *)[[StateManager sharedInstance] getObjWithUUID:assignedByUUID
                                                                        withType:[Actor class]];
     }
+    
+    [self.meeting addTask:self];
 }
 
 @end
