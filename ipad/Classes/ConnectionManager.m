@@ -309,7 +309,6 @@ static ConnectionManager *sharedInstance = nil;
             NSString *title = [e.params objectForKey:@"title"];
             
             meeting.title = title;
-            
             break;
         
         case kNEW_DEVICE:
