@@ -247,7 +247,7 @@ Topic.prototype = {
         
         this.status=status;
         
-    }
+    },
     
     unswizzle: function() {
         
