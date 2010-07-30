@@ -26,6 +26,9 @@
 - (id) initWithUUID:(NSString *)myUuid withTitle:(NSString *)myTitle withRoomUUID:(NSString *)myRoomUUID startedAt:(NSDate *)myStartedAt {
     self = [super initWithUUID:myUuid];
  
+    self.locations = [NSMutableSet set];
+    self.allParticipants = [NSMutableSet set];
+    
     self.title = myTitle;
     self.room = nil;
     roomUUID = myRoomUUID;
