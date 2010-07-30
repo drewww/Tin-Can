@@ -94,13 +94,10 @@
     Room *room = [roomList objectAtIndex:indexPath.row];
 	testCell.room = room.name;	
 	NSLog(@" Room names: %@", room.name);
-	testCell.meeting =room.currentMeeting.title;
-	NSLog(@" Room meeting: %@", room.currentMeeting.title);
-	
-	
-	int count =[[room.currentMeeting getCurrentParticipants] count];
-	testCell.counted = count;
-	NSLog(@" Room number of People: %d", count);
+	testCell.meeting=room.currentMeeting;
+	NSLog(@" meeting: %@", room.currentMeeting);	
+	testCell.counted = [[room.currentMeeting getCurrentParticipants] count];
+	NSLog(@" Room number of People: %d", [[room.currentMeeting getCurrentParticipants] count]);
  	
     return testCell;
 }

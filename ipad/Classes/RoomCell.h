@@ -13,7 +13,7 @@
 @interface RoomCell : UITableViewCell {
 	RoomCellView *roomCellView;
     NSString *room;
-	NSString *meeting;
+	Meeting *meeting;
 	int counted;
 	
 	TimerBar *timerBar;

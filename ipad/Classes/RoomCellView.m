@@ -8,7 +8,7 @@
 
 #import "RoomCellView.h"
 #import "TimerBar.h"
-
+#import "Meeting.h"
 
 @implementation RoomCellView
 
@@ -17,7 +17,8 @@
         
         self.opaque = YES;
         self.backgroundColor = [UIColor clearColor];
-
+		
+		
     }
     return self;
 }
@@ -30,8 +31,25 @@
 
 
 //Setter for Meeting
-- (void) setMeeting:(NSString *)newMeeting {
+- (void) setMeeting:(Meeting *)newMeeting {
     meeting = newMeeting;
+	
+	NSDate *startingTime = [NSDate date];
+	NSLog(@"starting time in seconds: %f", [startingTime timeIntervalSince1970]);
+	NSTimeInterval startingTimeInSeconds = [startingTime timeIntervalSince1970] -1800;
+	
+	NSMutableArray *times=[[NSMutableArray alloc] initWithCapacity:6];
+	[times addObject:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-1000]];
+	[times addObject:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-600]];
+	[times addObject:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-400]];
+	
+	TimerBar *timerBar=[[TimerBar alloc]initWithFrame: CGRectMake(0, 20, 300, 10) withStartTime:[NSDate dateWithTimeIntervalSince1970:startingTimeInSeconds] 
+							 withEventTimes:times];
+	
+	if(meeting!= nil){
+		[self addSubview:timerBar];
+	}
+
 }
 //Setter for Counted (Stores the number of members counted so far)
 - (void) setCounted:(int)newCounted {
@@ -47,8 +65,12 @@
 	NSString *string = room ;
 	NSString *meetings;
 	if (meeting!= nil) {
-	
-		meetings = [@"        \n\n  Meeting: " stringByAppendingString:meeting];
+		if(meeting.title !=nil){
+			meetings = [@"        \n\n  Meeting: " stringByAppendingString:meeting.title];
+		}
+		else{
+			meetings = [@"        \n\n  Meeting:" stringByAppendingString:@" No name"];
+		}
 	}
 	else{
 		meetings = [@"        \n\n  Meeting:" stringByAppendingString:@" No meeting"];
