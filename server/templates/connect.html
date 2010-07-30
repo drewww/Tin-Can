@@ -95,6 +95,10 @@
 						$('#status')[0].value);
 
 					})
+					$('#edit_meeting_button').click(function() {
+						room = state.getObj($('#room')[0].value, Room);
+						conn.editMeeting(room.currentMeeting.uuid,$('#new_input')[0].value);
+					})
 				});
 		
 	</script>
@@ -133,6 +137,7 @@
 <input type="text" name="new_user" value="" id="new_input">
 <button id="add_user_button">Add User</button>
 <button id="add_location_button">Add Location</button>
+<button id="edit_meeting_button">Edit Meeting</button>
 <br/>
 
 <input type="text" name="topic" value="topic" id="topic_input">

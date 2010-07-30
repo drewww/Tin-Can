@@ -47,6 +47,8 @@ class YarnApplication(tornado.web.Application):
             (r"/locations/join", JoinLocationHandler),
             (r"/locations/leave", LeaveLocationHandler),
             
+            (r"/meetings/edit", EditMeetingHandler),
+            
             (r"/topics/add", AddTopicHandler),
             (r"/topics/delete", DeleteTopicHandler),
             (r"/topics/update", UpdateTopicHandler),
@@ -477,6 +479,18 @@ class LeaveLocationHandler(BaseHandler):
         leaveLocationEvent = Event("USER_LEFT_LOCATION", actor.uuid,
             params={"location":location})
         leaveLocationEvent.dispatch()
+
+class EditMeetingHandler(BaseHandler):
+    
+    @tornado.web.authenticated
+    def post(self):
+        actor = self.get_current_actor()
+        meeting = state.get_obj(self.get_argument("meetingUUID"), Meeting)
+        
+        editMeetingEvent = Event("EDIT_MEETING", actor.uuid, 
+            params={"meeting":meeting, "title": self.get_argument("title")})
+        editMeetingEvent.dispatch()
+        return
 
 
 class AddTopicHandler(BaseHandler):

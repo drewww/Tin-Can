@@ -215,6 +215,14 @@ ConnectionManager.prototype = {
                 
                 console.log(loc.name + " left " + meeting.title);
                 break;
+                
+            case "EDIT_MEETING":
+                meeting = state.getObj(ev["params"]["meeting"], Meeting);
+                title = ev["params"]["title"];
+                
+                meeting.title=title;
+                console.log("meeting "+meeting.uuid+" is now "+title);
+                break;
             
             case "NEW_TOPIC":
                 // we should only be getting this message for our current
@@ -500,6 +508,23 @@ ConnectionManager.prototype = {
             },
             error: function() {
                 this.publishEvent(this.generateEvent("NEW_LOCATION_COMPLETE",
+                    {}, false));
+            }
+        });
+    },
+    
+    editMeeting: function(meetingUUID, title) {
+        $.ajax({
+            url: '/meetings/edit',
+            type: "POST",
+            context: this,
+            data: {"meetingUUID":meetingUUID, "title":title},
+            success: function () {
+                this.publishEvent(this.generateEvent("EDIT_MEETING_COMPLETE",
+                    {}));
+            },
+            error: function() {
+                this.publishEvent(this.generateEvent("EDIT_MEETING_COMPLETE",
                     {}, false));
             }
         });
