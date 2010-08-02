@@ -40,7 +40,7 @@ class YarnApplication(tornado.web.Application):
         handlers = [
             (r"/rooms/list", RoomsHandler),
             (r"/rooms/join", JoinRoomHandler),
-            (r"/rooms/leave", LeaveMeetingHandler),
+            (r"/rooms/leave", LocationLeaveMeetingHandler),
             
             (r"/locations/list", LocationsHandler),
             (r"/locations/add", AddLocationHandler),
@@ -323,7 +323,7 @@ class JoinRoomHandler(BaseHandler):
             didn't exist or wasn't a valid room."%roomUUID)
             return
 
-class LeaveMeetingHandler(BaseHandler):
+class LocationLeaveMeetingHandler(BaseHandler):
 
     @tornado.web.authenticated
     def post(self):
@@ -366,18 +366,6 @@ class LeaveMeetingHandler(BaseHandler):
             locationLeftMeetingEvent = Event("LOCATION_LEFT_MEETING",
             location.uuid, None, {"meeting":meeting})
             locationLeftMeetingEvent.dispatch()
-
-class LeaveRoomHandler(BaseHandler):
-
-    @tornado.web.authenticated
-    def post(self):
-        logging.warning("THIS IS DEPRECATED - need to switch to leave\
-        location (for users) and leave room (for locations)")
-        user = self.get_current_user()
-        meeting = user.inMeeting
-        
-        leaveEvent = Event("LEFT", user.uuid, user.inMeeting.uuid)
-        leaveEvent.dispatch()
 
 class AddUserHandler(tornado.web.RequestHandler):
     

@@ -133,7 +133,7 @@ function Meeting(uuid, title, room, startedAt, topics) {
     this.allParticipants = [];
     
     this.locs = [];
-    
+
     this.topics = topics;
     console.log("initing meeting with topics:");
     console.log(this.topics);

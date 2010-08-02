@@ -19,6 +19,7 @@ ConnectionManager.prototype = {
    user: null,
    meeting: null,
    loc: null,
+   loggedout: false,
    
    setUser: function(userUUID) {
         console.log("Setting userUUID: " + userUUID);
@@ -26,39 +27,48 @@ ConnectionManager.prototype = {
    },
    
    connect: function () {
-        if(this.userUUID==null) {
-            console.log("Must call setUser on the " + 
-        "ConnectionManager before connecting.");
-            return;
-        }
+       if (this.currentConnectRequest!=null){
+           this.stopPersistentConnection();
+           this.currentConnectRequest=null;
+           setTimeout("connection.connect();",500);
+       }
+       else{
+           this.loggedout=false;
+           if(this.userUUID==null) {
+               console.log("Must call setUser on the " + 
+           "ConnectionManager before connecting.");
+               return;
+           }
+
+           $.ajax({
+              url: '/connect/login',
+              type: "POST",
+              success: function () {
+                  this.isConnected = true;
+                  this.publishEvent(this.generateEvent("LOGIN_COMPLETE", {}));
+
+                  // Before we start a new connection, make sure to clear the
+                  // previous one.
+                  if(this.currentConnectRequest!=null) {
+                      console.log("Aborting existing connection.");
+                      this.currentConnectRequest.abort();
+                  }
+
+                  var self = this;
+                  setTimeout(function() {self.startPersistentConnection();}, 0);
+
+                  // Make sure we have an up-to-date state to work with. Doing 
+                  // this after we start the persistent connection so we don't
+                  // miss any state changes in the interim time between the
+                  // getState and persistentConnection starting. 
+                  this.getState();
+                  },
+              error: function () { console.log("FAIL (login)");},
+              context: this,
+              data: { "actorUUID": this.userUUID }
+           });
+       }
         
-        $.ajax({
-           url: '/connect/login',
-           type: "POST",
-           success: function () {
-               this.isConnected = true;
-               this.publishEvent(this.generateEvent("LOGIN_COMPLETE", {}));
-               
-               // Before we start a new connection, make sure to clear the
-               // previous one.
-               if(this.currentConnectRequest!=null) {
-                   console.log("Aborting existing connection.");
-                   this.currentConnectRequest.abort();
-               }
-               
-               var self = this;
-               setTimeout(function() {self.startPersistentConnection();}, 0);
-               
-               // Make sure we have an up-to-date state to work with. Doing 
-               // this after we start the persistent connection so we don't
-               // miss any state changes in the interim time between the
-               // getState and persistentConnection starting. 
-               this.getState();
-               },
-           error: function () { console.log("FAIL (login)");},
-           context: this,
-           data: { "actorUUID": this.userUUID }
-        });
         
     },
     
@@ -80,13 +90,20 @@ ConnectionManager.prototype = {
                 console.log("/connect/ succeded.");
                 events = $.parseJSON(data);
                 var self = this;
-                setTimeout(function(){self.startPersistentConnection();}, 10);
-                   
-                if (events!=null){
-                    for(var i=0; i<events.length; i++) {
-                        this.dispatchEvent(events[i]);
+                
+                
+                if (!this.loggedout){
+                    setTimeout(function(){self.startPersistentConnection();}, 10);
+
+                    if (events!=null){
+                        for(var i=0; i<events.length; i++) {
+                            this.dispatchEvent(events[i]);
+                        }
                     }
-                } 
+                }
+                else{
+                    this.loggedout=false;
+                }
                 
                 // Not generating events here because dispatch is almost
                 // certainly going to be generating them. 
@@ -117,8 +134,9 @@ ConnectionManager.prototype = {
     },
     
     stopPersistentConnection: function() {
+        this.loggedout = true;
         this.currentConnectRequest.abort();
-        Console.log("Aborted current connection.");
+        console.log("Aborted current connection.");
     },
         
     dispatchEvent: function(ev) {
@@ -137,7 +155,8 @@ ConnectionManager.prototype = {
                 // The last param is topics - we can cheat on that, since
                 // a newly created meeting isn't going to have any.
                 meeting = new Meeting(meetingData["uuid"],
-                    meetingData["title"], meetingData["room"], []);
+                    meetingData["title"], meetingData["room"],
+                    meetingData["startedAt"], []);
                 meeting.unswizzle();
                 
                 
@@ -213,6 +232,8 @@ ConnectionManager.prototype = {
                 meeting = state.getObj(ev["params"]["meeting"], Meeting);
                 loc = state.getObj(ev.actorUUID, Location);
                 meeting.locLeft(loc);
+                
+                this.meeting = null;
                 
                 console.log(loc.name + " left " + meeting.title);
                 break;
@@ -648,6 +669,12 @@ ConnectionManager.prototype = {
                     {}, false));
             }
         });
+    },
+    
+    // Returns the meeting that this client is currently in. Might be null,
+    // if this client hasn't joined a meeting yet. 
+    getCurrentMeeting: function() {
+        return meeting;
     },
     
     addListener: function(callback) {
