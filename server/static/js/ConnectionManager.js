@@ -233,6 +233,8 @@ ConnectionManager.prototype = {
                 loc = state.getObj(ev.actorUUID, Location);
                 meeting.locLeft(loc);
                 
+                this.meeting = null;
+                
                 console.log(loc.name + " left " + meeting.title);
                 break;
                 
@@ -667,6 +669,12 @@ ConnectionManager.prototype = {
                     {}, false));
             }
         });
+    },
+    
+    // Returns the meeting that this client is currently in. Might be null,
+    // if this client hasn't joined a meeting yet. 
+    getCurrentMeeting: function() {
+        return meeting;
     },
     
     addListener: function(callback) {
