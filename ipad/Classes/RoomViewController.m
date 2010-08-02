@@ -54,7 +54,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	
 	[controller chooseRoomWithRoom:[roomList objectAtIndex:indexPath.row] withMeeting:[meetingList objectAtIndex:indexPath.row] withCount:[countedList objectAtIndex:indexPath.row]];
-	[[ConnectionManager sharedInstance]  joinRoomWithUUID:((Room *)[roomList objectAtIndex:indexPath.row]).uuid];
+	[[ConnectionManager sharedInstance] joinRoomWithUUID:((Room *)[roomList objectAtIndex:indexPath.row]).uuid];
 	[[ConnectionManager sharedInstance] connect];
 } 
 

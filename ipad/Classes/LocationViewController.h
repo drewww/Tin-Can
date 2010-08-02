@@ -19,7 +19,7 @@
 	LoginMasterViewController *controller;
 
 }
-- (void)handleConnectionEvent:(Event *)event;
+//- (void)handleConnectionEvent:(Event *)event;
 - (id)initWithFrame:(CGRect)frame withController:(LoginMasterViewController *)control;
 @property (nonatomic, retain) NSMutableArray *locList;
 
