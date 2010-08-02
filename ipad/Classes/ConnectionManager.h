@@ -63,11 +63,8 @@
 #pragma mark -
 #pragma mark State Manipulation Methods
 
-- (void) joinLocationWithUUID:(UUID *)locationUUID;
-- (void) leaveLocationWithUUID:(UUID *)locationUUID;
-
 - (void) joinRoomWithUUID:(UUID *)roomUUID;
-- (void) leaveRoomWithUUID:(UUID *)locationUUID;
+- (void) leaveRoomWithUUID:(UUID *)roomUUID;
 
 - (void) addLocationWithName:(NSString *)locationName;
 
