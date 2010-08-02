@@ -46,6 +46,8 @@
 					
 					// Setup the button actions.
 					$("#login").click(function() {
+						newname = $('#user')[0].value
+						user = state.getObj(conn.userUUID, User)
 						conn.setUser($('#user')[0].value);
 						conn.connect();
 					});
