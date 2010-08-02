@@ -163,11 +163,7 @@
 	// Tracks user selections
 	chosenRoom=NULL;
 	chosenLocation=NULL;
-	
-	
-	// Dimentions
-	
-	
+
 	
 	
 }	
