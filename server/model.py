@@ -398,7 +398,7 @@ class Actor(YarnBaseType):
         return d
         
     def isLoggedIn(self):
-        return len(self._devices) > 0
+        return len(self.getDevices()) > 0
     
     def addDevice(self, device):
         self._devices.add(device)
@@ -511,7 +511,7 @@ class Location(Actor):
     
     def isInMeeting(self):
         return self.meeting != None
-
+        
     def joinedMeeting(self, meeting):
         logging.debug("Location joined meeting.")
         meeting.locationJoined(self)
@@ -735,6 +735,7 @@ status: " + str(status))
         d["startTime"] = self.startTime
         d["stopTime"] = self.stopTime
         d["color"] = self.color
+        d["status"] = self.status
         
         if(self.startActor!=None):
             d["startActor"] = self.startActor.uuid

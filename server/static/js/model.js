@@ -125,7 +125,7 @@ Room.prototype = {
 };
 
 
-function Meeting(uuid, title, room, startedAt) {
+function Meeting(uuid, title, room, startedAt, topics) {
     this.room = room;
     this.title = title;
     this.uuid = uuid;
@@ -134,7 +134,9 @@ function Meeting(uuid, title, room, startedAt) {
     
     this.locs = [];
     
-    this.topics = [];
+    this.topics = topics;
+    console.log("initing meeting with topics:");
+    console.log(this.topics);
     this.tasks = [];
     
     this.startedAt = new Date(startedAt*1000);
@@ -177,7 +179,9 @@ Meeting.prototype = {
     },
     
     addTopic: function(topic) {
-        this.topics.push(topic);
+        if($.inArray(topic, this.topics)==-1) {
+            this.topics.push(topic);
+        }
     },
     
     removeTopic: function(topic) {
@@ -201,6 +205,10 @@ Meeting.prototype = {
         // We don't need to unswizzle locs or participants; those get
         // handled when the loc unswizzles. It'll register itself
         // with the meeting it's currently in. 
+        
+        for(topicKey in this.topics) {
+            this.topics[topicKey].unswizzle();
+        }
     }
     
 };
@@ -220,8 +228,18 @@ function Topic(uuid, meetingUUID, creatorUUID, text, status, startTime,
             this.status = status;
         }
         
-        this.startTime = startTime;
-        this.stopTime = stopTime;
+        if(this.startTime!=null) {
+            this.startTime = new Date(startTime*1000);
+        } else {
+            this.startTime = null;
+        }
+
+        if(this.stopTime!=null) {
+            this.stopTime = new Date(stopTime*1000);
+        } else {
+            this.stopTime = null;
+        }
+        
         this.startActor = startActorUUID;
         this.stopActor = stopActorUUID;
         this.color = color;

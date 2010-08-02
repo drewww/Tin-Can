@@ -79,12 +79,16 @@
 <h1>Locations</h1>
 {% for location in locations %}
 
-{% if location.meeting != None %}
+{% if location.isLoggedIn() %}
 <div class="location logged-in">
 <strong>{{location.name}}:</strong>
-<div>meeting: {{location.meeting.title}}@{{location.meeting.room.name}}</div>
 <div>users: {% for user in location.getUsers() %}{{user.name+", "}} {% end %}</div>
 <div>devices: {{len(location.getDevices())}}</div>
+
+{% if location.meeting != None %}
+<div>meeting: {{location.meeting.title}}@{{location.meeting.room.name}}</div>
+{% end %}
+
 {% else %}
 <div class="location logged-out">
 <div>{{location.name}}</div>
