@@ -367,18 +367,6 @@ class LeaveMeetingHandler(BaseHandler):
             location.uuid, None, {"meeting":meeting})
             locationLeftMeetingEvent.dispatch()
 
-class LeaveRoomHandler(BaseHandler):
-
-    @tornado.web.authenticated
-    def post(self):
-        logging.warning("THIS IS DEPRECATED - need to switch to leave\
-        location (for users) and leave room (for locations)")
-        user = self.get_current_user()
-        meeting = user.inMeeting
-        
-        leaveEvent = Event("LEFT", user.uuid, user.inMeeting.uuid)
-        leaveEvent.dispatch()
-
 class AddUserHandler(tornado.web.RequestHandler):
     
     def post(self):
