@@ -40,7 +40,7 @@ class YarnApplication(tornado.web.Application):
         handlers = [
             (r"/rooms/list", RoomsHandler),
             (r"/rooms/join", JoinRoomHandler),
-            (r"/rooms/leave", LeaveMeetingHandler),
+            (r"/rooms/leave", LocationLeaveMeetingHandler),
             
             (r"/locations/list", LocationsHandler),
             (r"/locations/add", AddLocationHandler),
@@ -323,7 +323,7 @@ class JoinRoomHandler(BaseHandler):
             didn't exist or wasn't a valid room."%roomUUID)
             return
 
-class LeaveMeetingHandler(BaseHandler):
+class LocationLeaveMeetingHandler(BaseHandler):
 
     @tornado.web.authenticated
     def post(self):

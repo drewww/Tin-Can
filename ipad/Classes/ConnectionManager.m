@@ -358,7 +358,7 @@ static ConnectionManager *sharedInstance = nil;
 
 - (void) leaveRoomWithUUID {
     
-        // Can't we run this without 
+    // Can't we run this without 
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/rooms/leave"]];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     [request setDelegate:self];
