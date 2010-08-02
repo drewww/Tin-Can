@@ -55,6 +55,7 @@
     [controller chooseLocationWithLocation:[locList objectAtIndex:indexPath.row]];
 	[[ConnectionManager sharedInstance] setLocation:((Location *)[locList objectAtIndex:indexPath.row]).uuid];
 	[[ConnectionManager sharedInstance] connect];
+	
   
 }
 
@@ -78,6 +79,12 @@
 	return [self.locList count];
 }
 
+
+- (void) update {
+	for (LocationCell *cell in [(UITableView *)self.view visibleCells]) {
+		[cell setNeedsDisplay];
+	}
+}
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath  {

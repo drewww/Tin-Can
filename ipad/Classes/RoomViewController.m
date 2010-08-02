@@ -52,7 +52,6 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	
 	[controller chooseRoomWithRoom:[roomList objectAtIndex:indexPath.row] withMeeting:[meetingList objectAtIndex:indexPath.row] withCount:[countedList objectAtIndex:indexPath.row]];
 	[[ConnectionManager sharedInstance] joinRoomWithUUID:((Room *)[roomList objectAtIndex:indexPath.row]).uuid];
 	[[ConnectionManager sharedInstance] connect];
@@ -64,11 +63,18 @@
 }
 
 
+- (void) update {
+	NSLog(@"updating room cells.");
+	for (RoomCell *cell in [(UITableView *)self.view visibleCells]) {
+		NSLog(@"updating room cell: %@", cell);
+		[cell setNeedsDisplay];
+	}
+}
+
 // There is only one section.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	return 1;
 }
-
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {

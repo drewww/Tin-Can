@@ -61,7 +61,7 @@
 
 //Fills Cell with Information on the room
 - (void)drawRect:(CGRect)rect {
-	NSLog(@"I'm Drawing!");
+	NSLog(@"Drawing room cell");
 	NSString *string = room ;
 	NSString *meetings;
 	if (meeting!= nil) {
