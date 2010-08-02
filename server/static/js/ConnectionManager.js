@@ -15,6 +15,7 @@ ConnectionManager.prototype = {
    isConnected: false,
    
    eventListeners: [],
+   connections: [],
    
    user: null,
    meeting: null,
@@ -100,9 +101,23 @@ ConnectionManager.prototype = {
                             this.dispatchEvent(events[i]);
                         }
                     }
+                    
+                    time = new Date();
+                    this.connections.push(time);
+                    var tempConnections = []
+                    for (key in this.connections){
+                        if (time-this.connections[key]<1000){
+                            tempConnections.push(this.connections[key]);
+                        }
+                    }
+                    this.connections=tempConnections;
+                    if (this.connections.length>10){
+                        this.stopPersistentConnection();
+                    }
+                    
                 }
                 else{
-                    this.loggedout=false;
+                //    this.loggedout=false;
                 }
                 
                 // Not generating events here because dispatch is almost
