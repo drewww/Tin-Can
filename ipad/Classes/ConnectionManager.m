@@ -347,20 +347,22 @@ static ConnectionManager *sharedInstance = nil;
 #pragma mark -
 #pragma mark State Manipulation Methods
 
-- (void) joinLocationWithUUID:(UUID *)locationUUID {
-    
-}
-
-- (void) leaveLocationWithUUID:(UUID *)locationUUID {
-    
-}
-
 - (void) joinRoomWithUUID:(UUID *)roomUUID {
     
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/rooms/join"]];
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    [request setPostValue:roomUUID forKey:@"roomUUID"];    
+    [request setDelegate:self];
+    [request startAsynchronous]; 
 }
 
-- (void) leaveRoomWithUUID:(UUID *)locationUUID {
+- (void) leaveRoomWithUUID {
     
+        // Can't we run this without 
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/rooms/leave"]];
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    [request setDelegate:self];
+    [request startAsynchronous];     
 }
 
 - (void) addLocationWithName:(NSString *)locationName {
