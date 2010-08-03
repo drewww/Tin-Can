@@ -69,9 +69,8 @@ static ConnectionManager *sharedInstance = nil;
 
 - (void) startPersistentConnection {
  
-    NSLog(@"STARTING PERSISTENT CONNECTION! currentConnection: %@", currentPersistentConnection);
     if(currentPersistentConnection != nil) {
-        NSLog(@"currentConnection is not nil");
+        NSLog(@"currentConnection is not nil, but finished: %d", [currentPersistentConnection isFinished]);
         if(![currentPersistentConnection isFinished]) {
             // This happens WAY TOO OFTEN (like, every cycle). and represents a basic failing of the connection management
             // system that I haven't figured out yet. It does short-circuit the infinite connection problem,
@@ -94,6 +93,8 @@ static ConnectionManager *sharedInstance = nil;
     
     currentPersistentConnection = request;
     [currentPersistentConnection retain];
+    NSLog(@">>>>>>>>>>>>>>>>>>>>>>>>> currentConnection: %@", currentPersistentConnection);
+
 }
 
 - (void) stopPersistentConnection {
@@ -144,7 +145,7 @@ static ConnectionManager *sharedInstance = nil;
         [self publishEvent:e];
         NSLog(@"Done with GET_STATE");
     } else if ([path isEqualToString:@"/connect"]) {
-        
+        NSLog(@"<<<<<<<<<<<<<<<<<<<<<<<< request: %@", request);        
         // Handle events being transmitted from an ending persistent connection.
         NSArray *result = [parser objectWithString:[request responseString] error:nil];
     
