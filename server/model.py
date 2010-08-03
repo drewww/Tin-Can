@@ -263,6 +263,10 @@ class Device(YarnBaseType):
         self.connection = None
         self.actor = None
         self.eventQueue = []
+        
+    def logout(self):
+        if self.actor != None:
+            self.actor.removeDevice(self)
     
     def isConnected(self):
         # I wish we could inspect connection._finished to double-check...
@@ -436,7 +440,11 @@ class User(Actor):
         
     def isInLocation(self):
         return self.location != None
-
+    
+    #I hope this is how inheritance works...
+    def isLoggedIn(self):
+        return Actor.isLoggedIn(self) or self.isInLocation()
+        
     def getDict(self):
         d = Actor.getDict(self)
         d["status"] = self._status

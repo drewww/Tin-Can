@@ -163,6 +163,11 @@ ConnectionManager.prototype = {
             case "ADD_ACTOR_DEVICE":
                 // We don't really care about this one, actually.
                 break;
+            
+            case "DEVICE_LEFT_COMPLETE":
+                console.log("hi");
+                this.stopPersistentConnection();
+                break;
                 
             case "NEW_MEETING":
                 meetingData = ev["results"]["meeting"]
@@ -397,6 +402,25 @@ ConnectionManager.prototype = {
                 " must declare that method to receive connectionEvents.");
             }
         }
+    },
+    
+    logout: function() {
+        if(!this.validateConnected()) {return;}
+        
+        console.log("Logging out");
+        $.ajax({
+           url: '/connect/logout',
+           type: "POST",
+           success: function () {
+               this.publishEvent(this.generateEvent("DEVICE_LEFT_COMPLETE",
+                {}));
+                this.stopPersistentConnection();
+               },
+           error: function () { this.publishEvent(this.generateEvent(
+               "DEVICE_LEFT_COMPLETE", false));},
+           context: this,
+           data: { }
+        });
     },
     
     joinLocation: function(locationUUID) {

@@ -81,7 +81,12 @@ def _handleAddActorDevice(event):
     
     actor.addDevice(device)
     return event
+
+def _handleDeviceLeft(event):
+    device = event.params["device"]
+    device.logout()
     
+    return event
 
 def _handleJoinedLocation(event):
     location = event.params["location"]
@@ -251,6 +256,7 @@ EventType("NEW_LOCATION",       ["name"],   _handleNewLocation, True,   False)
 EventType("NEW_DEVICE",         [],         _handleNewDevice,   True,   True)
 EventType("ADD_ACTOR_DEVICE",   ["actor", "device"], _handleAddActorDevice,
     True, True)
+EventType("DEVICE_LEFT",        ["device"], _handleDeviceLeft,  True,   True)
 
 
 EventType("USER_JOINED_LOCATION",   ["location"], _handleJoinedLocation, True,
