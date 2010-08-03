@@ -51,6 +51,15 @@ static ConnectionManager *sharedInstance = nil;
         NSLog(@"Must call setLocation before connecting.");
     }
     
+    if(isConnected) {
+        NSLog(@"Can't call connect once the client is already connected. Ignoring...");
+        return;
+    }
+
+    // Setting this here so we don't have a problem where two rapid fire connect calls
+    // go through, messing everything up. I catch it in the failure block 
+    isConnected = YES;
+
     NSLog(@"logging in...");
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/connect/login"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
@@ -167,6 +176,12 @@ static ConnectionManager *sharedInstance = nil;
 - (void) requestFailed:(ASIHTTPRequest *)request {
     NSError *error = [request error];
     NSLog(@"Request failed: %@ with error %@", request.url, error);
+    
+    // Make sure that if the login connect failed, we don't accidently block
+    // all future attempts to connect.
+    if([[request.url path] rangeOfString:@"/connect/login"].location != NSNotFound) {
+        isConnected = NO;
+    }
     
 }
 
