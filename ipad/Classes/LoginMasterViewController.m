@@ -141,11 +141,11 @@
 		
 	}
 
-	//if(self.view != nil) {
-//		NSLog(@"calling reload data:");
-//		[locViewController update];
-//		[roomViewController update];
-//	}
+	if(self.view != nil) {
+		NSLog(@"calling reload data:");
+		[locViewController update];
+		[roomViewController update];
+	}
 	
 		
 }		

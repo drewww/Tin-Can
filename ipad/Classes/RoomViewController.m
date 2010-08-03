@@ -69,6 +69,8 @@
 		NSLog(@"updating room cell: %@", cell);
 		[cell setNeedsDisplay];
 	}
+    
+    [self.view setNeedsDisplay];
 }
 
 // There is only one section.
