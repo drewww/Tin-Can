@@ -423,6 +423,25 @@ ConnectionManager.prototype = {
         });
     },
     
+    leave: function(locationUUID) {
+        if(!this.validateConnected()) {return;}
+        
+        console.log("Logging out and leaving location");
+        $.ajax({
+           url: '/locations/leave',
+           type: "POST",
+           success: function () {
+               this.publishEvent(this.generateEvent("LEAVE_LOCATION_COMPLETE",
+                {}));
+                this.logout();
+               },
+           error: function () { this.publishEvent(this.generateEvent(
+               "LEAVE_LOCATION_COMPLETE", false));},
+           context: this,
+           data: { "locationUUID": locationUUID }
+        });
+    },
+    
     joinLocation: function(locationUUID) {
         if(!this.validateConnected()) {return;}
         
