@@ -52,6 +52,10 @@
 						conn.connect();
 					});
 					
+					$("#logout").click(function() {
+						conn.logout();
+					});
+					
 					$('#stop').click(function() {
 						conn.stopPersistentConnection();
 					});
@@ -132,6 +136,7 @@
 
 
 <button id="login" >Login</button>
+<button id="logout" >Logout</button>
 <button id="join_room">Join Room</button>
 <button id="join_location">Join Location</button>
 <button id="leave_room">Leave Room</button>

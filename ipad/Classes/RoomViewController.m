@@ -31,7 +31,6 @@
 		
 		[self.view setBackgroundColor:[UIColor clearColor]];
 
-		//self.countedList = [NSMutableArray array];
 		
 		//ConnectionManager *conMan = [ConnectionManager sharedInstance];
 		//[conMan addListener:self];
@@ -39,13 +38,7 @@
 		self.roomList = [[NSMutableArray alloc] initWithArray:[[[StateManager sharedInstance] getRooms] allObjects]];
 		NSLog(@" Rooms list: %@", [[StateManager sharedInstance] getRooms]);
 			
-//		[countedList addObject:@"16"];
-//		[countedList addObject:@"55"];
-//		[countedList addObject:@"1"];
-//		[countedList addObject:@"27"];
-//		[countedList addObject:@"0"];
-//		[countedList addObject:@"0"];
-//		[countedList addObject:@"5"];
+
 		
 		[self.view setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 	}
@@ -59,8 +52,9 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	
-	[controller chooseRoomWithRoom:[roomList objectAtIndex:indexPath.row] withMeeting:[meetingList objectAtIndex:indexPath.row] withCount:[countedList objectAtIndex:indexPath.row]];	
+	[controller chooseRoomWithRoom:[roomList objectAtIndex:indexPath.row] withMeeting:[meetingList objectAtIndex:indexPath.row] withCount:[countedList objectAtIndex:indexPath.row]];
+	[[ConnectionManager sharedInstance] joinRoomWithUUID:((Room *)[roomList objectAtIndex:indexPath.row]).uuid];
+	[[ConnectionManager sharedInstance] connect];
 } 
 
 
@@ -69,11 +63,18 @@
 }
 
 
+- (void) update {
+	NSLog(@"updating room cells.");
+	for (RoomCell *cell in [(UITableView *)self.view visibleCells]) {
+		NSLog(@"updating room cell: %@", cell);
+		[cell setNeedsDisplay];
+	}
+}
+
 // There is only one section.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	return 1;
 }
-
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {

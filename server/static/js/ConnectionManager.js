@@ -17,6 +17,7 @@ ConnectionManager.prototype = {
    isConnected: false,
    
    eventListeners: [],
+   connections: [],
    
    user: null,
    meeting: null,
@@ -102,9 +103,23 @@ ConnectionManager.prototype = {
                             this.dispatchEvent(events[i]);
                         }
                     }
+                    
+                    time = new Date();
+                    this.connections.push(time);
+                    var tempConnections = []
+                    for (key in this.connections){
+                        if (time-this.connections[key]<1000){
+                            tempConnections.push(this.connections[key]);
+                        }
+                    }
+                    this.connections=tempConnections;
+                    if (this.connections.length>10){
+                        this.stopPersistentConnection();
+                    }
+                    
                 }
                 else{
-                    this.loggedout=false;
+                //    this.loggedout=false;
                 }
                 
                 // Not generating events here because dispatch is almost
@@ -149,6 +164,11 @@ ConnectionManager.prototype = {
         switch(ev.eventType) {
             case "ADD_ACTOR_DEVICE":
                 // We don't really care about this one, actually.
+                break;
+            
+            case "DEVICE_LEFT_COMPLETE":
+                console.log("hi");
+                this.stopPersistentConnection();
                 break;
                 
             case "NEW_MEETING":
@@ -388,6 +408,25 @@ ConnectionManager.prototype = {
                 " must declare that method to receive connectionEvents.");
             }
         }
+    },
+    
+    logout: function() {
+        if(!this.validateConnected()) {return;}
+        
+        console.log("Logging out");
+        $.ajax({
+           url: '/connect/logout',
+           type: "POST",
+           success: function () {
+               this.publishEvent(this.generateEvent("DEVICE_LEFT_COMPLETE",
+                {}));
+                this.stopPersistentConnection();
+               },
+           error: function () { this.publishEvent(this.generateEvent(
+               "DEVICE_LEFT_COMPLETE", false));},
+           context: this,
+           data: { }
+        });
     },
     
     joinLocation: function(locationUUID) {

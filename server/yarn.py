@@ -66,6 +66,7 @@ class YarnApplication(tornado.web.Application):
             (r"/connect/test", ConnectTestHandler),
             (r"/connect/login", LoginHandler),
             (r"/connect/state", StateHandler),
+            (r"/connect/logout", LogoutHandler),
             
             (r"/users/choose", ChooseUsersHandler),
             (r"/agenda/", AgendaHandler),
@@ -430,6 +431,16 @@ class LoginHandler(BaseHandler):
         # otherwise, set the secure cookie for the user ID.
         logging.info("Associated device (%s) with actor '%s'."%(device.uuid,
         actor.name))
+        
+class LogoutHandler(BaseHandler):
+    
+    def post(self):
+        device = self.get_current_device()
+        actor = self.get_current_actor()
+        
+        deviceLeftEvent = Event("DEVICE_LEFT", actor.uuid, 
+            params={"device":device})
+        deviceLeftEvent.dispatch()
 
 class LocationsHandler(tornado.web.RequestHandler):
     def get(self):

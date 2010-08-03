@@ -33,6 +33,7 @@
 - (void) handleConnectionEvent:(Event *)event {
 	NSLog(@"Received event: %d", event.type);
 	
+	
 	if(event.type==kGET_STATE_COMPLETE) {
 		// Elements in the Login page (Our Logo, Our Location Table and Our Room Table)
 		LogoView *picView= [[[LogoView alloc] initWithImage:[UIImage imageNamed:@"tin_can_phone.jpg"] 
@@ -139,6 +140,12 @@
 		
 		
 	}
+
+	if(self.view != nil) {
+		NSLog(@"calling reload data:");
+		[locViewController update];
+		[roomViewController update];
+	}
 	
 		
 }		
@@ -163,11 +170,7 @@
 	// Tracks user selections
 	chosenRoom=NULL;
 	chosenLocation=NULL;
-	
-	
-	// Dimentions
-	
-	
+
 	
 	
 }	

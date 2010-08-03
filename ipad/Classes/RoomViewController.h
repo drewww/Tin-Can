@@ -19,6 +19,9 @@
 }
 
 - (id)initWithFrame:(CGRect)frame withController:(LoginMasterViewController *)control;
+
+- (void) update;
+
 @property (nonatomic, retain) NSMutableArray *roomList;
 @property (nonatomic, retain) NSMutableArray *meetingList;
 @property (nonatomic, retain) NSMutableArray *countedList;

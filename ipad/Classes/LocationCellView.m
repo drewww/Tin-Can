@@ -28,6 +28,8 @@
 
 // Fills the cell with information on Location
 - (void)drawRect:(CGRect)rect {
+	NSLog(@"drawing location cell");
+	
     NSString *string =[@" " stringByAppendingString:loc.name];
     [[UIColor blackColor] set];
     [string drawInRect:self.bounds withFont:[UIFont systemFontOfSize:18] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentLeft];

@@ -21,9 +21,7 @@
 }
 
 - (void) setRoom:(NSString *)room;
-- (void) setMeeting:(NSString *)meeting;
+- (void) setMeeting:(Meeting *)meeting;
 - (void) setCounted:(int)counted;
-//@property (nonatomic, retain) NSString *room;
-//@property (nonatomic, retain) NSString *meeting;
-//@property (nonatomic, retain) NSString *counted;
+
 @end
