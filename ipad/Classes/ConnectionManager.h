@@ -27,6 +27,7 @@
     
     BOOL isConnected;
     
+//    ASINetworkQueue *queue;
     
     ASIHTTPRequest *currentPersistentConnection;
     

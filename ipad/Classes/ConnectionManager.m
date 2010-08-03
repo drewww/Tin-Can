@@ -24,6 +24,10 @@ static ConnectionManager *sharedInstance = nil;
     self = [super init];
     
     parser = [[[SBJSON alloc] init] retain];
+    
+    //queue = [[[ASINetworkQueue alloc] init] retain];
+    currentPersistentConnection = nil;
+        
    @synchronized(self) {
     eventListeners = [[NSMutableSet set] retain];
    }
@@ -65,6 +69,18 @@ static ConnectionManager *sharedInstance = nil;
 
 - (void) startPersistentConnection {
  
+    NSLog(@"STARTING PERSISTENT CONNECTION! currentConnection: %@", currentPersistentConnection);
+    if(currentPersistentConnection != nil) {
+        NSLog(@"currentConnection is not nil");
+        if(![currentPersistentConnection isFinished]) {
+            // This happens WAY TOO OFTEN (like, every cycle). and represents a basic failing of the connection management
+            // system that I haven't figured out yet. It does short-circuit the infinite connection problem,
+            // though, so I'm leaving it like this for now. 
+            NSLog(@"in startPersistentConnection, noticed that current connection isn't finished or is null, skipping");
+            return;
+        }
+    }
+    
     [self stopPersistentConnection];
     NSLog(@"/CONNECT/ING");
     
