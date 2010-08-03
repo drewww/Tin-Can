@@ -6,6 +6,8 @@
 
 function ConnectionManager() {
     console.log("Constructing a new connection manager.");
+    
+
 }
 
 ConnectionManager.prototype = {
@@ -243,6 +245,9 @@ ConnectionManager.prototype = {
                 if(loc.uuid == this.loc.uuid) {
                     this.meeting = meeting;
                     console.log("LOCAL meeting set: " + meeting);
+                    this.publishEvent(this.generateEvent("LOCAL_MEETING_SET",
+                        {}));
+                    
                 }
                 
                 console.log(loc.name + " joined " + meeting.title);
@@ -397,6 +402,7 @@ ConnectionManager.prototype = {
          try {
                 listener.connectionEvent(ev);
             } catch (err) {
+                console.log(err);
                 console.log("Tried to send event " + ev.eventType + " to "
                 + listener + " but connectionEvent method was missing. You " +
                 " must declare that method to receive connectionEvents.");
@@ -732,7 +738,7 @@ ConnectionManager.prototype = {
     // Returns the meeting that this client is currently in. Might be null,
     // if this client hasn't joined a meeting yet. 
     getCurrentMeeting: function() {
-        return meeting;
+        return this.meeting;
     },
     
     addListener: function(callback) {
