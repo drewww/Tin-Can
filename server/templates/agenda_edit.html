@@ -36,6 +36,9 @@
 					uuidDict[newId] = topic.uuid;
 					makeFutureItem(newId);
 					break;
+				case "LOCAL_MEETING_SET":
+					generateTopicsFromServer();
+					break;
 			}
 		}});
 		
@@ -61,6 +64,19 @@
 		connection.getState();
 	});
 	
+		function generateTopicsFromServer(){
+			// topics = state.meetings.topics;
+			
+			topics = connection.getCurrentMeeting().topics;
+			
+			for (key in topics) {
+				itemCounter = itemCounter + 1;
+				newId = 'item' + itemCounter;
+				uuidDict[newId] = key.uuid;
+				makeFutureItem(newId);
+				break;
+			}
+		}
 	
 	// visibility toggle for new item textbox input
 		function showTextbox(){
