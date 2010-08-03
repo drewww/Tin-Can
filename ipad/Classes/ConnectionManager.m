@@ -82,8 +82,11 @@ static ConnectionManager *sharedInstance = nil;
 
 - (void) stopPersistentConnection {
     if(currentPersistentConnection != nil) {
-        NSLog(@"releaseing connection");
-        [currentPersistentConnection cancel];
+        // Not totally sure about this - should stop actually stop? Need to diagnose this more closely.
+        // Was having troubles where it would frequently cancel an active request.
+        
+//        NSLog(@"releasing connection");
+//        [currentPersistentConnection cancel];
         [currentPersistentConnection release];
     }
 }   
@@ -145,7 +148,9 @@ static ConnectionManager *sharedInstance = nil;
 }
 
 - (void) requestFailed:(ASIHTTPRequest *)request {
-    NSLog(@"Request failed: %@", request.url);
+    NSError *error = [request error];
+    NSLog(@"Request failed: %@ with error %@", request.url, error);
+    
 }
 
 
@@ -187,6 +192,7 @@ static ConnectionManager *sharedInstance = nil;
         case kNEW_MEETING:
             NSLog(@"NEW_MEETING");
             results = [e.results objectForKey:@"meeting"];
+            NSLog(@"results: %@", results);
             
             meeting = [[Meeting alloc] initWithUUID:[results objectForKey:@"uuid"]
                                           withTitle:[results objectForKey:@"title"]
@@ -219,9 +225,9 @@ static ConnectionManager *sharedInstance = nil;
             break;
             
         case kLOCATION_LEFT_MEETING:
-            meeting = (Meeting *)[state getObjWithUUID:e.meetingUUID withType:[Meeting class]];
+            meeting = (Meeting *)[state getObjWithUUID:[e.params objectForKey:@"meeting"] withType:[Meeting class]];
             
-            location = (Location *)[state getObjWithUUID:[e.params objectForKey:@"location"] withType:[Location class]];
+            location = (Location *)[state getObjWithUUID:e.actorUUID withType:[Location class]];
             
             [meeting locationLeft:location];
             
@@ -230,13 +236,13 @@ static ConnectionManager *sharedInstance = nil;
             
             
         case kLOCATION_JOINED_MEETING:
-            meeting = (Meeting *)[state getObjWithUUID:e.meetingUUID withType:[Meeting class]];
+            meeting = (Meeting *)[state getObjWithUUID:[e.params objectForKey:@"meeting"] withType:[Meeting class]];
             
-            location = (Location *)[state getObjWithUUID:[e.params objectForKey:@"location"] withType:[Location class]];
+            location = (Location *)[state getObjWithUUID:e.actorUUID withType:[Location class]];
             
             [meeting locationLeft:location];
             
-            NSLog(@"LOCATION_LEFT_MEETING: %@ left %@", location, meeting);
+            NSLog(@"LOCATION_JOINED_MEETING: %@ joined %@", location, meeting);
             break;            
             
         case kNEW_TOPIC:
@@ -332,9 +338,7 @@ static ConnectionManager *sharedInstance = nil;
 
 - (void) publishEvent:(Event *)e {
 
-    NSLog(@"listeners: %@", eventListeners);
     for(NSObject *listener in [[eventListeners copy] autorelease]) {
-        NSLog(@"publishing to: %@", listener);
         if([listener respondsToSelector:@selector(handleConnectionEvent:)])
             [listener handleConnectionEvent:e];
         else {
