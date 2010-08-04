@@ -35,14 +35,12 @@
     NSLog(@"starting time in seconds: %f", [startingTime timeIntervalSince1970]);
     NSTimeInterval startingTimeInSeconds = [startingTime timeIntervalSince1970];//-1800;
     
-    meetingTimerView = [[MeetingTimerView alloc] initWithFrame:CGRectMake(200, 200, 400, 400) withStartTime:[NSDate dateWithTimeIntervalSince1970:startingTimeInSeconds]];
+    meetingTimerView = [[MeetingTimerView alloc] initWithFrame:CGRectMake(200, 200, 200, 200) withStartTime:[NSDate dateWithTimeIntervalSince1970:startingTimeInSeconds]];
     [meetingTimerView retain];
     [self.view addSubview:meetingTimerView];
     
 	
-	TaskView *firstTask=[[TaskView alloc] initWithFrame:CGRectMake(100, 200, 200, 50) 
-							withText: @"Rawr first task is done and I want to test how much text I could put here"];
-	[self.view addSubview:firstTask];					 
+					 
     // Create the participants view.
     participantsContainer = [[UIView alloc] initWithFrame:self.view.frame];
     [participantsContainer retain];
@@ -50,12 +48,15 @@
         
     [self initParticipantsView];
     [self initTodoViews];
-    
+    TaskView *firstTask=[[TaskView alloc] initWithFrame:CGRectMake(400, 200, 200, 50) 
+											   withText: @"Leisure station ran out of pearls last night when I ordered."];
+	[self.view addSubview:firstTask];	
+	
     [[DragManager sharedInstance] initWithRootView:self.view withParticipantsContainer:participantsContainer];
 
     [self.view bringSubviewToFront:participantsContainer];
 	[self.view bringSubviewToFront:meetingTimerView];
-    
+    [self.view bringSubviewToFront:firstTask];
     queue = [[[NSOperationQueue alloc] init] retain];
 
     lastRevision = INITIAL_REVISION_NUMBER;
