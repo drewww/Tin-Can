@@ -25,11 +25,7 @@ User.prototype = {
     },
     
     removeTask: function(task) {
-        console.log("task to remove:");
-        console.log(task);
         this.tasks = array_remove(this.tasks, task);
-        console.log("tasks after removal:");
-        console.log(this.tasks);
     },
     
     isInMeeting: function() {
