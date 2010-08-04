@@ -17,6 +17,7 @@
 #import "StateManager.h"
 #import "ConnectionManager.h"
 #import "Location.h"
+#import "WebViewController.h"
 @class TinCanViewController;
 
 @implementation LoginMasterViewController
@@ -122,7 +123,10 @@
 		roomInstructions.font = [UIFont systemFontOfSize:30.0f];
 		[roomInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 		
+		//self.wvTutorial = [[WebViewController alloc] initWithNibName:@"WebView" bundle:[NSBundle mainBundle]];
+		
 		// Add Elements to View
+		//[self.view addSubview:wvTutorial];
 		[self.view addSubview:picView];
 		[self.view addSubview:loginButton];
 		[self.view addSubview:arrowView];

@@ -22,6 +22,7 @@
 	var lastClicked = 'item0'; 
 	var currentClicked; // element
 	var uuidDict = {};
+	var newItemText;
 	
 	$(document).ready(function(){
 		connection.addListener({connectionEvent: function(e) {
@@ -72,8 +73,11 @@
 			for (key in topics) {
 				itemCounter = itemCounter + 1;
 				newId = 'item' + itemCounter;
-				uuidDict[newId] = key.uuid;
-				makeFutureItem(newId);
+				console.log("NEW ID");
+				console.log(newId);
+				console.log(key.text);
+				uuidDict.newId = key.uuid;
+				makeFutureItem(newId, key.text);
 				break;
 			}
 		}
@@ -93,21 +97,21 @@
 		}
 		
 		function sendTopicToServer() {
-			newItem=$("#itemTextbox")[0].value;
-			connection.addTopic(newItem);
+			newItemText=$("#itemTextbox")[0].value;
+			connection.addTopic(newItemText);
 			$("#itemTextbox")[0].value="";
 			$("#newItemInput")[0].style.display="none"
 		}
 		
 	//grab input from textbox and generate item in list
-		function makeFutureItem(newId) {
+		function makeFutureItem(newId, newItemText) {
 			
 			futureTemplate = $("#futureTemplate");
 			itemList = $("#container");
 			  // assign user input in textbox to newItem
 			
 			clone = futureTemplate.clone();
-			clone.find("span").html(newItem);
+			clone.find("span").html(newItemText);
 			clone.show();
 			clone[0].id = newId;
 			itemList.append(clone);
@@ -236,6 +240,7 @@
 		
 		function loginUser(){
 			connection.setUser(state.getUsers()[0].uuid);
+			// for (user in state.getUsers())
 			connection.connect();
 		}
 		

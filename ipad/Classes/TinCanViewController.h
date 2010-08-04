@@ -13,5 +13,5 @@
     UIViewController *currentViewController;
 }
 -(void) switchToViewController:(UIViewController *)c;
--(void) animateNewViewDidStop:(NSString *)animationId finished:(NSNumber *)finished context:(void *)context view:(UIViewController *)c ;
+-(void) animateNewViewDidStop:(NSString *)animationId finished:(NSNumber *)finished context:(void *)context;
 @end

@@ -53,10 +53,15 @@ static StateManager *sharedInstance = nil;
 - (void) initWithLocations:(NSArray *)newLocations withUsers:(NSArray *)newUsers
               withMeetings:(NSArray *)newMeetings withRooms:(NSArray *)newRooms {
 
+    if(db!=nil) [db release];
+    if(actors!=nil) [actors release];
+    if(rooms !=nil) [rooms release];
+    if(meetings!=nil) [meetings release];
+    
     db = [[NSMutableDictionary dictionary] retain];
-    actors = [NSMutableSet set];
-    rooms = [NSMutableSet set];
-    meetings = [NSMutableSet set];
+    actors = [[NSMutableSet set] retain];
+    rooms = [[NSMutableSet set] retain];
+    meetings = [[NSMutableSet set] retain];
     
     // Do this in two passes. Make the objects first, then
     // unswizzle them to convert UUIDs into actual objects.

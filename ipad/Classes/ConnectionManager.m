@@ -24,6 +24,10 @@ static ConnectionManager *sharedInstance = nil;
     self = [super init];
     
     parser = [[[SBJSON alloc] init] retain];
+    
+    //queue = [[[ASINetworkQueue alloc] init] retain];
+    currentPersistentConnection = nil;
+        
    @synchronized(self) {
     eventListeners = [[NSMutableSet set] retain];
    }
@@ -47,6 +51,15 @@ static ConnectionManager *sharedInstance = nil;
         NSLog(@"Must call setLocation before connecting.");
     }
     
+    if(isConnected) {
+        NSLog(@"Can't call connect once the client is already connected. Ignoring...");
+        return;
+    }
+
+    // Setting this here so we don't have a problem where two rapid fire connect calls
+    // go through, messing everything up. I catch it in the failure block 
+    isConnected = YES;
+
     NSLog(@"logging in...");
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/connect/login"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
@@ -65,6 +78,17 @@ static ConnectionManager *sharedInstance = nil;
 
 - (void) startPersistentConnection {
  
+    if(currentPersistentConnection != nil) {
+        NSLog(@"currentConnection is not nil, but finished: %d", [currentPersistentConnection isFinished]);
+        if(![currentPersistentConnection isFinished]) {
+            // This happens WAY TOO OFTEN (like, every cycle). and represents a basic failing of the connection management
+            // system that I haven't figured out yet. It does short-circuit the infinite connection problem,
+            // though, so I'm leaving it like this for now. 
+            NSLog(@"in startPersistentConnection, noticed that current connection isn't finished or is null, skipping");
+            return;
+        }
+    }
+    
     [self stopPersistentConnection];
     NSLog(@"/CONNECT/ING");
     
@@ -78,12 +102,17 @@ static ConnectionManager *sharedInstance = nil;
     
     currentPersistentConnection = request;
     [currentPersistentConnection retain];
+    NSLog(@">>>>>>>>>>>>>>>>>>>>>>>>> currentConnection: %@", currentPersistentConnection);
+
 }
 
 - (void) stopPersistentConnection {
     if(currentPersistentConnection != nil) {
-        NSLog(@"releaseing connection");
-        [currentPersistentConnection cancel];
+        // Not totally sure about this - should stop actually stop? Need to diagnose this more closely.
+        // Was having troubles where it would frequently cancel an active request.
+        
+//        NSLog(@"releasing connection");
+//        [currentPersistentConnection cancel];
         [currentPersistentConnection release];
     }
 }   
@@ -125,7 +154,7 @@ static ConnectionManager *sharedInstance = nil;
         [self publishEvent:e];
         NSLog(@"Done with GET_STATE");
     } else if ([path isEqualToString:@"/connect"]) {
-        
+        NSLog(@"<<<<<<<<<<<<<<<<<<<<<<<< request: %@", request);        
         // Handle events being transmitted from an ending persistent connection.
         NSArray *result = [parser objectWithString:[request responseString] error:nil];
     
@@ -145,7 +174,15 @@ static ConnectionManager *sharedInstance = nil;
 }
 
 - (void) requestFailed:(ASIHTTPRequest *)request {
-    NSLog(@"Request failed: %@", request.url);
+    NSError *error = [request error];
+    NSLog(@"Request failed: %@ with error %@", request.url, error);
+    
+    // Make sure that if the login connect failed, we don't accidently block
+    // all future attempts to connect.
+    if([[request.url path] rangeOfString:@"/connect/login"].location != NSNotFound) {
+        isConnected = NO;
+    }
+    
 }
 
 
@@ -187,6 +224,7 @@ static ConnectionManager *sharedInstance = nil;
         case kNEW_MEETING:
             NSLog(@"NEW_MEETING");
             results = [e.results objectForKey:@"meeting"];
+            NSLog(@"results: %@", results);
             
             meeting = [[Meeting alloc] initWithUUID:[results objectForKey:@"uuid"]
                                           withTitle:[results objectForKey:@"title"]
@@ -219,9 +257,9 @@ static ConnectionManager *sharedInstance = nil;
             break;
             
         case kLOCATION_LEFT_MEETING:
-            meeting = (Meeting *)[state getObjWithUUID:e.meetingUUID withType:[Meeting class]];
+            meeting = (Meeting *)[state getObjWithUUID:[e.params objectForKey:@"meeting"] withType:[Meeting class]];
             
-            location = (Location *)[state getObjWithUUID:[e.params objectForKey:@"location"] withType:[Location class]];
+            location = (Location *)[state getObjWithUUID:e.actorUUID withType:[Location class]];
             
             [meeting locationLeft:location];
             
@@ -230,13 +268,13 @@ static ConnectionManager *sharedInstance = nil;
             
             
         case kLOCATION_JOINED_MEETING:
-            meeting = (Meeting *)[state getObjWithUUID:e.meetingUUID withType:[Meeting class]];
+            meeting = (Meeting *)[state getObjWithUUID:[e.params objectForKey:@"meeting"] withType:[Meeting class]];
             
-            location = (Location *)[state getObjWithUUID:[e.params objectForKey:@"location"] withType:[Location class]];
+            location = (Location *)[state getObjWithUUID:e.actorUUID withType:[Location class]];
             
             [meeting locationLeft:location];
             
-            NSLog(@"LOCATION_LEFT_MEETING: %@ left %@", location, meeting);
+            NSLog(@"LOCATION_JOINED_MEETING: %@ joined %@", location, meeting);
             break;            
             
         case kNEW_TOPIC:
@@ -332,9 +370,7 @@ static ConnectionManager *sharedInstance = nil;
 
 - (void) publishEvent:(Event *)e {
 
-    NSLog(@"listeners: %@", eventListeners);
     for(NSObject *listener in [[eventListeners copy] autorelease]) {
-        NSLog(@"publishing to: %@", listener);
         if([listener respondsToSelector:@selector(handleConnectionEvent:)])
             [listener handleConnectionEvent:e];
         else {
