@@ -308,8 +308,8 @@ ConnectionManager.prototype = {
                     // so we should mark it as such in the client.
                     topic.startActor = actor;
                     topic.startTime = new Date();
-                } else if(topic.status=="CURRENT" && status=="FUTURE") {
-                        // This means that we're starting this item,
+                } else if(topic.status=="CURRENT" && status=="PAST") {
+                        // This means that we're stopping this item,
                         // so we should mark it as such in the client.
                         topic.stopActor = actor;
                         topic.stopTime = new Date();
