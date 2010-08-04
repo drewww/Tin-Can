@@ -20,6 +20,8 @@ import simplejson as json
 import logging
 import copy
 
+import tornado.ioloop
+
 import state
 import event
 
@@ -264,6 +266,7 @@ class Device(YarnBaseType):
         self.actor = None
         self.eventQueue = []
         self.lastConnect = 0
+        self.checkingForReconnect = False
         
     def logout(self):
         if self.actor != None:
@@ -312,6 +315,10 @@ class Device(YarnBaseType):
             cls=YarnModelJSONEncoder))
         self.connection.finish()
         self.connection = None
+        if (not self.checkingForReconnect):
+            self.checkingForReconnect = True
+            tornado.ioloop.IOLoop.instance().add_timeout(time.time()+3, 
+                self.connectionClosed)
 
         # TODO wait for ACK from the client that it received these events.
         self.eventQueue = []
@@ -360,10 +367,20 @@ class Device(YarnBaseType):
             self.flushQueue()
     
     def connectionClosed(self):
+        self.checkingForReconnect = False
         logging.debug("Checking for re-connection from recently closed device")
         if self.connection==None:
             logging.debug("No reconnection. Logging out actor")
-            self.logout()
+            if self.actor.location!=None:
+                if len(self.actor.location.users)==1:
+                    leaveLocationEvent = event.Event("USER_LEFT_LOCATION", self.actor.uuid,
+                        params={"location":self.actor.location})
+                    leaveLocationEvent.dispatch()
+            deviceLeftEvent = event.Event("DEVICE_LEFT", self.actor.uuid, 
+                params={"device":self})
+            deviceLeftEvent.dispatch()
+        else:
+            logging.debug("Device re-connected")
     
     def __repr__(self):
         return self.__str__()

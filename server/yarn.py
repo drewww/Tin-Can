@@ -244,7 +244,7 @@ class ConnectionHandler(BaseHandler):
         logging.info("Client-side connection closed")
         device = self.get_current_device()
         device.connection=None
-        tornado.ioloop.IOLoop.instance().add_timeout(time.time()+10, 
+        tornado.ioloop.IOLoop.instance().add_timeout(time.time()+3, 
             self.get_current_device().connectionClosed)
         
 
@@ -444,6 +444,12 @@ class LogoutHandler(BaseHandler):
     def post(self):
         device = self.get_current_device()
         actor = self.get_current_actor()
+        
+        if actor.location!=None:
+            if len(actor.location.users)==1:
+                leaveLocationEvent = Event("USER_LEFT_LOCATION", actor.uuid,
+                    params={"location":actor.location})
+                leaveLocationEvent.dispatch()
         
         deviceLeftEvent = Event("DEVICE_LEFT", actor.uuid, 
             params={"device":device})
