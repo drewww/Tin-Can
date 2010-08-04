@@ -14,7 +14,7 @@
 #import "TodoItemView.h"
 #import "DragManager.h"
 #import "TaskView.h"
-
+#import "TaskContainerView.h"
 #define INITIAL_REVISION_NUMBER 10000
 
 @implementation MeetingViewController
@@ -48,15 +48,15 @@
         
     [self initParticipantsView];
     [self initTodoViews];
-    TaskView *firstTask=[[TaskView alloc] initWithFrame:CGRectMake(400, 200, 200, 50) 
-											   withText: @"Leisure station ran out of pearls last night when I ordered."];
-	[self.view addSubview:firstTask];	
+    
+	TaskContainerView *tasks=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) ];
+	[self.view addSubview:tasks];	
 	
     [[DragManager sharedInstance] initWithRootView:self.view withParticipantsContainer:participantsContainer];
 
     [self.view bringSubviewToFront:participantsContainer];
 	[self.view bringSubviewToFront:meetingTimerView];
-    [self.view bringSubviewToFront:firstTask];
+    [self.view bringSubviewToFront:tasks];
     queue = [[[NSOperationQueue alloc] init] retain];
 
     lastRevision = INITIAL_REVISION_NUMBER;

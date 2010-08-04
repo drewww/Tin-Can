@@ -59,6 +59,7 @@
 		DA767ACC11F78D9D00184827 /* TimerBar.m in Sources */ = {isa = PBXBuildFile; fileRef = DA767ACB11F78D9D00184827 /* TimerBar.m */; };
 		DA7FD24A12086F74007A9217 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA7FD24912086F74007A9217 /* WebViewController.m */; };
 		DA7FD27A1208A127007A9217 /* TaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA7FD2791208A127007A9217 /* TaskView.m */; };
+		DA7FD3E11209E424007A9217 /* TaskContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA7FD3E01209E424007A9217 /* TaskContainerView.m */; };
 		DA96F0F811EE525500B64D3D /* HeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E311EE525500B64D3D /* HeaderView.m */; };
 		DA96F0F911EE525500B64D3D /* LocationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E511EE525500B64D3D /* LocationCell.m */; };
 		DA96F0FA11EE525500B64D3D /* LocationCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E711EE525500B64D3D /* LocationCellView.m */; };
@@ -175,6 +176,8 @@
 		DA7FD24912086F74007A9217 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
 		DA7FD2781208A127007A9217 /* TaskView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskView.h; sourceTree = "<group>"; };
 		DA7FD2791208A127007A9217 /* TaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskView.m; sourceTree = "<group>"; };
+		DA7FD3DF1209E424007A9217 /* TaskContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskContainerView.h; sourceTree = "<group>"; };
+		DA7FD3E01209E424007A9217 /* TaskContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskContainerView.m; sourceTree = "<group>"; };
 		DA96F0E211EE525500B64D3D /* HeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeaderView.h; sourceTree = "<group>"; };
 		DA96F0E311EE525500B64D3D /* HeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeaderView.m; sourceTree = "<group>"; };
 		DA96F0E411EE525500B64D3D /* LocationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationCell.h; sourceTree = "<group>"; };
@@ -382,6 +385,8 @@
 				DA7FD2791208A127007A9217 /* TaskView.m */,
 				3AC2B9171198715A0071F912 /* ParticipantView.h */,
 				3AC2B9181198715A0071F912 /* ParticipantView.m */,
+				DA7FD3DF1209E424007A9217 /* TaskContainerView.h */,
+				DA7FD3E01209E424007A9217 /* TaskContainerView.m */,
 				3AC2BA9E1199D89C0071F912 /* TodoItemView.h */,
 				3AC2BA9F1199D89C0071F912 /* TodoItemView.m */,
 				3AC2B9D21198BB120071F912 /* UIColor+Util.h */,
@@ -558,6 +563,7 @@
 				3AC6BB7C1200F0280002FD52 /* Task.m in Sources */,
 				DA7FD24A12086F74007A9217 /* WebViewController.m in Sources */,
 				DA7FD27A1208A127007A9217 /* TaskView.m in Sources */,
+				DA7FD3E11209E424007A9217 /* TaskContainerView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
