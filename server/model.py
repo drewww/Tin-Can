@@ -437,6 +437,8 @@ class User(Actor):
         
         self._status = None
         self.location = None
+        self.tasks = set()
+        
         
     def isInLocation(self):
         return self.location != None
@@ -462,6 +464,12 @@ class User(Actor):
     def getMeeting(self):
         return self.location.getMeeting()
         
+    def assignTask(self, task):
+        self.tasks.add(task)
+        
+    def removeTask(self, task):
+        self.tasks.remove(task)
+        
     def __str__(self):
         if(self.isInLocation()):
             return "[user.%s %s loc:%s devs:%d]"%(self.uuid[0:6],
@@ -470,9 +478,7 @@ class User(Actor):
                 len(self.getDevices()))
         else:
             return "[user.%s %s loc:NONE devs:%d]"%(self.uuid[0:6],
-                self.name, self.location.name + "@" +
-                self.location.meeting.room.name,
-                len(self.getDevices()))
+                self.name, len(self.getDevices()))
     
 
 class Location(Actor):
@@ -619,6 +625,7 @@ class Task(MeetingObject):
         
         if(assignedToUUID!=None):
             self.assignedTo = state.get_obj(assignedToUUID, User)
+            assignedTo.assignTask(self)
         else:
             self.assignedTo = None    
         
@@ -643,10 +650,26 @@ class Task(MeetingObject):
     def setText(self, text):
         self.text = text
     
-    def assign(self, assignedBy, assignedTo):
+    def assign(self, assignedBy, assignedTo):        
         self.assignedBy=assignedBy
         self.assignedTo=assignedTo
         self.assignedAt=time.time()
+        
+        # inform the user object of its assignment.
+        assignedTo.assignTask(self)
+    
+    def deassign(self, deassignedBy):
+        # do some quick assertion checking.
+        if(self.assignedTo==None):
+            logging.warning("Tried to deassign a task %s that was not\
+ assigned yet."%self)
+            return
+        
+        self.assignedBy = deassignedBy
+        self.assignedAt = time.time()
+        
+        self.assignedTo.removeTask(self)
+        self.assignedTo = None
         
     def __str__(self):
         if(self.assignedTo!=None):

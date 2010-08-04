@@ -67,7 +67,15 @@
 	{% for device in user.getDevices() %}
 		{{str(device) + ","}}
 	{% end %}
+</span><br/>
+
+<span class="tasks">
+	tasks:
+	{% for task in user.tasks %}
+		{{task.text}}
+	{% end %}
 </span>
+
 </div>
 {% end %}
 
@@ -135,7 +143,7 @@
 	<li class = "topic">
 		{{task.text}}: 
 		<div>Created by {{task.createdBy.name}} at {{time.strftime("%I:%M %p", time.localtime(task.createdAt))}}</div>
-		{% if task.assignedAt!=None%}
+		{% if task.assignedTo!=None%}
 		<div>Assigned by {{task.assignedBy.name}} to {{task.assignedTo.name}}
 			at {{time.strftime("%I:%M %p", time.localtime(task.assignedAt))}}</div>
 		{% end %}

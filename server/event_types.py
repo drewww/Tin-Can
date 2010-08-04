@@ -212,12 +212,18 @@ def _handleEditTask(event):
     
 def _handleAssignTask(event):
     task = state.get_obj(event.params["taskUUID"], model.Task)
+    
     assignedBy = state.get_obj(event.actor.uuid, model.Actor)
-    assignedTo = event.params["assignedTo"]
     
-    task.assign(assignedBy,assignedTo)
+    deassign = event.params["deassign"]
+
+    if(not deassign):
+        assignedTo = event.params["assignedTo"]
+        task.assign(assignedBy,assignedTo)
+    else:
+        task.deassign(assignedBy)
+
     event.params["assignedAt"]=task.assignedAt
-    
     return event
 
 # This class just wraps the different features of an event into a nice 
@@ -286,6 +292,6 @@ EventType("DELETE_TASK",   ["taskUUID"],            _handleDeleteTask, False,
     True)
 EventType("EDIT_TASK",   ["taskUUID", "text"],      _handleEditTask, False,
     True)
-EventType("ASSIGN_TASK", ["taskUUID", "assignedTo"],_handleAssignTask, False,
+EventType("ASSIGN_TASK", ["taskUUID"],              _handleAssignTask, False,
     True)
 

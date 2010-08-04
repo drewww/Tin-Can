@@ -346,12 +346,23 @@ ConnectionManager.prototype = {
                 
             case "ASSIGN_TASK":
                 task = state.getObj(ev["params"]["taskUUID"],Task);
-                assignedBy = state.getObj(ev.actorUUID,User); //is this supposed to be user?
-                assignedTo = state.getObj(ev["params"]["assignedTo"],User);
                 
-                task.assignedBy=assignedBy;
-                task.assignedTo=assignedTo;
+                //is this supposed to be user?
+                // (Yes, but only for very stupid reasons - I never settled
+                //  on a proper inheretence system in JS, and getObj is
+                //  hardcoded to accept either a location or a user when User
+                //  is specified. This should get fixed at some point.)
+                assignedBy = state.getObj(ev.actorUUID,User); 
                 task.assignedAt = new Date(ev["params"]["assignedAt"]*1000);
+                if(ev["params"]["deassign"]) {
+                    console.log("Deassigning task.");
+                    task.deassign(assignedBy);                    
+                } else {
+                    console.log("Assigning task.");
+                    assignedTo = state.getObj(ev["params"]["assignedTo"],
+                        User);                    
+                    task.assign(assignedBy, assignedTo);
+                }
                 
                 break;
                 
@@ -718,12 +729,18 @@ ConnectionManager.prototype = {
         });
     },
     
-    assignTask: function(taskUUID,assignedToUUID) {
+    assignTask: function(taskUUID,assignedToUUID, deassign) {
+        if(!deassign) {
+            theData = {"taskUUID":taskUUID,"assignedToUUID":assignedToUUID};
+        } else {
+            theData = {"taskUUID":taskUUID, "deassign":true};
+        }
+
         $.ajax({
             url: '/tasks/assign',
             type: "POST",
             context: this,
-            data: {"taskUUID":taskUUID,"assignedToUUID":assignedToUUID},
+            data: theData,
             success: function () {
                 this.publishEvent(this.generateEvent("ASSIGN_TASK_COMPLETE",
                     {}));
