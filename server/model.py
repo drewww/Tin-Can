@@ -263,6 +263,7 @@ class Device(YarnBaseType):
         self.connection = None
         self.actor = None
         self.eventQueue = []
+        self.lastConnect = 0
         
     def logout(self):
         if self.actor != None:
@@ -335,6 +336,7 @@ class Device(YarnBaseType):
 
         # set the new connection
         self.connection = connection
+        self.lastConnect = time.time()
 
         # mark ourselves as logged in.
         # TODO figure out how to mark a user as logged out. 
@@ -356,6 +358,12 @@ class Device(YarnBaseType):
             logging.debug("Flushing existing event queue into new\
                 connection.")
             self.flushQueue()
+    
+    def connectionClosed(self):
+        logging.debug("Checking for re-connection from recently closed device")
+        if self.connection==None:
+            logging.debug("No reconnection. Logging out actor")
+            self.logout()
     
     def __repr__(self):
         return self.__str__()

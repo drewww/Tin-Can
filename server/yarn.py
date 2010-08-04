@@ -238,7 +238,14 @@ class ConnectionHandler(BaseHandler):
             # a log out event from the previous one? Deal with this later)
             logging.info("Actor %s already logged in. Saving connection."%
                 actor.name)
-            device.setConnection(self)            
+            device.setConnection(self)
+            
+    def on_connection_close(self):
+        logging.info("Client-side connection closed")
+        device = self.get_current_device()
+        device.connection=None
+        tornado.ioloop.IOLoop.instance().add_timeout(time.time()+10, 
+            self.get_current_device().connectionClosed)
         
 
 class JoinRoomHandler(BaseHandler):
