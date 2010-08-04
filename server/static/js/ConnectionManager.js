@@ -227,10 +227,12 @@ ConnectionManager.prototype = {
                 user = state.getObj(ev["actorUUID"], User);
                 loc.userLeft(user);
                 
-                if(user.uuid = this.user.uuid) {
-                    // means WE'VE left a location.
-                    this.loc = null;
-                    console.log("Local location set to null.");
+                if (this.user!=null){
+                    if(user.uuid == this.user.uuid) {
+                        // means WE'VE left a location.
+                        this.loc = null;
+                        console.log("Local location set to null.");
+                    }
                 }
                 
                 console.log(user.name + " left " + loc.name);
@@ -240,14 +242,16 @@ ConnectionManager.prototype = {
                 meeting = state.getObj(ev["params"]["meeting"], Meeting);
                 loc = state.getObj(ev.actorUUID, Location);
                 meeting.locJoined(loc);
+                
+                if (this.loc!=null){
+                    console.log("my loc: " + this.loc.uuid + " / " + loc.uuid);
+                    if(loc.uuid == this.loc.uuid) {
+                        this.meeting = meeting;
+                        console.log("LOCAL meeting set: " + meeting);
+                        this.publishEvent(this.generateEvent("LOCAL_MEETING_SET",
+                            {}));
 
-                console.log("my loc: " + this.loc.uuid + " / " + loc.uuid);
-                if(loc.uuid == this.loc.uuid) {
-                    this.meeting = meeting;
-                    console.log("LOCAL meeting set: " + meeting);
-                    this.publishEvent(this.generateEvent("LOCAL_MEETING_SET",
-                        {}));
-                    
+                    }
                 }
                 
                 console.log(loc.name + " joined " + meeting.title);
@@ -258,7 +262,11 @@ ConnectionManager.prototype = {
                 loc = state.getObj(ev.actorUUID, Location);
                 meeting.locLeft(loc);
                 
-                this.meeting = null;
+                if (this.loc!=null){
+                    if(loc.uuid == this.loc.uuid) {
+                        this.meeting = null;
+                    }
+                }
                 
                 console.log(loc.name + " left " + meeting.title);
                 break;
@@ -346,12 +354,23 @@ ConnectionManager.prototype = {
                 
             case "ASSIGN_TASK":
                 task = state.getObj(ev["params"]["taskUUID"],Task);
-                assignedBy = state.getObj(ev.actorUUID,User); //is this supposed to be user?
-                assignedTo = state.getObj(ev["params"]["assignedTo"],User);
                 
-                task.assignedBy=assignedBy;
-                task.assignedTo=assignedTo;
+                //is this supposed to be user?
+                // (Yes, but only for very stupid reasons - I never settled
+                //  on a proper inheretence system in JS, and getObj is
+                //  hardcoded to accept either a location or a user when User
+                //  is specified. This should get fixed at some point.)
+                assignedBy = state.getObj(ev.actorUUID,User); 
                 task.assignedAt = new Date(ev["params"]["assignedAt"]*1000);
+                if(ev["params"]["deassign"]) {
+                    console.log("Deassigning task.");
+                    task.deassign(assignedBy);                    
+                } else {
+                    console.log("Assigning task.");
+                    assignedTo = state.getObj(ev["params"]["assignedTo"],
+                        User);                    
+                    task.assign(assignedBy, assignedTo);
+                }
                 
                 break;
                 
@@ -718,12 +737,18 @@ ConnectionManager.prototype = {
         });
     },
     
-    assignTask: function(taskUUID,assignedToUUID) {
+    assignTask: function(taskUUID,assignedToUUID, deassign) {
+        if(!deassign) {
+            theData = {"taskUUID":taskUUID,"assignedToUUID":assignedToUUID};
+        } else {
+            theData = {"taskUUID":taskUUID, "deassign":true};
+        }
+
         $.ajax({
             url: '/tasks/assign',
             type: "POST",
             context: this,
-            data: {"taskUUID":taskUUID,"assignedToUUID":assignedToUUID},
+            data: theData,
             success: function () {
                 this.publishEvent(this.generateEvent("ASSIGN_TASK_COMPLETE",
                     {}));

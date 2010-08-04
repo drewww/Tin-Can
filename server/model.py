@@ -20,6 +20,8 @@ import simplejson as json
 import logging
 import copy
 
+import tornado.ioloop
+
 import state
 import event
 
@@ -263,6 +265,8 @@ class Device(YarnBaseType):
         self.connection = None
         self.actor = None
         self.eventQueue = []
+        self.lastConnect = 0
+        self.checkingForReconnect = False
         
     def logout(self):
         if self.actor != None:
@@ -311,6 +315,10 @@ class Device(YarnBaseType):
             cls=YarnModelJSONEncoder))
         self.connection.finish()
         self.connection = None
+        if (not self.checkingForReconnect):
+            self.checkingForReconnect = True
+            tornado.ioloop.IOLoop.instance().add_timeout(time.time()+3, 
+                self.connectionClosed)
 
         # TODO wait for ACK from the client that it received these events.
         self.eventQueue = []
@@ -335,6 +343,7 @@ class Device(YarnBaseType):
 
         # set the new connection
         self.connection = connection
+        self.lastConnect = time.time()
 
         # mark ourselves as logged in.
         # TODO figure out how to mark a user as logged out. 
@@ -356,6 +365,22 @@ class Device(YarnBaseType):
             logging.debug("Flushing existing event queue into new\
                 connection.")
             self.flushQueue()
+    
+    def connectionClosed(self):
+        self.checkingForReconnect = False
+        logging.debug("Checking for re-connection from recently closed device")
+        if self.connection==None:
+            logging.debug("No reconnection. Logging out actor")
+            if self.actor.location!=None:
+                if len(self.actor.location.users)==1:
+                    leaveLocationEvent = event.Event("USER_LEFT_LOCATION", self.actor.uuid,
+                        params={"location":self.actor.location})
+                    leaveLocationEvent.dispatch()
+            deviceLeftEvent = event.Event("DEVICE_LEFT", self.actor.uuid, 
+                params={"device":self})
+            deviceLeftEvent.dispatch()
+        else:
+            logging.debug("Device re-connected")
     
     def __repr__(self):
         return self.__str__()
@@ -437,6 +462,8 @@ class User(Actor):
         
         self._status = None
         self.location = None
+        self.tasks = set()
+        
         
     def isInLocation(self):
         return self.location != None
@@ -462,6 +489,12 @@ class User(Actor):
     def getMeeting(self):
         return self.location.getMeeting()
         
+    def assignTask(self, task):
+        self.tasks.add(task)
+        
+    def removeTask(self, task):
+        self.tasks.remove(task)
+        
     def __str__(self):
         if(self.isInLocation()):
             return "[user.%s %s loc:%s devs:%d]"%(self.uuid[0:6],
@@ -470,9 +503,7 @@ class User(Actor):
                 len(self.getDevices()))
         else:
             return "[user.%s %s loc:NONE devs:%d]"%(self.uuid[0:6],
-                self.name, self.location.name + "@" +
-                self.location.meeting.room.name,
-                len(self.getDevices()))
+                self.name, len(self.getDevices()))
     
 
 class Location(Actor):
@@ -619,6 +650,7 @@ class Task(MeetingObject):
         
         if(assignedToUUID!=None):
             self.assignedTo = state.get_obj(assignedToUUID, User)
+            assignedTo.assignTask(self)
         else:
             self.assignedTo = None    
         
@@ -643,10 +675,26 @@ class Task(MeetingObject):
     def setText(self, text):
         self.text = text
     
-    def assign(self, assignedBy, assignedTo):
+    def assign(self, assignedBy, assignedTo):        
         self.assignedBy=assignedBy
         self.assignedTo=assignedTo
         self.assignedAt=time.time()
+        
+        # inform the user object of its assignment.
+        assignedTo.assignTask(self)
+    
+    def deassign(self, deassignedBy):
+        # do some quick assertion checking.
+        if(self.assignedTo==None):
+            logging.warning("Tried to deassign a task %s that was not\
+ assigned yet."%self)
+            return
+        
+        self.assignedBy = deassignedBy
+        self.assignedAt = time.time()
+        
+        self.assignedTo.removeTask(self)
+        self.assignedTo = None
         
     def __str__(self):
         if(self.assignedTo!=None):

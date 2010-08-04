@@ -165,6 +165,27 @@ class StatusHandler(tornado.web.RequestHandler):
         logging.debug("rooms: " + str(rooms) + " len: " + str(len(rooms)))
         logging.info("Providing state @%f on: %d users, %d locations, and %d\
          rooms."%(curTime, len(users), len(locations), len(rooms)))
+         
+        logging.info("users")
+        for user in users:
+            logging.debug(user)
+            
+        logging.info("rooms")
+        for room in rooms:
+            logging.debug(room)
+            
+        logging.info("locations")
+        for location in locations:
+            logging.debug(location)
+            
+        logging.info("tasks")
+        for task in tasks:
+            logging.debug(task)
+    
+        # logging.info("users: " + str(users))
+        # logging.info("locations: " + str(locations))
+        # logging.info("rooms: " + str(rooms))
+        # logging.info("tasks: " + str(tasks))
         
         self.render("state.html", users=users,
             rooms=state.rooms, locations=locations,
@@ -238,7 +259,14 @@ class ConnectionHandler(BaseHandler):
             # a log out event from the previous one? Deal with this later)
             logging.info("Actor %s already logged in. Saving connection."%
                 actor.name)
-            device.setConnection(self)            
+            device.setConnection(self)
+            
+    def on_connection_close(self):
+        logging.info("Client-side connection closed")
+        device = self.get_current_device()
+        device.connection=None
+        tornado.ioloop.IOLoop.instance().add_timeout(time.time()+3, 
+            self.get_current_device().connectionClosed)
         
 
 class JoinRoomHandler(BaseHandler):
@@ -438,6 +466,12 @@ class LogoutHandler(BaseHandler):
         device = self.get_current_device()
         actor = self.get_current_actor()
         
+        if actor.location!=None:
+            if len(actor.location.users)==1:
+                leaveLocationEvent = Event("USER_LEFT_LOCATION", actor.uuid,
+                    params={"location":actor.location})
+                leaveLocationEvent.dispatch()
+        
         deviceLeftEvent = Event("DEVICE_LEFT", actor.uuid, 
             params={"device":device})
         deviceLeftEvent.dispatch()
@@ -576,12 +610,25 @@ class EditTaskHandler(BaseHandler):
 class AssignTaskHandler(BaseHandler):
     def post(self):
         actor = self.get_current_actor()
-        assignedTo = state.get_obj(self.get_argument("assignedToUUID"), User)
         
+        # check and see if the deassign flag is set.
+        deassign = self.get_argument("deassign", default=None)
+        
+        if(deassign==None):
+            # if deassign wasn't set, look for an assignment UUID parameter
+            assignedTo = state.get_obj(self.get_argument("assignedToUUID"),
+                User)
+            p = {"taskUUID":self.get_argument("taskUUID"),
+                    "assignedTo":assignedTo, "deassign":False}
+        else:
+            # if deassign was set, then trigger a deassign event.
+            p = {"taskUUID":self.get_argument("taskUUID"),
+                    "deassign":True}
+            
+        logging.debug("assign params: " + str(p))
         assignTaskEvent = Event("ASSIGN_TASK", actor.uuid, 
             actor.getMeeting().uuid,
-            params = {"taskUUID":self.get_argument("taskUUID"),
-                "assignedTo":assignedTo})
+            params = p)
         assignTaskEvent.dispatch()
 
 

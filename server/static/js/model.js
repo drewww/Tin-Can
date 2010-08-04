@@ -9,6 +9,7 @@ function User(uuid, name, loc) {
     this.name = name;
     
     this.loc = loc;
+    this.tasks = [];
     
     state.putObj(this.uuid, this);
 }
@@ -17,6 +18,14 @@ User.prototype = {
     
     isInLocation: function() {
         return this.loc != null;
+    },
+    
+    assignTask: function(task) {
+        this.tasks.push(task);
+    },
+    
+    removeTask: function(task) {
+        this.tasks = array_remove(this.tasks, task);
     },
     
     isInMeeting: function() {
@@ -298,6 +307,20 @@ function Task(uuid, meetingUUID, creatorUUID, text, assignedToUUID,
 }
 
 Task.prototype = {
+    
+    assign: function(byActor, toUser) {
+        this.assignedBy = byActor;
+
+        this.assignedTo = toUser;
+        this.assignedTo.assignTask(this);
+    },
+    
+    deassign: function(byActor) {
+        if(this.assignedTo!=null) {
+            this.assignedBy = byActor;
+            this.assignedTo.removeTask(this);
+        }
+    },
     
     unswizzle: function() {
         
