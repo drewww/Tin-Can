@@ -35,7 +35,7 @@
 					itemCounter = itemCounter + 1;
 					newId = 'item' + itemCounter;
 					uuidDict[newId] = topic.uuid;
-					makeFutureItem(newId);
+					makeFutureItem(newId, topic.text);
 					break;
 				case "LOCAL_MEETING_SET":
 					generateTopicsFromServer();
@@ -66,20 +66,16 @@
 	});
 	
 		function generateTopicsFromServer(){
-			// topics = state.meetings.topics;
-			
 			topics = connection.getCurrentMeeting().topics;
-			
 			for (key in topics) {
+				topic = topics[key];
 				itemCounter = itemCounter + 1;
 				newId = 'item' + itemCounter;
-				console.log("NEW ID");
-				console.log(newId);
-				console.log(key.text);
-				uuidDict.newId = key.uuid;
-				makeFutureItem(newId, key.text);
-				break;
+				uuidDict[newId] = topic.uuid;
+				makeFutureItem(newId, topic.text);
+			
 			}
+
 		}
 	
 	// visibility toggle for new item textbox input
@@ -108,8 +104,7 @@
 			
 			futureTemplate = $("#futureTemplate");
 			itemList = $("#container");
-			  // assign user input in textbox to newItem
-			
+						
 			clone = futureTemplate.clone();
 			clone.find("span").html(newItemText);
 			clone.show();
@@ -242,6 +237,7 @@
 			connection.setUser(state.getUsers()[0].uuid);
 			// for (user in state.getUsers())
 			connection.connect();
+			console.log("login user called");
 		}
 		
 		function joinLocation(){

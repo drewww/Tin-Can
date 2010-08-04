@@ -21,6 +21,10 @@ import simplejson as json
 import model
 from event_types import *
 
+filename = "events.log"
+filename2 = "events-readable.log"
+f1 = open(filename,"w")
+f2 = open(filename2, "w")
 
 class Event:    
     def __init__(self, eventType, actorUUID=None, meetingUUID=None, params={}):
@@ -249,6 +253,19 @@ failed" + str(self.params[paramKey]))
         # that the event creates. This gets passed all the way back up the
         # dispatch chain, so the person who dispatched the event can see
         # the uuid/properties of the new object if they need it.
+        f1.write(str(self.getDict())+"\n")
+        try:
+            if self.meeting!=None:
+                f2.write(str(self.timestamp)+"   "+str(self.eventType)+":  Actor="+
+                    str(self.actor.name)+", MeetingUUID="+str(self.meeting.uuid)+
+                    ", params="+str(self.params)+"\n")
+            else:
+                f2.write(str(self.timestamp)+"   "+str(self.eventType)+":  Actor="+
+                    str(self.actor.name)+", (No meeting defined)"+
+                    ", params="+str(self.params)+"\n")
+        except:
+            f2.write(str(self.timestamp)+"   "+str(self.eventType)+
+                ": (No actor/meeting defined), params="+str(self.params)+"\n")
         
         logging.info("Done dispatching event: " + str(self.getDict()))
         return event

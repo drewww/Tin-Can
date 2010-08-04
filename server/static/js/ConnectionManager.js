@@ -227,10 +227,12 @@ ConnectionManager.prototype = {
                 user = state.getObj(ev["actorUUID"], User);
                 loc.userLeft(user);
                 
-                if(user.uuid = this.user.uuid) {
-                    // means WE'VE left a location.
-                    this.loc = null;
-                    console.log("Local location set to null.");
+                if (this.user!=null){
+                    if(user.uuid == this.user.uuid) {
+                        // means WE'VE left a location.
+                        this.loc = null;
+                        console.log("Local location set to null.");
+                    }
                 }
                 
                 console.log(user.name + " left " + loc.name);
@@ -240,14 +242,16 @@ ConnectionManager.prototype = {
                 meeting = state.getObj(ev["params"]["meeting"], Meeting);
                 loc = state.getObj(ev.actorUUID, Location);
                 meeting.locJoined(loc);
+                
+                if (this.loc!=null){
+                    console.log("my loc: " + this.loc.uuid + " / " + loc.uuid);
+                    if(loc.uuid == this.loc.uuid) {
+                        this.meeting = meeting;
+                        console.log("LOCAL meeting set: " + meeting);
+                        this.publishEvent(this.generateEvent("LOCAL_MEETING_SET",
+                            {}));
 
-                console.log("my loc: " + this.loc.uuid + " / " + loc.uuid);
-                if(loc.uuid == this.loc.uuid) {
-                    this.meeting = meeting;
-                    console.log("LOCAL meeting set: " + meeting);
-                    this.publishEvent(this.generateEvent("LOCAL_MEETING_SET",
-                        {}));
-                    
+                    }
                 }
                 
                 console.log(loc.name + " joined " + meeting.title);
@@ -258,7 +262,11 @@ ConnectionManager.prototype = {
                 loc = state.getObj(ev.actorUUID, Location);
                 meeting.locLeft(loc);
                 
-                this.meeting = null;
+                if (this.loc!=null){
+                    if(loc.uuid == this.loc.uuid) {
+                        this.meeting = null;
+                    }
+                }
                 
                 console.log(loc.name + " left " + meeting.title);
                 break;
@@ -300,8 +308,8 @@ ConnectionManager.prototype = {
                     // so we should mark it as such in the client.
                     topic.startActor = actor;
                     topic.startTime = new Date();
-                } else if(topic.status=="CURRENT" && status=="FUTURE") {
-                        // This means that we're starting this item,
+                } else if(topic.status=="CURRENT" && status=="PAST") {
+                        // This means that we're stopping this item,
                         // so we should mark it as such in the client.
                         topic.stopActor = actor;
                         topic.stopTime = new Date();

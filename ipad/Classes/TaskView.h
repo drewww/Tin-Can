@@ -11,6 +11,8 @@
 
 @interface TaskView : UIView {
 	NSString *text;
+	CGPoint    initialOrigin;
+
 }
 - (id)initWithFrame:(CGRect)frame withText:(NSString *)task;
 @end

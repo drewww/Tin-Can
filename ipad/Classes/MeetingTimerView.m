@@ -154,7 +154,7 @@
 
 
 - (void)drawRect:(CGRect)rect {
-	[self setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+	
 	
 	// for testing
 	testDate= [[ testDate addTimeInterval:60] retain];
@@ -316,6 +316,11 @@
 	CGContextAddArc(ctx, 0, 0, 4, 0, 2*M_PI , 0); 
 	CGContextFillPath(ctx);
 	
+	CGAffineTransform transform=CGAffineTransformMakeScale(.75,.75);
+	transform = CGAffineTransformRotate(transform, M_PI/2);
+    [self setTransform:transform];  
+	//[self setTransform:CGAffineTransformMakeScale(.75,.75)];
+	//[self setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 }
 
 
