@@ -30,7 +30,7 @@
 //Setter for Location
 - (void)setLoc:(Location *)newLoc {
     
-    [locCellView setLoc:newLoc];
+    [(LocationCell *)locCellView setLoc:newLoc];
 }
 
 - (void)dealloc {

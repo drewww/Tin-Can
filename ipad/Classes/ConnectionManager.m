@@ -311,6 +311,13 @@ static ConnectionManager *sharedInstance = nil;
         case kNEW_TASK:
             results = (NSDictionary *)[e.results objectForKey:@"task"];
             
+            NSDate *date;
+            if([[results objectForKey:@"assignedAt"] isKindOfClass:[NSNull class]]) {
+                date = nil;
+            } else {
+                date = [NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"assignedAt"] doubleValue]];
+            }
+            
             task = [[Task alloc] initWithUUID:[results objectForKey:@"uuid"]
                               withCreatorUUID:[results objectForKey:@"createdBy"]
                                     createdAt:[results objectForKey:@"createdAt"]
@@ -318,7 +325,7 @@ static ConnectionManager *sharedInstance = nil;
                                      withText:[results objectForKey:@"text"]
                                assignedToUUID:[results objectForKey:@"assignedTo"]
                                assignedByUUID:[results objectForKey:@"assignedBy"]
-                                   assignedAt:[NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"assignedAt"] doubleValue]]];
+                                   assignedAt:date];
             
             [task unswizzle];
             break;
@@ -337,9 +344,18 @@ static ConnectionManager *sharedInstance = nil;
             
         case kASSIGN_TASK:
             task = (Task *)[state getObjWithUUID:[e.params objectForKey:@"taskUUID"] withType:[Task class]];
-            task.assignedBy = (Actor *)[state getObjWithUUID:e.actorUUID withType:[Actor class]];
-            task.assignedTo = (User *)[state getObjWithUUID:[e.params objectForKey:@"assignedTo"] withType:[User class]];
-            task.assignedAt = [NSDate dateWithTimeIntervalSince1970:[[e.params objectForKey:@"assignedAt"] doubleValue]];
+            
+            Actor *assignedBy = (Actor *)[state getObjWithUUID:e.actorUUID withType:[Actor class]];
+            NSDate *assignedAt = [NSDate dateWithTimeIntervalSince1970:[[e.params objectForKey:@"assignedAt"] doubleValue]];
+            
+            if([e.params objectForKey:@"deassign"]) {
+                // Do deassign logic.   
+                [task deassignByActor:assignedBy atTime:assignedAt];
+            } else {
+                // Do assign logic.
+                User *assignedTo = (User *)[state getObjWithUUID:[e.params objectForKey:@"assignedTo"] withType:[User class]];
+                [task assignToUser:assignedTo byActor:assignedBy atTime:assignedAt];
+            }
             break;
             
         case kEDIT_MEETING:
