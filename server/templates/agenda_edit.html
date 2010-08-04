@@ -67,17 +67,11 @@
 	
 		function generateTopicsFromServer(){
 			topics = connection.getCurrentMeeting().topics;
-			console.log("generate topics called");
 			for (key in topics) {
 				topic = topics[key];
-				console.log("TOPICS");
-				console.log(topics);
 				itemCounter = itemCounter + 1;
 				newId = 'item' + itemCounter;
-				console.log("NEW ID");
-				console.log(newId);
-				console.log(topic.text);
-				uuidDict.newId = topic.uuid;
+				uuidDict[newId] = topic.uuid;
 				makeFutureItem(newId, topic.text);
 			
 			}
