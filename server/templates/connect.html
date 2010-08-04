@@ -74,41 +74,49 @@
 					
 					$('#add_user_button').click(function() {
 						conn.addUser($('#new_input')[0].value);
-					})
+					});
 
 					$('#add_location_button').click(function() {
 						conn.addLocation($('#new_input')[0].value);
-					})
+					});
 
 					$('#add_topic_button').click(function() {
 						conn.addTopic($('#topic_input')[0].value);
-					})
+					});
 					
 					$('#add_task_button').click(function() {
 						conn.addTask($('#task_input')[0].value);
-					})
+					});
 					
 					$('#delete_task_button').click(function() {
 						conn.deleteTask($('#tasks')[0].value);
-					})
+					});
 					
 					$('#edit_task_button').click(function() {
 						console.log("edit?");
 						conn.editTask($('#tasks')[0].value, $('#task_input')[0].value);
-					})
+					});
 					
 					$('#assign_task_button').click(function() {
 						conn.assignTask($('#tasks')[0].value, $('#user')[0].value);
-					})
+					});
+					
+					$('#deassign_task_button').click(function() {
+						// the third argument = true makes this a deassign
+						// operation. 
+						conn.assignTask($('#tasks')[0].value, null, true);
+					});
+					
+					
 					$('#set_status').click(function() {
 						conn.updateTopic($('#topics')[0].value, 
 						$('#status')[0].value);
 
-					})
+					});
 					$('#edit_meeting_button').click(function() {
 						room = state.getObj($('#room')[0].value, Room);
 						conn.editMeeting(room.currentMeeting.uuid,$('#new_input')[0].value);
-					})
+					});
 				});
 		
 	</script>
@@ -173,6 +181,7 @@
 <button id="delete_task_button">Delete Task</button>
 <button id="edit_task_button">Edit Task</button>
 <button id="assign_task_button">Assign Task</button>
+<button id="deassign_task_button">Deassign Task</button>
 
 
 <div id="response">
