@@ -13,6 +13,7 @@
 #import "Participant.h"
 #import "TodoItemView.h"
 #import "DragManager.h"
+#import "TaskView.h"
 
 #define INITIAL_REVISION_NUMBER 10000
 
@@ -38,6 +39,10 @@
     [meetingTimerView retain];
     [self.view addSubview:meetingTimerView];
     
+	
+	TaskView *firstTask=[[TaskView alloc] initWithFrame:CGRectMake(100, 200, 200, 50) 
+							withText: @"Rawr first task is done and I want to test how much text I could put here"];
+	[self.view addSubview:firstTask];					 
     // Create the participants view.
     participantsContainer = [[UIView alloc] initWithFrame:self.view.frame];
     [participantsContainer retain];

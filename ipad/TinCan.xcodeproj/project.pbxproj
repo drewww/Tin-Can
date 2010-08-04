@@ -57,6 +57,8 @@
 		3AC6BB5F1200D6050002FD52 /* BaseMeetingObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC6BB5E1200D6050002FD52 /* BaseMeetingObject.m */; };
 		3AC6BB7C1200F0280002FD52 /* Task.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC6BB7B1200F0280002FD52 /* Task.m */; };
 		DA767ACC11F78D9D00184827 /* TimerBar.m in Sources */ = {isa = PBXBuildFile; fileRef = DA767ACB11F78D9D00184827 /* TimerBar.m */; };
+		DA7FD24A12086F74007A9217 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA7FD24912086F74007A9217 /* WebViewController.m */; };
+		DA7FD27A1208A127007A9217 /* TaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA7FD2791208A127007A9217 /* TaskView.m */; };
 		DA96F0F811EE525500B64D3D /* HeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E311EE525500B64D3D /* HeaderView.m */; };
 		DA96F0F911EE525500B64D3D /* LocationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E511EE525500B64D3D /* LocationCell.m */; };
 		DA96F0FA11EE525500B64D3D /* LocationCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E711EE525500B64D3D /* LocationCellView.m */; };
@@ -169,6 +171,10 @@
 		8D1107310486CEB800E47090 /* TinCan-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "TinCan-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		DA767ACA11F78D9D00184827 /* TimerBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimerBar.h; sourceTree = "<group>"; };
 		DA767ACB11F78D9D00184827 /* TimerBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimerBar.m; sourceTree = "<group>"; };
+		DA7FD24812086F74007A9217 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
+		DA7FD24912086F74007A9217 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
+		DA7FD2781208A127007A9217 /* TaskView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskView.h; sourceTree = "<group>"; };
+		DA7FD2791208A127007A9217 /* TaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskView.m; sourceTree = "<group>"; };
 		DA96F0E211EE525500B64D3D /* HeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeaderView.h; sourceTree = "<group>"; };
 		DA96F0E311EE525500B64D3D /* HeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeaderView.m; sourceTree = "<group>"; };
 		DA96F0E411EE525500B64D3D /* LocationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationCell.h; sourceTree = "<group>"; };
@@ -372,6 +378,8 @@
 			children = (
 				3A57217D11EB7515004C2687 /* MeetingViewController.h */,
 				3A57217E11EB7515004C2687 /* MeetingViewController.m */,
+				DA7FD2781208A127007A9217 /* TaskView.h */,
+				DA7FD2791208A127007A9217 /* TaskView.m */,
 				3AC2B9171198715A0071F912 /* ParticipantView.h */,
 				3AC2B9181198715A0071F912 /* ParticipantView.m */,
 				3AC2BA9E1199D89C0071F912 /* TodoItemView.h */,
@@ -397,6 +405,8 @@
 			children = (
 				3A2A6BEE11F0B5FD00FF373C /* greyButton-1.png */,
 				3A2A6BEF11F0B5FD00FF373C /* rightarrow.png */,
+				DA7FD24812086F74007A9217 /* WebViewController.h */,
+				DA7FD24912086F74007A9217 /* WebViewController.m */,
 				DA96F0E211EE525500B64D3D /* HeaderView.h */,
 				DA96F0E311EE525500B64D3D /* HeaderView.m */,
 				DA96F0E411EE525500B64D3D /* LocationCell.h */,
@@ -546,6 +556,8 @@
 				3AC6BB5A1200D4610002FD52 /* Topic.m in Sources */,
 				3AC6BB5F1200D6050002FD52 /* BaseMeetingObject.m in Sources */,
 				3AC6BB7C1200F0280002FD52 /* Task.m in Sources */,
+				DA7FD24A12086F74007A9217 /* WebViewController.m in Sources */,
+				DA7FD27A1208A127007A9217 /* TaskView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
