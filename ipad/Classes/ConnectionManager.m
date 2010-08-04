@@ -410,7 +410,6 @@ static ConnectionManager *sharedInstance = nil;
 
 - (void) leaveRoomWithUUID {
     
-    // Can't we run this without 
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/rooms/leave"]];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     [request setDelegate:self];
@@ -418,8 +417,28 @@ static ConnectionManager *sharedInstance = nil;
 }
 
 - (void) addLocationWithName:(NSString *)locationName {
-    
+    NSLog(@"ADD LOCATION WITH NAME IS NOT IMPLEMENTED.");  
 }
+
+- (void) assignTask:(Task *)theTask toUser:(User *)theUser {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/tasks/assign"]];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request setPostValue:theTask.uuid forKey:@"taskUUID"];    
+    [request setPostValue:theUser.uuid forKey:@"assignedToUUID"];    
+    [request setDelegate:self];
+    [request startAsynchronous];     
+}
+
+- (void) deassignTask:(Task *)theTask {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/tasks/assign"]];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request setPostValue:theTask.uuid forKey:@"taskUUID"];    
+    [request setPostValue:@"1" forKey:@"deassign"];    
+    [request setDelegate:self];
+    [request startAsynchronous];         
+}
+
+
 
 #pragma mark -
 #pragma mark Singleton methods
