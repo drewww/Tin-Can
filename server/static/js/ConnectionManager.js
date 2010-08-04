@@ -6,6 +6,8 @@
 
 function ConnectionManager() {
     console.log("Constructing a new connection manager.");
+    
+
 }
 
 ConnectionManager.prototype = {
@@ -163,6 +165,11 @@ ConnectionManager.prototype = {
             case "ADD_ACTOR_DEVICE":
                 // We don't really care about this one, actually.
                 break;
+            
+            case "DEVICE_LEFT_COMPLETE":
+                console.log("hi");
+                this.stopPersistentConnection();
+                break;
                 
             case "NEW_MEETING":
                 meetingData = ev["results"]["meeting"]
@@ -238,6 +245,9 @@ ConnectionManager.prototype = {
                 if(loc.uuid == this.loc.uuid) {
                     this.meeting = meeting;
                     console.log("LOCAL meeting set: " + meeting);
+                    this.publishEvent(this.generateEvent("LOCAL_MEETING_SET",
+                        {}));
+                    
                 }
                 
                 console.log(loc.name + " joined " + meeting.title);
@@ -392,11 +402,50 @@ ConnectionManager.prototype = {
          try {
                 listener.connectionEvent(ev);
             } catch (err) {
+                console.log(err);
                 console.log("Tried to send event " + ev.eventType + " to "
                 + listener + " but connectionEvent method was missing. You " +
                 " must declare that method to receive connectionEvents.");
             }
         }
+    },
+    
+    logout: function() {
+        if(!this.validateConnected()) {return;}
+        
+        console.log("Logging out");
+        $.ajax({
+           url: '/connect/logout',
+           type: "POST",
+           success: function () {
+               this.publishEvent(this.generateEvent("DEVICE_LEFT_COMPLETE",
+                {}));
+                this.stopPersistentConnection();
+               },
+           error: function () { this.publishEvent(this.generateEvent(
+               "DEVICE_LEFT_COMPLETE", false));},
+           context: this,
+           data: { }
+        });
+    },
+    
+    leave: function(locationUUID) {
+        if(!this.validateConnected()) {return;}
+        
+        console.log("Logging out and leaving location");
+        $.ajax({
+           url: '/locations/leave',
+           type: "POST",
+           success: function () {
+               this.publishEvent(this.generateEvent("LEAVE_LOCATION_COMPLETE",
+                {}));
+                this.logout();
+               },
+           error: function () { this.publishEvent(this.generateEvent(
+               "LEAVE_LOCATION_COMPLETE", false));},
+           context: this,
+           data: { "locationUUID": locationUUID }
+        });
     },
     
     joinLocation: function(locationUUID) {
@@ -689,7 +738,7 @@ ConnectionManager.prototype = {
     // Returns the meeting that this client is currently in. Might be null,
     // if this client hasn't joined a meeting yet. 
     getCurrentMeeting: function() {
-        return meeting;
+        return this.meeting;
     },
     
     addListener: function(callback) {

@@ -52,6 +52,14 @@
 						conn.connect();
 					});
 					
+					$("#logout").click(function() {
+						conn.logout();
+					});
+					
+					$("#leave").click(function() {
+						conn.leave($('#location')[0].value);
+					});
+					
 					$('#stop').click(function() {
 						conn.stopPersistentConnection();
 					});
@@ -132,9 +140,10 @@
 
 
 <button id="login" >Login</button>
+<button id="logout" >Logout</button>
 <button id="join_room">Join Room</button>
 <button id="join_location">Join Location</button>
-<button id="leave_room">Leave Room</button>
+<button id="leave">Leave</button>
 <button id="stop">Stop</button>
 <input type="text" name="new_user" value="" id="new_input">
 <button id="add_user_button">Add User</button>

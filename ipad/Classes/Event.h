@@ -13,7 +13,6 @@
 typedef enum {
     kNEW_MEETING,
     kJOINED_MEETING,
-    kLEFT_ROOM,
     kUSER_JOINED_LOCATION,
     kUSER_LEFT_LOCATION,
     kNEW_USER,
