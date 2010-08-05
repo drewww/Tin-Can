@@ -15,6 +15,9 @@
 #import "DragManager.h"
 #import "TaskView.h"
 #import "TaskContainerView.h"
+#import "UserView.h"
+
+
 #define INITIAL_REVISION_NUMBER 10000
 
 @implementation MeetingViewController
@@ -239,61 +242,80 @@
             case 0:
                 
                 color = [UIColor redColor];
-                uuid = @"p1";
+                uuid = @"e124824b-13c1-4357-b901-cd69a289c8ab";
                 break;
             case 1:
-                                color = [UIColor redColor];
-                uuid = @"p2";
+                color = [UIColor redColor];
+                uuid = @"844e0960-513b-44f2-9540-07356c827750";
                 break;
             case 2:
                
                 color = [UIColor redColor];
-                uuid = @"p3";
+                uuid = @"6b23a18d-a134-4507-a546-5f567ef3226a";
                 break;
             case 3:
 				color = [UIColor blueColor];
-                uuid = @"p4";
+                uuid = @"1d9ae851-c555-493f-957b-a2ff8badfe99";
                 break;
             case 4:
                 color = [UIColor blueColor];
-                uuid = @"p5";
+                uuid = @"62c76fb7-efd8-46fa-ae03-b1c694f620f8";
                 break;
             case 5:
                 color = [UIColor blueColor];
-                uuid = @"p6";
+                uuid = @"c1c47f73-4fba-46e4-b005-014ef81676f9";
                 break;
             case 6:
                 color = [UIColor yellowColor];
-                uuid = @"p7";
+                uuid = @"9ae23576-c7a9-4e6d-96b6-b00fd928e049";
                 break;
             case 7:
                 color = [UIColor yellowColor];
-                uuid = @"p8";
+                uuid = @"f0748716-7553-45d6-867d-ddcbe27dd04c";
                 break;
             case 8:
                 color = [UIColor greenColor];
-                uuid = @"p9";
+                uuid = @"384f2c76-59d8-4561-b6ed-8c1bf0d3b721";
                 break;
             case 9:        
                 color = [UIColor purpleColor];
-                uuid = @"p10";
+                uuid = @"15318475-e45d-4384-a875-9d2147afec3d";
                 break;
         }
         
-        Participant *p = [[Participant alloc] initWithName:name withUUID:uuid];
+        //Participant *p = [[Participant alloc] initWithName:name withUUID:uuid];
 
-        [participants setObject:p forKey:p.uuid];
+        User *u = [[User alloc] initWithUUID:uuid withName:name withLocationUUID:nil];
+        
+        [participants setObject:u forKey:u.uuid];
         
         // Now make the matching view.
-        ParticipantView *newParticipantView = [[ParticipantView alloc] 
-											   initWithParticipant:p 
-											   withPosition:[[[position objectAtIndex:0] objectAtIndex:i]CGPointValue]
-											   withRotation:[[[position objectAtIndex:1] objectAtIndex:i]floatValue]
-											   withColor:color];
-        p.view = newParticipantView;
-        [participantsContainer addSubview:newParticipantView];
-        [participantsContainer bringSubviewToFront:newParticipantView];
-        [newParticipantView setNeedsDisplay];
+        UserView *newUserView = [[UserView alloc] initWithUser:u];
+        
+        
+        
+        
+        
+        newUserView.center = [[[position objectAtIndex:0] objectAtIndex:i]CGPointValue];
+        
+        //NSLog(@"center: %f,%f", newUserView.center.x, newUserView.center.y);
+        
+        
+        // This is used for debugging the entire layout by pushing users off the edge so you can see
+        // the entire view.
+        newUserView.center = CGPointMake(newUserView.center.x + 100, newUserView.center.y + 100);
+
+//        CGRect newFrame = CGRectMake(origin.x, origin.y, newUserView.frame.size.width, newUserView.frame.size.width);
+        
+//        newUserView.frame = newFrame;
+        
+        CGFloat rot = [[[position objectAtIndex:1] objectAtIndex:i]floatValue];
+        [newUserView setTransform:CGAffineTransformMakeRotation(rot)];
+        
+//        p.view = newParticipantView;
+        [participantsContainer addSubview:newUserView];
+        [participantsContainer bringSubviewToFront:newUserView];
+        [newUserView setNeedsDisplay];
         i++;
     }
 }
