@@ -11,6 +11,15 @@
 
 @implementation TaskContainerView
 
+// TODOS
+// To make this class work as both the main task view that holds unassigned tasks as well as
+// the view that each user has that stores that user's tasks, there are some changes we need
+// to make.
+// 
+// 1. Add a getHeight method that returns the view's desired height for the current number of
+//    tasks it contains.
+// 2. Force contained tasks to be the width of the container (minus 2*the padding)
+// 3. We might need to do add/remove task by UUID for ease of use.
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
@@ -37,8 +46,7 @@
 
 - (void)drawRect:(CGRect)rect {
     CGContextRef ctx = UIGraphicsGetCurrentContext();
-	
-	
+		
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
 	CGContextFillRect(ctx, CGRectMake(0, 0, self.frame.size.width, 30));
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
@@ -48,10 +56,8 @@
 	CGContextSetLineWidth(ctx,2);
 	CGContextSetStrokeColorWithColor(ctx,  [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
 	CGContextStrokeRect(ctx, CGRectMake(0, 0, self.frame.size.width, self.frame.size.height));
-	[self setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-	
-	
 }
+
 - (void)layoutSubviews{
 	int i =0;
 	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByPointer:)];
@@ -66,6 +72,8 @@
 	}
 		
 }
+
+
 
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 		TaskView *newTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 100, 230, 50) 

@@ -8,25 +8,35 @@
 
 #import <UIKit/UIKit.h>
 #import "User.h"
+#import "TaskContainerView.h"
+#import "UserRenderView.h"
+
+#define BASE_HEIGHT 70
+#define BASE_WIDTH 150
+
+// Messing with this also works for debugging. Set it huge to have max height visibility.
+#define HEIGHT_MARGIN 50
+
+#define TAB_WIDTH 15
+#define TAB_HEIGHT 8
+#define TAB_MARGIN 5
+
+#define STATUS_HEIGHT 30
+
+#define NAME_BOTTOM_MARGIN 5
+
+@class UserRenderView;
 
 @interface UserView : UIView {
-
-    bool hover;
-    bool showStatus;
     
-    User *user;
+    TaskContainerView *taskContainerView;
+    UserRenderView *userRenderView;
     
-    // This isn't going to last - color should come from locations, but
-    // for now for testing, we're just going to hardcode it.
-    UIColor *color;
+    bool taskDrawerExtended;
 }
-
-@property (nonatomic, retain) User *user;
-@property bool hover;
 
 - (id) initWithUser:(User *)theUser;
 
-- (void) fillRoundedRect:(CGRect)boundingRect withRadius:(CGFloat)radius withRoundedBottom:(bool)roundedBottom;
 
 - (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event;
 
