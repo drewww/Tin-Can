@@ -11,6 +11,7 @@
 
 @implementation TaskView
 
+@synthesize text;
 
 - (id)initWithFrame:(CGRect)frame withText:(NSString *)task{
     if ((self = [super initWithFrame:frame])) {
@@ -92,6 +93,24 @@
 		[self setNeedsDisplay];
 }
 
+- (NSComparisonResult) compareByPointer:(TaskView *)view {
+    
+    // Tries to comare by strings, but if they end up being exactly the same string,
+    // it will resolve the ties by comparing pointers. This is a deterministic comparison
+    // and an arbitrary (but stable) way to tell between tasks with identical text.
+    // This is a rare case in real use, but happens a lot in testing, so this gives us some
+    // protection from bad issues during demoing.
+    NSComparisonResult retVal = [self.text compare:view.text];
+    
+    if(retVal==NSOrderedSame) {
+        if (self < view)
+            retVal = NSOrderedAscending;
+        else if (self > view) 
+            retVal = NSOrderedDescending;
+    }
+    
+    return retVal;
+}
 
 - (void)dealloc {
     [super dealloc];

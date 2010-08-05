@@ -54,10 +54,7 @@
 }
 - (void)layoutSubviews{
 	int i =0;
-	NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"text"
-												  ascending:YES] autorelease];
-	NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
-	NSArray *sortedArray = [[self subviews] sortedArrayUsingDescriptors:sortDescriptors];
+	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByPointer:)];
 	for(TaskView *subview in sortedArray){
 		if(i<9){
 		subview.frame=CGRectMake(10, 40+(60*i), 230, 50);
