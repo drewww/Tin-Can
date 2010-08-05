@@ -18,7 +18,7 @@
         text=task;
 		initialOrigin = CGPointMake(self.frame.origin.x, self.frame.origin.y);//self.frame.origin;  
 		self.userInteractionEnabled = YES; 
-		bgColor= [UIColor clearColor];
+		isTouched= FALSE;
     }
     return self;
 }
@@ -32,7 +32,13 @@
 	
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
 	CGContextFillRect(ctx, CGRectMake(0, 0, 10, self.frame.size.height));
-	CGContextSetFillColorWithColor(ctx, bgColor.CGColor);
+	if(isTouched==FALSE){
+	CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
+	}
+	else {
+		CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1].CGColor );
+	}
+
 	CGContextFillRect(ctx, CGRectMake(10, 0, self.frame.size.width-12, self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:.5].CGColor);
 	[text drawInRect:CGRectMake(15, 2, self.frame.size.width-16, self.frame.size.height) 
@@ -47,7 +53,7 @@
 }
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	NSLog(@"I have been touched");
-	bgColor=[UIColor grayColor];
+	isTouched=TRUE;
 	[self setNeedsDisplay];
 
    
@@ -82,7 +88,7 @@
         NSLog(@"animating to initialOrigin: %f, %f", initialOrigin.x, initialOrigin.y);
 		[self.superview setNeedsLayout];
         [UIView commitAnimations];
-		bgColor=[UIColor blackColor];
+		isTouched=FALSE;
 		[self setNeedsDisplay];
 }
 
