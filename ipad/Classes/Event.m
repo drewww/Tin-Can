@@ -42,7 +42,7 @@
                                                      @"LOCATION_LEFT_MEETING",
                                                      @"NEW_DEVICE",
                                                      @"ADD_ACTOR_DEVICE",
-                                                     @"NEW_LOCATION"
+                                                     @"NEW_LOCATION",
                              
                                                      @"NEW_TOPIC",
                                                      @"DELETE_TOPIC",
@@ -52,9 +52,10 @@
                                                      @"NEW_TASK",
                                                      @"DELETE_TASK",
                                                      @"EDIT_TASK",
-                                                     @"ASSIGN_TASK"
+                                                     @"ASSIGN_TASK",
                              
                                                      @"EDIT_MEETING", nil] retain];
+    NSLog(@"%@ -> EventType %d", stringType, [enumMapping indexOfObject:stringType]);
     
     self.type = (EventType)[enumMapping indexOfObject:stringType];
     

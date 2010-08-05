@@ -31,6 +31,7 @@ typedef enum {
     kDELETE_TASK,
     kEDIT_TASK,
     kASSIGN_TASK,
+    
     kEDIT_MEETING,
     
     // These are the internal events that ConnectionManager generates.

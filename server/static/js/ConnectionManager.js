@@ -308,8 +308,8 @@ ConnectionManager.prototype = {
                     // so we should mark it as such in the client.
                     topic.startActor = actor;
                     topic.startTime = new Date();
-                } else if(topic.status=="CURRENT" && status=="FUTURE") {
-                        // This means that we're starting this item,
+                } else if(topic.status=="CURRENT" && status=="PAST") {
+                        // This means that we're stopping this item,
                         // so we should mark it as such in the client.
                         topic.stopActor = actor;
                         topic.stopTime = new Date();
@@ -737,12 +737,9 @@ ConnectionManager.prototype = {
         });
     },
     
-    assignTask: function(taskUUID,assignedToUUID, deassign) {
-        if(!deassign) {
-            theData = {"taskUUID":taskUUID,"assignedToUUID":assignedToUUID};
-        } else {
-            theData = {"taskUUID":taskUUID, "deassign":true};
-        }
+    assignTask: function(taskUUID,assignedToUUID) {
+
+        theData = {"taskUUID":taskUUID,"assignedToUUID":assignedToUUID};
 
         $.ajax({
             url: '/tasks/assign',
@@ -759,6 +756,25 @@ ConnectionManager.prototype = {
             }
         });
     },
+    
+    deassignTask: function(taskUUID) {
+        theData = {"taskUUID":taskUUID, "deassign":true};
+        
+        $.ajax({
+            url: '/tasks/assign',
+            type: "POST",
+            context: this,
+            data: theData,
+            success: function () {
+                this.publishEvent(this.generateEvent("ASSIGN_TASK_COMPLETE",
+                    {}));
+            },
+            error: function() {
+                this.publishEvent(this.generateEvent("ASSIGN_TASK_COMPLETE",
+                    {}, false));
+            }
+        });
+    }
     
     // Returns the meeting that this client is currently in. Might be null,
     // if this client hasn't joined a meeting yet. 

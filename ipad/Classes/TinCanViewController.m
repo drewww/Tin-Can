@@ -66,6 +66,8 @@
 // TODO figure out how to animate these transitions.
 
 -(void) switchToViewController:(UIViewController *)c {
+    NSLog(@"in switch to view controller, switching to controller: %@", c);
+    
     if(c == currentViewController) return;
 	c.view.alpha =0.0;
     [self.view addSubview:c.view];

@@ -17,12 +17,18 @@
     Location *location;
     
     UUID *locationUUID;
+    
+    NSMutableSet *tasks;
 }
 
 - (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withLocationUUID:(UUID *)myLocation;
 - (BOOL) isInLocation;
 - (BOOL) isinMeeting;
 
+- (void) assignTask:(id)task;
+- (void) removeTask:(id)task;
+
 @property(nonatomic, retain) Location *location;
+@property(nonatomic, retain) NSMutableSet *tasks;
 
 @end
