@@ -40,6 +40,12 @@
 				case "LOCAL_MEETING_SET":
 					generateTopicsFromServer();
 					break;
+				case "UPDATE_TOPIC":
+					uuid = e.params["topicUUID"];
+					status = e.params["status"];
+					console.log(uuid);
+					console.log(status);
+					break;
 			}
 		}});
 		
@@ -54,7 +60,7 @@
 			console.log(currentClicked);
 			extraOptions = $("#extraOptions");
 			currentIndex = items.indexOf($("#"+currentItemId)[0].id);
-			$("#"+currentItemId)[0].className = "doneItem";
+			$("#"+currentItemId)[0].className = "PAST";
 			$("#"+currentItemId).click(function() {
 				extraOptions.hide();
 			});			
@@ -65,6 +71,17 @@
 		connection.getState();
 	});
 	
+		function lookupByUuid(uuid){
+			for (id in uuidDict) {
+				tempUuid = uuidDict[id];
+				console.log(id);
+				console.log(tempUuid);
+				if (tempUuid == uuid){
+					return id;
+				}
+			}
+		}
+	
 		function generateTopicsFromServer(){
 			topics = connection.getCurrentMeeting().topics;
 			for (key in topics) {
@@ -72,8 +89,8 @@
 				itemCounter = itemCounter + 1;
 				newId = 'item' + itemCounter;
 				uuidDict[newId] = topic.uuid;
-				makeFutureItem(newId, topic.text);
-			
+				makeFutureItem(newId, topic.text, topic.status);
+				console.log(topic.status);
 			}
 
 		}
@@ -100,7 +117,7 @@
 		}
 		
 	//grab input from textbox and generate item in list
-		function makeFutureItem(newId, newItemText) {
+		function makeFutureItem(newId, newItemText, newItemStatus) {
 			
 			futureTemplate = $("#futureTemplate");
 			itemList = $("#container");
@@ -112,7 +129,7 @@
 			itemList.append(clone);
 			items.push(clone[0].id);
 
-			clone[0].className = "futureItem";
+			clone[0].className = newItemStatus;
 			
 				clone.click(function (e) {
 				extraOptions = $("#extraOptions");
@@ -141,9 +158,7 @@
 							$("#deleteButton")[0].style.visibility="hidden";
 							extraOptions.show();
 						}
-						// else if (currentClicked[0].className = "doneItem"){
-						// 						extraOptions.hide();
-						// 					}
+
 						else{
 							$("#deleteButton")[0].style.visibility="visible";
 							extraOptions.show();
@@ -156,28 +171,32 @@
 		
 		function defineStartButtonClick() {
 			$(".startButton").click(function (e) {
-				console.log("THIS IS");
-				console.log(this.parentNode);
 				e.stopPropagation();
+
+				// grab the uuid for the item that was clicked on and send it to the server
 				currentClicked = $(this.parentNode);
-				clickedIndex = items.indexOf(currentClicked[0].id);
-				temp = items[clickedIndex];
-				console.log("temp is............" + temp);
-				items.splice(clickedIndex, 1);
-				items.splice(0,0,temp);
-				lastCurrentElement = $("#"+currentItemId);
-				console.log("LAST CURRENT ELEMENT");
-				console.log(lastCurrentElement);
+				tempId = currentClicked[0].id;
+				tempUuid = uuidDict[tempId];
+				connection.updateTopic(tempUuid, "CURRENT");
 				
-				currentItemId = $(this.parentNode)[0].id;
 				
-				firstFutureItem = items[1];
-				firstFutureItem = $("#"+firstFutureItem);
-				currentClicked.insertBefore(firstFutureItem);
-				currentClicked[0].className = "currentItem";
-				currentClicked.append($("#doneButton"));
-				$("#doneButton").show();
-				$(".startButton").hide();
+				// clickedIndex = items.indexOf(currentClicked[0].id);
+				// temp = items[clickedIndex];
+				// 
+				// items.splice(clickedIndex, 1);
+				// items.splice(0,0,temp);
+				// lastCurrentElement = $("#"+currentItemId);
+				// 
+				// 
+				// currentItemId = $(this.parentNode)[0].id;
+				// 
+				// firstFutureItem = items[1];
+				// firstFutureItem = $("#"+firstFutureItem);
+				// currentClicked.insertBefore(firstFutureItem);
+				// currentClicked[0].className = "CURRENT";
+				// currentClicked.append($("#doneButton"));
+				// $("#doneButton").show();
+				// $(".startButton").hide();
 			});
 			
 		}
@@ -316,16 +335,16 @@
 		display:none;
 	}
 	
-	.doneItem{
+	.PAST{
 		background-color: #9C9C9C;
 	}
 	
-	.currentItem{
+	.CURRENT{
 		background-color: #25AED9;
 		color: white;
 	}
 	
-	.futureItem{
+	.FUTURE{
 		background-color: #DFEAED;
 	}
 	
@@ -333,11 +352,11 @@
 /*		visibility: hidden;*/
 	}
 	
-	.currentItem > .startButton{
+	.CURRENT > .startButton{
 		visibility: hidden;
 	}
 	
-	.doneItem > .startButton{
+	.PAST > .startButton{
 		visibility: hidden;
 	}
 	</style>

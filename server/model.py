@@ -259,8 +259,8 @@ class Device(YarnBaseType):
     connection timeouts, etc.
     """
     
-    def __init__(self):
-        self.uuid = None
+    def __init__(self, uuid=None):
+        self.uuid = uuid
         YarnBaseType.__init__(self)
         self.connection = None
         self.actor = None
