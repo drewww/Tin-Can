@@ -12,6 +12,7 @@
 @interface UserView : UIView {
 
     bool hover;
+    bool showStatus;
     
     User *user;
     
@@ -25,7 +26,7 @@
 
 - (id) initWithUser:(User *)theUser;
 
-- (void) fillRoundedRect:(CGRect)boundingRect withRadius:(CGFloat)radius;
+- (void) fillRoundedRect:(CGRect)boundingRect withRadius:(CGFloat)radius withRoundedBottom:(bool)roundedBottom;
 
 - (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event;
 

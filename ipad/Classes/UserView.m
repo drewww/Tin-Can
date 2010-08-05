@@ -14,13 +14,17 @@
 @synthesize user;
 @synthesize hover;
 
-#define BASE_HEIGHT 100
+#define BASE_HEIGHT 70
 #define BASE_WIDTH 150
-#define HEIGHT_MARGIN 30
+
+// Messing with this also works for debugging. Set it huge to have max height visibility.
+#define HEIGHT_MARGIN 200
 
 #define TAB_WIDTH 15
 #define TAB_HEIGHT 8
 #define TAB_MARGIN 5
+
+#define STATUS_HEIGHT 30
 
 #define NAME_BOTTOM_MARGIN 5
 
@@ -34,6 +38,8 @@
 //    self.center = CGPointMake(500, 500);
     
     color = [UIColor blueColor];
+    
+    showStatus = FALSE;
     
     return self;
 }
@@ -60,7 +66,17 @@
 		CGContextSetFillColorWithColor(ctx, color.CGColor);
     
     
-    [self fillRoundedRect:CGRectMake(-BASE_WIDTH/2, -BASE_HEIGHT/2, BASE_WIDTH, BASE_HEIGHT) withRadius:10];
+    CGFloat topEdge;
+    
+    if(showStatus) {
+        topEdge = -BASE_HEIGHT/2 - STATUS_HEIGHT;
+        
+    } else {
+        topEdge = -BASE_HEIGHT/2;
+    }
+
+    [self fillRoundedRect:CGRectMake(-BASE_WIDTH/2, topEdge, BASE_WIDTH, BASE_HEIGHT) withRadius:10 withRoundedBottom:true];        
+    
     
     
     
@@ -74,18 +90,37 @@
     
     
     
+    // Handle status drawing.
+    if(showStatus) {
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithHue:0.65 saturation:0.5 brightness:1.0 alpha:1.0].CGColor);
+        CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
+        
+        [self fillRoundedRect:CGRectMake(-BASE_WIDTH/2, topEdge, BASE_WIDTH, STATUS_HEIGHT) withRadius:10 withRoundedBottom:false];        
+        
+        NSString *statusString = @"POSTED TASK";
+        
+        UIFont *statusFont = [UIFont boldSystemFontOfSize:12];
+        CGSize statusSize = [statusString sizeWithFont:statusFont];
+        
+        CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+        [statusString drawAtPoint:CGPointMake(-statusSize.width/2, topEdge + STATUS_HEIGHT/2 - statusSize.height/2) withFont:statusFont];
+        
+    }
+    
+    
+    
     // Draw the tabs to show that this person has tasks assigned.
     // Hardcoding the number of tasks for now.
     CGContextSetFillColorWithColor(ctx, [color colorByChangingAlphaTo:0.6].CGColor);
     CGFloat xPos = 15;
     for (int i=0; i<3; i++) {
-        CGContextFillRect(ctx, CGRectMake(xPos-BASE_WIDTH/2, -BASE_HEIGHT/2-TAB_HEIGHT, TAB_WIDTH, TAB_HEIGHT));
+        CGContextFillRect(ctx, CGRectMake(xPos-BASE_WIDTH/2, topEdge-TAB_HEIGHT, TAB_WIDTH, TAB_HEIGHT));
         
         xPos += TAB_MARGIN + TAB_WIDTH;
     }
 }
 
-- (void) fillRoundedRect:(CGRect)boundingRect withRadius:(CGFloat)radius {
+- (void) fillRoundedRect:(CGRect)boundingRect withRadius:(CGFloat)radius withRoundedBottom:(bool)roundedBottom{
 
     CGContextRef ctx = UIGraphicsGetCurrentContext();
 
@@ -124,15 +159,30 @@
     CGContextAddArcToPoint(ctx, minx, miny, midx, miny, radius);
     // Add an arc through 4 to 5
     CGContextAddArcToPoint(ctx, maxx, miny, maxx, midy, radius);
-    // Add an arc through 6 to 7
-    CGContextAddArcToPoint(ctx, maxx, maxy, midx, maxy, radius);
-    // Add an arc through 8 to 9
-    CGContextAddArcToPoint(ctx, minx, maxy, minx, midy, radius);
+    
+    if(roundedBottom) {
+        // Add an arc through 6 to 7
+        CGContextAddArcToPoint(ctx, maxx, maxy, midx, maxy, radius);
+        // Add an arc through 8 to 9
+        CGContextAddArcToPoint(ctx, minx, maxy, minx, midy, radius);
+    } else {
+        // Just go directly to the next two corners, with no arc.
+        CGContextAddLineToPoint(ctx, maxx, maxy);
+        CGContextAddLineToPoint(ctx, minx, maxy);
+        CGContextAddLineToPoint(ctx, minx, midy);
+    }
+    
     // Close the path
     CGContextClosePath(ctx);
     // Fill & stroke the path
     CGContextDrawPath(ctx, kCGPathFillStroke);   
     
+}
+
+- (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    showStatus = !showStatus;
+    [self setNeedsDisplay];
 }
 
 - (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event {
