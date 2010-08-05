@@ -12,6 +12,8 @@ import simplejson as json
 import logging
 import traceback
 
+from event import *
+
 # This dictionary stores all known major types. This is used primarily so 
 # we can cheaply bridge UUIDs into objects. When any of these major types
 # is created, it's automatically registered here (via the YarnBaseType
@@ -30,21 +32,33 @@ def init():
 
 def init_test():
     """Initialize the internal state using test data."""
-
-    actors.add(model.User("Drew"))
-    actors.add(model.User("Paula"))    
-    actors.add(model.User("Stephanie"))
-    actors.add(model.User("Ariel"))
     
-    actors.add(model.Location("Garden"))
-    actors.add(model.Location("Orange+Green"))
-    actors.add(model.Location("S+M Group Area"))
-    actors.add(model.Location("E14-395"))
+    newUserEvent = Event("NEW_USER", params={"name":"Drew"})
+    newUserEvent.dispatch()
+    newUserEvent = Event("NEW_USER", params={"name":"Paula"})
+    newUserEvent.dispatch()
+    newUserEvent = Event("NEW_USER", params={"name":"Stephanie"})
+    newUserEvent.dispatch()
+    newUserEvent = Event("NEW_USER", params={"name":"Ariel"})
+    newUserEvent.dispatch()
     
-    rooms.add(model.Room("Mars"))
-    rooms.add(model.Room("Jupiter"))
-    rooms.add(model.Room("Venus"))
-    rooms.add(model.Room("Saturn"))
+    newLocationEvent = Event("NEW_LOCATION", params={"name":"Garden"})
+    newLocationEvent.dispatch()
+    newLocationEvent = Event("NEW_LOCATION", params={"name":"Orange+Green"})
+    newLocationEvent.dispatch()
+    newLocationEvent = Event("NEW_LOCATION", params={"name":"S+M Group Area"})
+    newLocationEvent.dispatch()
+    newLocationEvent = Event("NEW_LOCATION", params={"name":"E14-395"})
+    newLocationEvent.dispatch()
+    
+    newRoomEvent = Event("NEW_ROOM", params={"name":"Mars"})
+    newRoomEvent.dispatch()
+    newRoomEvent = Event("NEW_ROOM", params={"name":"Jupiter"})
+    newRoomEvent.dispatch()
+    newRoomEvent = Event("NEW_ROOM", params={"name":"Venus"})
+    newRoomEvent.dispatch()
+    newRoomEvent = Event("NEW_ROOM", params={"name":"Saturn"})
+    newRoomEvent.dispatch()
     
 
 
@@ -90,6 +104,9 @@ def put_obj(key, value):
 
 def add_actor(actor):
     actors.add(actor)
+
+def add_room(room):
+    rooms.add(room)
 
 def get_users():
     return [actor for actor in actors if isinstance(actor, model.User)]
