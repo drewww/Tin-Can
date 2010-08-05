@@ -19,6 +19,7 @@
 - (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withLocationUUID:(UUID *)myLocationUUID {
     self = [super initWithUUID:myUuid withName:myName];
     
+    // Why is this included at all? Can we get rid of it?
     locationUUID = myLocationUUID;
     
     self.tasks = [NSMutableSet set];
