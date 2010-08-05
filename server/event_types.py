@@ -20,21 +20,24 @@ import state
 # method. They determine what happens to internal state based on the event.
 
 def _handleNewMeeting(event):
-    if len(event.results)==0:
-        newMeeting = model.Meeting(event.params["room"].uuid)
-    else:
+    if len(event.results)!=0:
         d = event.results["meeting"]
-        newMeeting = model.Meeting(event.params["room"].uuid, d["title"],
-            d["meetingUUID"], d["startedAt"])
+        logging.debug(d)
+        newMeeting = model.Meeting(event.params["room"], d["title"],
+            d["uuid"], d["startedAt"])
+        
+    else:
+        newMeeting = model.Meeting(event.params["room"])
     
     # once we have the meeting, push it back into the event object.
     # pushing it into params because the outer meeting value is
     # just for specifying which meeting an event is taking place in, 
     # and this event type happens outside of a meeting context.
-    event.addResult("meeting", newMeeting)
+        event.addResult("meeting", newMeeting)
     
     # now register that meeting with the room.
-    event.params["room"].set_meeting(newMeeting)
+    room = state.get_obj(event.params["room"], model.Room)
+    room.set_meeting(newMeeting)
     
     # add this event to the meeting, so it's included at the beginning of
     # every meeting history.
@@ -51,36 +54,53 @@ def _handleLeftRoom(event):
     return event
     
 def _handleNewUser(event):
-    newUser = model.User(event.params["name"])
+    if len(event.results)==0:
+        newUser = model.User(event.params["name"])
+        event.addResult("actor", newUser)
+    else:
+        newUser = model.User(event.params["name"], event.results["actor"]["uuid"])
 
     # Make sure to do this for new locations, too. 
     state.add_actor(newUser)
     
-    event.addResult("actor", newUser)
-    return event
     
+    return event
+
+def _handleNewRoom(event):
+    if len(event.results)==0:
+        newRoom = model.Room(event.params["name"])
+        event.addResult("room", newRoom)
+    else:
+        newRoom = model.Room(event.params["name"], event.results["room"]["uuid"])
+    
+    state.add_room(newRoom)
+    return event
+
 def _handleNewLocation(event):
-    newLocation = model.Location(event.params["name"])
+    if len(event.results)==0:
+        newLocation = model.Location(event.params["name"])
+        event.addResult("actor", newLocation)
+    else:
+        newLocation = model.Location(event.params["name"], event.results["actor"]["uuid"])
+    
     state.add_actor(newLocation)
     
-    event.addResult("actor", newLocation)
     return event
 
 def _handleNewDevice(event):
     if len(event.results)==0:
         device = model.Device()
+        event.addResult("device", device)
     else:
         device = model.Device(event.results["device"]["uuid"])
-
-    event.addResult("device", device)
 
     return event
 
 def _handleAddActorDevice(event):
     
     # connects devices with their actors.
-    actor = event.params["actor"]
-    device = event.params["device"]
+    actor = state.get_obj(event.params["actor"], model.Actor)
+    device = state.get_obj(event.params["device"], model.Device)
     
     # need to remove device from previous actor.
     
@@ -91,13 +111,13 @@ def _handleAddActorDevice(event):
     return event
 
 def _handleDeviceLeft(event):
-    device = event.params["device"]
+    device = state.get_obj(event.params["device"], model.Device)
     device.logout()
     
     return event
 
 def _handleJoinedLocation(event):
-    location = event.params["location"]
+    location = state.get_obj(event.params["location"], model.Location)
     location.userJoined(event.actor)
     
     # event.addResult("user", event.actor)
@@ -119,7 +139,7 @@ def _handleJoinedLocation(event):
     return event
 
 def _handleLeftLocation(event):
-    location = event.params["location"]
+    location = state.get_obj(event.params["location"], model.Location)
     location.userLeft(event.actor)
 
     # Turning this off for now - I think we can live without it.
@@ -142,20 +162,20 @@ def _handleLeftLocation(event):
 def _handleLocationJoinedMeeting(event):
     # For all the users in this location, fire joined messages
     location = event.actor
-    meeting = event.params["meeting"]
+    meeting = state.get_obj(event.params["meeting"], model.Meeting)
     
     location.joinedMeeting(meeting)
     return event
 
 def _handleLocationLeftMeeting(event):
     location = event.actor
-    meeting = event.params["meeting"]
+    meeting = state.get_obj(event.params["meeting"], model.Meeting)
 
     meeting.locationLeft(location)
     return event
     
 def _handleEditMeeting(event):
-    meeting = event.params["meeting"]
+    meeting = state.get_obj(event.params["meeting"], model.Meeting)
     title = event.params["title"]
     
     meeting.setTitle(title)
@@ -165,11 +185,18 @@ def _handleNewTopic(event):
     text = event.params["text"]
     
     # TODO write a real color picker here.
-    newTopic = model.Topic(event.meeting.uuid, event.actor.uuid, text,
-        status=model.Topic.FUTURE, color="006600")
+    if len(event.results)==0:
+        newTopic = model.Topic(event.meeting.uuid, event.actor.uuid, text,
+            status=model.Topic.FUTURE, color="006600")
+        event.addResult("topic", newTopic)
+    else:
+        logging.debug(event.results)
+        d=event.results["topic"]
+        newTopic = model.Topic(event.meeting.uuid, event.actor.uuid, text, 
+            status=model.Topic.FUTURE, color=d["color"], topicUUID=d["uuid"], 
+            createdAt=d["createdAt"])
         
     event.meeting.addTopic(newTopic)
-    event.addResult("topic", newTopic)
     return event
     
 def _handleDeleteTopic(event):
@@ -196,10 +223,16 @@ def _handleNewTask(event):
     text = event.params["text"]
 
     # TODO write a real color picker here.
-    newTask = model.Task(event.meeting.uuid, event.actor.uuid, text)
+    if len(event.results)==0:
+        newTask = model.Task(event.meeting.uuid, event.actor.uuid, text)
+        event.addResult("task", newTask)
+    else:
+        d=event.results["task"]
+        newTask = model.Task(event.meeting.uuid, event.actor.uuid, text,
+            taskUUID=d["uuid"], createdAt=d["createdAt"])
 
     event.meeting.addTask(newTask)
-    event.addResult("task", newTask)
+    
     return event
 
 def _handleDeleteTask(event):
@@ -266,6 +299,7 @@ class EventType:
 EventType("NEW_MEETING",        ["room"],   _handleNewMeeting,  True,   True)
 EventType("NEW_USER",           ["name"],   _handleNewUser,     True,   False)
 EventType("NEW_LOCATION",       ["name"],   _handleNewLocation, True,   False)
+EventType("NEW_ROOM",           ["name"],   _handleNewRoom,     True,   False)
 
 EventType("NEW_DEVICE",         [],         _handleNewDevice,   True,   True)
 EventType("ADD_ACTOR_DEVICE",   ["actor", "device"], _handleAddActorDevice,
@@ -300,6 +334,6 @@ EventType("DELETE_TASK",   ["taskUUID"],            _handleDeleteTask, False,
     True)
 EventType("EDIT_TASK",   ["taskUUID", "text"],      _handleEditTask, False,
     True)
-EventType("ASSIGN_TASK", ["taskUUID"],              _handleAssignTask, False,
+EventType("ASSIGN_TASK", ["taskUUID", "assignedTo"],              _handleAssignTask, False,
     True)
 

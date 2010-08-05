@@ -186,6 +186,7 @@ class Meeting(YarnBaseType):
     
     def getDict(self):
         d = YarnBaseType.getDict(self)
+        d["title"] = self.title
         d["endedAt"] = self.endedAt
         d["isLive"] = self.isLive
         d["room"] = self.room.uuid

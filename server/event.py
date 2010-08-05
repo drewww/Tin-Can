@@ -29,7 +29,7 @@ f1.write("\n----server reset----\n\n")
 f2.write("\n----server reset----\n\n")
 
 class Event:    
-    def __init__(self, eventType, actorUUID=None, meetingUUID=None, params={}, results={}):
+    def __init__(self, eventType, actorUUID=None, meetingUUID=None, params={}, results=None):
         
         # these are the only required fields for an event.
         # all other paramters (like the text of a new topic, or new owner
@@ -46,7 +46,10 @@ class Event:
         
         
         # For a discussion of what this is for, check self.addResult
-        self.results = {}
+        if results!=None:
+            self.results = results
+        else:
+            self.results={}
         
         # log the time the event was created on the server.
         self.timestamp = time.time()

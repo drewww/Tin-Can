@@ -327,7 +327,7 @@ class JoinRoomHandler(BaseHandler):
                 # http://wiki.github.com/drewww/Tin-Can/eventmodel
                 
                 newMeetingEvent = Event("NEW_MEETING",
-                    actor.uuid, None, {"room":room})
+                    actor.uuid, None, {"room":room.uuid})
                 newMeetingEvent = newMeetingEvent.dispatch()
 
                 meeting = newMeetingEvent.results["meeting"]                
@@ -345,7 +345,7 @@ class JoinRoomHandler(BaseHandler):
             # exist yet. Going to check this in without
             # that chunk. The earlier stuff is working great.
             locationJoinedMeetingEvent = Event("LOCATION_JOINED_MEETING",
-            location.uuid, None, {"meeting":meeting})
+            location.uuid, None, {"meeting":meeting.uuid})
             locationJoinedMeetingEvent.dispatch()
               
         else: 
@@ -394,7 +394,7 @@ class LocationLeaveMeetingHandler(BaseHandler):
             %(location.name,meeting.uuid))
         else:
             locationLeftMeetingEvent = Event("LOCATION_LEFT_MEETING",
-            location.uuid, None, {"meeting":meeting})
+            location.uuid, None, {"meeting":meeting.uuid})
             locationLeftMeetingEvent.dispatch()
 
 class AddUserHandler(tornado.web.RequestHandler):
@@ -453,8 +453,8 @@ class LoginHandler(BaseHandler):
             didn't exist or wasn't a valid actor."%actorUUID)
             return None
 
-        addActorDeviceEvent = Event("ADD_ACTOR_DEVICE", actor.uuid, params={"actor":actor,
-        "device":device})
+        addActorDeviceEvent = Event("ADD_ACTOR_DEVICE", actor.uuid, params={"actor":actor.uuid,
+        "device":device.uuid})
         addActorDeviceEvent.dispatch()
         
         # otherwise, set the secure cookie for the user ID.
@@ -474,7 +474,7 @@ class LogoutHandler(BaseHandler):
                 leaveLocationEvent.dispatch()
         
         deviceLeftEvent = Event("DEVICE_LEFT", actor.uuid, 
-            params={"device":device})
+            params={"device":device.uuid})
         deviceLeftEvent.dispatch()
 
 class LocationsHandler(tornado.web.RequestHandler):
@@ -497,7 +497,7 @@ class JoinLocationHandler(BaseHandler):
         
         # Trigger the actual event.
         joinLocationEvent = Event("USER_JOINED_LOCATION", actor.uuid,
-            params={"location":location})
+            params={"location":location.uuid})
         joinLocationEvent.dispatch()
 
 class LeaveLocationHandler(BaseHandler):
@@ -515,7 +515,7 @@ class LeaveLocationHandler(BaseHandler):
         
         # Trigger the actual event.
         leaveLocationEvent = Event("USER_LEFT_LOCATION", actor.uuid,
-            params={"location":location})
+            params={"location":location.uuid})
         leaveLocationEvent.dispatch()
 
 class EditMeetingHandler(BaseHandler):
@@ -526,7 +526,7 @@ class EditMeetingHandler(BaseHandler):
         meeting = state.get_obj(self.get_argument("meetingUUID"), Meeting)
         
         editMeetingEvent = Event("EDIT_MEETING", actor.uuid, 
-            params={"meeting":meeting, "title": self.get_argument("title")})
+            params={"meeting":meeting.uuid, "title": self.get_argument("title")})
         editMeetingEvent.dispatch()
         return
 
@@ -620,7 +620,7 @@ class AssignTaskHandler(BaseHandler):
             assignedTo = state.get_obj(self.get_argument("assignedToUUID"),
                 User)
             p = {"taskUUID":self.get_argument("taskUUID"),
-                    "assignedTo":assignedTo, "deassign":False}
+                    "assignedTo":assignedTo.uuid, "deassign":False}
         else:
             # if deassign was set, then trigger a deassign event.
             p = {"taskUUID":self.get_argument("taskUUID"),
@@ -635,13 +635,21 @@ class AssignTaskHandler(BaseHandler):
 class ReplayHandler(tornado.web.RequestHandler):
     def get(self):
         f = open("events.log", "r")
-        line = f.readline()
+        f.readline()
+        f.readline()
+        f.readline()
+        line=f.readline()
         while(line!=""):
-            if line!="\n":
+            if line!="\n" and line!="----server reset----\n":
                 eventDict = json.loads(line)
+                newEvent = Event(eventDict["eventType"], eventDict["actorUUID"],
+                    eventDict["meetingUUID"], eventDict["params"], 
+                    eventDict["results"])
+                newEvent.dispatch()
                 logging.debug(eventDict["eventType"])
             else:
                 logging.debug("----server reset----")
+                break
             line= f.readline()
 
 class AgendaHandler(tornado.web.RequestHandler):

@@ -55,7 +55,7 @@
 	NSLog(@"I have been touched");
 	isTouched=TRUE;
 	[self setNeedsDisplay];
-
+	[self.superview bringSubviewToFront:self];
    
 }
 
