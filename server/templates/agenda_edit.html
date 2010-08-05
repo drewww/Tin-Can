@@ -35,7 +35,7 @@
 					itemCounter = itemCounter + 1;
 					newId = 'item' + itemCounter;
 					uuidDict[newId] = topic.uuid;
-					makeFutureItem(newId, topic.text);
+					makeFutureItem(newId, topic.text, "FUTURE");
 					break;
 				case "LOCAL_MEETING_SET":
 					generateTopicsFromServer();
@@ -45,6 +45,7 @@
 					status = e.params["status"];
 					console.log(uuid);
 					console.log(status);
+					updateTopic(uuid, status);
 					break;
 			}
 		}});
@@ -70,7 +71,26 @@
 		});
 		connection.getState();
 	});
-	
+		
+		function updateTopic(uuid, status){
+			id = lookupByUuid(uuid);
+			console.log(id);
+			$("#"+id)[0].className = status;
+
+			for (key in uuidDict) {
+				if ($("#"+key)[0].className == "FUTURE"){
+					firstFutureItem = $("#"+key);
+					break;
+				}
+			}
+			
+			$("#"+id).insertBefore(firstFutureItem);
+			$("#"+id).append($("#doneButton"));			
+			$("#doneButton").show();
+			$(".startButton").hide();
+
+		}
+		
 		function lookupByUuid(uuid){
 			for (id in uuidDict) {
 				tempUuid = uuidDict[id];
