@@ -774,7 +774,7 @@ ConnectionManager.prototype = {
                     {}, false));
             }
         });
-    }
+    },
     
     // Returns the meeting that this client is currently in. Might be null,
     // if this client hasn't joined a meeting yet. 
