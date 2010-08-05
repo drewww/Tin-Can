@@ -13,7 +13,7 @@
 
 typedef NSString UUID;
 
-#define SERVER @"http://happy.media.mit.edu"
+#define SERVER @"http://localhost"
 #define PORT @"8888"
 
 #endif

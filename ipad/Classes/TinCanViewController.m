@@ -23,7 +23,7 @@
     
     if(currentViewController == nil) {
         // Make the initial one and load it. For now, that's just the MeetingView.
-        currentViewController = [[MeetingViewController alloc] retain];
+        currentViewController = [[[LoginMasterViewController alloc] initWithController:self] retain];
         
         // Make sure the viewcontroller has a reference back here, so it can send us 
         // messages if we need it.
@@ -66,6 +66,8 @@
 // TODO figure out how to animate these transitions.
 
 -(void) switchToViewController:(UIViewController *)c {
+    NSLog(@"in switch to view controller, switching to controller: %@", c);
+    
     if(c == currentViewController) return;
 	c.view.alpha =0.0;
     [self.view addSubview:c.view];

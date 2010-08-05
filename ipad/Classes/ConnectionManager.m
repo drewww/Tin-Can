@@ -311,6 +311,13 @@ static ConnectionManager *sharedInstance = nil;
         case kNEW_TASK:
             results = (NSDictionary *)[e.results objectForKey:@"task"];
             
+            NSDate *date;
+            if([[results objectForKey:@"assignedAt"] isKindOfClass:[NSNull class]]) {
+                date = nil;
+            } else {
+                date = [NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"assignedAt"] doubleValue]];
+            }
+            
             task = [[Task alloc] initWithUUID:[results objectForKey:@"uuid"]
                               withCreatorUUID:[results objectForKey:@"createdBy"]
                                     createdAt:[results objectForKey:@"createdAt"]
@@ -318,7 +325,7 @@ static ConnectionManager *sharedInstance = nil;
                                      withText:[results objectForKey:@"text"]
                                assignedToUUID:[results objectForKey:@"assignedTo"]
                                assignedByUUID:[results objectForKey:@"assignedBy"]
-                                   assignedAt:[NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"assignedAt"] doubleValue]]];
+                                   assignedAt:date];
             
             [task unswizzle];
             break;
@@ -337,9 +344,18 @@ static ConnectionManager *sharedInstance = nil;
             
         case kASSIGN_TASK:
             task = (Task *)[state getObjWithUUID:[e.params objectForKey:@"taskUUID"] withType:[Task class]];
-            task.assignedBy = (Actor *)[state getObjWithUUID:e.actorUUID withType:[Actor class]];
-            task.assignedTo = (User *)[state getObjWithUUID:[e.params objectForKey:@"assignedTo"] withType:[User class]];
-            task.assignedAt = [NSDate dateWithTimeIntervalSince1970:[[e.params objectForKey:@"assignedAt"] doubleValue]];
+            
+            Actor *assignedBy = (Actor *)[state getObjWithUUID:e.actorUUID withType:[Actor class]];
+            NSDate *assignedAt = [NSDate dateWithTimeIntervalSince1970:[[e.params objectForKey:@"assignedAt"] doubleValue]];
+            
+            if([e.params objectForKey:@"deassign"]) {
+                // Do deassign logic.   
+                [task deassignByActor:assignedBy atTime:assignedAt];
+            } else {
+                // Do assign logic.
+                User *assignedTo = (User *)[state getObjWithUUID:[e.params objectForKey:@"assignedTo"] withType:[User class]];
+                [task assignToUser:assignedTo byActor:assignedBy atTime:assignedAt];
+            }
             break;
             
         case kEDIT_MEETING:
@@ -394,7 +410,6 @@ static ConnectionManager *sharedInstance = nil;
 
 - (void) leaveRoomWithUUID {
     
-    // Can't we run this without 
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/rooms/leave"]];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     [request setDelegate:self];
@@ -402,8 +417,28 @@ static ConnectionManager *sharedInstance = nil;
 }
 
 - (void) addLocationWithName:(NSString *)locationName {
-    
+    NSLog(@"ADD LOCATION WITH NAME IS NOT IMPLEMENTED.");  
 }
+
+- (void) assignTask:(Task *)theTask toUser:(User *)theUser {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/tasks/assign"]];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request setPostValue:theTask.uuid forKey:@"taskUUID"];    
+    [request setPostValue:theUser.uuid forKey:@"assignedToUUID"];    
+    [request setDelegate:self];
+    [request startAsynchronous];     
+}
+
+- (void) deassignTask:(Task *)theTask {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/tasks/assign"]];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request setPostValue:theTask.uuid forKey:@"taskUUID"];    
+    [request setPostValue:@"1" forKey:@"deassign"];    
+    [request setDelegate:self];
+    [request startAsynchronous];         
+}
+
+
 
 #pragma mark -
 #pragma mark Singleton methods

@@ -11,6 +11,7 @@
 #import "SBJSON.h"
 #import "tincan.h"
 #import "Event.h"
+#import "Task.h"
 
 
 @interface ConnectionManager : NSObject {
@@ -69,6 +70,8 @@
 
 - (void) addLocationWithName:(NSString *)locationName;
 
+- (void) assignTask:(Task *)theTask toUser:(User *)theUser;
+- (void) deassignTask:(Task *)theTask;
 
 
 + (ConnectionManager*)sharedInstance;

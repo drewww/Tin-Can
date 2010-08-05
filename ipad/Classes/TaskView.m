@@ -16,36 +16,41 @@
     if ((self = [super initWithFrame:frame])) {
 		self.frame=frame;
         text=task;
-		initialOrigin = self.frame.origin;
+		initialOrigin = CGPointMake(self.frame.origin.x, self.frame.origin.y);//self.frame.origin;  
 		self.userInteractionEnabled = YES; 
+		bgColor= [UIColor clearColor];
     }
     return self;
 }
 
 
 - (void)drawRect:(CGRect)rect {
-	[self setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 
     // Drawing code
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	
 	
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
-	CGContextFillRect(ctx, CGRectMake(0, 0, self.frame.size.height-2, self.frame.size.width));
-	CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
-	CGContextFillRect(ctx, CGRectMake(10, 0, self.frame.size.height-12, self.frame.size.width));
-	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-	[text drawInRect:CGRectMake(15, 2, self.frame.size.height-16, self.frame.size.width) 
+	CGContextFillRect(ctx, CGRectMake(0, 0, 10, self.frame.size.height));
+	CGContextSetFillColorWithColor(ctx, bgColor.CGColor);
+	CGContextFillRect(ctx, CGRectMake(10, 0, self.frame.size.width-12, self.frame.size.height));
+	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:.5].CGColor);
+	[text drawInRect:CGRectMake(15, 2, self.frame.size.width-16, self.frame.size.height) 
 			withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
-	//CGContextFillPath(ctx);
+	
 	CGContextSetLineWidth(ctx,2);
 	CGContextSetStrokeColorWithColor(ctx,  [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
-	CGContextStrokeRect(ctx, CGRectMake(0, 0, self.frame.size.height, self.frame.size.width));
+	CGContextStrokeRect(ctx, CGRectMake(0, 0, self.frame.size.width, self.frame.size.height));
+	
+	[self setNeedsDisplay];
+
 }
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	NSLog(@"I have been touched");
-    
+	bgColor=[UIColor grayColor];
 	[self setNeedsDisplay];
+
+   
 }
 
 
@@ -61,9 +66,7 @@
 	
 	self.center = CGPointMake(self.center.x + dX, self.center.y + dY);
 	
-	
-	[self setNeedsDisplay];
-	[self bringSubviewToFront:self];
+	//Calling setNeeds display undoes the rotation for some reason.
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -74,13 +77,13 @@
         [UIView setAnimationDuration:1.0f];
         
         CGRect newFrame = self.frame;
-        newFrame.origin = initialOrigin;
+        newFrame.origin = CGPointMake(initialOrigin.x, initialOrigin.y);
         self.frame = newFrame;
         NSLog(@"animating to initialOrigin: %f, %f", initialOrigin.x, initialOrigin.y);
-		
+		[self.superview setNeedsLayout];
         [UIView commitAnimations];
-	
-	[self setNeedsDisplay];
+		bgColor=[UIColor blackColor];
+		[self setNeedsDisplay];
 }
 
 
