@@ -34,6 +34,25 @@
     return self;
 }
 
+- (void) assignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime{
+    self.assignedAt = assignTime;
+    self.assignedBy = byActor;
+    self.assignedTo = toUser;
+    
+    [self.assignedTo assignTask:self];
+}
+
+- (void) deassignByActor:(Actor *)assignedBy atTime:(NSDate *)deassignTime{
+    if(self.assignedTo != nil) {
+        self.assignedBy = assignedBy;
+        self.assignedAt = deassignTime;
+
+        [self.assignedTo removeTask:self];
+        self.assignedTo = nil;
+    }
+}
+
+
 - (void) unswizzle {
     if(assignedToUUID!=nil && ![assignedToUUID isKindOfClass:[NSNull class]]) {
         self.assignedTo = (User *)[[StateManager sharedInstance] getObjWithUUID:assignedToUUID

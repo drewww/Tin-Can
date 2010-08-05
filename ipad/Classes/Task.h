@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "BaseMeetingObject.h"
 #import "User.h"
+#import "Actor.h"
 #import "StateManager.h"
 
 
@@ -31,6 +32,10 @@
      assignedToUUID:(UUID *)myAssignedToUUID
      assignedByUUID:(UUID *)myAssignedByUUID
          assignedAt:(NSDate *)myAssignedAt;
+
+- (void) deassignByActor:(Actor *)assignedBy atTime:(NSDate *)deassignTime;
+- (void) assignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime;
+
 
 @property(nonatomic, retain) NSString *text;
 @property(nonatomic, retain) User *assignedTo;

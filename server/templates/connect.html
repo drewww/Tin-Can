@@ -102,9 +102,7 @@
 					});
 					
 					$('#deassign_task_button').click(function() {
-						// the third argument = true makes this a deassign
-						// operation. 
-						conn.assignTask($('#tasks')[0].value, null, true);
+						conn.deassignTask($('#tasks')[0].value);
 					});
 					
 					

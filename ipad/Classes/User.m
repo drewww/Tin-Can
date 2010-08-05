@@ -9,18 +9,33 @@
 #import "User.h"
 #import "Location.h"
 #import "tincan.h"
-
+#import "Task.h"
 
 @implementation User
 
 @synthesize location;
+@synthesize tasks;
 
 - (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withLocationUUID:(UUID *)myLocationUUID {
     self = [super initWithUUID:myUuid withName:myName];
     
     locationUUID = myLocationUUID;
     
+    self.tasks = [NSMutableSet set];
+    
     return self;
+}
+
+- (void) assignTask:(id)task {
+    if([task isKindOfClass:[Task class]]) {
+        [self.tasks addObject:task];
+    }
+}
+
+- (void) removeTask:(id)task {
+    if([task isKindOfClass:[Task class]]) {
+        [self.tasks removeObject:task];
+    }
 }
 
 - (BOOL) isInLocation {

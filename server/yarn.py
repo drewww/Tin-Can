@@ -73,6 +73,7 @@ class YarnApplication(tornado.web.Application):
             (r"/agendajqt/", AgendaJQTHandler),
             
             (r"/status/", StatusHandler),
+            (r"/replay/", ReplayHandler),
             
             (r"/rooms/",ChooseRoomsHandler),
             (r"/meeting/",MeetingHandler),
@@ -631,6 +632,17 @@ class AssignTaskHandler(BaseHandler):
             params = p)
         assignTaskEvent.dispatch()
 
+class ReplayHandler(tornado.web.RequestHandler):
+    def get(self):
+        f = open("events.log", "r")
+        line = f.readline()
+        while(line!=""):
+            if line!="\n":
+                eventDict = json.loads(line)
+                logging.debug(eventDict["eventType"])
+            else:
+                logging.debug("----server reset----")
+            line= f.readline()
 
 class AgendaHandler(tornado.web.RequestHandler):
     def get(self):

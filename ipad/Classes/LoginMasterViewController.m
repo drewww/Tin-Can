@@ -183,6 +183,11 @@
 -(void)infoButtonPressed:(id)sender{
 	
 	NSLog(@"I have been pressed");
+    
+    // This is dangerous. Multiple presses will create multiple view controllers, and this view
+    // controller is never going to get released. Really need to find a nicer way to do this.
+    // Controllers should be owned by the TinCanViewController, perhaps, and not
+    // created by people trying to switch into something specific. 
 	[controller switchToViewController:[[[MeetingViewController alloc] init] retain]];
 }
 

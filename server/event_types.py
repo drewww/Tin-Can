@@ -20,7 +20,12 @@ import state
 # method. They determine what happens to internal state based on the event.
 
 def _handleNewMeeting(event):
-    newMeeting = model.Meeting(event.params["room"].uuid)
+    if len(event.results)==0:
+        newMeeting = model.Meeting(event.params["room"].uuid)
+    else:
+        d = event.results["meeting"]
+        newMeeting = model.Meeting(event.params["room"].uuid, d["title"],
+            d["meetingUUID"], d["startedAt"])
     
     # once we have the meeting, push it back into the event object.
     # pushing it into params because the outer meeting value is
@@ -62,7 +67,10 @@ def _handleNewLocation(event):
     return event
 
 def _handleNewDevice(event):
-    device = model.Device()
+    if len(event.results)==0:
+        device = model.Device()
+    else:
+        device = model.Device(event.results["device"]["uuid"])
 
     event.addResult("device", device)
 

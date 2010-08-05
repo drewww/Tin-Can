@@ -14,10 +14,23 @@
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
-        self.frame=frame;
-		TaskView *firstTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 40, 230, 50) 
-												   withText: @"Leisure station ran out of pearls last night when I ordered."];
-		[self addSubview:firstTask];
+
+      //  self.frame=frame;
+//		TaskView *firstTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 40, 230, 50) 
+//												   withText: @"Leisure station ran out of pearls last night when I ordered."];
+//		TaskView *secondTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 100, 230, 50) 
+//													withText: @"Alone with my music wearing socks on the tile, I dance."];
+//		TaskView *thirdTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 160, 230, 50) 
+//												   withText: @"Stop Paula from writing silly stuff on the App."];
+//		TaskView *fourthTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 220, 230, 50) 
+//													withText: @"Combs and brushes make the best microphones."];
+//
+//		[self addSubview:firstTask];
+//		[self addSubview:secondTask];
+//		[self addSubview:thirdTask];
+//		[self addSubview:fourthTask];
+		NSLog(@"subviews:%@",[self subviews]);
+		[self setNeedsLayout];
     }
     return self;
 }
@@ -36,10 +49,31 @@
 	CGContextSetStrokeColorWithColor(ctx,  [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
 	CGContextStrokeRect(ctx, CGRectMake(0, 0, self.frame.size.width, self.frame.size.height));
 	[self setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-	[self setNeedsDisplay];
+	
 	
 }
+- (void)layoutSubviews{
+	int i =0;
+	for(TaskView *subview in [self subviews]){
+		if(i<9){
+		subview.frame=CGRectMake(10, 40+(60*i), 230, 50);
+		}
+		else{
+			break;
+		}
+		i++;
+	}
+		
+}
 
+- (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+		TaskView *secondTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 100, 230, 50) 
+												withText: @"Alone with my music wearing socks on the tile, I dance."];
+	if([[self subviews]count]<9){
+		[self addSubview:secondTask];
+	}
+		[self setNeedsLayout];
+}
 
 - (void)dealloc {
     [super dealloc];
