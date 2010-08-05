@@ -12,7 +12,7 @@
 @interface TaskView : UIView {
 	NSString *text;
 	CGPoint    initialOrigin;
-
+	UIColor *bgColor;
 }
 - (id)initWithFrame:(CGRect)frame withText:(NSString *)task;
 @end

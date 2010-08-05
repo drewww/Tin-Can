@@ -18,6 +18,7 @@
         text=task;
 		initialOrigin = CGPointMake(self.frame.origin.x, self.frame.origin.y);//self.frame.origin;  
 		self.userInteractionEnabled = YES; 
+		bgColor= [UIColor clearColor];
     }
     return self;
 }
@@ -31,9 +32,9 @@
 	
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
 	CGContextFillRect(ctx, CGRectMake(0, 0, 10, self.frame.size.height));
-	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:0 green:0 blue:0 alpha:.5].CGColor);
+	CGContextSetFillColorWithColor(ctx, bgColor.CGColor);
 	CGContextFillRect(ctx, CGRectMake(10, 0, self.frame.size.width-12, self.frame.size.height));
-	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:1].CGColor);
+	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:.5].CGColor);
 	[text drawInRect:CGRectMake(15, 2, self.frame.size.width-16, self.frame.size.height) 
 			withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
@@ -46,6 +47,9 @@
 }
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	NSLog(@"I have been touched");
+	bgColor=[UIColor grayColor];
+	[self setNeedsDisplay];
+
    
 }
 
@@ -76,9 +80,10 @@
         newFrame.origin = CGPointMake(initialOrigin.x, initialOrigin.y);
         self.frame = newFrame;
         NSLog(@"animating to initialOrigin: %f, %f", initialOrigin.x, initialOrigin.y);
-		
+		[self.superview setNeedsLayout];
         [UIView commitAnimations];
-	
+		bgColor=[UIColor blackColor];
+		[self setNeedsDisplay];
 }
 
 
