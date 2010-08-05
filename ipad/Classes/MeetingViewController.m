@@ -175,12 +175,12 @@
 				float divisions=1024.0/[[sides objectAtIndex:i] intValue];
 				float yVal= (divisions*c) -(divisions/2.0);
 				if (i==0) {
-					[points addObject:[NSValue valueWithCGPoint:CGPointMake(-30, yVal)]];
+					[points addObject:[NSValue valueWithCGPoint:CGPointMake(0, yVal)]];
 					[rotations addObject:[NSNumber numberWithFloat:M_PI/2]];
 					
 				}	
 				else{
-					[points addObject:[NSValue valueWithCGPoint:CGPointMake(798, yVal)]];
+					[points addObject:[NSValue valueWithCGPoint:CGPointMake(768, yVal)]];
 					
 					[rotations addObject:[NSNumber numberWithFloat:-M_PI/2]]; 
 				}
@@ -189,11 +189,11 @@
 				float divisions=768/[[sides objectAtIndex:i] intValue];
 				float xVal= (divisions*(c)) -(divisions/2.0);
 				if (i==1) {
-					[points addObject:[NSValue valueWithCGPoint:CGPointMake(xVal, -30)]]; 
+					[points addObject:[NSValue valueWithCGPoint:CGPointMake(xVal, 0)]]; 
 					[rotations addObject:[NSNumber numberWithFloat:M_PI]];
 				}	
 				else{
-					[points addObject:[NSValue valueWithCGPoint:CGPointMake(xVal, 1060)]];
+					[points addObject:[NSValue valueWithCGPoint:CGPointMake(xVal, 1024)]];
 					[rotations addObject:[NSNumber numberWithFloat:0.0]];
 				}
 			}
@@ -303,7 +303,7 @@
         
         // This is used for debugging the entire layout by pushing users off the edge so you can see
         // the entire view.
-        newUserView.center = CGPointMake(newUserView.center.x + 100, newUserView.center.y + 100);
+//        newUserView.center = CGPointMake(newUserView.center.x + 100, newUserView.center.y + 100);
 
 //        CGRect newFrame = CGRectMake(origin.x, origin.y, newUserView.frame.size.width, newUserView.frame.size.width);
         

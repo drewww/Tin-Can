@@ -24,7 +24,7 @@
     self.user = theUser;
     hover = FALSE;
     
-    self.bounds = CGRectMake(-BASE_WIDTH/2, -(BASE_WIDTH + HEIGHT_MARGIN)/2, BASE_WIDTH, BASE_WIDTH + HEIGHT_MARGIN);
+    self.bounds = CGRectMake(-BASE_WIDTH/2, -(BASE_HEIGHT + HEIGHT_MARGIN)/2, BASE_WIDTH, BASE_HEIGHT + HEIGHT_MARGIN);
 //    self.center = CGPointMake(500, 500);
     
     color = [UIColor blueColor];
@@ -43,10 +43,10 @@
         return;
     }
 
-//    CGContextSetFillColorWithColor(ctx, [UIColor blueColor].CGColor);
-//    
-//    CGContextAddEllipseInRect(ctx, CGRectMake(-100, -100, 200, 200));
-//    CGContextFillPath(ctx);
+    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+    
+    CGContextAddEllipseInRect(ctx, CGRectMake(-10, -10, 20, 20));
+    CGContextFillPath(ctx);
     
 	if(hover)
         CGContextSetFillColorWithColor(ctx, [color colorDarkenedByPercent:0.3].CGColor);
@@ -54,7 +54,7 @@
 		CGContextSetFillColorWithColor(ctx, color.CGColor);
     
     
-    [self fillRoundedRect:CGRectMake(-BASE_WIDTH/2, -HEIGHT_MARGIN/22, BASE_WIDTH, BASE_WIDTH) withRadius:10];
+    [self fillRoundedRect:CGRectMake(-BASE_WIDTH/2, -BASE_HEIGHT/2, BASE_WIDTH, BASE_HEIGHT) withRadius:10];
     
     
     
@@ -64,7 +64,7 @@
     UIFont *f = [UIFont boldSystemFontOfSize:16];
     CGSize nameSize = [[self.user.name uppercaseString] sizeWithFont:f];
     
-    [[self.user.name uppercaseString] drawAtPoint:CGPointMake(-nameSize.width/2, -nameSize.height/2+BASE_HEIGHT/4) withFont:f];
+    [[self.user.name uppercaseString] drawAtPoint:CGPointMake(-nameSize.width/2, -nameSize.height/2-BASE_HEIGHT/4) withFont:f];
     
 }
 
