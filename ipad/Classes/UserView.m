@@ -22,6 +22,8 @@
 #define TAB_HEIGHT 8
 #define TAB_MARGIN 5
 
+#define NAME_BOTTOM_MARGIN 5
+
 - (id) initWithUser:(User *)theUser {
     self = [super initWithFrame:CGRectMake(0, 0, BASE_WIDTH, BASE_HEIGHT + HEIGHT_MARGIN)];
     
@@ -68,13 +70,13 @@
     UIFont *f = [UIFont boldSystemFontOfSize:16];
     CGSize nameSize = [[self.user.name uppercaseString] sizeWithFont:f];
     
-    [[self.user.name uppercaseString] drawAtPoint:CGPointMake(-nameSize.width/2, -nameSize.height/2-BASE_HEIGHT/4) withFont:f];
+    [[self.user.name uppercaseString] drawAtPoint:CGPointMake(-nameSize.width/2, -nameSize.height-NAME_BOTTOM_MARGIN) withFont:f];
     
     
     
     // Draw the tabs to show that this person has tasks assigned.
     // Hardcoding the number of tasks for now.
-    CGContextSetFillColorWithColor(ctx, [color colorByChangingAlphaTo:0.8].CGColor);
+    CGContextSetFillColorWithColor(ctx, [color colorByChangingAlphaTo:0.6].CGColor);
     CGFloat xPos = 15;
     for (int i=0; i<3; i++) {
         CGContextFillRect(ctx, CGRectMake(xPos-BASE_WIDTH/2, -BASE_HEIGHT/2-TAB_HEIGHT, TAB_WIDTH, TAB_HEIGHT));
