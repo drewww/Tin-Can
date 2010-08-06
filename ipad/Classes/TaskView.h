@@ -14,5 +14,9 @@
 	CGPoint    initialOrigin;
 	bool isTouched; 
 }
+
+@property (nonatomic, retain) NSString *text;
+
 - (id)initWithFrame:(CGRect)frame withText:(NSString *)task;
+- (NSComparisonResult) compareByPointer:(TaskView *)view;
 @end

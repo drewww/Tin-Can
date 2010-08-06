@@ -10,7 +10,9 @@
 
 
 @interface TaskContainerView : UIView {
-	
+    float rot;
 }
+
+- (void) setRot:(float) newRot;
 
 @end

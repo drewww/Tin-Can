@@ -52,14 +52,15 @@
     [self initParticipantsView];
     [self initTodoViews];
     
-	TaskContainerView *tasks=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) ];
-	[self.view addSubview:tasks];	
+	TaskContainerView *tasksContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) ];
+
+	[self.view addSubview:tasksContainer];	
 	
     [[DragManager sharedInstance] initWithRootView:self.view withParticipantsContainer:participantsContainer];
 
     [self.view bringSubviewToFront:participantsContainer];
 	[self.view bringSubviewToFront:meetingTimerView];
-    [self.view bringSubviewToFront:tasks];
+    [self.view bringSubviewToFront:tasksContainer];
     queue = [[[NSOperationQueue alloc] init] retain];
 
     lastRevision = INITIAL_REVISION_NUMBER;

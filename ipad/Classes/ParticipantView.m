@@ -32,7 +32,6 @@
         
     [self setTransform:CGAffineTransformMakeRotation(rot)];
     
-    
     todosExpanded = false;
     
     [self setBackgroundColor:[UIColor clearColor]];
