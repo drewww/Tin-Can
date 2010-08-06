@@ -101,7 +101,7 @@ class Event:
                                 invalid actorUUID %s"""%actorUUID)
                 return None
         else:
-            logging.debug("Since this is a NEW_USER event, we can allow \
+            logging.debug("Since this event doesn't require it, we can allow \
 self.actor to be None.")
             self.actor = None
 

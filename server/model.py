@@ -379,13 +379,13 @@ class Device(YarnBaseType):
                 if self.actor.location!=None:
                     if len(self.actor.location.users)==1:
                         leaveLocationEvent = event.Event("USER_LEFT_LOCATION", 
-                            self.actor.uuid, params={"location":self.actor.location})
+                            self.actor.uuid, params={"location":self.actor.location.uuid})
                         leaveLocationEvent.dispatch()
             elif isinstance(self.actor, Location):
                 if self.actor.meeting!=None:
                     if len(self.actor.meeting.locations)==1:
                         leaveMeetingEvent = event.Event("LOCATION_LEFT_MEETING", 
-                            self.actor.uuid, params={"meeting":self.actor.meeting})
+                            self.actor.uuid, params={"meeting":self.actor.meeting.uuid})
                         leaveMeetingEvent.dispatch()
             
             if self.actor!=None:            
