@@ -52,8 +52,7 @@
     [self initParticipantsView];
     [self initTodoViews];
     
-	TaskContainerView *tasksContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600)];
-    [tasksContainer setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+	TaskContainerView *tasksContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) ];
 
 	[self.view addSubview:tasksContainer];	
 	

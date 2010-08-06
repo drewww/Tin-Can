@@ -32,7 +32,8 @@
 
     // Why do I have to do this? Shouldn't the transform of the parent view do enough?
     // Maybe TaskContainerView has a weird default transform that it shouldn't have.    
-    // [taskContainerView setTransform:self.transform];
+//    [taskContainerView setTransform:CGAffineTransformMakeRotation(0)];
+    [taskContainerView setRot:0];
     
     [self sendSubviewToBack:taskContainerView];
     

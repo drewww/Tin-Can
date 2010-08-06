@@ -31,6 +31,8 @@
     
     color = [UIColor blueColor];
     
+    [self setBackgroundColor:[UIColor clearColor]];
+    
     showStatus = FALSE;
     
     return self;

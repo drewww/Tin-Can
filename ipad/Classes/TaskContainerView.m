@@ -23,7 +23,7 @@
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
-
+        
         self.frame=frame;
 		TaskView *firstTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 40, 230, 50) 
 												   withText: @"Leisure station ran out of pearls last night when I ordered."];
@@ -33,7 +33,9 @@
 												   withText: @"Stop Paula from writing silly stuff on the App."];
 		TaskView *fourthTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 220, 230, 50) 
 													withText: @"Combs and brushes make the best microphones."];
-
+        
+        rot = M_PI/2;
+        
 		[self addSubview:firstTask];
 		[self addSubview:secondTask];
 		[self addSubview:thirdTask];
@@ -46,42 +48,49 @@
 
 - (void)drawRect:(CGRect)rect {
     CGContextRef ctx = UIGraphicsGetCurrentContext();
-		
+	
+	
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
 	CGContextFillRect(ctx, CGRectMake(0, 0, self.frame.size.width, 30));
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 	[@"TASKS" drawInRect:CGRectMake(0, 5, self.frame.size.width, 20) 
-			withFont:[UIFont boldSystemFontOfSize:18] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
+                withFont:[UIFont boldSystemFontOfSize:18] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
 	
 	CGContextSetLineWidth(ctx,2);
 	CGContextSetStrokeColorWithColor(ctx,  [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
 	CGContextStrokeRect(ctx, CGRectMake(0, 0, self.frame.size.width, self.frame.size.height));
+	[self setTransform:CGAffineTransformMakeRotation(rot)];
+	
+	
 }
+
+- (void) setRot:(float) newRot {
+    rot = newRot;
+}
+
 
 - (void)layoutSubviews{
 	int i =0;
 	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByPointer:)];
 	for(TaskView *subview in sortedArray){
 		if(i<9){
-		subview.frame=CGRectMake(10, 40+(60*i), 230, 50);
+            subview.frame=CGRectMake(10, 40+(60*i), 230, 50);
 		}
 		else{
 			break;
 		}
 		i++;
 	}
-		
+    
 }
 
-
-
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-		TaskView *newTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 100, 230, 50) 
-												withText: @"Ooo! I added a Task. Spiffeh"];
+    TaskView *newTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 100, 230, 50) 
+                                             withText: @"Ooo! I added a Task. Spiffeh"];
 	if([[self subviews]count]<9){
 		[self addSubview:newTask];
 	}
-		[self setNeedsLayout];
+    [self setNeedsLayout];
 }
 
 - (void)dealloc {
