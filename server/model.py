@@ -267,6 +267,7 @@ class Device(YarnBaseType):
         self.actor = None
         self.eventQueue = []
         self.lastConnect = 0
+        self.lastConnectEnded = time.time()
         self.checkingForReconnect = False
         
     def logout(self):
@@ -316,6 +317,7 @@ class Device(YarnBaseType):
             cls=YarnModelJSONEncoder))
         self.connection.finish()
         self.connection = None
+        self.lastConnectEnded = time.time()
         if (not self.checkingForReconnect):
             self.checkingForReconnect = True
             tornado.ioloop.IOLoop.instance().add_timeout(time.time()+3, 
@@ -370,16 +372,30 @@ class Device(YarnBaseType):
     def connectionClosed(self):
         self.checkingForReconnect = False
         logging.debug("Checking for re-connection from recently closed device")
-        if self.connection==None:
+        if self.connection==None and (time.time()-self.lastConnectEnded)>3:
             logging.debug("No reconnection. Logging out actor")
-            if self.actor.location!=None:
-                if len(self.actor.location.users)==1:
-                    leaveLocationEvent = event.Event("USER_LEFT_LOCATION", self.actor.uuid,
-                        params={"location":self.actor.location})
-                    leaveLocationEvent.dispatch()
-            deviceLeftEvent = event.Event("DEVICE_LEFT", self.actor.uuid, 
-                params={"device":self})
-            deviceLeftEvent.dispatch()
+            
+            if isinstance(self.actor, User):
+                if self.actor.location!=None:
+                    if len(self.actor.location.users)==1:
+                        leaveLocationEvent = event.Event("USER_LEFT_LOCATION", 
+                            self.actor.uuid, params={"location":self.actor.location})
+                        leaveLocationEvent.dispatch()
+            elif isinstance(self.actor, Location):
+                if self.actor.meeting!=None:
+                    if len(self.actor.meeting.locations)==1:
+                        leaveMeetingEvent = event.Event("LOCATION_LEFT_MEETING", 
+                            self.actor.uuid, params={"meeting":self.actor.meeting})
+                        leaveMeetingEvent.dispatch()
+            
+            if self.actor!=None:            
+                deviceLeftEvent = event.Event("DEVICE_LEFT", self.actor.uuid, 
+                    params={"device":self.uuid})
+                deviceLeftEvent.dispatch()
+            else:
+                deviceLeftEvent = event.Event("DEVICE_LEFT", None, 
+                    params={"device":self.uuid})
+                deviceLeftEvent.dispatch()
         else:
             logging.debug("Device re-connected")
     

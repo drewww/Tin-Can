@@ -304,7 +304,7 @@ EventType("NEW_ROOM",           ["name"],   _handleNewRoom,     True,   False)
 EventType("NEW_DEVICE",         [],         _handleNewDevice,   True,   True)
 EventType("ADD_ACTOR_DEVICE",   ["actor", "device"], _handleAddActorDevice,
     True, True)
-EventType("DEVICE_LEFT",        ["device"], _handleDeviceLeft,  True,   True)
+EventType("DEVICE_LEFT",        ["device"], _handleDeviceLeft,  True,   False)
 
 
 EventType("USER_JOINED_LOCATION",   ["location"], _handleJoinedLocation, True,
