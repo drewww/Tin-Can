@@ -56,18 +56,21 @@
 		
 		$("#doneButton").click(function (e) {
 			e.stopPropagation();
-			console.log("stop propagation");
-			console.log($("#"+currentItemId));
-			console.log(currentClicked);
-			extraOptions = $("#extraOptions");
-			currentIndex = items.indexOf($("#"+currentItemId)[0].id);
-			$("#"+currentItemId)[0].className = "PAST";
-			$("#"+currentItemId).click(function() {
-				extraOptions.hide();
-			});			
-			items.splice(currentIndex, 1);
-			$("#doneButton").hide();
-			$(".startButton").show();
+
+			currentClicked = $(this.parentNode);
+			tempId = currentClicked[0].id;
+			tempUuid = uuidDict[tempId];
+			connection.updateTopic(tempUuid, "CURRENT");
+			
+			// extraOptions = $("#extraOptions");
+			// currentIndex = items.indexOf($("#"+currentItemId)[0].id);
+			// $("#"+currentItemId)[0].className = "PAST";
+			// $("#"+currentItemId).click(function() {
+			// 	extraOptions.hide();
+			// });			
+			// items.splice(currentIndex, 1);
+			// $("#doneButton").hide();
+			// $(".startButton").show();
 		});
 		connection.getState();
 	});
@@ -76,19 +79,16 @@
 			id = lookupByUuid(uuid);
 			console.log(id);
 			$("#"+id)[0].className = status;
-
-			for (key in uuidDict) {
-				if ($("#"+key)[0].className == "FUTURE"){
-					firstFutureItem = $("#"+key);
-					break;
-				}
-			}
 			
-			$("#"+id).insertBefore(firstFutureItem);
-			$("#"+id).append($("#doneButton"));			
-			$("#doneButton").show();
-			$(".startButton").hide();
-
+			if (status == "CURRENT") {
+				for (key in uuidDict) {
+					if ($("#"+key)[0].className == "FUTURE"){
+						firstFutureItem = $("#"+key);
+						break;
+					}
+				}
+				$("#"+id).insertBefore(firstFutureItem);
+			}
 		}
 		
 		function lookupByUuid(uuid){
@@ -192,7 +192,16 @@
 		function defineStartButtonClick() {
 			$(".startButton").click(function (e) {
 				e.stopPropagation();
-
+				
+				for (key in uuidDict) {
+					console.log(key);
+					if ($("#"+key)[0].className == "CURRENT"){
+						uuid = uuidDict[key]
+						connection.updateTopic(uuid, "PAST");
+						break;
+					}
+				}
+				
 				// grab the uuid for the item that was clicked on and send it to the server
 				currentClicked = $(this.parentNode);
 				tempId = currentClicked[0].id;
@@ -209,14 +218,7 @@
 				// 
 				// 
 				// currentItemId = $(this.parentNode)[0].id;
-				// 
-				// firstFutureItem = items[1];
-				// firstFutureItem = $("#"+firstFutureItem);
-				// currentClicked.insertBefore(firstFutureItem);
-				// currentClicked[0].className = "CURRENT";
-				// currentClicked.append($("#doneButton"));
-				// $("#doneButton").show();
-				// $(".startButton").hide();
+
 			});
 			
 		}
