@@ -21,12 +21,12 @@
 - (id) initWithUser:(User *)theUser {
     
     NSLog(@"In initWithUser for userRENDERview");
-    self = [super initWithFrame:CGRectMake(0, 0, BASE_WIDTH, BASE_HEIGHT + HEIGHT_MARGIN)];
+    self = [super initWithFrame:CGRectMake(0, 0, BASE_WIDTH, BASE_HEIGHT + TAB_HEIGHT)];
     
     self.user = theUser;
     hover = FALSE;
     
-    self.bounds = CGRectMake(-BASE_WIDTH/2, -(BASE_HEIGHT + HEIGHT_MARGIN)/2, BASE_WIDTH, BASE_HEIGHT + HEIGHT_MARGIN);
+    self.bounds = CGRectMake(-BASE_WIDTH/2, -(BASE_HEIGHT + TAB_HEIGHT)/2, BASE_WIDTH, BASE_HEIGHT + TAB_HEIGHT);
     self.center = CGPointMake(0, 0);
     
     color = [UIColor blueColor];

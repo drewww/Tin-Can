@@ -85,6 +85,7 @@
 }
 
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    NSLog(@"touch ended on task container view");
     TaskView *newTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 100, 230, 50) 
                                              withText: @"Ooo! I added a Task. Spiffeh"];
 	if([[self subviews]count]<9){

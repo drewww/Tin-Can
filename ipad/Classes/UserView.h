@@ -33,6 +33,8 @@
     UserRenderView *userRenderView;
     
     bool taskDrawerExtended;
+    
+    float lastHeightChange;
 }
 
 
