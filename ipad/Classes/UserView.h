@@ -35,8 +35,10 @@
     bool taskDrawerExtended;
 }
 
+
 - (id) initWithUser:(User *)theUser;
 
+- (void) userTouched;
 
 - (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event;
 

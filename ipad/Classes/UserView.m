@@ -37,21 +37,18 @@
     
     [self sendSubviewToBack:taskContainerView];
     
+    self.exclusiveTouch = FALSE;
+    
     [self setNeedsDisplay];
     
     return self;
 }
 
-- (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-//    
-//    showStatus = !showStatus;
-//    [self setNeedsDisplay];
-//    
+- (void) userTouched {
     
-    // animate the task drawer into position
     if(!taskDrawerExtended) {
         [UIView beginAnimations:@"extend_drawer" context:nil];
-    
+        
         [UIView setAnimationDuration:0.4f];
         taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y - 250);
         
@@ -69,18 +66,18 @@
     
 }
 
-- (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-	// We want to do our hit test a little differently - just return true
-	// if it's inside the circle part of the participant rendering.
-	CGFloat distance = sqrt(pow(point.x, 2) + pow(point.y, 2));
-    
-	if (distance <= 130.0f) {
-		return self;	
-	}
-	else {
-		return nil;
-	}
-}
+//- (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+//	// We want to do our hit test a little differently - just return true
+//	// if it's inside the circle part of the participant rendering.
+//	CGFloat distance = sqrt(pow(point.x, 2) + pow(point.y, 2));
+//    
+//	if (distance <= 130.0f) {
+//		return self;	
+//	}
+//	else {
+//		return nil;
+//	}
+//}
 
 - (void)dealloc {
     

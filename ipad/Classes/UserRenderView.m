@@ -115,6 +115,19 @@
     }
 }
 
+
+- (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    //    
+    //    showStatus = !showStatus;
+    //    [self setNeedsDisplay];
+    //   
+    NSLog(@"touches ended on the user part of the userview");
+    
+    // animate the task drawer into position
+    [(UserView *)self.superview userTouched];
+    
+}
+
 - (void) fillRoundedRect:(CGRect)boundingRect withRadius:(CGFloat)radius withRoundedBottom:(bool)roundedBottom{
     
     CGContextRef ctx = UIGraphicsGetCurrentContext();
