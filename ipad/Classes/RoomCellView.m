@@ -48,7 +48,7 @@
 	
 	if(meeting!= nil){
 		[self addSubview:timerBar];
-	}
+	}   
 
 }
 //Setter for Counted (Stores the number of members counted so far)
@@ -65,7 +65,7 @@
 	NSString *string = room ;
 	NSString *meetings;
 	if (meeting!= nil) {
-		if(meeting.title !=nil){
+		if(![meeting.title isKindOfClass:[NSNull class]]){
 			meetings = [@"        \n\n  Meeting: " stringByAppendingString:meeting.title];
 		}
 		else{
