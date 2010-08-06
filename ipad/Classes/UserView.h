@@ -12,7 +12,7 @@
 #import "UserRenderView.h"
 
 #define BASE_HEIGHT 70
-#define BASE_WIDTH 150
+#define BASE_WIDTH 180
 
 // Messing with this also works for debugging. Set it huge to have max height visibility.
 #define HEIGHT_MARGIN 50

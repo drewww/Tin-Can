@@ -61,7 +61,7 @@
         [UIView beginAnimations:@"retract_drawer" context:nil];
         
         [UIView setAnimationDuration:0.4f];
-        taskContainerView.center = CGPointMake(taskContainerView.center.x, 0);
+        taskContainerView.center = CGPointMake(taskContainerView.center.x, + 10);
         
         [UIView commitAnimations];        
         taskDrawerExtended = false;
