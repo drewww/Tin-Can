@@ -87,7 +87,9 @@
 						break;
 					}
 				}
-				$("#"+id).insertBefore(firstFutureItem);
+				if (id != firstFutureItem[0].id){
+					$("#"+id).insertBefore(firstFutureItem);
+				}
 			}
 		}
 		
