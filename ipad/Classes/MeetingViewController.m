@@ -218,7 +218,7 @@
     NSMutableArray *layoutData= [self getParticpantLocationsForNumberOfPeople:[userSet count]];
     
     int i=0;
-    for(User *user in [[StateManager sharedInstance] getUsers]) {
+    for(User *user in [[StateManager sharedInstance].meeting getCurrentParticipants]) {
         NSLog(@"Creating UserView for user: %@", user);
         
         UserView *view = [[UserView alloc] initWithUser:user];
