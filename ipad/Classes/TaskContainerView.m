@@ -25,21 +25,24 @@
     if ((self = [super initWithFrame:frame])) {
         
         self.frame=frame;
-		TaskView *firstTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 40, 230, 50) 
-												   withText: @"Leisure station ran out of pearls last night when I ordered."];
-		TaskView *secondTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 100, 230, 50) 
-													withText: @"Alone with my music wearing socks on the tile, I dance."];
-		TaskView *thirdTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 160, 230, 50) 
-												   withText: @"Stop Paula from writing silly stuff on the App."];
-		TaskView *fourthTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 220, 230, 50) 
-													withText: @"Combs and brushes make the best microphones."];
+        
+        
+        // Turning off the default items now that we're trying to pull from the server.
+//		TaskView *firstTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 40, 230, 50) 
+//												   withText: @"Leisure station ran out of pearls last night when I ordered."];
+//		TaskView *secondTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 100, 230, 50) 
+//													withText: @"Alone with my music wearing socks on the tile, I dance."];
+//		TaskView *thirdTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 160, 230, 50) 
+//												   withText: @"Stop Paula from writing silly stuff on the App."];
+//		TaskView *fourthTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 220, 230, 50) 
+//													withText: @"Combs and brushes make the best microphones."];
+//		[self addSubview:firstTask];
+//		[self addSubview:secondTask];
+//		[self addSubview:thirdTask];
+//		[self addSubview:fourthTask];
         
         rot = M_PI/2;
         
-		[self addSubview:firstTask];
-		[self addSubview:secondTask];
-		[self addSubview:thirdTask];
-		[self addSubview:fourthTask];
 		NSLog(@"subviews:%@",[self subviews]);
 		[self setNeedsLayout];
     }

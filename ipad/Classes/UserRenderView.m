@@ -106,7 +106,9 @@
     // Hardcoding the number of tasks for now.
     CGContextSetFillColorWithColor(ctx, [color colorByChangingAlphaTo:0.6].CGColor);
     CGFloat xPos = 15;
-    for (int i=0; i<3; i++) {
+    NSLog(@"about to render a user, with %d tasks", [user.tasks count]);
+    
+    for (int i=0; i<[user.tasks count]; i++) {
         CGContextFillRect(ctx, CGRectMake(xPos-BASE_WIDTH/2, topEdge-TAB_HEIGHT, TAB_WIDTH, TAB_HEIGHT));
         
         xPos += TAB_MARGIN + TAB_WIDTH;

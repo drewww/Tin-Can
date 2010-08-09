@@ -181,7 +181,6 @@ StateManager.prototype = {
                 // Unswizzle will assign it to the meeting (and user, if 
                 // appropriate.)
                 newTask.unswizzle();
-                
             }
             
         }

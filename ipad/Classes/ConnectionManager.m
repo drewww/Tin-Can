@@ -296,6 +296,7 @@ static ConnectionManager *sharedInstance = nil;
             results = (NSDictionary *)[e.results objectForKey:@"topic"];
             
             topic = [[Topic alloc] initWithUUID:[results objectForKey:@"uuid"]
+                                       withText:[results objectForKey:@"text"]
                                 withCreatorUUID:[results objectForKey:@"createdBy"]
                                       createdAt:[results objectForKey:@"createdAt"]
                                 withMeetingUUID:[results objectForKey:@"meeting"]
