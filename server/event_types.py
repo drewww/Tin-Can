@@ -334,6 +334,6 @@ EventType("DELETE_TASK",   ["taskUUID"],            _handleDeleteTask, False,
     True)
 EventType("EDIT_TASK",   ["taskUUID", "text"],      _handleEditTask, False,
     True)
-EventType("ASSIGN_TASK", ["taskUUID", "assignedTo"],              _handleAssignTask, False,
+EventType("ASSIGN_TASK", ["taskUUID", "assignedTo"],_handleAssignTask, False,
     True)
 

@@ -6,9 +6,7 @@
 // a persistent connection open to the server at all times to receive events.
 
 function ConnectionManager() {
-    console.log("Constructing a new connection manager.");
-    
-
+    console.log("INIT ConnectionManager");
 }
 
 ConnectionManager.prototype = {

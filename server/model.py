@@ -497,6 +497,8 @@ class User(Actor):
             d["location"] = self.location.uuid
         else:
             d["location"] = None
+            
+        d["tasks"] = [task for task in self.tasks]
         
         return d
     
@@ -715,13 +717,11 @@ class Task(MeetingObject):
         
     def __str__(self):
         if(self.assignedTo!=None):
-            logging.debug("task assignedTo: " + self.assignedTo)
             assignedToName = self.assignedTo.name
         else:
             assignedToName = None
             
         if(self.assignedBy!=None):
-            logging.debug("task assignedBy: " + self.assignedBy)
             assignedByName = self.assignedBy.name
         else:
             assignedByName = None
