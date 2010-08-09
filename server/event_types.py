@@ -259,7 +259,7 @@ def _handleAssignTask(event):
     deassign = event.params["deassign"]
 
     if(not deassign):
-        assignedTo = event.params["assignedTo"]
+        assignedTo = state.get_obj(event.params["assignedTo"], model.User)
         task.assign(assignedBy,assignedTo)
     else:
         task.deassign(assignedBy)
