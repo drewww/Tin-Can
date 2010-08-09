@@ -200,7 +200,7 @@ def _handleNewTopic(event):
     return event
     
 def _handleDeleteTopic(event):
-    text = event.params["text"]
+
     topic = state.get_obj(event.params["topicUUID"], model.Topic)
     
     event.meeting.removeTopic(topic)
