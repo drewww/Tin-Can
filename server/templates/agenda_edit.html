@@ -47,6 +47,10 @@
 					console.log(status);
 					updateTopic(uuid, status);
 					break;
+				case "DELETE_TOPIC":
+					uuid = e.params["topicUUID"];
+					deleteTopic(uuid);
+					break;
 			}
 		}});
 		
@@ -156,9 +160,9 @@
 				clone.click(function (e) {
 				extraOptions = $("#extraOptions");
 				currentClicked = $(this);
-				console.log('items: ' + items);
-				console.log('index of current clicked is ' + items.indexOf(currentClicked[0].id));
-				console.log('current clicked id is ' + currentClicked[0].id);
+				// console.log('items: ' + items);
+				// console.log('index of current clicked is ' + items.indexOf(currentClicked[0].id));
+				// console.log('current clicked id is ' + currentClicked[0].id);
 
 							
 				// toggle showing the extra options
@@ -187,8 +191,22 @@
 						}				
 					}
 				})				
-			defineStartButtonClick();	
+			defineStartButtonClick();
+			defineDeleteButtonClick();	
 			
+		}
+		
+		function defineDeleteButtonClick() {
+			$("#deleteButton").click(function (e) {
+				console.log("DELETE BUTTON");
+				e.stopPropagation();
+				currentClicked = $(this.parentNode.parentNode);
+				tempId = currentClicked[0].id;
+				console.log(tempId);
+				tempUuid = uuidDict[tempId];
+				console.log(tempUuid);
+				connection.removeTopic(tempUuid);
+			});
 		}
 		
 		function defineStartButtonClick() {
@@ -226,20 +244,14 @@
 		}
 			
 		
-		function deleteItem() {
+		function deleteTopic(uuid) {
 	
 				extraOptions = $("#extraOptions");
 				extraOptions.hide();
 				$("#container").append(extraOptions);
-				currentIndex = items.indexOf(currentClicked[0].id);
-				connection.removeTopic();
-				items.splice(currentIndex, 1);
+				// currentIndex = items.indexOf(currentClicked[0].id);
+				// items.splice(currentIndex, 1);
 				currentClicked.remove();
-
-				// if user deleted the current item on the agenda, update currentItemId to be next on the agenda
-				if (currentClicked[0].id == currentItemId) {
-					currentItemId = items[currentIndex];
-				}
 			
 		}
 		
@@ -409,9 +421,9 @@
 	</div>
 	
 	<div id="extraOptions">
-		<button type="submit" id="deleteButton" onclick="deleteItem();">Delete</button>
-		<button type="submit" onclick="makeNext();">Make Next</button>
-		<button type="submit" id="doneButton">Done</button>
+		<button type="submit" id="deleteButton">Delete</button>
+		<!-- <button type="submit" onclick="makeNext();">Make Next</button>
+		<button type="submit" id="doneButton">Done</button> -->
 		
 	</div>
 </div>
