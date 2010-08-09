@@ -49,8 +49,8 @@
     [participantsContainer retain];
     [self.view addSubview:participantsContainer];
         
-    [self initParticipantsView];
-    [self initTodoViews];
+    [self initUsers];
+    [self initTasks];
     
 	TaskContainerView *tasksContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) ];
 
@@ -208,6 +208,18 @@
 	NSLog(@"points:%@", points);
 	return position;
 }	
+
+
+- (void) initUsers {
+    
+    
+}
+
+- (void) initTasks {
+    
+}
+
+
 - (void)initParticipantsView {
 	
 	

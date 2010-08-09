@@ -42,9 +42,9 @@
     [self.assignedTo assignTask:self];
 }
 
-- (void) deassignByActor:(Actor *)assignedBy atTime:(NSDate *)deassignTime{
+- (void) deassignByActor:(Actor *)newAssignedBy atTime:(NSDate *)deassignTime{
     if(self.assignedTo != nil) {
-        self.assignedBy = assignedBy;
+        self.assignedBy = newAssignedBy;
         self.assignedAt = deassignTime;
 
         [self.assignedTo removeTask:self];

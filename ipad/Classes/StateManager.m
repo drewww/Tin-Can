@@ -17,6 +17,9 @@ static StateManager *sharedInstance = nil;
 
 @implementation StateManager
 
+@synthesize meeting;
+@synthesize location;
+
 #pragma mark -
 #pragma mark class instance methods
 - (id) init {
@@ -73,11 +76,11 @@ static StateManager *sharedInstance = nil;
         [actors addObject:newUser];
     }
     
-    for(NSDictionary *location in newLocations) {
-        Location *newLocation = [[Location alloc] initWithUUID:[location objectForKey:@"uuid"]
-                                                      withName:[location objectForKey:@"name"]
-                                                   withMeeting:[location objectForKey:@"meetingUUID"]
-                                                     withUsers:[location objectForKey:@"users"]];
+    for(NSDictionary *l in newLocations) {
+        Location *newLocation = [[Location alloc] initWithUUID:[l objectForKey:@"uuid"]
+                                                      withName:[l objectForKey:@"name"]
+                                                   withMeeting:[l objectForKey:@"meetingUUID"]
+                                                     withUsers:[l objectForKey:@"users"]];
         [actors addObject:newLocation];
     }
     
@@ -93,12 +96,12 @@ static StateManager *sharedInstance = nil;
         [rooms addObject:newRoom];
     }
     
-    for(NSDictionary *meeting in newMeetings) {
+    for(NSDictionary *m in newMeetings) {
      
-        Meeting *newMeeting = [[Meeting alloc] initWithUUID:[meeting objectForKey:@"uuid"]
-                                                  withTitle:[meeting objectForKey:@"title"]
-                                               withRoomUUID:[meeting objectForKey:@"room"]
-                                                  startedAt:[NSDate dateWithTimeIntervalSince1970:[[meeting objectForKey:@"startedAt"] doubleValue]]];
+        Meeting *newMeeting = [[Meeting alloc] initWithUUID:[m objectForKey:@"uuid"]
+                                                  withTitle:[m objectForKey:@"title"]
+                                               withRoomUUID:[m objectForKey:@"room"]
+                                                  startedAt:[NSDate dateWithTimeIntervalSince1970:[[m objectForKey:@"startedAt"] doubleValue]]];
     
         [meetings addObject:newMeeting];
     }

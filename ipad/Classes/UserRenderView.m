@@ -74,8 +74,6 @@
     [self fillRoundedRect:CGRectMake(-BASE_WIDTH/2, topEdge, BASE_WIDTH, BASE_HEIGHT) withRadius:10 withRoundedBottom:true];        
     
     
-    
-    
     CGContextSetRGBFillColor(ctx, 1.0, 1.0, 1.0, 1.0);
     CGContextSetRGBStrokeColor(ctx, 1.0, 0.0, 0.0, 1.0);
     
@@ -127,6 +125,7 @@
     [(UserView *)self.superview userTouched];
     
 }
+
 
 - (void) fillRoundedRect:(CGRect)boundingRect withRadius:(CGFloat)radius withRoundedBottom:(bool)roundedBottom{
     

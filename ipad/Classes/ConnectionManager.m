@@ -43,6 +43,11 @@ static ConnectionManager *sharedInstance = nil;
     
     locationUUID = newLocationUUID;
     [locationUUID retain];
+    
+    StateManager *state = [StateManager sharedInstance];
+    
+    state.location = (Location *)[state getObjWithUUID:locationUUID withType:[Location class]];
+    
     NSLog(@"Set local location: %@", locationUUID);
 }
 
@@ -263,6 +268,11 @@ static ConnectionManager *sharedInstance = nil;
             
             [meeting locationLeft:location];
             
+            if(location.uuid == state.location.uuid) {
+                state.meeting = nil;
+            }
+            
+            
             NSLog(@"LOCATION_LEFT_MEETING: %@ left %@", location, meeting);
             break;
             
@@ -273,6 +283,11 @@ static ConnectionManager *sharedInstance = nil;
             location = (Location *)[state getObjWithUUID:e.actorUUID withType:[Location class]];
             
             [meeting locationLeft:location];
+            
+            // if this location is the local location, set the local meeting.
+            if(location.uuid == state.location.uuid) {
+                state.meeting = meeting;
+            }
             
             NSLog(@"LOCATION_JOINED_MEETING: %@ joined %@", location, meeting);
             break;            
