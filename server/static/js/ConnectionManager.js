@@ -1,3 +1,4 @@
+
 // ConnectionManager
 //
 // Handles all communication between Tin Can web clients and the server.
@@ -671,7 +672,7 @@ ConnectionManager.prototype = {
     
     removeTopic: function(topicUUID) {
         $.ajax({
-            url: '/topics/remove',
+            url: '/topics/delete',
             type: "POST",
             context: this,
             data: {"topicUUID":topicUUID},
