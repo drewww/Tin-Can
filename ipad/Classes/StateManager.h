@@ -29,6 +29,7 @@
 - (void) unswizzleGroup:(NSSet *)groupToUnswizzle;
 - (NSSet *) getLocations;
 - (NSSet *) getRooms; 
+- (NSSet *) getUsers;
 - (void) addActor:(Actor *)newActor;
 - (void) addMeeting:(Meeting *)newMeeting;
 - (void) removeActor:(Actor *)actorToRemove;

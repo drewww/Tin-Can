@@ -16,7 +16,7 @@
 #import "TaskView.h"
 #import "TaskContainerView.h"
 #import "UserView.h"
-
+#import "StateManager.h"
 
 #define INITIAL_REVISION_NUMBER 10000
 
@@ -211,7 +211,27 @@
 
 
 - (void) initUsers {
+    // Ask the state manager for all the users, and make views for them.
     
+    NSSet *userSet = [[StateManager sharedInstance] getUsers];
+    
+    NSMutableArray *layoutData= [self getParticpantLocationsForNumberOfPeople:[userSet count]];
+    
+    int i=0;
+    for(User *user in [[StateManager sharedInstance] getUsers]) {
+        NSLog(@"Creating UserView for user: %@", user);
+        
+        UserView *view = [[UserView alloc] initWithUser:user];
+        
+        // Now put it in the right place, pulling the data from the layout generating method.
+        view.center = [[[layoutData objectAtIndex:0] objectAtIndex:i] CGPointValue];
+        [view setTransform:CGAffineTransformMakeRotation([[[layoutData objectAtIndex:1] objectAtIndex:i] floatValue])];
+    
+        [participantsContainer addSubview:view];
+        
+        [view setNeedsDisplay];
+        i++;
+    }
     
 }
 

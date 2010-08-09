@@ -148,6 +148,22 @@ static StateManager *sharedInstance = nil;
 
     return [NSSet setWithArray:allRooms];
 }
+
+- (NSSet *) getUsers {
+    NSLog(@"in getUsers");
+    NSMutableArray *allUsers = [NSMutableArray array];
+    
+    // Don't use actors directly, copy it and then iterate.
+    for(Actor *actor in [[actors copy] autorelease]) {
+        if([actor isKindOfClass:[User class]]) {
+            [allUsers addObject:actor];
+        }
+    }
+    
+    return [NSSet setWithArray:allUsers];
+}
+
+
 - (void) addActor:(Actor *)newActor {
     [actors addObject:newActor];
 }
