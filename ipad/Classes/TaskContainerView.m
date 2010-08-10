@@ -44,10 +44,6 @@
         rot = M_PI/2;
         
 
-		[self addSubview:firstTask];
-		[self addSubview:secondTask];
-		[self addSubview:thirdTask];
-		[self addSubview:fourthTask];
 		//NSLog(@"subviews:%@",[self subviews]);
 
 		[self setNeedsLayout];
