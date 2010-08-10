@@ -94,6 +94,14 @@
     
 }
 
+- (void) taskAssigned:(Task *)theTask {
+    [taskContainerView addSubview:[theTask getView]];
+}
+
+- (void) taskRemoved:(Task *)theTask {
+    [theTask removeFromSuperview];
+}
+
 //- (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event {
 //	// We want to do our hit test a little differently - just return true
 //	// if it's inside the circle part of the participant rendering.

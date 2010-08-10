@@ -221,7 +221,9 @@
     for(User *user in [[StateManager sharedInstance].meeting getCurrentParticipants]) {
         NSLog(@"Creating UserView for user: %@", user);
         
-        UserView *view = [[UserView alloc] initWithUser:user];
+        // The user knows how to construct its own view if it doesn't have one yet. 
+        // This will avoid double-creating if for some reason someone else needs the User's view.
+        UserView *view = [user getView];
         
         // Now put it in the right place, pulling the data from the layout generating method.
         view.center = [[[layoutData objectAtIndex:0] objectAtIndex:i] CGPointValue];

@@ -7,6 +7,7 @@
 //
 
 #import "Task.h"
+#import "TaskView.h"
 
 @implementation Task
 
@@ -52,7 +53,6 @@
     }
 }
 
-
 - (void) unswizzle {
     if(assignedToUUID!=nil && ![assignedToUUID isKindOfClass:[NSNull class]]) {
         self.assignedTo = (User *)[[StateManager sharedInstance] getObjWithUUID:assignedToUUID
@@ -76,6 +76,17 @@
     else
         return [NSString stringWithFormat:@"[task.%@ %@ for:null by:null]", [self.uuid substringToIndex:6],
                 self.text];
+}
+
+- (UIView *)getView {
+    
+    if(view==nil) {
+        // construct a new TaskView
+        view = [[TaskView alloc] initWithTask:self];
+    }
+    
+    // return the current view
+    return view;
 }
 
 @end

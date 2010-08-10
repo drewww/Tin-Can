@@ -23,6 +23,8 @@
     Actor *assignedBy;
     
     NSDate *assignedAt;
+    
+    UIView *view;
 }
 
 
@@ -36,6 +38,7 @@
 - (void) deassignByActor:(Actor *)newAssignedBy atTime:(NSDate *)deassignTime;
 - (void) assignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime;
 
+- (UIView *)getView;
 
 @property(nonatomic, retain) NSString *text;
 @property(nonatomic, retain) User *assignedTo;

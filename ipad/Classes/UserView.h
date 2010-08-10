@@ -44,5 +44,7 @@
 
 - (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event;
 
+- (void) taskAssigned:(Task *)theTask;
+- (void) taskRemoved:(Task *)theTask;
 
 @end

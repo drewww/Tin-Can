@@ -13,10 +13,10 @@
 
 @synthesize text;
 
-- (id)initWithFrame:(CGRect)frame withText:(NSString *)task{
+- (id)initWithFrame:(CGRect)frame withText:(NSString *)taskText{
     if ((self = [super initWithFrame:frame])) {
 		self.frame=frame;
-        text=task;
+        text=taskText;
 		initialOrigin = CGPointMake(self.frame.origin.x, self.frame.origin.y);//self.frame.origin;  
 		self.userInteractionEnabled = YES; 
 		isTouched= FALSE;
@@ -24,6 +24,15 @@
     return self;
 }
 
+- (id) initWithTask:(Task *)theTask {
+    
+    // This is just a weak passthrough. Eventually, we'll knock out the initWithFrame
+    // version and initWithTask will be the only option. Leaving the old one for compatibility
+    // reasons, because making tasks by hand on the client is a bit tedious for testing.
+    task = theTask;
+    
+    return [self initWithFrame:CGRectMake(0, 0, 230, 50) withText:task.text];
+}
 
 - (void)drawRect:(CGRect)rect {
 

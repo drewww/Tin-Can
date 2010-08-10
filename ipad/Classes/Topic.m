@@ -23,6 +23,8 @@
 
 @synthesize status;
 
+@synthesize view;
+
 - (id) initWithUUID:(UUID *)myUUID
            withText:(NSString *)myText
     withCreatorUUID:(UUID *)myCreatorUUID

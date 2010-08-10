@@ -35,6 +35,8 @@ typedef enum {
     UUID *stopActorUUID;
     
     UIColor *color;
+    
+    UIView *view;
 }
 
 - (id) initWithUUID:(UUID *)myUUID
@@ -61,6 +63,8 @@ typedef enum {
 @property (nonatomic, retain) UIColor *color;
 
 @property (nonatomic, readonly) TopicStatus status;
+
+@property (nonatomic, retain) UIView *view;
 
 
 @end
