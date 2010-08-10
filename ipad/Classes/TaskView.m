@@ -16,6 +16,7 @@
 - (id)initWithFrame:(CGRect)frame withText:(NSString *)task{
     if ((self = [super initWithFrame:frame])) {
 		self.frame=frame;
+		//originalFrame=frame;
         text=task;
 		initialOrigin = CGPointMake(self.frame.origin.x, self.frame.origin.y);//self.frame.origin;  
 		self.userInteractionEnabled = YES; 
@@ -24,7 +25,9 @@
     return self;
 }
 
-
+-(void)setFrameWidthWithContianerWidth:(CGFloat )width{
+	self.frame=CGRectMake(self.frame.origin.x, self.frame.origin.y, (width/2.0)-20, self.frame.size.height);
+}
 - (void)drawRect:(CGRect)rect {
 
     // Drawing code
@@ -55,6 +58,7 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	NSLog(@"I have been touched");
 	isTouched=TRUE;
+	// self.frame=originalFrame;
 	[self setNeedsDisplay];
 	[self.superview bringSubviewToFront:self];
    

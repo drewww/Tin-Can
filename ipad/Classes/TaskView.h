@@ -13,10 +13,12 @@
 	NSString *text;
 	CGPoint    initialOrigin;
 	bool isTouched; 
+	//CGRect originalFrame;
 }
 
 @property (nonatomic, retain) NSString *text;
 
 - (id)initWithFrame:(CGRect)frame withText:(NSString *)task;
 - (NSComparisonResult) compareByPointer:(TaskView *)view;
+-(void)setFrameWidthWithContianerWidth:(CGFloat )width;
 @end

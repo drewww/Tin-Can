@@ -40,7 +40,7 @@
 		[self addSubview:secondTask];
 		[self addSubview:thirdTask];
 		[self addSubview:fourthTask];
-		NSLog(@"subviews:%@",[self subviews]);
+		//NSLog(@"subviews:%@",[self subviews]);
 		[self setNeedsLayout];
     }
     return self;
@@ -74,10 +74,11 @@
 	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByPointer:)];
 	for(TaskView *subview in sortedArray){
 		if(i<9){
-            subview.frame=CGRectMake(10, 40+(60*i), 230, 50);
-		}
-		else{
-			break;
+            subview.frame=CGRectMake(10, 40+(60*i), (250)-20, 50);
+			NSLog(@"Subview frame: %f",subview.frame.size.width);
+			NSLog(@"Frame: %f",self.frame.size.width);
+
+			
 		}
 		i++;
 	}
