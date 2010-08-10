@@ -27,23 +27,25 @@
         self.frame=frame;
         
         
-        // Turning off the default items now that we're trying to pull from the server.
-//		TaskView *firstTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 40, 230, 50) 
-//												   withText: @"Leisure station ran out of pearls last night when I ordered."];
-//		TaskView *secondTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 100, 230, 50) 
-//													withText: @"Alone with my music wearing socks on the tile, I dance."];
-//		TaskView *thirdTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 160, 230, 50) 
-//												   withText: @"Stop Paula from writing silly stuff on the App."];
-//		TaskView *fourthTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 220, 230, 50) 
-//													withText: @"Combs and brushes make the best microphones."];
-//		[self addSubview:firstTask];
-//		[self addSubview:secondTask];
-//		[self addSubview:thirdTask];
-//		[self addSubview:fourthTask];
+         //Turning off the default items now that we're trying to pull from the server.
+		TaskView *firstTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 40, 230, 50) 
+												   withText: @"Leisure station ran out of pearls last night when I ordered."];
+		TaskView *secondTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 100, 230, 50) 
+													withText: @"Alone with my music wearing socks on the tile, I dance."];
+		TaskView *thirdTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 160, 230, 50) 
+												   withText: @"Stop Paula from writing silly stuff on the App."];
+		TaskView *fourthTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 220, 230, 50) 
+													withText: @"Combs and brushes make the best microphones."];
+		[self addSubview:firstTask];
+		[self addSubview:secondTask];
+		[self addSubview:thirdTask];
+		[self addSubview:fourthTask];
         
         rot = M_PI/2;
         
-		NSLog(@"subviews:%@",[self subviews]);
+
+		//NSLog(@"subviews:%@",[self subviews]);
+
 		[self setNeedsLayout];
     }
     return self;
@@ -77,10 +79,12 @@
 	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByPointer:)];
 	for(TaskView *subview in sortedArray){
 		if(i<9){
-            subview.frame=CGRectMake(10, 40+(60*i), 230, 50);
-		}
-		else{
-			break;
+				subview.frame=CGRectMake(10, 40+(60*i), (self.bounds.size.width)-20, 50);
+				NSLog(@"Frame: %f",self.bounds.size.width);
+
+			NSLog(@"Subview frame: %f",subview.bounds.size.width);
+			
+			
 		}
 		i++;
 	}

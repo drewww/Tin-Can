@@ -13,7 +13,6 @@
 	NSString *text;
 	CGPoint    initialOrigin;
 	bool isTouched; 
-    
     Task *task;
 }
 
@@ -25,6 +24,6 @@
 - (id)initWithTask:(Task *)theTask;
 
 - (NSComparisonResult) compareByPointer:(TaskView *)view;
-
+-(void)setFrameWidthWithContainerWidth:(CGFloat )width;
 
 @end

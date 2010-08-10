@@ -34,6 +34,10 @@
     return [self initWithFrame:CGRectMake(0, 0, 230, 50) withText:task.text];
 }
 
+-(void)setFrameWidthWithContainerWidth:(CGFloat )width{
+	self.frame=CGRectMake(self.frame.origin.x, self.frame.origin.y, (width/2.0)-20, self.frame.size.height);
+}
+
 - (void)drawRect:(CGRect)rect {
 
     // Drawing code
@@ -64,6 +68,7 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	NSLog(@"I have been touched");
 	isTouched=TRUE;
+	// self.frame=originalFrame;
 	[self setNeedsDisplay];
 	[self.superview bringSubviewToFront:self];
    
