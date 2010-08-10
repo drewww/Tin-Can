@@ -52,15 +52,15 @@
     [self initUsers];
     [self initTasks];
     
-	TaskContainerView *tasksContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) ];
+	taskContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) ];
 
-	[self.view addSubview:tasksContainer];	
+	[self.view addSubview:taskContainer];	
 	
     [[DragManager sharedInstance] initWithRootView:self.view withParticipantsContainer:participantsContainer];
 
 	[self.view bringSubviewToFront:meetingTimerView];
     [self.view bringSubviewToFront:participantsContainer];
-    [self.view bringSubviewToFront:tasksContainer];
+    [self.view bringSubviewToFront:taskContainer];
     queue = [[[NSOperationQueue alloc] init] retain];
 
     lastRevision = INITIAL_REVISION_NUMBER;
@@ -223,7 +223,7 @@
         
         // The user knows how to construct its own view if it doesn't have one yet. 
         // This will avoid double-creating if for some reason someone else needs the User's view.
-        UserView *view = [user getView];
+        UserView *view = (UIView *)[user getView];
         
         // Now put it in the right place, pulling the data from the layout generating method.
         view.center = [[[layoutData objectAtIndex:0] objectAtIndex:i] CGPointValue];
@@ -234,11 +234,18 @@
         [view setNeedsDisplay];
         i++;
     }
-    
 }
 
 - (void) initTasks {
     
+    
+    NSSet *unassignedTasks = [[[StateManager sharedInstance].meeting getUnassignedTasks] retain];
+    // Look at the meeting objecet and see if there are any unassigned tasks. 
+    for(Task *task in unassignedTasks) {
+        [taskContainer addSubview:[task getView]];
+    }
+    
+    [unassignedTasks release];
 }
 
 

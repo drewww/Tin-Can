@@ -35,6 +35,10 @@
     return self;
 }
 
+- (bool) isAssigned {
+    return assignedTo != nil && ![assignedTo isKindOfClass:[NSNull null]];
+}
+
 - (void) assignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime{
     self.assignedAt = assignTime;
     self.assignedBy = byActor;

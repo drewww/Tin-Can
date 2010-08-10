@@ -10,11 +10,14 @@
 #import "MeetingTimerView.h"
 #import "ParticipantView.h"
 #import "Todo.h"
+#import "TaskContainerView.h"
 
 @class Todo;
 
 @interface MeetingViewController : UIViewController {    
     UIView *participantsContainer;
+    
+    TaskContainerView *taskContainer;
     
     NSMutableSet *todoViews;
 
