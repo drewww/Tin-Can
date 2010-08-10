@@ -9,6 +9,8 @@ function User(uuid, name, loc) {
     this.name = name;
     
     this.loc = loc;
+    
+    // Tasks assigned to this user. 
     this.tasks = [];
     
     state.putObj(this.uuid, this);
@@ -134,7 +136,7 @@ Room.prototype = {
 };
 
 
-function Meeting(uuid, title, room, startedAt, topics) {
+function Meeting(uuid, title, room, startedAt, topics, tasks) {
     this.room = room;
     this.title = title;
     this.uuid = uuid;
@@ -144,8 +146,9 @@ function Meeting(uuid, title, room, startedAt, topics) {
     this.locs = [];
 
     this.topics = topics;
-    console.log("initing meeting with topics:");
-    console.log(this.topics);
+    
+    // These are UNASSIGNED tasks. Assigned tasks are attached to
+    // users. 
     this.tasks = [];
     
     this.startedAt = new Date(startedAt*1000);
@@ -331,8 +334,8 @@ Task.prototype = {
             this.assignedTo = state.getObj(this.assignedTo, User);
 
         if(this.assignedBy != null)
-            this.assignedBy = state.getObj(this.assignedBy, Actor);
-        
+            this.assignedBy = state.getObj(this.assignedBy, Location);
+
         this.meeting.addTask(this);
     }
 }

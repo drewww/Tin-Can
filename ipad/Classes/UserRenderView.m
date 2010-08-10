@@ -21,12 +21,12 @@
 - (id) initWithUser:(User *)theUser {
     
     NSLog(@"In initWithUser for userRENDERview");
-    self = [super initWithFrame:CGRectMake(0, 0, BASE_WIDTH, BASE_HEIGHT + HEIGHT_MARGIN)];
+    self = [super initWithFrame:CGRectMake(0, 0, BASE_WIDTH, BASE_HEIGHT + TAB_HEIGHT)];
     
     self.user = theUser;
     hover = FALSE;
     
-    self.bounds = CGRectMake(-BASE_WIDTH/2, -(BASE_HEIGHT + HEIGHT_MARGIN)/2, BASE_WIDTH, BASE_HEIGHT + HEIGHT_MARGIN);
+    self.bounds = CGRectMake(-BASE_WIDTH/2, -(BASE_HEIGHT + TAB_HEIGHT)/2, BASE_WIDTH, BASE_HEIGHT + TAB_HEIGHT);
     self.center = CGPointMake(0, 0);
     
     color = [UIColor blueColor];
@@ -74,8 +74,6 @@
     [self fillRoundedRect:CGRectMake(-BASE_WIDTH/2, topEdge, BASE_WIDTH, BASE_HEIGHT) withRadius:10 withRoundedBottom:true];        
     
     
-    
-    
     CGContextSetRGBFillColor(ctx, 1.0, 1.0, 1.0, 1.0);
     CGContextSetRGBStrokeColor(ctx, 1.0, 0.0, 0.0, 1.0);
     
@@ -108,12 +106,28 @@
     // Hardcoding the number of tasks for now.
     CGContextSetFillColorWithColor(ctx, [color colorByChangingAlphaTo:0.6].CGColor);
     CGFloat xPos = 15;
-    for (int i=0; i<3; i++) {
+    NSLog(@"about to render a user, with %d tasks", [user.tasks count]);
+    
+    for (int i=0; i<[user.tasks count]; i++) {
         CGContextFillRect(ctx, CGRectMake(xPos-BASE_WIDTH/2, topEdge-TAB_HEIGHT, TAB_WIDTH, TAB_HEIGHT));
         
         xPos += TAB_MARGIN + TAB_WIDTH;
     }
 }
+
+
+- (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    //    
+    //    showStatus = !showStatus;
+    //    [self setNeedsDisplay];
+    //   
+    NSLog(@"touches ended on the user part of the userview");
+    
+    // animate the task drawer into position
+    [(UserView *)self.superview userTouched];
+    
+}
+
 
 - (void) fillRoundedRect:(CGRect)boundingRect withRadius:(CGFloat)radius withRoundedBottom:(bool)roundedBottom{
     

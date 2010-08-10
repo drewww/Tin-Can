@@ -12,6 +12,7 @@
 
 @implementation Topic
 
+@synthesize text;
 @synthesize startActor;
 @synthesize stopActor;
 
@@ -22,7 +23,10 @@
 
 @synthesize status;
 
+@synthesize view;
+
 - (id) initWithUUID:(UUID *)myUUID
+           withText:(NSString *)myText
     withCreatorUUID:(UUID *)myCreatorUUID
           createdAt:(NSDate *)myCreatedAt
     withMeetingUUID:(UUID *)myMeetingUUID 
@@ -41,6 +45,8 @@
     self.startTime = startTime;
     self.stopTime = stopTime;
     self.color = myColor;
+    
+    text = myText;
     
     // How does this actually get set from the server? Worried about this
     // not being properly connected.
@@ -87,6 +93,11 @@
     }
     
     [self.meeting addTopic:self];
+}
+
+- (NSString *)description {
+        return [NSString stringWithFormat:@"[topic.%@ %@ started:%@ stopped:%@]", [self.uuid substringToIndex:6],
+                self.text, self.startTime, self.stopTime];
 }
 
 @end

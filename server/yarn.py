@@ -559,7 +559,7 @@ class DeleteTopicHandler(BaseHandler):
         
         deleteTopicEvent = Event("DELETE_TOPIC", actor.uuid,
             actor.getMeeting().uuid,
-            params={"text":self.get_argument("topicUUID")})
+            params={"topicUUID":self.get_argument("topicUUID")})
         deleteTopicEvent.dispatch()
         return
         

@@ -10,10 +10,13 @@
 #import "tincan.h"
 #import "Actor.h"
 #import "Meeting.h"
-
+#import "Location.h"
 
 @interface StateManager : NSObject {
     NSMutableDictionary *db;
+    
+    Meeting *meeting;
+    Location *location;
     
     NSMutableSet *actors;
     NSMutableSet *rooms;
@@ -26,12 +29,15 @@
 - (void) unswizzleGroup:(NSSet *)groupToUnswizzle;
 - (NSSet *) getLocations;
 - (NSSet *) getRooms; 
+- (NSSet *) getUsers;
 - (void) addActor:(Actor *)newActor;
 - (void) addMeeting:(Meeting *)newMeeting;
 - (void) removeActor:(Actor *)actorToRemove;
 - (void) removeMeeting:(Meeting *)meetingToRemove;
 
-
 + (StateManager*)sharedInstance;
+
+@property(nonatomic, retain)Meeting *meeting;
+@property(nonatomic, retain)Location *location;
 
 @end

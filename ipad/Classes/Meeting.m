@@ -10,6 +10,7 @@
 #import "Location.h"
 #import "StateManager.h"
 #import "Room.h"
+#import "Task.h"
 
 
 @implementation Meeting
@@ -35,8 +36,8 @@
     
     self.startedAt = myStartedAt;
     
-    topics = [NSMutableSet set];
-    tasks = [NSMutableSet set];
+    topics = [[NSMutableSet set] retain];
+    tasks = [[NSMutableSet set] retain];
         
     return self;
 }
@@ -80,6 +81,17 @@
     [self.topics removeObject:removeTopic];   
 }
 
+- (NSSet *) getUnassignedTasks {
+    NSMutableSet *unassignedTasks = [NSMutableSet set];
+    
+    for (Task *task in [[self.tasks copy] autorelease]) {
+        if(![task isAssigned]) {
+            [unassignedTasks addObject:task];
+        }
+    }
+    return unassignedTasks;
+}
+
 
 - (NSSet *)getCurrentParticipants {
     
@@ -89,7 +101,7 @@
     // not, but I'm not 100% sure.
     NSMutableSet *currentParticipants = [NSMutableSet set];
     
-    for (Location *location in self.locations) {
+    for (Location *location in [[self.locations copy] autorelease]) {
         [currentParticipants addObjectsFromArray:[location.users allObjects]];
     }
     
@@ -107,8 +119,8 @@
 }
 
 - (NSString *) description {
-    return [NSString stringWithFormat:@"[meeting.%@ %@ locs:%d users:%d started:%@]", [self.uuid substringToIndex:6],
-            self.title, [self.locations count], [[self getCurrentParticipants] count], self.startedAt];
+    return [NSString stringWithFormat:@"[meeting.%@ %@ locs:%d users:%d started:%@ topics:%d tasks:%d]", [self.uuid substringToIndex:6],
+            self.title, [self.locations count], [[self getCurrentParticipants] count], self.startedAt, [topics count], [tasks count]];
 }
 
 @end

@@ -10,11 +10,14 @@
 #import "MeetingTimerView.h"
 #import "ParticipantView.h"
 #import "Todo.h"
+#import "TaskContainerView.h"
 
 @class Todo;
 
 @interface MeetingViewController : UIViewController {    
     UIView *participantsContainer;
+    
+    TaskContainerView *taskContainer;
     
     NSMutableSet *todoViews;
 
@@ -33,8 +36,13 @@
 }
 
 
+// These are deprecated, but I'm leaving them behind so we can still test thsoe views
+// if the server-based objects turn into a problem.
 - (void) initParticipantsView;
 - (void) initTodoViews;
+
+- (void) initUsers;
+- (void) initTasks;
 
 - (void) clk;
 

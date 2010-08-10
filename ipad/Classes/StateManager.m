@@ -12,10 +12,15 @@
 #import "StateManager.h"
 #import "User.h"
 #import "tincan.h"
+#import "Topic.h"
+#import "Task.h"
 
 static StateManager *sharedInstance = nil;
 
 @implementation StateManager
+
+@synthesize meeting;
+@synthesize location;
 
 #pragma mark -
 #pragma mark class instance methods
@@ -73,11 +78,11 @@ static StateManager *sharedInstance = nil;
         [actors addObject:newUser];
     }
     
-    for(NSDictionary *location in newLocations) {
-        Location *newLocation = [[Location alloc] initWithUUID:[location objectForKey:@"uuid"]
-                                                      withName:[location objectForKey:@"name"]
-                                                   withMeeting:[location objectForKey:@"meetingUUID"]
-                                                     withUsers:[location objectForKey:@"users"]];
+    for(NSDictionary *l in newLocations) {
+        Location *newLocation = [[Location alloc] initWithUUID:[l objectForKey:@"uuid"]
+                                                      withName:[l objectForKey:@"name"]
+                                                   withMeeting:[l objectForKey:@"meetingUUID"]
+                                                     withUsers:[l objectForKey:@"users"]];
         [actors addObject:newLocation];
     }
     
@@ -93,16 +98,59 @@ static StateManager *sharedInstance = nil;
         [rooms addObject:newRoom];
     }
     
-    for(NSDictionary *meeting in newMeetings) {
-     
-        Meeting *newMeeting = [[Meeting alloc] initWithUUID:[meeting objectForKey:@"uuid"]
-                                                  withTitle:[meeting objectForKey:@"title"]
-                                               withRoomUUID:[meeting objectForKey:@"room"]
-                                                  startedAt:[NSDate dateWithTimeIntervalSince1970:[[meeting objectForKey:@"startedAt"] doubleValue]]];
-    
+    for(NSDictionary *m in newMeetings) {
+        
+        Meeting *newMeeting = [[Meeting alloc] initWithUUID:[m objectForKey:@"uuid"]
+                                                  withTitle:[m objectForKey:@"title"]
+                                               withRoomUUID:[m objectForKey:@"room"]
+                                                  startedAt:[NSDate dateWithTimeIntervalSince1970:[[m objectForKey:@"startedAt"] doubleValue]]];
+        
         [meetings addObject:newMeeting];
+        
+        // Now unpack tasks and topics.
+        // Since the meeting has been created, we can safely unswizzle each of these
+        // as we make them. Their references only point to objects that will already
+        // exist at this point.
+        for(NSDictionary *results in [m objectForKey:@"tasks"]) {
+            NSLog(@"unpacking task: %@", results);
+            
+            NSDate *date;
+            if([[results objectForKey:@"assignedAt"] isKindOfClass:[NSNull class]]) {
+                date = nil;
+            } else {
+                date = [NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"assignedAt"] doubleValue]];
+            }
+            
+            Task *task = [[Task alloc] initWithUUID:[results objectForKey:@"uuid"]
+                              withCreatorUUID:[results objectForKey:@"createdBy"]
+                                    createdAt:[results objectForKey:@"createdAt"]
+                              withMeetingUUID:[results objectForKey:@"meeting"]
+                                     withText:[results objectForKey:@"text"]
+                               assignedToUUID:[results objectForKey:@"assignedTo"]
+                               assignedByUUID:[results objectForKey:@"assignedBy"]
+                                   assignedAt:date];
+            [task unswizzle];
+        }
+        
+        for(NSDictionary *results in [m objectForKey:@"topics"]) {
+            NSLog(@"unpacking topics: %@", results);
+         
+            Topic *topic = [[Topic alloc] initWithUUID:[results objectForKey:@"uuid"]
+                                              withText:[results objectForKey:@"text"]
+                                       withCreatorUUID:[results objectForKey:@"createdBy"]
+                                             createdAt:[results objectForKey:@"createdAt"]
+                                       withMeetingUUID:[results objectForKey:@"meeting"]
+                                    withStartActorUUID:[results objectForKey:@"startActor"]
+                                     withStopActorUUID:[results objectForKey:@"stopActor"]
+                                         withStartTime:[NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"startTime"] doubleValue]]
+                                          withStopTime:[NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"stopTime"] doubleValue]]
+                                           withUIColor:[UIColor blueColor]];
+            
+            [topic unswizzle];
+        }
     }
     
+    NSLog(@"Done with first pass of GET_STATE.");
     
     // Unswizzle in the proper order.
     [self unswizzleGroup:actors];
@@ -145,6 +193,22 @@ static StateManager *sharedInstance = nil;
 
     return [NSSet setWithArray:allRooms];
 }
+
+- (NSSet *) getUsers {
+    NSLog(@"in getUsers");
+    NSMutableArray *allUsers = [NSMutableArray array];
+    
+    // Don't use actors directly, copy it and then iterate.
+    for(Actor *actor in [[actors copy] autorelease]) {
+        if([actor isKindOfClass:[User class]]) {
+            [allUsers addObject:actor];
+        }
+    }
+    
+    return [NSSet setWithArray:allUsers];
+}
+
+
 - (void) addActor:(Actor *)newActor {
     [actors addObject:newActor];
 }

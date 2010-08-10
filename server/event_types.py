@@ -200,7 +200,7 @@ def _handleNewTopic(event):
     return event
     
 def _handleDeleteTopic(event):
-    text = event.params["text"]
+
     topic = state.get_obj(event.params["topicUUID"], model.Topic)
     
     event.meeting.removeTopic(topic)
@@ -334,6 +334,6 @@ EventType("DELETE_TASK",   ["taskUUID"],            _handleDeleteTask, False,
     True)
 EventType("EDIT_TASK",   ["taskUUID", "text"],      _handleEditTask, False,
     True)
-EventType("ASSIGN_TASK", ["taskUUID", "assignedTo"],              _handleAssignTask, False,
+EventType("ASSIGN_TASK", ["taskUUID", "assignedTo"],_handleAssignTask, False,
     True)
 

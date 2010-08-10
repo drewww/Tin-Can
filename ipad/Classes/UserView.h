@@ -33,12 +33,18 @@
     UserRenderView *userRenderView;
     
     bool taskDrawerExtended;
+    
+    float lastHeightChange;
 }
+
 
 - (id) initWithUser:(User *)theUser;
 
+- (void) userTouched;
 
 - (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event;
 
+- (void) taskAssigned:(Task *)theTask;
+- (void) taskRemoved:(Task *)theTask;
 
 @end

@@ -1,3 +1,4 @@
+
 // ConnectionManager
 //
 // Handles all communication between Tin Can web clients and the server.
@@ -5,9 +6,7 @@
 // a persistent connection open to the server at all times to receive events.
 
 function ConnectionManager() {
-    console.log("Constructing a new connection manager.");
-    
-
+    console.log("INIT ConnectionManager");
 }
 
 ConnectionManager.prototype = {
@@ -674,7 +673,7 @@ ConnectionManager.prototype = {
     
     removeTopic: function(topicUUID) {
         $.ajax({
-            url: '/topics/remove',
+            url: '/topics/delete',
             type: "POST",
             context: this,
             data: {"topicUUID":topicUUID},

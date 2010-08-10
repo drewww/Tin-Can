@@ -13,10 +13,10 @@
 
 @synthesize text;
 
-- (id)initWithFrame:(CGRect)frame withText:(NSString *)task{
+- (id)initWithFrame:(CGRect)frame withText:(NSString *)taskText{
     if ((self = [super initWithFrame:frame])) {
 		self.frame=frame;
-        text=task;
+        text=taskText;
 		initialOrigin = CGPointMake(self.frame.origin.x, self.frame.origin.y);//self.frame.origin;  
 		self.userInteractionEnabled = YES; 
 		isTouched= FALSE;
@@ -24,6 +24,19 @@
     return self;
 }
 
+- (id) initWithTask:(Task *)theTask {
+    
+    // This is just a weak passthrough. Eventually, we'll knock out the initWithFrame
+    // version and initWithTask will be the only option. Leaving the old one for compatibility
+    // reasons, because making tasks by hand on the client is a bit tedious for testing.
+    task = theTask;
+    
+    return [self initWithFrame:CGRectMake(0, 0, 230, 50) withText:task.text];
+}
+
+-(void)setFrameWidthWithContainerWidth:(CGFloat )width{
+	self.frame=CGRectMake(self.frame.origin.x, self.frame.origin.y, (width/2.0)-20, self.frame.size.height);
+}
 
 - (void)drawRect:(CGRect)rect {
 
@@ -55,6 +68,7 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	NSLog(@"I have been touched");
 	isTouched=TRUE;
+	// self.frame=originalFrame;
 	[self setNeedsDisplay];
 	[self.superview bringSubviewToFront:self];
    
@@ -90,6 +104,8 @@
 		[self.superview setNeedsLayout];
         [UIView commitAnimations];
 		isTouched=FALSE;
+		[self.superview sendSubviewToBack:self];
+
 		[self setNeedsDisplay];
 }
 

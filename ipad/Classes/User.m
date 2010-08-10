@@ -10,6 +10,7 @@
 #import "Location.h"
 #import "tincan.h"
 #import "Task.h"
+#import "UserView.h"
 
 @implementation User
 
@@ -30,6 +31,9 @@
 - (void) assignTask:(id)task {
     if([task isKindOfClass:[Task class]]) {
         [self.tasks addObject:task];
+        
+        // We want to pass this message on to our view.
+        [(UserView *)[self getView] taskAssigned:task];
     }
 }
 
@@ -69,6 +73,14 @@
 //        self.location = [[StateManager sharedInstance] getObjWithUUID:locationUUID withType:Location.class];
 //    }
     
+}
+
+- (UIView *)getView {
+    if(view == nil) {
+        view = [[UserView alloc] initWithUser:self];
+    }
+    
+    return view;
 }
 
 @end

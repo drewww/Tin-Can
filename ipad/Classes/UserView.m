@@ -26,7 +26,7 @@
     
     taskDrawerExtended = FALSE;
     
-    taskContainerView = [[[TaskContainerView alloc] initWithFrame:CGRectMake(-BASE_WIDTH/2, -BASE_HEIGHT/2 + 10, BASE_WIDTH, BASE_HEIGHT)] retain];
+    taskContainerView = [[[TaskContainerView alloc] initWithFrame:CGRectMake(-BASE_WIDTH/2, -BASE_HEIGHT/2 + 10, BASE_WIDTH, 300)] retain];
     [self addSubview:taskContainerView];
     
 
@@ -37,23 +37,42 @@
     
     [self sendSubviewToBack:taskContainerView];
     
+    self.exclusiveTouch = FALSE;
+    
     [self setNeedsDisplay];
     
     return self;
 }
 
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-//    
-//    showStatus = !showStatus;
-//    [self setNeedsDisplay];
-//    
     
-    // animate the task drawer into position
+    NSLog(@"touches ended on parent view");
+}
+
+- (void) userTouched {
+    
     if(!taskDrawerExtended) {
         [UIView beginAnimations:@"extend_drawer" context:nil];
-    
+        
+        
+        // Extend by the current height of the task drawer.
+        
         [UIView setAnimationDuration:0.4f];
-        taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y - 250);
+        
+        float initialHeight = taskContainerView.bounds.size.height;
+        
+        // TODO make this an absolute position, not an adjustment.
+        taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y - initialHeight);
+        
+        CGRect curFrame = self.bounds;
+        curFrame.origin.y = curFrame.origin.y - initialHeight;
+        curFrame.size.height = curFrame.size.height + initialHeight*2;
+        self.bounds = curFrame;
+        
+        // Save the amount we changed the dimensions by so the retract can make
+        // sure to move the same amount back. This is going to be most important
+        // in situations where the container changes sizes (ie a task was removed)
+        lastHeightChange = initialHeight;
         
         [UIView commitAnimations];
         taskDrawerExtended = true;
@@ -61,7 +80,13 @@
         [UIView beginAnimations:@"retract_drawer" context:nil];
         
         [UIView setAnimationDuration:0.4f];
-        taskContainerView.center = CGPointMake(taskContainerView.center.x, + 10);
+        taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y + lastHeightChange);
+        
+        CGRect curFrame = self.bounds;
+        curFrame.origin.y = curFrame.origin.y + lastHeightChange;
+        curFrame.size.height = curFrame.size.height - lastHeightChange*2;
+        self.bounds = curFrame;
+        
         
         [UIView commitAnimations];        
         taskDrawerExtended = false;
@@ -69,18 +94,26 @@
     
 }
 
-- (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-	// We want to do our hit test a little differently - just return true
-	// if it's inside the circle part of the participant rendering.
-	CGFloat distance = sqrt(pow(point.x, 2) + pow(point.y, 2));
-    
-	if (distance <= 130.0f) {
-		return self;	
-	}
-	else {
-		return nil;
-	}
+- (void) taskAssigned:(Task *)theTask {
+    [taskContainerView addSubview:[theTask getView]];
 }
+
+- (void) taskRemoved:(Task *)theTask {
+    [theTask removeFromSuperview];
+}
+
+//- (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+//	// We want to do our hit test a little differently - just return true
+//	// if it's inside the circle part of the participant rendering.
+//	CGFloat distance = sqrt(pow(point.x, 2) + pow(point.y, 2));
+//    
+//	if (distance <= 130.0f) {
+//		return self;	
+//	}
+//	else {
+//		return nil;
+//	}
+//}
 
 - (void)dealloc {
     

@@ -497,6 +497,8 @@ class User(Actor):
             d["location"] = self.location.uuid
         else:
             d["location"] = None
+            
+        d["tasks"] = [task for task in self.tasks]
         
         return d
     

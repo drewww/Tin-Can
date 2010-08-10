@@ -7,6 +7,7 @@
 //
 
 #import "Task.h"
+#import "TaskView.h"
 
 @implementation Task
 
@@ -34,6 +35,10 @@
     return self;
 }
 
+- (bool) isAssigned {
+    return assignedTo != nil && ![assignedTo isKindOfClass:[NSNull null]];
+}
+
 - (void) assignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime{
     self.assignedAt = assignTime;
     self.assignedBy = byActor;
@@ -42,9 +47,9 @@
     [self.assignedTo assignTask:self];
 }
 
-- (void) deassignByActor:(Actor *)assignedBy atTime:(NSDate *)deassignTime{
+- (void) deassignByActor:(Actor *)newAssignedBy atTime:(NSDate *)deassignTime{
     if(self.assignedTo != nil) {
-        self.assignedBy = assignedBy;
+        self.assignedBy = newAssignedBy;
         self.assignedAt = deassignTime;
 
         [self.assignedTo removeTask:self];
@@ -52,11 +57,11 @@
     }
 }
 
-
 - (void) unswizzle {
     if(assignedToUUID!=nil && ![assignedToUUID isKindOfClass:[NSNull class]]) {
         self.assignedTo = (User *)[[StateManager sharedInstance] getObjWithUUID:assignedToUUID
                                                                         withType:[User class]];
+        [self.assignedTo assignTask:self];
     }
     
     if(assignedByUUID!=nil && ![assignedByUUID isKindOfClass:[NSNull class]]) {
@@ -65,6 +70,27 @@
     }
     
     [self.meeting addTask:self];
+}
+
+- (NSString *)description {
+    if(self.assignedTo != nil) { 
+        return [NSString stringWithFormat:@"[task.%@ %@ for:%@ by:%@]", [self.uuid substringToIndex:6],
+                self.text, self.assignedTo.name, self.assignedBy.name];
+    }
+    else
+        return [NSString stringWithFormat:@"[task.%@ %@ for:null by:null]", [self.uuid substringToIndex:6],
+                self.text];
+}
+
+- (UIView *)getView {
+    
+    if(view==nil) {
+        // construct a new TaskView
+        view = [[TaskView alloc] initWithTask:self];
+    }
+    
+    // return the current view
+    return view;
 }
 
 @end

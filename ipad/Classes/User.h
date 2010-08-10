@@ -19,6 +19,8 @@
     UUID *locationUUID;
     
     NSMutableSet *tasks;
+    
+    UIView *view;
 }
 
 - (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withLocationUUID:(UUID *)myLocation;
@@ -27,6 +29,8 @@
 
 - (void) assignTask:(id)task;
 - (void) removeTask:(id)task;
+
+- (UIView *)getView;
 
 @property(nonatomic, retain) Location *location;
 @property(nonatomic, retain) NSMutableSet *tasks;
