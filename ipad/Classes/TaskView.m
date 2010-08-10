@@ -104,6 +104,8 @@
 		[self.superview setNeedsLayout];
         [UIView commitAnimations];
 		isTouched=FALSE;
+		[self.superview sendSubviewToBack:self];
+
 		[self setNeedsDisplay];
 }
 
