@@ -42,9 +42,9 @@
     [self.assignedTo assignTask:self];
 }
 
-- (void) deassignByActor:(Actor *)assignedBy atTime:(NSDate *)deassignTime{
+- (void) deassignByActor:(Actor *)newAssignedBy atTime:(NSDate *)deassignTime{
     if(self.assignedTo != nil) {
-        self.assignedBy = assignedBy;
+        self.assignedBy = newAssignedBy;
         self.assignedAt = deassignTime;
 
         [self.assignedTo removeTask:self];
@@ -57,6 +57,7 @@
     if(assignedToUUID!=nil && ![assignedToUUID isKindOfClass:[NSNull class]]) {
         self.assignedTo = (User *)[[StateManager sharedInstance] getObjWithUUID:assignedToUUID
                                                                         withType:[User class]];
+        [self.assignedTo assignTask:self];
     }
     
     if(assignedByUUID!=nil && ![assignedByUUID isKindOfClass:[NSNull class]]) {
@@ -65,6 +66,16 @@
     }
     
     [self.meeting addTask:self];
+}
+
+- (NSString *)description {
+    if(self.assignedTo != nil) { 
+        return [NSString stringWithFormat:@"[task.%@ %@ for:%@ by:%@]", [self.uuid substringToIndex:6],
+                self.text, self.assignedTo.name, self.assignedBy.name];
+    }
+    else
+        return [NSString stringWithFormat:@"[task.%@ %@ for:null by:null]", [self.uuid substringToIndex:6],
+                self.text];
 }
 
 @end

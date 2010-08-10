@@ -74,8 +74,6 @@
     [self fillRoundedRect:CGRectMake(-BASE_WIDTH/2, topEdge, BASE_WIDTH, BASE_HEIGHT) withRadius:10 withRoundedBottom:true];        
     
     
-    
-    
     CGContextSetRGBFillColor(ctx, 1.0, 1.0, 1.0, 1.0);
     CGContextSetRGBStrokeColor(ctx, 1.0, 0.0, 0.0, 1.0);
     
@@ -108,7 +106,9 @@
     // Hardcoding the number of tasks for now.
     CGContextSetFillColorWithColor(ctx, [color colorByChangingAlphaTo:0.6].CGColor);
     CGFloat xPos = 15;
-    for (int i=0; i<3; i++) {
+    NSLog(@"about to render a user, with %d tasks", [user.tasks count]);
+    
+    for (int i=0; i<[user.tasks count]; i++) {
         CGContextFillRect(ctx, CGRectMake(xPos-BASE_WIDTH/2, topEdge-TAB_HEIGHT, TAB_WIDTH, TAB_HEIGHT));
         
         xPos += TAB_MARGIN + TAB_WIDTH;
@@ -127,6 +127,7 @@
     [(UserView *)self.superview userTouched];
     
 }
+
 
 - (void) fillRoundedRect:(CGRect)boundingRect withRadius:(CGFloat)radius withRoundedBottom:(bool)roundedBottom{
     

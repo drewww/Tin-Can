@@ -33,8 +33,13 @@
 }
 
 
+// These are deprecated, but I'm leaving them behind so we can still test thsoe views
+// if the server-based objects turn into a problem.
 - (void) initParticipantsView;
 - (void) initTodoViews;
+
+- (void) initUsers;
+- (void) initTasks;
 
 - (void) clk;
 

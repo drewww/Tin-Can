@@ -33,7 +33,7 @@
      assignedByUUID:(UUID *)myAssignedByUUID
          assignedAt:(NSDate *)myAssignedAt;
 
-- (void) deassignByActor:(Actor *)assignedBy atTime:(NSDate *)deassignTime;
+- (void) deassignByActor:(Actor *)newAssignedBy atTime:(NSDate *)deassignTime;
 - (void) assignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime;
 
 

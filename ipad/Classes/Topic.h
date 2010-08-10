@@ -38,6 +38,7 @@ typedef enum {
 }
 
 - (id) initWithUUID:(UUID *)myUUID
+           withText:(NSString *)myText
     withCreatorUUID:(UUID *)myCreatorUUID
           createdAt:(NSDate *)myCreatedAt
     withMeetingUUID:(UUID *)myMeetingUUID 
@@ -48,6 +49,8 @@ typedef enum {
         withUIColor:(UIColor *)myColor;
 
 - (void) setStatusWithString:(NSString *)stringStatus byActor:(Actor *)actor;
+
+@property (readonly) NSString *text;
 
 @property (nonatomic, retain) Actor *startActor;
 @property (nonatomic, retain) Actor *stopActor;

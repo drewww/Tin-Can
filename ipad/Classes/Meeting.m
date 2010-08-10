@@ -35,8 +35,8 @@
     
     self.startedAt = myStartedAt;
     
-    topics = [NSMutableSet set];
-    tasks = [NSMutableSet set];
+    topics = [[NSMutableSet set] retain];
+    tasks = [[NSMutableSet set] retain];
         
     return self;
 }
@@ -107,8 +107,8 @@
 }
 
 - (NSString *) description {
-    return [NSString stringWithFormat:@"[meeting.%@ %@ locs:%d users:%d started:%@]", [self.uuid substringToIndex:6],
-            self.title, [self.locations count], [[self getCurrentParticipants] count], self.startedAt];
+    return [NSString stringWithFormat:@"[meeting.%@ %@ locs:%d users:%d started:%@ topics:%d tasks:%d]", [self.uuid substringToIndex:6],
+            self.title, [self.locations count], [[self getCurrentParticipants] count], self.startedAt, [topics count], [tasks count]];
 }
 
 @end

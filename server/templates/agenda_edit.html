@@ -47,6 +47,10 @@
 					console.log(status);
 					updateTopic(uuid, status);
 					break;
+				case "DELETE_TOPIC":
+					uuid = e.params["topicUUID"];
+					deleteTopic(uuid);
+					break;
 			}
 		}});
 		
@@ -56,18 +60,21 @@
 		
 		$("#doneButton").click(function (e) {
 			e.stopPropagation();
-			console.log("stop propagation");
-			console.log($("#"+currentItemId));
-			console.log(currentClicked);
-			extraOptions = $("#extraOptions");
-			currentIndex = items.indexOf($("#"+currentItemId)[0].id);
-			$("#"+currentItemId)[0].className = "PAST";
-			$("#"+currentItemId).click(function() {
-				extraOptions.hide();
-			});			
-			items.splice(currentIndex, 1);
-			$("#doneButton").hide();
-			$(".startButton").show();
+
+			currentClicked = $(this.parentNode);
+			tempId = currentClicked[0].id;
+			tempUuid = uuidDict[tempId];
+			connection.updateTopic(tempUuid, "CURRENT");
+			
+			// extraOptions = $("#extraOptions");
+			// currentIndex = items.indexOf($("#"+currentItemId)[0].id);
+			// $("#"+currentItemId)[0].className = "PAST";
+			// $("#"+currentItemId).click(function() {
+			// 	extraOptions.hide();
+			// });			
+			// items.splice(currentIndex, 1);
+			// $("#doneButton").hide();
+			// $(".startButton").show();
 		});
 		connection.getState();
 	});
@@ -76,19 +83,18 @@
 			id = lookupByUuid(uuid);
 			console.log(id);
 			$("#"+id)[0].className = status;
-
-			for (key in uuidDict) {
-				if ($("#"+key)[0].className == "FUTURE"){
-					firstFutureItem = $("#"+key);
-					break;
+			
+			if (status == "CURRENT") {
+				for (key in uuidDict) {
+					if ($("#"+key)[0].className == "FUTURE"){
+						firstFutureItem = $("#"+key);
+						break;
+					}
+				}
+				if (id != firstFutureItem[0].id){
+					$("#"+id).insertBefore(firstFutureItem);
 				}
 			}
-			
-			$("#"+id).insertBefore(firstFutureItem);
-			$("#"+id).append($("#doneButton"));			
-			$("#doneButton").show();
-			$(".startButton").hide();
-
 		}
 		
 		function lookupByUuid(uuid){
@@ -154,9 +160,9 @@
 				clone.click(function (e) {
 				extraOptions = $("#extraOptions");
 				currentClicked = $(this);
-				console.log('items: ' + items);
-				console.log('index of current clicked is ' + items.indexOf(currentClicked[0].id));
-				console.log('current clicked id is ' + currentClicked[0].id);
+				// console.log('items: ' + items);
+				// console.log('index of current clicked is ' + items.indexOf(currentClicked[0].id));
+				// console.log('current clicked id is ' + currentClicked[0].id);
 
 							
 				// toggle showing the extra options
@@ -185,14 +191,37 @@
 						}				
 					}
 				})				
-			defineStartButtonClick();	
+			defineStartButtonClick();
+			defineDeleteButtonClick();	
 			
+		}
+		
+		function defineDeleteButtonClick() {
+			$("#deleteButton").click(function (e) {
+				console.log("DELETE BUTTON");
+				e.stopPropagation();
+				currentClicked = $(this.parentNode.parentNode);
+				tempId = currentClicked[0].id;
+				console.log(tempId);
+				tempUuid = uuidDict[tempId];
+				console.log(tempUuid);
+				connection.removeTopic(tempUuid);
+			});
 		}
 		
 		function defineStartButtonClick() {
 			$(".startButton").click(function (e) {
 				e.stopPropagation();
-
+				
+				for (key in uuidDict) {
+					console.log(key);
+					if ($("#"+key)[0].className == "CURRENT"){
+						uuid = uuidDict[key]
+						connection.updateTopic(uuid, "PAST");
+						break;
+					}
+				}
+				
 				// grab the uuid for the item that was clicked on and send it to the server
 				currentClicked = $(this.parentNode);
 				tempId = currentClicked[0].id;
@@ -209,33 +238,20 @@
 				// 
 				// 
 				// currentItemId = $(this.parentNode)[0].id;
-				// 
-				// firstFutureItem = items[1];
-				// firstFutureItem = $("#"+firstFutureItem);
-				// currentClicked.insertBefore(firstFutureItem);
-				// currentClicked[0].className = "CURRENT";
-				// currentClicked.append($("#doneButton"));
-				// $("#doneButton").show();
-				// $(".startButton").hide();
+
 			});
 			
 		}
 			
 		
-		function deleteItem() {
+		function deleteTopic(uuid) {
 	
 				extraOptions = $("#extraOptions");
 				extraOptions.hide();
 				$("#container").append(extraOptions);
-				currentIndex = items.indexOf(currentClicked[0].id);
-				connection.removeTopic();
-				items.splice(currentIndex, 1);
+				// currentIndex = items.indexOf(currentClicked[0].id);
+				// items.splice(currentIndex, 1);
 				currentClicked.remove();
-
-				// if user deleted the current item on the agenda, update currentItemId to be next on the agenda
-				if (currentClicked[0].id == currentItemId) {
-					currentItemId = items[currentIndex];
-				}
 			
 		}
 		
@@ -405,9 +421,9 @@
 	</div>
 	
 	<div id="extraOptions">
-		<button type="submit" id="deleteButton" onclick="deleteItem();">Delete</button>
-		<button type="submit" onclick="makeNext();">Make Next</button>
-		<button type="submit" id="doneButton">Done</button>
+		<button type="submit" id="deleteButton">Delete</button>
+		<!-- <button type="submit" onclick="makeNext();">Make Next</button>
+		<button type="submit" id="doneButton">Done</button> -->
 		
 	</div>
 </div>

@@ -25,6 +25,7 @@
 
 
 function StateManager() {
+    console.log("INIT StateManager");
     // Setup the major data structures.
     this.db = {};
 }
@@ -101,12 +102,17 @@ StateManager.prototype = {
         for(key in users){
             user = users[key];
             console.log("processing user: " + user);
+            
+            
+            
             if(user["location"]!=null) {
-                this.actors.push(new User(user["uuid"], user["name"],
-                    user["location"]));
+                newUser = new User(user["uuid"], user["name"],
+                    user["location"]);
             } else {
-                this.actors.push(new User(user["uuid"], user["name"], null));
+                newUser = new User(user["uuid"], user["name"], null);
             }
+            
+            this.actors.push(newUser);
         }
         
         
@@ -138,8 +144,10 @@ StateManager.prototype = {
         for(key in meetings) {
             meeting = meetings[key];
             
+            this.meetings.push(new Meeting(meeting["uuid"], meeting["title"],
+                meeting["room"], meeting["startedAt"]));
+
             // Loop through topics and tasks and construct those properly.
-            topics = [];
             for(topicKey in meeting["topics"]) {
                 
                 topicData = meeting["topics"][topicKey];
@@ -152,14 +160,29 @@ StateManager.prototype = {
                     topicData["stopTime"], topicData["startActor"],
                     topicData["stopActor"], topicData["color"],
                     topicData["createdAt"]);
-                topics.push(newTopic);
+
+                // This will add it to the meeting.
+                newTopic.unswizzle();
             }
             
             console.log("topics:");
             console.log(topics);
             
-            this.meetings.push(new Meeting(meeting["uuid"], meeting["title"],
-                meeting["room"], meeting["startedAt"], topics));
+            // Now unpack tasks.
+            for(taskKey in meeting["tasks"]) {
+                task = meeting["tasks"][taskKey];
+                
+                                                    // not meeting["uuid"]?
+                newTask = new Task(task["uuid"], task["meeting"],
+                    task["createdBy"], task["text"],
+                    task["assignedTo"], task["assignedBy"],
+                    task["createdAt"], task["assignedAt"]);
+                    
+                // Unswizzle will assign it to the meeting (and user, if 
+                // appropriate.)
+                newTask.unswizzle();
+            }
+            
         }
         
         // Now do an unswizzling pass. Need to do this one in order, too,
