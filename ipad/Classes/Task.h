@@ -40,6 +40,8 @@
 
 - (UIView *)getView;
 
+- (bool) isAssigned;
+
 @property(nonatomic, retain) NSString *text;
 @property(nonatomic, retain) User *assignedTo;
 @property(nonatomic, retain) Actor *assignedBy;

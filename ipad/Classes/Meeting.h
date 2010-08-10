@@ -50,7 +50,9 @@
 - (void) addTopic:(id)newTopic;
 - (void) removeTopic:(id)removeTopic;
 
-- (NSSet *)getCurrentParticipants;
+- (NSSet *) getCurrentParticipants;
+- (NSSet *) getUnassignedTasks;
+
 
 - (void) unswizzle;
 
