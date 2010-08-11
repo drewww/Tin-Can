@@ -98,8 +98,8 @@
 	NSLog(@" Room names: %@", room.name);
 	testCell.meeting=room.currentMeeting;
 	NSLog(@" meeting: %@", room.currentMeeting);	
-	testCell.counted = [[room.currentMeeting getCurrentParticipants] count];
-	NSLog(@" Room number of People: %d", [[room.currentMeeting getCurrentParticipants] count]);
+	testCell.counted = [room.currentMeeting.currentParticipants count];
+	NSLog(@" Room number of People: %d", [room.currentMeeting.currentParticipants count]);
  	
     return testCell;
 }

@@ -28,6 +28,7 @@
     NSString *title;
     
     NSMutableSet *allParticipants;
+    NSMutableSet *currentParticipants;
     NSMutableSet *locations;
     
     NSMutableSet *tasks;
@@ -50,7 +51,6 @@
 - (void) addTopic:(id)newTopic;
 - (void) removeTopic:(id)removeTopic;
 
-- (NSSet *) getCurrentParticipants;
 - (NSSet *) getUnassignedTasks;
 
 
@@ -58,12 +58,13 @@
 
 
 @property(nonatomic, retain) NSString *title;
-@property(nonatomic, retain) NSMutableSet *allParticipants;
 @property(nonatomic, retain) Room *room;
 @property(nonatomic, retain) NSMutableSet *locations;
 @property(nonatomic, retain) NSDate *startedAt;
 
+@property(readonly) NSMutableSet *allParticipants;
 @property(readonly) NSMutableSet *tasks;
 @property(readonly) NSMutableSet *topics;
+@property(readonly) NSMutableSet *currentParticipants;
 
 @end
