@@ -17,7 +17,7 @@
 #import "TaskContainerView.h"
 #import "UserView.h"
 #import "StateManager.h"
-
+#import "TopicContainerView.h"
 #define INITIAL_REVISION_NUMBER 10000
 
 @implementation MeetingViewController
@@ -54,13 +54,16 @@
     
 	taskContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) withRot: M_PI/2];
 
+	topicContainer=[[TopicContainerView alloc] initWithFrame:CGRectMake(260, 490, 250, 600)];
+
 	[self.view addSubview:taskContainer];	
-	
+	[self.view addSubview:topicContainer];
     [[DragManager sharedInstance] initWithRootView:self.view withParticipantsContainer:participantsContainer];
 
 	[self.view bringSubviewToFront:meetingTimerView];
     [self.view bringSubviewToFront:participantsContainer];
     [self.view bringSubviewToFront:taskContainer];
+	[self.view bringSubviewToFront:topicContainer];
     queue = [[[NSOperationQueue alloc] init] retain];
 
     lastRevision = INITIAL_REVISION_NUMBER;
@@ -223,7 +226,7 @@
         
         // The user knows how to construct its own view if it doesn't have one yet. 
         // This will avoid double-creating if for some reason someone else needs the User's view.
-        UserView *view = (UIView *)[user getView];
+        UserView *view = (UserView *)[user getView];//changed UIView to UserView to get rid of yellow error
         
         // Now put it in the right place, pulling the data from the layout generating method.
         view.center = [[[layoutData objectAtIndex:0] objectAtIndex:i] CGPointValue];

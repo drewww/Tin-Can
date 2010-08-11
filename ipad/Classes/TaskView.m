@@ -68,7 +68,7 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	NSLog(@"I have been touched");
 	isTouched=TRUE;
-	// self.frame=originalFrame;
+	//self.frame=CGRectMake(self.frame.origin.x, self.frame.origin.y, self.bounds.size.width-100, 50);
 	[self setNeedsDisplay];
 	[self.superview bringSubviewToFront:self];
    
@@ -84,10 +84,10 @@
 	
 	float dX = [touch locationInView:self.superview].x - [touch previousLocationInView:self.superview].x;
 	float dY = [touch locationInView:self.superview].y - [touch previousLocationInView:self.superview].y;
-	
 	self.center = CGPointMake(self.center.x + dX, self.center.y + dY);
 	
-	//Calling setNeeds display undoes the rotation for some reason.
+	[self setNeedsDisplay];
+
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
