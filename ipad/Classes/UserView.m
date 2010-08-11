@@ -26,7 +26,7 @@
     
     taskDrawerExtended = FALSE;
     
-    taskContainerView = [[[TaskContainerView alloc] initWithFrame:CGRectMake(-BASE_WIDTH/2, -BASE_HEIGHT/2 + 10, BASE_WIDTH, 300)] retain];
+    taskContainerView = [[[TaskContainerView alloc] initWithFrame:CGRectMake(-BASE_WIDTH/2, -BASE_HEIGHT/2 + 10, BASE_WIDTH, 300) withRot:0.0] retain];
     [self addSubview:taskContainerView];
     
 

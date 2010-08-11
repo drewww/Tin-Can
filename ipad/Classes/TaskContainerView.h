@@ -14,5 +14,6 @@
 }
 
 - (void) setRot:(float) newRot;
+- (id)initWithFrame:(CGRect)frame withRot:(float)rotation;
 
 @end

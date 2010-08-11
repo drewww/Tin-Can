@@ -21,12 +21,14 @@
 // 2. Force contained tasks to be the width of the container (minus 2*the padding)
 // 3. We might need to do add/remove task by UUID for ease of use.
 
-- (id)initWithFrame:(CGRect)frame {
+- (id)initWithFrame:(CGRect)frame withRot:(float)rotation {
     if ((self = [super initWithFrame:frame])) {
         
         self.frame=frame;
                 
-        rot = M_PI/2;
+        rot = rotation;
+		[self setTransform:CGAffineTransformMakeRotation(rot)];
+
 
 		[self setNeedsLayout];
     }
@@ -36,7 +38,6 @@
 - (void)drawRect:(CGRect)rect {
     CGContextRef ctx = UIGraphicsGetCurrentContext();
 	
-	
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
 	CGContextFillRect(ctx, CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height/22.0));
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
@@ -45,9 +46,8 @@
 	
 	CGContextSetLineWidth(ctx,2);
 	CGContextSetStrokeColorWithColor(ctx,  [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
-	CGContextStrokeRect(ctx, CGRectMake(0, 0, self.frame.size.width, self.frame.size.height));
-	[self setTransform:CGAffineTransformMakeRotation(rot)];
-	
+	CGContextStrokeRect(ctx, CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height));
+		
 	
 }
 

@@ -52,7 +52,7 @@
     [self initUsers];
     [self initTasks];
     
-	taskContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) ];
+	taskContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) withRot: M_PI/2];
 
 	[self.view addSubview:taskContainer];	
 	
