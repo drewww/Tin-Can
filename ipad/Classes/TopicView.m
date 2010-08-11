@@ -12,23 +12,39 @@
 @implementation TopicView
 
 @synthesize text;
-//@synthesize timeStart;
+@synthesize timeStart;
 - (id)initWithFrame:(CGRect)frame withTopic:(Topic *)agenda{
     if ((self = [super initWithFrame:frame])) {
 		self.frame=frame;
         topic=agenda;
 		text=topic.text;
-		
+		if(agenda.startTime==nil){
+			timeStart=@"START";
+		}
+		else{
+			timeFormat = [[NSDateFormatter alloc] init] ;
+			[timeFormat setDateFormat:@"HH:mm:ss"];
+			timeStart=[timeFormat stringFromDate:agenda.startTime];
+		}
 		self.userInteractionEnabled = YES; 
 		isTouched= FALSE;
     }
     return self;
 }
-- (id)initWithFrame:(CGRect)frame withText:(NSString *)words{ 
+- (id)initWithFrame:(CGRect)frame withText:(NSString *)words withStartTime:(NSDate *)date{ 
 	if ((self = [super initWithFrame:frame])) {
 		self.frame=frame;
         text=words;
 		
+		if(date==nil){
+			timeStart=@"START";
+		}
+		else{
+		timeFormat = [[NSDateFormatter alloc] init];
+		[timeFormat setDateFormat:@"HH:mm:ss"];
+		
+		timeStart=[timeFormat stringFromDate:date];
+		}
 		self.userInteractionEnabled = YES; 
 		isTouched= FALSE;
     }
@@ -58,15 +74,17 @@
 
 
 	}
+	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+
 	
-	[@"START" drawInRect:CGRectMake(3, 16, 45, self.frame.size.height-12)
-			withFont:[UIFont boldSystemFontOfSize:13] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+	[timeStart drawInRect:CGRectMake(3, 16, 45, self.frame.size.height-12)
+			withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 
 	
 	CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
 	CGContextFillRect(ctx, CGRectMake(50, 0, self.frame.size.width-50, self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:.5].CGColor);
-	[text drawInRect:CGRectMake(54, 2, self.frame.size.width-54, self.frame.size.height) 
+	[text drawInRect:CGRectMake(54, 10, self.frame.size.width-54, self.frame.size.height-10) 
 			withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
 	[self setNeedsDisplay];
@@ -75,8 +93,26 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	NSLog(@"I have been touched");
 	isTouched=TRUE;
+	if (timeStart==@"START"){
+		timeFormat = [[[NSDateFormatter alloc] init] autorelease];
+		[timeFormat setDateFormat:@"HH:mm:ss"];
+		
+		NSDate *now = [[[NSDate alloc] init] autorelease];
+		
+		
+		timeStart = [[timeFormat stringFromDate:now] retain];
+		
+		
+		
+		NSLog(@"Time:%@",timeStart);
+		NSLog(@"current date:%@",[NSDate date]);
+//		[timeFormat release];
+//		[now release];
+
+	}	
 	[self setNeedsDisplay];
-	
+
+	NSLog(@"leaving touches began");
 }
 
 

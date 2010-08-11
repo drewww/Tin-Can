@@ -64,7 +64,7 @@
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     NSLog(@"touch ended on task container view");
     TopicView *newTopic=[[TopicView alloc] initWithFrame:CGRectMake(10, 100, 230, 50) 
-                                             withText: @"Ooo! I added a Topic."];
+												withText: @"Ooo! I added a Topic." withStartTime:nil];
 	if([[self subviews]count]<(floor(self.bounds.size.height/66.0))){
 		[self addSubview:newTopic];
 	}
