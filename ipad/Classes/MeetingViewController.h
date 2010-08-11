@@ -11,6 +11,7 @@
 #import "ParticipantView.h"
 #import "Todo.h"
 #import "TaskContainerView.h"
+#import "TopicContainerView.h"
 
 @class Todo;
 
@@ -18,7 +19,8 @@
     UIView *participantsContainer;
     
     TaskContainerView *taskContainer;
-    
+    TopicContainerView *topicContainer;
+	
     NSMutableSet *todoViews;
 
     

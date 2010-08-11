@@ -58,6 +58,8 @@
 		3AC6BB7C1200F0280002FD52 /* Task.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC6BB7B1200F0280002FD52 /* Task.m */; };
 		3AD66C4D120B0CBE00F974DA /* UserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD66C4C120B0CBE00F974DA /* UserView.m */; };
 		3AD66E5B120B80C000F974DA /* UserRenderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD66E5A120B80C000F974DA /* UserRenderView.m */; };
+		DA707CCD1212F9C40057B509 /* TopicView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA707CCC1212F9C40057B509 /* TopicView.m */; };
+		DA707CD01212F9EB0057B509 /* TopicContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA707CCF1212F9EB0057B509 /* TopicContainerView.m */; };
 		DA767ACC11F78D9D00184827 /* TimerBar.m in Sources */ = {isa = PBXBuildFile; fileRef = DA767ACB11F78D9D00184827 /* TimerBar.m */; };
 		DA7FD24A12086F74007A9217 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA7FD24912086F74007A9217 /* WebViewController.m */; };
 		DA7FD27A1208A127007A9217 /* TaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA7FD2791208A127007A9217 /* TaskView.m */; };
@@ -176,6 +178,10 @@
 		3AD66E59120B80C000F974DA /* UserRenderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserRenderView.h; sourceTree = "<group>"; };
 		3AD66E5A120B80C000F974DA /* UserRenderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserRenderView.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* TinCan-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "TinCan-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		DA707CCB1212F9C40057B509 /* TopicView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicView.h; sourceTree = "<group>"; };
+		DA707CCC1212F9C40057B509 /* TopicView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicView.m; sourceTree = "<group>"; };
+		DA707CCE1212F9EB0057B509 /* TopicContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicContainerView.h; sourceTree = "<group>"; };
+		DA707CCF1212F9EB0057B509 /* TopicContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicContainerView.m; sourceTree = "<group>"; };
 		DA767ACA11F78D9D00184827 /* TimerBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimerBar.h; sourceTree = "<group>"; };
 		DA767ACB11F78D9D00184827 /* TimerBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimerBar.m; sourceTree = "<group>"; };
 		DA7FD24812086F74007A9217 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
@@ -390,7 +396,11 @@
 				DA7FD2781208A127007A9217 /* TaskView.h */,
 				DA7FD2791208A127007A9217 /* TaskView.m */,
 				3AC2B9171198715A0071F912 /* ParticipantView.h */,
+				DA707CCB1212F9C40057B509 /* TopicView.h */,
+				DA707CCC1212F9C40057B509 /* TopicView.m */,
 				3AC2B9181198715A0071F912 /* ParticipantView.m */,
+				DA707CCE1212F9EB0057B509 /* TopicContainerView.h */,
+				DA707CCF1212F9EB0057B509 /* TopicContainerView.m */,
 				DA7FD3DF1209E424007A9217 /* TaskContainerView.h */,
 				DA7FD3E01209E424007A9217 /* TaskContainerView.m */,
 				3AC2BA9E1199D89C0071F912 /* TodoItemView.h */,
@@ -576,6 +586,8 @@
 				DA7FD3E11209E424007A9217 /* TaskContainerView.m in Sources */,
 				3AD66C4D120B0CBE00F974DA /* UserView.m in Sources */,
 				3AD66E5B120B80C000F974DA /* UserRenderView.m in Sources */,
+				DA707CCD1212F9C40057B509 /* TopicView.m in Sources */,
+				DA707CD01212F9EB0057B509 /* TopicContainerView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
