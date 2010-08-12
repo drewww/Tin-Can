@@ -33,6 +33,9 @@
     NSString *string =[@" " stringByAppendingString:loc.name];
     [[UIColor blackColor] set];
     [string drawInRect:self.bounds withFont:[UIFont systemFontOfSize:18] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentLeft];
+	NSString *countedPeople=[[NSString stringWithFormat:@"%d",[loc.users count]] stringByAppendingString:@"    "];
+	NSString *numberPeople = [@"             \n\n# People of in location:" stringByAppendingString: countedPeople];
+	[numberPeople drawInRect:self.bounds withFont:[UIFont systemFontOfSize:12] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentRight];
 }
 
 - (void)dealloc {
