@@ -174,9 +174,6 @@
 	// Tracks user selections
 	chosenRoom=NULL;
 	chosenLocation=NULL;
-
-	
-	
 }	
 
 // Dictates what action to take when a User makes a selection
@@ -334,9 +331,6 @@
     CGPoint endTouch = [touch locationInView:self.view.superview];
 	endPoint=endTouch.y;
 	[self moveWithBegin:beginPointSuper withEnd:endPoint];
-
-	
-	
 }
 
 
@@ -359,10 +353,14 @@
 
 - (void)viewDidUnload {
     [super viewDidUnload];
+    
+    // Remove the listener so we don't get updates constantly. 
+
 }
 
 - (void)dealloc {
 	
+    // TODO add in all the other deallocs we need here.+
 	[locationSlide release];
 	[logoSlide release];
 	

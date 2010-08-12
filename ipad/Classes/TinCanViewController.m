@@ -41,24 +41,11 @@
     // causing problems, just comment it out.
     
     ConnectionManager *conMan = [ConnectionManager sharedInstance];
-    [conMan addListener:self];
     //Should Check and see if getstate is done. ******
     
     // pick a random location
     
     
-}
-
-- (void) handleConnectionEvent:(Event *)event {
-    NSLog(@"Received event: %d", event.type);
-    
-    if(event.type==kGET_STATE_COMPLETE) {
-           // ConnectionManager *conMan = [ConnectionManager sharedInstance];
-            //Location *myLocation = [[[StateManager sharedInstance] getLocations] anyObject];
-            //[conMan setLocation:myLocation.uuid];
-        //    NSLog(@"Done setting connection.");
-           // [conMan connect];
-    }
 }
 
 // Per advice here: http://stackoverflow.com/questions/2270835/best-practices-for-displaying-new-view-controllers-iphone
@@ -74,7 +61,7 @@
 	
 	[UIView beginAnimations:@"move_to_assigned_participant" context:c];
     
-    [UIView setAnimationDuration:1.0f];
+    [UIView setAnimationDuration:0.5f];
     
     c.view.backgroundColor=[UIColor blackColor];
     c.view.alpha = 1.0;
@@ -96,7 +83,16 @@
 - (void) animateNewViewDidStop:(NSString *)animationId finished:(NSNumber *)finished context:(void *)context{
 	 UIViewController *c = (UIViewController *)context;
 	[currentViewController.view removeFromSuperview];
+    
+    // Stop connection manager updates on this viewController.
+    // This REALLY REALLY doesn't belong here. It should be in viewDidUnload or
+    // dealloc, but the LoginMasterViewControler has 3 retains at this point usually,
+    // and it's going to be a bit of a nightmare to track them all down. 
+    [[ConnectionManager sharedInstance] removeListener:currentViewController];
+    
 	[currentViewController release];
+    
+    
     currentViewController = [c retain];
 
 }
@@ -119,6 +115,7 @@
     [super viewDidUnload];
     
     // Pass the message down to the current view.
+    // (this feels wrong to me, not sure what's expected here)
     [currentViewController viewDidUnload];
     
     // Release any retained subviews of the main view.

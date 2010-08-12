@@ -253,7 +253,7 @@ static ConnectionManager *sharedInstance = nil;
         case kUSER_LEFT_LOCATION:
             
             location = (Location *)[state getObjWithUUID:[e.params objectForKey:@"location"]
-                                              withType:[Meeting class]];
+                                              withType:[Location class]];
             user = (User *)[state getObjWithUUID:e.actorUUID withType:[User class]];
             
             [location userLeft:user];                  
@@ -291,7 +291,7 @@ static ConnectionManager *sharedInstance = nil;
             
             location = (Location *)[state getObjWithUUID:e.actorUUID withType:[Location class]];
             
-            [meeting locationLeft:location];
+            [meeting locationJoined:location];
             
             // if this location is the local location, set the local meeting.
             if(location.uuid == state.location.uuid) {
@@ -413,6 +413,7 @@ static ConnectionManager *sharedInstance = nil;
 }
 
 - (void) removeListener:(NSObject *)listener {
+    NSLog(@"removing listener: %@", listener);
     [eventListeners removeObject:listener];
 }
 

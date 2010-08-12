@@ -20,6 +20,7 @@
 #import "TopicContainerView.h"
 #import "ConnectionManager.h"
 #import "Event.h"
+#import "Location.h"
 
 #define INITIAL_REVISION_NUMBER 10000
 
@@ -98,6 +99,8 @@
 - (void) handleConnectionEvent:(Event *)event {
     NSLog(@"got connection event type: %d", event.type);
     
+    StateManager *state = [StateManager sharedInstance];
+    
     // First, check and see if this is an event for our meeting. If it's not,
     // then drop it.
     Meeting *curMeeting = [StateManager sharedInstance].meeting;
@@ -117,7 +120,8 @@
     // our meeting. We're still going to have to discard some of these (eg users joining
     // locations other than the ones in this meeting) but those checks need to be
     // special and per-event-type, not global.
-    
+
+    Location *location;
     switch(event.type) {
         case kADD_ACTOR_DEVICE:
             // Don't need to do anything here.
@@ -130,18 +134,59 @@
             break;
             
         case kUSER_LEFT_LOCATION:
-            break;
+            // if it's a location in our meeting, then
+            // remove those users from the display.
+            location = (Location *)[state getObjWithUUID:[event.params objectForKey:@"location"]
+                                                withType:[Meeting class]];
+            
+            if([curMeeting.locations containsObject:location]) {
+                User *user = (User *)[state getObjWithUUID:event.actorUUID withType:[User class]];
+                [[user getView] removeFromSuperview];
+            }
+            
+        break;
+           
             
         case kUSER_JOINED_LOCATION:
+            // If it's a location in our meeting, 
+            // add views for those users. 
+            location = (Location *)[state getObjWithUUID:[event.params objectForKey:@"location"]
+                                                    withType:[Location class]];
             
+            NSLog(@"location being joined: %@", location);
+            NSLog(@"locations in this meeting: %@", curMeeting.locations);
             
+            if([curMeeting.locations containsObject:location]) {
+                NSLog(@"User joined a location in this meeting!");
+                User *user = (User *)[state getObjWithUUID:event.actorUUID withType:[User class]];
+                [participantsContainer addSubview:[user getView]];
+            }
+                    
             break;
             
         case kLOCATION_LEFT_MEETING:
+            // If it's a location 
+            location = (Location *)[state getObjWithUUID:event.actorUUID withType:[Location class]];
+
+            if([curMeeting.locations containsObject:location]) {
+                NSLog(@"Location in this meeting left it!");
+
+                for(User *user in location.users) {
+                    [[user getView] removeFromSuperview];
+                }
+            }
             break;
             
         case kLOCATION_JOINED_MEETING:
-            break;            
+            location = (Location *)[state getObjWithUUID:event.actorUUID withType:[Location class]];
+            
+            if([curMeeting.locations containsObject:location]) {
+                NSLog(@"another location joined this meeting!");
+                for(User *user in location.users) {
+                    [participantsContainer addSubview:[user getView]];
+                }
+            }
+            break;
             
         case kNEW_TOPIC:
             NSLog(@"adding new topic");
