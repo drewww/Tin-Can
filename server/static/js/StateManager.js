@@ -166,7 +166,7 @@ StateManager.prototype = {
             }
             
             console.log("topics:");
-            console.log(topics);
+            //console.log(topics);
             
             // Now unpack tasks.
             for(taskKey in meeting["tasks"]) {
