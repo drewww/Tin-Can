@@ -12,6 +12,8 @@
 <script type="text/javascript" src="{{static_url('js/ConnectionManager.js')}}"></script>
 <script type="text/javascript" src="{{static_url('js/StateManager.js')}}"></script>
 <script type="text/javascript" src="{{static_url('js/model.js')}}"></script>
+<script type="text/javascript" src="{{static_url('js/agenda.js')}}"></script>
+
 <script type="text/javascript" charset="utf-8">
 	var users;
 	var names=[];
@@ -257,6 +259,62 @@
 	.next{
 		float:right;
 	}
+	
+	
+	#container > div{
+		min-height: 25px;
+		border: 1px solid;
+		margin: .07em;
+		padding:5px;
+		overflow: hidden;
+	}
+	
+	#container > div > span{
+		white-space: nowrap;
+		overflow: hidden;
+	}
+	.template{
+		display: none;
+	}
+	
+	#newItemInput{
+/*		display:none;*/
+	}
+
+	#extraOptions{
+		display:none;
+	}
+	
+	.PAST{
+		background-color: #9C9C9C;
+	}
+	
+	.CURRENT{
+		background-color: #25AED9;
+		color: white;
+	}
+	
+	.FUTURE{
+		background-color: #DFEAED;
+	}
+	
+	.startButton{
+		float: right;
+	}
+	
+	#deleteButton{
+		float: right;
+		clear: right;
+		margin-top: 5px;
+	}
+	
+	.CURRENT > .startButton{
+		visibility: hidden;
+	}
+	
+	.PAST > .startButton{
+		visibility: hidden;
+	}
 
 </style>
 </head>
@@ -307,9 +365,33 @@
 				</li>
 			</ul>
 	    </div>
+	
 	    <div id="tab2" class="tab_content">
-	        List of topics here!
+	        <div align="center"> 
+				<!-- <img src="../static/images/add.png" onclick="showTextbox()" width="26" height="26" alt="Add"> -->
+
+			</div>
+			<div id="newItemInput">
+				<input type="text" name="item" value="" id="itemTextbox" class="textbox">
+				<img src="{{static_url('images/accept.png')}}" id="submitButton" onclick="sendTopicToServer();">
+				<!-- <button type = "submit" id="submitButton" onclick="sendTopicToServer();">Submit</button> -->
+			</div>
+			
+			<div id="container">
+
+				<div id="futureTemplate" class="template">
+					<span id="text"></span><br />
+					<button type="submit" class="startButton">Start</button>
+				</div>
+
+				<div id="extraOptions">
+					<img src="../static/images/delete.png" id="deleteButton" width="36" height="36" alt="Delete">
+			
+				</div>
+			</div>
+			
 	    </div>
+	
 		<div id ="tab3" class="tab_content">
 			Users
 			<ul id = "names">
