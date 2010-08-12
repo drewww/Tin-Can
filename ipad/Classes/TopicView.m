@@ -32,6 +32,16 @@
 		}
 		self.userInteractionEnabled = YES; 
 		isTouched= FALSE;
+		
+		self.alpha = 0;
+		[UIView beginAnimations:@"fade_in" context:self];
+		
+		[UIView setAnimationDuration:.3f];
+		
+		self.alpha = 1.0;
+		
+		
+		[UIView commitAnimations];
     }
     return self;
 }
@@ -47,7 +57,7 @@
 
 
 -(void)setFrameWidthWithContainerWidth:(CGFloat )width{
-	self.frame=CGRectMake(self.frame.origin.x, self.frame.origin.y, (width/2.0)-20, self.frame.size.height);
+	self.frame=CGRectMake(self.frame.origin.x, self.frame.origin.y, (width)-20, self.frame.size.height);
 }
 
 - (void)drawRect:(CGRect)rect {
