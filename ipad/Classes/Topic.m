@@ -43,8 +43,8 @@
     startActorUUID = myStartActorUUID;
     stopActorUUID = myStopActorUUID;
     
-    self.startTime = startTime;
-    self.stopTime = stopTime;
+    self.startTime = myStartTime;
+    self.stopTime = myStopTime;
     self.color = myColor;
     
     text = myText;
@@ -86,7 +86,7 @@
     
     if(view==nil) {
         // construct a new TaskView
-        view = [[TopicView alloc] initWithFrame:CGRectMake(10, 100, 230, 50) withTopic:self];
+        view = [[TopicView alloc] initWithTopic:self];
     }
     
     // return the current view

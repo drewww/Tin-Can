@@ -18,39 +18,33 @@
 		self.frame=frame;
         topic=agenda;
 		text=topic.text;
-		if(agenda.startTime==nil){
-			timeStart=@"START";
+		//if([agenda.startTime isKindOfClass:[NSNull class]]){
+		if(agenda.startTime ==nil){
+				timeStart=@"START";
 		}
 		else{
-			timeFormat = [[NSDateFormatter alloc] init] ;
+			timeFormat = [[[NSDateFormatter alloc] init] autorelease];
 			[timeFormat setDateFormat:@"HH:mm:ss"];
-			timeStart=[timeFormat stringFromDate:agenda.startTime];
+			timeStart=[[timeFormat stringFromDate:agenda.startTime]retain];
+			NSLog(@"Time:%@", agenda.startTime);
+			NSLog(@"Time:%@",timeStart);
+			
 		}
 		self.userInteractionEnabled = YES; 
 		isTouched= FALSE;
     }
     return self;
 }
-- (id)initWithFrame:(CGRect)frame withText:(NSString *)words withStartTime:(NSDate *)date{ 
-	if ((self = [super initWithFrame:frame])) {
-		self.frame=frame;
-        text=words;
-		
-		if(date==nil){
-			timeStart=@"START";
-		}
-		else{
-		timeFormat = [[NSDateFormatter alloc] init];
-		[timeFormat setDateFormat:@"HH:mm:ss"];
-		
-		timeStart=[timeFormat stringFromDate:date];
-		}
-		self.userInteractionEnabled = YES; 
-		isTouched= FALSE;
-    }
-    return self;
-	
+
+- (id) initWithTopic:(Topic*)theTopic {
+    
+    // This is just a weak passthrough. Eventually, we'll knock out the initWithFrame
+    // version and initWithTopic will be the only option. Leaving the old one for compatibility
+    // reasons, because making tasks by hand on the client is a bit tedious for testing.
+    
+    return [self initWithFrame:CGRectMake(0, 0, 230, 50) withTopic:theTopic];
 }
+
 
 -(void)setFrameWidthWithContainerWidth:(CGFloat )width{
 	self.frame=CGRectMake(self.frame.origin.x, self.frame.origin.y, (width/2.0)-20, self.frame.size.height);
@@ -93,7 +87,7 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	NSLog(@"I have been touched");
 	isTouched=TRUE;
-	if (timeStart==@"START"){
+	if ([timeStart isEqualToString:@"START"]){
 		timeFormat = [[[NSDateFormatter alloc] init] autorelease];
 		[timeFormat setDateFormat:@"HH:mm:ss"];
 		
@@ -101,7 +95,6 @@
 		
 		
 		timeStart = [[timeFormat stringFromDate:now] retain];
-		
 		
 		
 		NSLog(@"Time:%@",timeStart);

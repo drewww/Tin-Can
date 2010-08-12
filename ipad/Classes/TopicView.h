@@ -20,5 +20,5 @@
 @property (nonatomic, retain) NSString *timeStart;
 
 - (id)initWithFrame:(CGRect)frame withTopic:(Topic *)agenda;
-- (id)initWithFrame:(CGRect)frame withText:(NSString *)words withStartTime:(NSDate *)date;
+- (id) initWithTopic:(Topic*)theTopic;
 @end
