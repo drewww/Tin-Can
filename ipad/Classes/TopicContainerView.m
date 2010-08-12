@@ -63,8 +63,7 @@
 
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     NSLog(@"touch ended on task container view");
-    //TopicView *newTopic=[[TopicView alloc] initWithFrame:CGRectMake(10, 100, 230, 50) 
-	//											withText: @"Ooo! I added a Topic." withStartTime:nil];
+   
 	Topic *newTopic = [[Topic alloc] initWithUUID:@"1c40c27d-0765-4746-bde7-fbf8d4325a19"
 												withText:@"Rawr, new topic"
 										 withCreatorUUID:@"b3dd5d24-408d-4686-bf05-1ac20c05214e"
