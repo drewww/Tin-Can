@@ -85,9 +85,11 @@
 }
 
 - (NSSet *) getUnassignedTasks {
+    NSLog(@"getting unassigned tasks, checking %d options", [self.tasks count]);
     NSMutableSet *unassignedTasks = [NSMutableSet set];
     
     for (Task *task in [[self.tasks copy] autorelease]) {
+        NSLog(@"checking task for assignment: %@", task);
         if(![task isAssigned]) {
             [unassignedTasks addObject:task];
         }
