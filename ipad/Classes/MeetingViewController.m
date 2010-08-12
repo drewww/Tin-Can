@@ -69,6 +69,12 @@
     [self initTasks];
     
     NSLog(@"Done loading view.");
+    
+    
+    // Now register as an event listener on the ConnectionManager, so we can update
+    // the view in response to changes.
+    [[ConnectionManager sharedInstance] addListener:self];
+    
 }
 
 
@@ -85,6 +91,78 @@
     
     NSLog(@"viewDidLoad");
 }
+
+
+- (void) handleConnectionEvent:(Event *)event {
+    
+    // First, check and see if this is an event for our meeting. If it's not,
+    // then drop it.
+    if(event.meetingUUID != nil && ![event.meetingUUID isKindOfClass:[NSNull class]]) {
+        if(event.meetingUUID != [StateManager sharedInstance].meeting.uuid) {
+            NSLog(@"Received meeting-level event for another meeting. Discarding it.");
+            return;
+        }
+    }
+    
+    
+    // Otherwise, we're getting all the global events and and local events for
+    // our meeting. We're still going to have to discard some of these (eg users joining
+    // locations other than the ones in this meeting) but those checks need to be
+    // special and per-event-type, not global.
+    
+    switch(e.type) {
+        case kADD_ACTOR_DEVICE:
+            // Don't need to do anything here.
+            break;
+            
+        case kNEW_USER:
+            break;
+            
+        case kNEW_MEETING:
+            break;
+            
+        case kUSER_LEFT_LOCATION:
+            break;
+            
+        case kUSER_JOINED_LOCATION:
+            break;
+            
+        case kLOCATION_LEFT_MEETING:
+            break;
+            
+        case kLOCATION_JOINED_MEETING:
+            break;            
+            
+        case kNEW_TOPIC:
+            break;
+            
+        case kUPDATE_TOPIC:
+            break;
+            
+        case kNEW_TASK:
+            break;
+            
+        case kDELETE_TASK:
+            break;
+            
+        case kEDIT_TASK:
+            break;
+            
+        case kASSIGN_TASK:
+            break;
+            
+        case kEDIT_MEETING:
+            break;
+            
+        case kNEW_DEVICE:
+            break;
+            
+        default:
+            NSLog(@"Received an unknown event type: %d", e.type);
+            break;
+    }
+}
+
 
 
 // Override to allow orientations other than the default portrait orientation.

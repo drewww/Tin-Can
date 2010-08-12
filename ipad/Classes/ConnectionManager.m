@@ -223,6 +223,12 @@ static ConnectionManager *sharedInstance = nil;
             [user unswizzle];
         
             [state addActor:user];  
+            
+            
+            // Push the objective-c-ized object back into the event
+            // so consumers of the event can get at it easily.
+            [e.results setValue:user forKey:@"user"];
+            
             NSLog(@"NEW_USER: %@", user);
             break;
             
@@ -237,7 +243,10 @@ static ConnectionManager *sharedInstance = nil;
                                           startedAt:[NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"startedAt"] doubleValue]]];
             [meeting unswizzle];
             
-            [state addMeeting:meeting];                                            
+            [state addMeeting:meeting];
+            
+            [e.results setValue:meeting forKey:@"meeting"];
+            
             NSLog(@"NEW_MEETING: %@", meeting);
             break;
             
@@ -310,6 +319,8 @@ static ConnectionManager *sharedInstance = nil;
             // into RGB values that UIColor will accept. NBD, but a bit of an annoying dance and we'll
             // need to write a little function to do it.
             [topic unswizzle];
+            
+            [e.results setValue:topic forKey:@"topic"];
 
             break;
             
@@ -344,6 +355,9 @@ static ConnectionManager *sharedInstance = nil;
                                    assignedAt:date];
             
             [task unswizzle];
+            
+            [e.results setValue:task forKey:@"task"];
+            
             break;
         
         case kDELETE_TASK:
