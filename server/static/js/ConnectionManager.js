@@ -84,6 +84,7 @@ ConnectionManager.prototype = {
     },
     
     startPersistentConnection: function() {
+        console.log("Starting persistent connection.");
         this.currentConnectRequest = $.ajax({
             url: '/connect/',
             type: "GET",
@@ -103,6 +104,12 @@ ConnectionManager.prototype = {
                         }
                     }
                     
+                    // This code makes sure that we don't end up in reconnection infinite
+                    // loops when the server gets restarted - it'll try to reconnect
+                    // up to 10 times and then stop. Requests older than one second
+                    // ago are filtered out, so this system doesn't catch normal
+                    // reconnection cycles (or a few fast event transmissions that
+                    // don't represent an infinite loop.)
                     time = new Date();
                     this.connections.push(time);
                     var tempConnections = []
