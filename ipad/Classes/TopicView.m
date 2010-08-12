@@ -35,26 +35,16 @@
     }
     return self;
 }
-//- (id)initWithFrame:(CGRect)frame withText:(NSString *)words withStartTime:(NSDate *)date{ 
-//	if ((self = [super initWithFrame:frame])) {
-//		self.frame=frame;
-//        text=words;
-//		
-//		if(date==nil){
-//			timeStart=@"START";
-//		}
-//		else{
-//		timeFormat = [[NSDateFormatter alloc] init];
-//		[timeFormat setDateFormat:@"HH:mm:ss"];
-//		
-//		timeStart=[timeFormat stringFromDate:date];
-//		}
-//		self.userInteractionEnabled = YES; 
-//		isTouched= FALSE;
-//    }
-//    return self;
-//	
-//}
+
+- (id) initWithTopic:(Topic*)theTopic {
+    
+    // This is just a weak passthrough. Eventually, we'll knock out the initWithFrame
+    // version and initWithTopic will be the only option. Leaving the old one for compatibility
+    // reasons, because making tasks by hand on the client is a bit tedious for testing.
+    
+    return [self initWithFrame:CGRectMake(0, 0, 230, 50) withTopic:theTopic];
+}
+
 
 -(void)setFrameWidthWithContainerWidth:(CGFloat )width{
 	self.frame=CGRectMake(self.frame.origin.x, self.frame.origin.y, (width/2.0)-20, self.frame.size.height);
