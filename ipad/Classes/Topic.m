@@ -82,6 +82,8 @@
 
 
 - (void) unswizzle {
+    [super unswizzle];
+    
     if(startActorUUID!=nil && ![startActorUUID isKindOfClass:[NSNull class]]) {
         self.startActor = (Actor *)[[StateManager sharedInstance] getObjWithUUID:startActorUUID
                                                                         withType:[Actor class]];

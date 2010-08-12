@@ -58,8 +58,10 @@
 
 - (void)layoutSubviews{
 	int i =0;
+    NSLog(@"laying out task container with %d subviews", [[self subviews] count]);
 	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByPointer:)];
 	for(TaskView *subview in sortedArray){
+        NSLog(@"laying out task: %@", subview.text);
 		subview.frame=CGRectMake(10, 40+(60*i), (self.bounds.size.width)-20, 50);
 		NSLog(@"Frame: %f",self.bounds.size.width);
 

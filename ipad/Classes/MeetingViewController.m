@@ -48,10 +48,7 @@
     participantsContainer = [[UIView alloc] initWithFrame:self.view.frame];
     [participantsContainer retain];
     [self.view addSubview:participantsContainer];
-        
-    [self initUsers];
-    [self initTasks];
-    
+            
 	taskContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) withRot: M_PI/2];
 
 	topicContainer=[[TopicContainerView alloc] initWithFrame:CGRectMake(260, 490, 250, 600)];
@@ -67,6 +64,9 @@
     queue = [[[NSOperationQueue alloc] init] retain];
 
     lastRevision = INITIAL_REVISION_NUMBER;
+    
+    [self initUsers];
+    [self initTasks];
     
     NSLog(@"Done loading view.");
 }
@@ -242,11 +242,14 @@
 - (void) initTasks {
     
     
-    NSSet *unassignedTasks = [[[StateManager sharedInstance].meeting getUnassignedTasks] retain];
+    NSSet *unassignedTasks = [[[StateManager sharedInstance].meeting getUnassignedTasks] retain];    
     // Look at the meeting objecet and see if there are any unassigned tasks. 
     for(Task *task in unassignedTasks) {
         [taskContainer addSubview:[task getView]];
     }
+    
+    [taskContainer setNeedsLayout];
+    [taskContainer setNeedsDisplay];
     
     [unassignedTasks release];
 }
