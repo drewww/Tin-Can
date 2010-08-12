@@ -18,15 +18,17 @@
 		self.frame=frame;
         topic=agenda;
 		text=topic.text;
-		if(![agenda.startTime isKindOfClass:[NSNull class]]){
+		//if([agenda.startTime isKindOfClass:[NSNull class]]){
+		if(agenda.startTime ==nil){
+				timeStart=@"START";
+		}
+		else{
 			timeFormat = [[[NSDateFormatter alloc] init] autorelease];
 			[timeFormat setDateFormat:@"HH:mm:ss"];
 			timeStart=[[timeFormat stringFromDate:agenda.startTime]retain];
 			NSLog(@"Time:%@", agenda.startTime);
 			NSLog(@"Time:%@",timeStart);
-		}
-		else{
-				timeStart=@"START";
+			
 		}
 		self.userInteractionEnabled = YES; 
 		isTouched= FALSE;

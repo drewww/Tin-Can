@@ -43,8 +43,8 @@
     startActorUUID = myStartActorUUID;
     stopActorUUID = myStopActorUUID;
     
-    self.startTime = startTime;
-    self.stopTime = stopTime;
+    self.startTime = myStartTime;
+    self.stopTime = myStopTime;
     self.color = myColor;
     
     text = myText;
