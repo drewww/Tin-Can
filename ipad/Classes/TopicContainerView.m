@@ -52,7 +52,7 @@
 	int i =0;
 	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByPointer:)];
 	for(TopicView *subview in sortedArray){
-		subview.frame=CGRectMake(10, 40+(60*i), (self.bounds.size.width)-20, 50);
+		subview.frame=CGRectMake(10, (self.bounds.size.height/22.0)+10 +(60*i), (self.bounds.size.width)-20, 50);
 		//NSLog(@"Frame: %f",self.bounds.size.width);
 //		
 //		NSLog(@"Subview frame: %f",subview.bounds.size.width);
