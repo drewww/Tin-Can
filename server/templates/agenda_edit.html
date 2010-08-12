@@ -312,7 +312,7 @@
 	#container{
 		font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", sans-serif;
 		font-weight: 300;
-		font-size: 18px;
+		font-size: 15px;
 		margin: 0px;
 		padding: 0px;
 	}
@@ -325,27 +325,16 @@
 		width: 320px;
 	}
 	#container > div{
-		min-height: 50px;
+		min-height: 25px;
 		border: 1px solid;
 		margin: .07em;
-		padding:15px;
+		padding:5px;
 		overflow: hidden;
 	}
 	
 	#container > div > span{
 		white-space: nowrap;
 		overflow: hidden;
-	}
-	.delete{
-		float: left;
-		margin-top: 2px;
-	}
-	
-	.check{
-		height: 30px;
-		width: 30px;
-		margin-top: 5px;
-		margin-right: 5px;
 	}
 	
 	.drag{
@@ -385,7 +374,13 @@
 	}
 	
 	.startButton{
-/*		visibility: hidden;*/
+		float: right;
+	}
+	
+	#deleteButton{
+		float: right;
+		clear: right;
+		margin-top: 5px;
 	}
 	
 	.CURRENT > .startButton{
@@ -401,8 +396,8 @@
 <div id="border">
 	
 	<div id="header">Topics 
-
-		<input type="button" value="Add" onclick="showTextbox()"> 
+		<img src="../static/images/add.png" onclick="showTextbox()" width="26" height="27" alt="Add">
+		<!-- <input type="button" value="Add" onclick="showTextbox()">  -->
 		<input type="button" value="User" onclick="loginUser();">
 		<input type="button" value="Location" onclick="joinLocation();">
 		<input type="button" value="Room" onclick="joinRoom();">
@@ -410,7 +405,8 @@
 	</div>
 	<div id="newItemInput">
 		<input type="text" name="item" value="" id="itemTextbox" class="textbox">
-		<button type = "submit" id="submitButton" onclick="sendTopicToServer();">Submit</button>
+		<!-- <button type = "submit" id="submitButton" onclick="sendTopicToServer();">Submit</button> -->
+		<img src="../static/images/accept.png" id="submitButton" onclick="sendTopicToServer();" width="25" height="25" alt="Accept">
 	</div>		
 	
 <div id="container">
@@ -421,7 +417,8 @@
 	</div>
 	
 	<div id="extraOptions">
-		<button type="submit" id="deleteButton">Delete</button>
+		<img src="../static/images/delete.png" id="deleteButton" width="36" height="36" alt="Delete">
+		<!-- <button type="submit" id="deleteButton">Delete</button> -->
 		<!-- <button type="submit" onclick="makeNext();">Make Next</button>
 		<button type="submit" id="doneButton">Done</button> -->
 		
