@@ -25,8 +25,6 @@ filename = "events.log"
 filename2 = "events-readable.log"
 f1 = open(filename,"a")
 f2 = open(filename2, "a")
-f1.write("\n----server reset----\n\n")
-f2.write("\n----server reset----\n\n")
 
 class Event:    
     def __init__(self, eventType, actorUUID=None, meetingUUID=None, params={}, results=None):

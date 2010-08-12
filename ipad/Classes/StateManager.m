@@ -195,7 +195,6 @@ static StateManager *sharedInstance = nil;
 }
 
 - (NSSet *) getUsers {
-    NSLog(@"in getUsers");
     NSMutableArray *allUsers = [NSMutableArray array];
     
     // Don't use actors directly, copy it and then iterate.
@@ -204,6 +203,7 @@ static StateManager *sharedInstance = nil;
             [allUsers addObject:actor];
         }
     }
+    NSLog(@"found %d users", [allUsers count]);
     
     return [NSSet setWithArray:allUsers];
 }

@@ -30,8 +30,6 @@
     self.users = [NSMutableSet set];
     [self.users addObjectsFromArray:myUsers];
     
-    NSLog(@"users during init: %@", self.users);
-    
     return self;
 }
 

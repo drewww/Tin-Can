@@ -132,15 +132,18 @@ ConnectionManager.prototype = {
                 // certainly going to be generating them. 
                 
                 },
-            error: function () {
+            error: function (data) {
                 console.log("/connect/ failed. reconnecting.");
+                console.log(data)
                 
                 this.publishEvent(this.generateEvent("CONNECT_COMPLETE", {},
                     false));
+                if (!this.loggedout){
+                    var self = this;
+                    this.currentConnectRequest=setTimeout(
+                        function() {self.startPersistentConnection();}, 500);
+                }
                 
-                var self = this;
-                this.currentConnectRequest=setTimeout(
-                    function() {self.startPersistentConnection();}, 500);
                     
                 },
                 // Adding this extra time factor seems to help with the double

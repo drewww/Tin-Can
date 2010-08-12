@@ -36,7 +36,7 @@
 }
 
 - (bool) isAssigned {
-    return assignedTo != nil && ![assignedTo isKindOfClass:[NSNull null]];
+    return assignedTo != nil && ![assignedTo isKindOfClass:[NSNull class]];
 }
 
 - (void) assignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime{
@@ -58,6 +58,14 @@
 }
 
 - (void) unswizzle {
+    [super unswizzle];
+    // Unswizzle the meeting.
+//    if(myMeetingUUID != nil) && ![myMeetingUUID isKindOfClass:[NSNull class]]) {
+//            self.meeting = (Meeting *)[[StateManager sharedInstance] getObjWithUUID:myMeetingUUID
+//                                                                           withType:[Meeting class]];
+//    }
+                                                            
+    
     if(assignedToUUID!=nil && ![assignedToUUID isKindOfClass:[NSNull class]]) {
         self.assignedTo = (User *)[[StateManager sharedInstance] getObjWithUUID:assignedToUUID
                                                                         withType:[User class]];

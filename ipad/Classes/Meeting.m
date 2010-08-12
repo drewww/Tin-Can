@@ -19,6 +19,7 @@
 @synthesize title;
 @synthesize locations;
 @synthesize allParticipants;
+@synthesize currentParticipants;
 @synthesize startedAt;
 
 @synthesize tasks;
@@ -28,7 +29,9 @@
     self = [super initWithUUID:myUuid];
  
     self.locations = [NSMutableSet set];
-    self.allParticipants = [NSMutableSet set];
+    
+    allParticipants = [[NSMutableSet set] retain];
+    currentParticipants = [[NSMutableSet set] retain];
     
     self.title = myTitle;
     self.room = nil;
@@ -43,11 +46,12 @@
 }
 
 - (void) userJoined:(User *)theUser theLocation:(Location *)theLocation {
-    [self.allParticipants addObject:theUser];
+    [allParticipants addObject:theUser];
+    [currentParticipants addObject:theUser];
 }
 
 - (void) userLeft:(User *)theUser theLocation:(Location *)theLocation {
-    // nothing to do here, really. Maybe something someday.
+    [currentParticipants removeObject:theUser];
 }
 
 - (void) locationJoined:(Location *)theLocation {
@@ -63,7 +67,6 @@
     [theLocation leftMeeting:self];
     [self.locations removeObject:theLocation];
 }
-
 
 - (void) addTask:(id)newTask {
     [self.tasks addObject:newTask];
@@ -82,30 +85,16 @@
 }
 
 - (NSSet *) getUnassignedTasks {
+    NSLog(@"getting unassigned tasks, checking %d options", [self.tasks count]);
     NSMutableSet *unassignedTasks = [NSMutableSet set];
     
     for (Task *task in [[self.tasks copy] autorelease]) {
+        NSLog(@"checking task for assignment: %@", task);
         if(![task isAssigned]) {
             [unassignedTasks addObject:task];
         }
     }
     return unassignedTasks;
-}
-
-
-- (NSSet *)getCurrentParticipants {
-    
-    // I'm pretty sure I should autorelease this - I'm not retaining it, and it's
-    // the job of the code calling this method to retain it if they want it. But
-    // will it get garbage collected before it returns if I autorelease it? I think
-    // not, but I'm not 100% sure.
-    NSMutableSet *currentParticipants = [NSMutableSet set];
-    
-    for (Location *location in [[self.locations copy] autorelease]) {
-        [currentParticipants addObjectsFromArray:[location.users allObjects]];
-    }
-    
-    return currentParticipants;
 }
 
 - (void) unswizzle {
@@ -120,7 +109,7 @@
 
 - (NSString *) description {
     return [NSString stringWithFormat:@"[meeting.%@ %@ locs:%d users:%d started:%@ topics:%d tasks:%d]", [self.uuid substringToIndex:6],
-            self.title, [self.locations count], [[self getCurrentParticipants] count], self.startedAt, [topics count], [tasks count]];
+            self.title, [self.locations count], [self.currentParticipants count], self.startedAt, [topics count], [tasks count]];
 }
 
 @end
