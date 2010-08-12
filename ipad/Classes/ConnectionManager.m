@@ -403,6 +403,8 @@ static ConnectionManager *sharedInstance = nil;
             NSLog(@"Received an unknown event type: %d", e.type);
             break;
     }
+    
+    [self publishEvent:e];
 }
 
 - (void) addListener:(NSObject *)listener {
@@ -415,6 +417,7 @@ static ConnectionManager *sharedInstance = nil;
 }
 
 - (void) publishEvent:(Event *)e {
+    NSLog(@"publishing event with type %d", e.type);
 
     for(NSObject *listener in [[eventListeners copy] autorelease]) {
         if([listener respondsToSelector:@selector(handleConnectionEvent:)])

@@ -12,6 +12,7 @@
 #import "Todo.h"
 #import "TaskContainerView.h"
 #import "TopicContainerView.h"
+#import "Event.h"
 
 @class Todo;
 
@@ -54,6 +55,9 @@
 
 - (void) handleNewTodoWithArguments:(NSArray *)args;
 - (void) handleAssignTodoWithArguments:(NSArray *)args;
+
+- (void) handleConnectionEvent:(Event *)event;
+
 
 - (CGPoint) getNextTodoPosition;
 

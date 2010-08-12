@@ -105,6 +105,7 @@ withResults:(NSDictionary *)myResults {
 
 - (NSString *) description {
     if(self.uuid!=nil && ![self.uuid isKindOfClass:[NSNull class]]) {
+        NSLog(@"printing event normally");
         return [NSString stringWithFormat:@"[event.%@ %d meet:%@ actor:%@ params:%d results:%d]", [self.uuid substringToIndex:6],
                 self.type, self.meetingUUID, self.actorUUID, [self.params count], [self.results count]];
     }
