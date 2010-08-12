@@ -28,7 +28,6 @@
 	var rooms;
 	var set = false;
 	$(document).ready(function() {
-
 		//When page loads...
 		$(".tab_content").hide(); //Hide all content
 		$("ul.tabs li:first").addClass("active").show(); //Activate first tab
@@ -61,10 +60,13 @@
 						connection.connect();
 						set=true;
 					}
+					else{
+						connection.joinLocation(locs[0].uuid);
+					}
 					break;
 				case "ADD_ACTOR_DEVICE":
 					update();
-					connection.joinLocation(locs[0].uuid);
+					//connection.joinLocation(locs[0].uuid);
 		            break;
 		        case "NEW_LOCATION":
 	                update();
