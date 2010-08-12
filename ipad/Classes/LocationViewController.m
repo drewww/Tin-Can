@@ -101,7 +101,7 @@
     Location *loc = [locList objectAtIndex:indexPath.row];
 	testCell.loc = loc;
  	//NSLog(@" Location names: %@", loc.name);
-
+	
     return testCell;
 }
 
