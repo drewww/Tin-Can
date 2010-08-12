@@ -53,9 +53,9 @@
 	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByPointer:)];
 	for(TopicView *subview in sortedArray){
 		subview.frame=CGRectMake(10, 40+(60*i), (self.bounds.size.width)-20, 50);
-		NSLog(@"Frame: %f",self.bounds.size.width);
-		
-		NSLog(@"Subview frame: %f",subview.bounds.size.width);
+		//NSLog(@"Frame: %f",self.bounds.size.width);
+//		
+//		NSLog(@"Subview frame: %f",subview.bounds.size.width);
 		i++;
 	}
     
@@ -63,10 +63,25 @@
 
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     NSLog(@"touch ended on task container view");
-    TopicView *newTopic=[[TopicView alloc] initWithFrame:CGRectMake(10, 100, 230, 50) 
-												withText: @"Ooo! I added a Topic." withStartTime:nil];
+    //TopicView *newTopic=[[TopicView alloc] initWithFrame:CGRectMake(10, 100, 230, 50) 
+	//											withText: @"Ooo! I added a Topic." withStartTime:nil];
+	Topic *newTopic = [[Topic alloc] initWithUUID:@"1c40c27d-0765-4746-bde7-fbf8d4325a19"
+												withText:@"Rawr, new topic"
+										 withCreatorUUID:@"b3dd5d24-408d-4686-bf05-1ac20c05214e"
+											   createdAt:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-600]
+										 withMeetingUUID:@"07823bd0-212e-444e-a7b8-c3a4eb3a1392"
+									  withStartActorUUID:@"183ebc3a-9c8c-44a4-a2e4-a1f36b19c48f"
+									   withStopActorUUID:@"ba5082c9-6fd2-489f-8768-4eca94420ed0"
+										   withStartTime:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-400]
+											withStopTime:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-200]
+										  withUIColor:[UIColor blueColor]];
+	
+	NSLog(@"topic: %@", newTopic);
+	
+	TopicView *newTopicView = [newTopic getView];
+	
 	if([[self subviews]count]<(floor(self.bounds.size.height/66.0))){
-		[self addSubview:newTopic];
+		[self addSubview:newTopicView];
 	}
     [self setNeedsLayout];
 }
