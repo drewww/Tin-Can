@@ -7,6 +7,7 @@
 //
 
 #import "Topic.h"
+#import "TopicView.h"
 
 
 
@@ -78,6 +79,18 @@
     status = newStatus;
     
     [enumMapping release];
+}
+
+
+- (UIView *)getView {
+    
+    if(view==nil) {
+        // construct a new TaskView
+        view = [[TopicView alloc] initWithFrame:CGRectMake(10, 100, 230, 50) withTopic:self];
+    }
+    
+    // return the current view
+    return view;
 }
 
 

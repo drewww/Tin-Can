@@ -58,13 +58,7 @@
 }
 
 - (void) unswizzle {
-    [super unswizzle];
-    // Unswizzle the meeting.
-//    if(myMeetingUUID != nil) && ![myMeetingUUID isKindOfClass:[NSNull class]]) {
-//            self.meeting = (Meeting *)[[StateManager sharedInstance] getObjWithUUID:myMeetingUUID
-//                                                                           withType:[Meeting class]];
-//    }
-                                                            
+    [super unswizzle];                                                            
     
     if(assignedToUUID!=nil && ![assignedToUUID isKindOfClass:[NSNull class]]) {
         self.assignedTo = (User *)[[StateManager sharedInstance] getObjWithUUID:assignedToUUID

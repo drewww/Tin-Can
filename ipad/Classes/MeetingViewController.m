@@ -18,6 +18,9 @@
 #import "UserView.h"
 #import "StateManager.h"
 #import "TopicContainerView.h"
+#import "ConnectionManager.h"
+#import "Event.h"
+
 #define INITIAL_REVISION_NUMBER 10000
 
 @implementation MeetingViewController
@@ -41,7 +44,6 @@
     meetingTimerView = [[MeetingTimerView alloc] initWithFrame:CGRectMake(200, 200, 200, 200) withStartTime:[NSDate dateWithTimeIntervalSince1970:startingTimeInSeconds]];
     [meetingTimerView retain];
     [self.view addSubview:meetingTimerView];
-    
 	
 					 
     // Create the participants view.
@@ -69,6 +71,12 @@
     [self initTasks];
     
     NSLog(@"Done loading view.");
+    
+    
+    // Now register as an event listener on the ConnectionManager, so we can update
+    // the view in response to changes.
+    [[ConnectionManager sharedInstance] addListener:self];
+    
 }
 
 
@@ -85,6 +93,88 @@
     
     NSLog(@"viewDidLoad");
 }
+
+
+- (void) handleConnectionEvent:(Event *)event {
+    NSLog(@"got connection event type: %d", event.type);
+    
+    // First, check and see if this is an event for our meeting. If it's not,
+    // then drop it.
+    if(event.meetingUUID != nil && ![event.meetingUUID isKindOfClass:[NSNull class]]) {
+        if(event.meetingUUID != [StateManager sharedInstance].meeting.uuid) {
+            NSLog(@"Received meeting-level event for another meeting. Discarding it.");
+            return;
+        }
+    }
+    
+    
+    NSLog(@"passed meeting UUID check");
+    
+    // Otherwise, we're getting all the global events and and local events for
+    // our meeting. We're still going to have to discard some of these (eg users joining
+    // locations other than the ones in this meeting) but those checks need to be
+    // special and per-event-type, not global.
+    
+    switch(event.type) {
+        case kADD_ACTOR_DEVICE:
+            // Don't need to do anything here.
+            break;
+            
+        case kNEW_USER:
+            break;
+            
+        case kNEW_MEETING:
+            break;
+            
+        case kUSER_LEFT_LOCATION:
+            break;
+            
+        case kUSER_JOINED_LOCATION:
+            
+            
+            break;
+            
+        case kLOCATION_LEFT_MEETING:
+            break;
+            
+        case kLOCATION_JOINED_MEETING:
+            break;            
+            
+        case kNEW_TOPIC:
+            NSLog(@"adding new topic");
+            // Add the topic to the topic list.
+            [topicContainer addSubview:[[event.results objectForKey:@"topic"] getView]];
+            break;
+            
+        case kUPDATE_TOPIC:
+            break;
+            
+        case kNEW_TASK:
+            NSLog(@"adding new task to the task container.");
+            [taskContainer addSubview:[[event.results objectForKey:@"task"] getView]];
+            break;
+            
+        case kDELETE_TASK:
+            break;
+            
+        case kEDIT_TASK:
+            break;
+            
+        case kASSIGN_TASK:
+            break;
+            
+        case kEDIT_MEETING:
+            break;
+            
+        case kNEW_DEVICE:
+            break;
+            
+        default:
+            NSLog(@"Received an unknown event type: %d", event.type);
+            break;
+    }
+}
+
 
 
 // Override to allow orientations other than the default portrait orientation.
