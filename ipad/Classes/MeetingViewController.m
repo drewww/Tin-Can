@@ -100,8 +100,11 @@
     
     // First, check and see if this is an event for our meeting. If it's not,
     // then drop it.
+    Meeting *curMeeting = [StateManager sharedInstance].meeting;
+    
     if(event.meetingUUID != nil && ![event.meetingUUID isKindOfClass:[NSNull class]]) {
-        if(event.meetingUUID != [StateManager sharedInstance].meeting.uuid) {
+        NSLog(@"event.meeting: %@, currentMeetingUUID: %@", event.meetingUUID, curMeeting.uuid);
+        if(![event.meetingUUID isEqualToString:curMeeting.uuid]) {
             NSLog(@"Received meeting-level event for another meeting. Discarding it.");
             return;
         }
