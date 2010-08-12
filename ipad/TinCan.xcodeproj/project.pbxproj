@@ -58,6 +58,7 @@
 		3AC6BB7C1200F0280002FD52 /* Task.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC6BB7B1200F0280002FD52 /* Task.m */; };
 		3AD66C4D120B0CBE00F974DA /* UserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD66C4C120B0CBE00F974DA /* UserView.m */; };
 		3AD66E5B120B80C000F974DA /* UserRenderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD66E5A120B80C000F974DA /* UserRenderView.m */; };
+		3AD674461214A56900F974DA /* UserContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD674451214A56900F974DA /* UserContainer.m */; };
 		DA707CCD1212F9C40057B509 /* TopicView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA707CCC1212F9C40057B509 /* TopicView.m */; };
 		DA707CD01212F9EB0057B509 /* TopicContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA707CCF1212F9EB0057B509 /* TopicContainerView.m */; };
 		DA767ACC11F78D9D00184827 /* TimerBar.m in Sources */ = {isa = PBXBuildFile; fileRef = DA767ACB11F78D9D00184827 /* TimerBar.m */; };
@@ -177,6 +178,8 @@
 		3AD66C4C120B0CBE00F974DA /* UserView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserView.m; sourceTree = "<group>"; };
 		3AD66E59120B80C000F974DA /* UserRenderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserRenderView.h; sourceTree = "<group>"; };
 		3AD66E5A120B80C000F974DA /* UserRenderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserRenderView.m; sourceTree = "<group>"; };
+		3AD674441214A56900F974DA /* UserContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserContainer.h; sourceTree = "<group>"; };
+		3AD674451214A56900F974DA /* UserContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserContainer.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* TinCan-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "TinCan-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		DA707CCB1212F9C40057B509 /* TopicView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicView.h; sourceTree = "<group>"; };
 		DA707CCC1212F9C40057B509 /* TopicView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicView.m; sourceTree = "<group>"; };
@@ -421,6 +424,8 @@
 				3AD66C4C120B0CBE00F974DA /* UserView.m */,
 				3AD66E59120B80C000F974DA /* UserRenderView.h */,
 				3AD66E5A120B80C000F974DA /* UserRenderView.m */,
+				3AD674441214A56900F974DA /* UserContainer.h */,
+				3AD674451214A56900F974DA /* UserContainer.m */,
 			);
 			name = Meeting;
 			sourceTree = "<group>";
@@ -588,6 +593,7 @@
 				3AD66E5B120B80C000F974DA /* UserRenderView.m in Sources */,
 				DA707CCD1212F9C40057B509 /* TopicView.m in Sources */,
 				DA707CD01212F9EB0057B509 /* TopicContainerView.m in Sources */,
+				3AD674461214A56900F974DA /* UserContainer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

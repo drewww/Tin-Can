@@ -21,6 +21,7 @@
 #import "ConnectionManager.h"
 #import "Event.h"
 #import "Location.h"
+#import "UserContainer.h"
 
 #define INITIAL_REVISION_NUMBER 10000
 
@@ -48,7 +49,7 @@
 	
 					 
     // Create the participants view.
-    participantsContainer = [[UIView alloc] initWithFrame:self.view.frame];
+    participantsContainer = [[UserContainer alloc] initWithFrame:self.view.frame];
     [participantsContainer retain];
     [self.view addSubview:participantsContainer];
             
@@ -272,91 +273,12 @@
 - (void)clk {
     [meetingTimerView setNeedsDisplay];
 }   
--(NSMutableArray *)getParticpantLocationsForNumberOfPeople:(int)totalNumberOfPeople{    
-	int i = 0;
-	int arrayCounter=0;
-	int sideLimit= ceil(totalNumberOfPeople/4.0);
-	int topLimit=trunc(totalNumberOfPeople/4.0);
-	NSLog(@"Sides:%d", sideLimit);
-	NSLog(@"points:%d", topLimit);
-	//assigns number of participants to a side
-	NSMutableArray *sides=[[NSMutableArray arrayWithObjects:[NSNumber numberWithInt: 0],[NSNumber numberWithInt:0],
-							[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],nil]retain];
-	
-	while (i<totalNumberOfPeople) {
-		if (arrayCounter==1 && ([[sides objectAtIndex:arrayCounter] intValue]>=topLimit)) {
-			arrayCounter++;
-		}
-		else if ((arrayCounter==0 || arrayCounter==2)&&([[sides objectAtIndex:arrayCounter] intValue] >=sideLimit)){
-			arrayCounter++;
-		}
-		else if(arrayCounter==3){
-			if ([[sides objectAtIndex:arrayCounter] intValue]>topLimit) {
-				break;
-			}
-			else {
-				[sides replaceObjectAtIndex: arrayCounter withObject:[NSNumber numberWithInt:[[sides objectAtIndex:arrayCounter] intValue] +1.0]];
-				arrayCounter=0;	
-				i++;
-			}
-		}
-		else {
-			[sides replaceObjectAtIndex: arrayCounter withObject:[NSNumber numberWithInt:[[sides objectAtIndex:arrayCounter] intValue] +1.0]];
-			i++;
-			arrayCounter++;
-		}	
-		
-	}
-	//Forms points from side assignments
-	NSMutableArray *points=[[NSMutableArray alloc] initWithCapacity:totalNumberOfPeople];
-	NSMutableArray *rotations=[[NSMutableArray alloc] initWithCapacity:totalNumberOfPeople];
-	for (i=0; i<4; i++) {
-		int c =1;
-		while (c<=[[sides objectAtIndex:i] intValue]) {
-			if (i==0|| i==2) {
-				float divisions=1024.0/[[sides objectAtIndex:i] intValue];
-				float yVal= (divisions*c) -(divisions/2.0);
-				if (i==0) {
-					[points addObject:[NSValue valueWithCGPoint:CGPointMake(0, yVal)]];
-					[rotations addObject:[NSNumber numberWithFloat:M_PI/2]];
-					
-				}	
-				else{
-					[points addObject:[NSValue valueWithCGPoint:CGPointMake(768, yVal)]];
-					
-					[rotations addObject:[NSNumber numberWithFloat:-M_PI/2]]; 
-				}
-			}
-			else if (i==1 || i==3) {
-				float divisions=768/[[sides objectAtIndex:i] intValue];
-				float xVal= (divisions*(c)) -(divisions/2.0);
-				if (i==1) {
-					[points addObject:[NSValue valueWithCGPoint:CGPointMake(xVal, 0)]]; 
-					[rotations addObject:[NSNumber numberWithFloat:M_PI]];
-				}	
-				else{
-					[points addObject:[NSValue valueWithCGPoint:CGPointMake(xVal, 1024)]];
-					[rotations addObject:[NSNumber numberWithFloat:0.0]];
-				}
-			}
-			c++;
-		}
-	}
-	NSMutableArray *position=[[NSMutableArray alloc] initWithCapacity:2];
-	[position addObject:points];
-	[position addObject:rotations];
-	NSLog(@"Sides:%@", sides);
-	NSLog(@"points:%@", points);
-	return position;
-}	
 
 
 - (void) initUsers {
     // Ask the state manager for all the users, and make views for them.
     
     NSSet *userSet = [[StateManager sharedInstance] getUsers];
-    
-    NSMutableArray *layoutData= [self getParticpantLocationsForNumberOfPeople:[userSet count]];
     
     int i=0;
     for(User *user in [StateManager sharedInstance].meeting.currentParticipants) {
@@ -366,10 +288,6 @@
         // This will avoid double-creating if for some reason someone else needs the User's view.
         UserView *view = (UserView *)[user getView];//changed UIView to UserView to get rid of yellow error
         
-        // Now put it in the right place, pulling the data from the layout generating method.
-        view.center = [[[layoutData objectAtIndex:0] objectAtIndex:i] CGPointValue];
-        [view setTransform:CGAffineTransformMakeRotation([[[layoutData objectAtIndex:1] objectAtIndex:i] floatValue])];
-    
         [participantsContainer addSubview:view];
         
         [view setNeedsDisplay];
