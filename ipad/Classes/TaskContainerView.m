@@ -61,13 +61,23 @@
     NSLog(@"laying out task container with %d subviews", [[self subviews] count]);
 	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByPointer:)];
 	for(TaskView *subview in sortedArray){
-        NSLog(@"laying out task: %@", subview.text);
-		subview.frame=CGRectMake(7, (self.bounds.size.height/22.0)+6.5 +(56.5*i), (self.bounds.size.width)-14, 50);
+		if([[self subviews]count]<=(floor(self.bounds.size.height/60.0))){
+			NSLog(@"laying out task: %@", subview.text);
+			subview.frame=CGRectMake(7, (self.bounds.size.height/22.0)+6.5 +(56.5*i), (self.bounds.size.width)-14, 50);
+		}
+		
+		else {
+			NSLog(@"laying out task: %@", subview.text);
+			subview.frame=CGRectMake(7, (self.bounds.size.height/22.0)+6.5 +(28*i), (self.bounds.size.width)-14, (50-3)/2);
+		}
+		
+		[subview setNeedsDisplay];
 		NSLog(@"Frame: %f",self.bounds.size.width);
 
 		NSLog(@"Subview frame: %f",subview.bounds.size.width);
 		i++;
 	}
+	
     
 }
 
@@ -75,7 +85,7 @@
     NSLog(@"touch ended on task container view");
     TaskView *newTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 100, 230, 50) 
                                              withText: @"Ooo! I added a Task. Spiffeh"];
-	if([[self subviews]count]<(floor(self.bounds.size.height/60.0))){
+	if([[self subviews]count]<(floor(self.bounds.size.height/30.0))){
 		[self addSubview:newTask];
 	}
     [self setNeedsLayout];
