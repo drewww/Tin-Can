@@ -136,7 +136,7 @@ Room.prototype = {
 };
 
 
-function Meeting(uuid, title, room, startedAt, topics, tasks) {
+function Meeting(uuid, title, room, startedAt) {
     this.room = room;
     this.title = title;
     this.uuid = uuid;
@@ -145,7 +145,7 @@ function Meeting(uuid, title, room, startedAt, topics, tasks) {
     
     this.locs = [];
 
-    this.topics = topics;
+    this.topics = [];
     
     // These are UNASSIGNED tasks. Assigned tasks are attached to
     // users. 
@@ -217,10 +217,6 @@ Meeting.prototype = {
         // We don't need to unswizzle locs or participants; those get
         // handled when the loc unswizzles. It'll register itself
         // with the meeting it's currently in. 
-        
-        for(topicKey in this.topics) {
-            this.topics[topicKey].unswizzle();
-        }
     }
     
 };

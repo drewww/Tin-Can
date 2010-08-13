@@ -35,6 +35,8 @@
     bool taskDrawerExtended;
     
     float lastHeightChange;
+	float initialHeight;
+
 }
 
 
