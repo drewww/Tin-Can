@@ -61,6 +61,8 @@
 		3AD674461214A56900F974DA /* UserContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD674451214A56900F974DA /* UserContainer.m */; };
 		DA707CCD1212F9C40057B509 /* TopicView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA707CCC1212F9C40057B509 /* TopicView.m */; };
 		DA707CD01212F9EB0057B509 /* TopicContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA707CCF1212F9EB0057B509 /* TopicContainerView.m */; };
+		DA72601F1215A116008A0E0C /* LocationView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA72601E1215A116008A0E0C /* LocationView.m */; };
+		DA7260221215A15E008A0E0C /* LocationContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA7260211215A15E008A0E0C /* LocationContainerView.m */; };
 		DA767ACC11F78D9D00184827 /* TimerBar.m in Sources */ = {isa = PBXBuildFile; fileRef = DA767ACB11F78D9D00184827 /* TimerBar.m */; };
 		DA7FD24A12086F74007A9217 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA7FD24912086F74007A9217 /* WebViewController.m */; };
 		DA7FD27A1208A127007A9217 /* TaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA7FD2791208A127007A9217 /* TaskView.m */; };
@@ -185,6 +187,10 @@
 		DA707CCC1212F9C40057B509 /* TopicView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicView.m; sourceTree = "<group>"; };
 		DA707CCE1212F9EB0057B509 /* TopicContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicContainerView.h; sourceTree = "<group>"; };
 		DA707CCF1212F9EB0057B509 /* TopicContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicContainerView.m; sourceTree = "<group>"; };
+		DA72601D1215A116008A0E0C /* LocationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationView.h; sourceTree = "<group>"; };
+		DA72601E1215A116008A0E0C /* LocationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationView.m; sourceTree = "<group>"; };
+		DA7260201215A15E008A0E0C /* LocationContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationContainerView.h; sourceTree = "<group>"; };
+		DA7260211215A15E008A0E0C /* LocationContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationContainerView.m; sourceTree = "<group>"; };
 		DA767ACA11F78D9D00184827 /* TimerBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimerBar.h; sourceTree = "<group>"; };
 		DA767ACB11F78D9D00184827 /* TimerBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimerBar.m; sourceTree = "<group>"; };
 		DA7FD24812086F74007A9217 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
@@ -420,6 +426,10 @@
 				3AA06B7311A9C1DA00C3D279 /* DragManager.m */,
 				3AC2B91A119871670071F912 /* Todo.h */,
 				3AC2B91B119871670071F912 /* Todo.m */,
+				DA72601D1215A116008A0E0C /* LocationView.h */,
+				DA72601E1215A116008A0E0C /* LocationView.m */,
+				DA7260201215A15E008A0E0C /* LocationContainerView.h */,
+				DA7260211215A15E008A0E0C /* LocationContainerView.m */,
 				3AD66C4B120B0CBE00F974DA /* UserView.h */,
 				3AD66C4C120B0CBE00F974DA /* UserView.m */,
 				3AD66E59120B80C000F974DA /* UserRenderView.h */,
@@ -594,6 +604,8 @@
 				DA707CCD1212F9C40057B509 /* TopicView.m in Sources */,
 				DA707CD01212F9EB0057B509 /* TopicContainerView.m in Sources */,
 				3AD674461214A56900F974DA /* UserContainer.m in Sources */,
+				DA72601F1215A116008A0E0C /* LocationView.m in Sources */,
+				DA7260221215A15E008A0E0C /* LocationContainerView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

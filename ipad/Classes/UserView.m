@@ -17,7 +17,7 @@
 - (id) initWithUser:(User *)theUser {
 
     self = [super initWithFrame:CGRectMake(0, 0, BASE_WIDTH, BASE_HEIGHT + HEIGHT_MARGIN)];
-    
+
     userRenderView = [[[UserRenderView alloc] initWithUser:theUser] retain];
     [self addSubview:userRenderView];
         
@@ -26,7 +26,8 @@
     
     taskDrawerExtended = FALSE;
     
-    taskContainerView = [[[TaskContainerView alloc] initWithFrame:CGRectMake(-BASE_WIDTH/2, -BASE_HEIGHT/2 + 10, BASE_WIDTH, 300) withRot:0.0] retain];
+	//the + 11 was to hide the container view well under the user
+    taskContainerView = [[[TaskContainerView alloc] initWithFrame:CGRectMake(-BASE_WIDTH/2, -BASE_HEIGHT/2 +11, BASE_WIDTH, 300) withRot:0.0] retain];
     [self addSubview:taskContainerView];
     
 
@@ -38,9 +39,31 @@
     [self sendSubviewToBack:taskContainerView];
     
     self.exclusiveTouch = FALSE;
-    
+	
+	taskContainerView.alpha = 0;
+	[UIView beginAnimations:@"fade_in" context:taskContainerView];
+	
+	[UIView setAnimationDuration:.5f];
+	
+	taskContainerView.alpha = 1.0;
+	
+	
+	[UIView commitAnimations];
+    self.alpha = 0;
+	[UIView beginAnimations:@"fade_in" context:self];
+	
+	[UIView setAnimationDuration:.3f];
+	
+	self.alpha = 1.0;
+	
+	
+	[UIView commitAnimations];
+	
     [self setNeedsDisplay];
-    
+    // The 14 was to make sure the container was well above the label
+	initialHeight = taskContainerView.bounds.size.height+14;
+
+	
     return self;
 }
 
@@ -59,14 +82,14 @@
         
         [UIView setAnimationDuration:0.4f];
         
-        float initialHeight = taskContainerView.bounds.size.height;
+        //float initialHeight = taskContainerView.bounds.size.height;
         
         // TODO make this an absolute position, not an adjustment.
         taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y - initialHeight);
         
         CGRect curFrame = self.bounds;
-        curFrame.origin.y = curFrame.origin.y - initialHeight;
-        curFrame.size.height = curFrame.size.height + initialHeight*2;
+        curFrame.origin.y = curFrame.origin.y - (initialHeight);
+        curFrame.size.height = curFrame.size.height + (initialHeight)*2;
         self.bounds = curFrame;
         
         // Save the amount we changed the dimensions by so the retract can make
