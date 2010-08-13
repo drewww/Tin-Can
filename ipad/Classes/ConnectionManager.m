@@ -262,7 +262,7 @@ static ConnectionManager *sharedInstance = nil;
             
         case kUSER_JOINED_LOCATION:
             location = (Location *)[state getObjWithUUID:[e.params objectForKey:@"location"]
-                                              withType:[Meeting class]];
+                                              withType:[Location class]];
             
             user = (User *)[state getObjWithUUID:e.actorUUID withType:[User class]];
             

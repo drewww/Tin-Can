@@ -182,7 +182,7 @@
             location = (Location *)[state getObjWithUUID:event.actorUUID withType:[Location class]];
             
             if([curMeeting.locations containsObject:location]) {
-                NSLog(@"another location joined this meeting!");
+                NSLog(@"another location joined this meeting! with users: %@", location.users);
                 for(User *user in location.users) {
                     [participantsContainer addSubview:[user getView]];
                 }
@@ -277,8 +277,6 @@
 
 - (void) initUsers {
     // Ask the state manager for all the users, and make views for them.
-    
-    NSSet *userSet = [[StateManager sharedInstance] getUsers];
     
     int i=0;
     for(User *user in [StateManager sharedInstance].meeting.currentParticipants) {
