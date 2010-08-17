@@ -133,7 +133,7 @@
     // and an arbitrary (but stable) way to tell between tasks with identical text.
     // This is a rare case in real use, but happens a lot in testing, so this gives us some
     // protection from bad issues during demoing.
-    NSComparisonResult retVal = [self.text compare:view.text];
+    NSComparisonResult retVal = [self.timeStart compare:view.timeStart];
     
     if(retVal==NSOrderedSame) {
         if (self < view)

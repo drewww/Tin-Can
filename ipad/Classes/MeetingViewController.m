@@ -56,15 +56,20 @@
 	taskContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) withRot: M_PI/2];
 
 	topicContainer=[[TopicContainerView alloc] initWithFrame:CGRectMake(260, 490, 250, 600)];
-
+	
+	locContainer=[[LocationContainerView alloc] initWithFrame:CGRectMake(30, 415, 250, 200)];
+	
 	[self.view addSubview:taskContainer];	
 	[self.view addSubview:topicContainer];
+	[self.view addSubview:locContainer];
     [[DragManager sharedInstance] initWithRootView:self.view withParticipantsContainer:participantsContainer];
 
 	[self.view bringSubviewToFront:meetingTimerView];
     [self.view bringSubviewToFront:participantsContainer];
     [self.view bringSubviewToFront:taskContainer];
 	[self.view bringSubviewToFront:topicContainer];
+	[self.view bringSubviewToFront:locContainer];
+
     queue = [[[NSOperationQueue alloc] init] retain];
 
     lastRevision = INITIAL_REVISION_NUMBER;
@@ -328,10 +333,6 @@
     [names addObject:@"Paulina"];
     [names addObject:@"Dori"];
     
-	NSMutableArray *position= [self getParticpantLocationsForNumberOfPeople:[names count]];
-	
-	
-	
 	int i = 0;
 	
 	for (NSString *name in names) {
@@ -398,7 +399,7 @@
         
         
         
-        newUserView.center = [[[position objectAtIndex:0] objectAtIndex:i]CGPointValue];
+        //newUserView.center = [[[position objectAtIndex:0] objectAtIndex:i]CGPointValue];
         
         //NSLog(@"center: %f,%f", newUserView.center.x, newUserView.center.y);
         
@@ -411,9 +412,9 @@
         
 //        newUserView.frame = newFrame;
         
-        CGFloat rot = [[[position objectAtIndex:1] objectAtIndex:i]floatValue];
-        [newUserView setTransform:CGAffineTransformMakeRotation(rot)];
-        
+       // CGFloat rot = [[[position objectAtIndex:1] objectAtIndex:i]floatValue];
+//        [newUserView setTransform:CGAffineTransformMakeRotation(rot)];
+//        
 //        p.view = newParticipantView;
         [participantsContainer addSubview:newUserView];
         [participantsContainer bringSubviewToFront:newUserView];
