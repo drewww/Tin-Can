@@ -51,21 +51,21 @@
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
-	CGContextFillRect(ctx, CGRectMake(0, 0, 45, self.frame.size.height));
+	CGContextFillRect(ctx, CGRectMake(0, 0, self.frame.size.height, self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 		
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 	
 	
-	[[NSString stringWithFormat:@"%d",numUsers] drawInRect:CGRectMake(0, 5, 45, self.frame.size.height-5)
+	[[NSString stringWithFormat:@"%d",numUsers] drawInRect:CGRectMake(0, 5, self.frame.size.height, self.frame.size.height-5)
 				 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
 	
 	
 	CGContextSetFillColorWithColor(ctx, [UIColor blueColor].CGColor);
-	CGContextFillRect(ctx, CGRectMake(50, 0, self.frame.size.width-50, self.frame.size.height));
-	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:.5].CGColor);
-	[name drawInRect:CGRectMake(55, 0, self.frame.size.width-54, self.frame.size.height) 
-			withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+	CGContextFillRect(ctx, CGRectMake(self.frame.size.height+1, 0, self.frame.size.width-18, self.frame.size.height));
+	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:1].CGColor);
+	[name drawInRect:CGRectMake(self.frame.size.height+3, 2,self.frame.size.width - 18, self.frame.size.height) 
+			withFont:[UIFont boldSystemFontOfSize:14] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
 	[self setNeedsDisplay];
 	

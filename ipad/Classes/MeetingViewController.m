@@ -57,7 +57,7 @@
 
 	topicContainer=[[TopicContainerView alloc] initWithFrame:CGRectMake(260, 490, 250, 600)];
 	
-	locContainer=[[LocationContainerView alloc] initWithFrame:CGRectMake(30, 415, 250, 200)];
+	locContainer=[[LocationContainerView alloc] initWithFrame:CGRectMake(20, 432, 290, 160)];
 	
 	[self.view addSubview:taskContainer];	
 	[self.view addSubview:topicContainer];
