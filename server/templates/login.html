@@ -3,6 +3,7 @@
 	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
 <head>
 	<meta name="viewport" content="width=320; initial-scale=1.0; minimum-scale=1.0; maximum-scale=1.0; user-scalable=0;">
 	<title>login</title>
@@ -12,6 +13,9 @@
 <script type="text/javascript" src="{{static_url('js/ConnectionManager.js')}}"></script>
 <script type="text/javascript" src="{{static_url('js/StateManager.js')}}"></script>
 <script type="text/javascript" src="{{static_url('js/model.js')}}"></script>
+<script type="text/javascript" src="{{static_url('js/jquery.cookie.js')}}"></script>
+<script type="text/javascript" src="{{static_url('js/agenda.js')}}"></script>
+<script type="text/javascript" src="{{static_url('js/meeting.js')}}"></script>
 <script type="text/javascript" charset="utf-8">
 	var userListElement;
 	var roomListElement;
@@ -155,6 +159,7 @@
 		displayLocList();
 		displayRoomList();
 	}
+	
 	
 	//removes all name elements, gets new userlist from state and creates new name elements
 	function displayNameList(){
@@ -383,17 +388,20 @@
 	}
 	
 	//slides the screen left slightly
-	function slideLeft(userspos,locspos,roomspos){
+	function slideLeft(userspos,locspos,roomspos,meetingpos){
 		$("#users").offset({left:userspos-5,top:0});
 		$("#locs").offset({left:locspos-5,top:0});
 		$("#rooms").offset({left:roomspos-5,top:0});
+		$("#meeting").offset({left:meetingpos-5,top:0});
+		
 	}
 	
 	//slides the screen right slightly
-	function slideRight(userspos,locspos,roomspos){
+	function slideRight(userspos,locspos,roomspos,meetingpos){
 		$("#users").offset({left:userspos+5,top:0});
 		$("#locs").offset({left:locspos+5,top:0});
 		$("#rooms").offset({left:roomspos+5,top:0});
+		$("#meeting").offset({left:meetingpos+5,top:0});
 	}
 	
 	//highlights the clicked user and logs in (if add is not toggled)
@@ -426,6 +434,7 @@
 			//(maybe because they're negative?), so I'm just making them move again
 			$("#users").animate({"left": "-=324px"},"fast");
 			$("#locs").animate({"left": "-=324px"},"fast");
+			$("#meeting").animate({"left": "-=324px"},"fast");
 		}
 		else{
 		//	selectUserAnimation();
@@ -434,6 +443,7 @@
 			if ($("#locs").offset().left>=0){
 				$("#locs").animate({"left": "-=324px"},"slow");
 				$("#users").animate({"left": "-=324px"},"slow");
+				$("#meeting").animate({"left": "-=324px"},"slow");
 				//$("#rooms").animate({"left": "-=324px"},"slow");
 				$("#rooms").css({left:324,top:0});
 				console.log($("#rooms").offset().left);
@@ -445,7 +455,7 @@
 	function selectUserAnimation(){
 		$("#locs").show();
 		if($("#locs").offset().left>=5){
-			slideLeft($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
+			slideLeft($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left,$("#meeting").offset().left);
 			var t = setTimeout("selectUserAnimation()", 2);
 		}
 
@@ -453,7 +463,8 @@
 			$("#users").hide();
 			$("#locs").offset({left:0,top:0});
 			$("#users").offset({left:0,top:0});
-			$("#rooms").offset({left:0,top:0});
+			$("#rooms").offset({left:0,top:0});0
+			$("#meeting").offset({left:0,top:0});
 		}
 	}
 	
@@ -503,6 +514,7 @@
 			$("#users").animate({"left": "-=324px"},"slow");
 			$("#locs").animate({"left": "-=324px"},"slow");
 			$("#rooms").animate({"left": "-=324px"},"slow");
+			$("#meeting").animate({"left": "-=324px"},"slow");
 			var t = setTimeout("clickEnabled=true",600);
 		}
 		if (user.loc.isInMeeting()){
@@ -513,7 +525,7 @@
 	
 	function selectLocAnimation(){
 		if($("#rooms").offset().left>=5){
-			slideLeft($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
+			slideLeft($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left,$("#meeting").offset().left);
 			var t = setTimeout("selectLocAnimation()", 2);
 		}
 		
@@ -522,6 +534,7 @@
 			$("#rooms").offset({left:0,top:0});
 			$("#locs").offset({left:0,top:0});
 			$("#users").offset({left:0,top:0});
+			$("#meeting").offset({left:0,top:0});
 		}
 	}
 	
@@ -534,7 +547,9 @@
 				user=users[key]
 			}
 		}
-		
+
+		$.cookie('userUUID', user.uuid, { expires: 7 });
+
 		roomname = $(item).find("div").find("strong").html();
 		if (roomname==""){
 			roomname = $(item).find("div").find("em").html();
@@ -571,6 +586,7 @@
 			$("#users").animate({"left": "+=324px"},"slow");
 			$("#locs").animate({"left": "+=324px"},"slow");
 			$("#rooms").animate({"left": "+=324px"},"slow");
+			$("#meeting").animate({"left": "+=324px"}),"slow");
 			var t = setTimeout("$('#locs').hide();clickEnabled=true;",600);
 		}
 	
@@ -617,6 +633,7 @@
 			$("#users").animate({"left": "+=324px"},"slow");
 			$("#locs").animate({"left": "+=324px"},"slow");
 			$("#rooms").animate({"left": "+=324px"},"slow");
+			$("#meeting").animate({"left": "+=324px"},"slow");
 			var t = setTimeout("$('#rooms').hide();clickEnabled=true;leftloc=false;",600);
 		}
 		
@@ -670,6 +687,11 @@
 		position:absolute;
 		top:0px;
 		left:648px;
+	#meeting{
+		float:left;
+		position:absolute;
+		top:0px;
+		left:972px;
 	}
 	li{
 		border-bottom: 1px solid black;
@@ -847,6 +869,8 @@
 </style>
 </head>
 
+
+<div id = "login">>
 <body>
 	<div id = "users">
 	<div id="header">
@@ -912,4 +936,9 @@
 	</ul>
 	</div>
 </body>
+</div>
+	
+
+<div id = "meeting">
+</div>
 </html>
