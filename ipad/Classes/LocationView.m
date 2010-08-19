@@ -56,8 +56,13 @@
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 	
 	
-	[[NSString stringWithFormat:@"%d",numUsers] drawInRect:CGRectMake(0, 5, self.frame.size.height, self.frame.size.height-5)
-				 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
+	CGSize statusSize = [[NSString stringWithFormat:@"%d",numUsers] sizeWithFont:[UIFont boldSystemFontOfSize:11]];
+	
+	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+
+	
+	[[NSString stringWithFormat:@"%d",numUsers] drawInRect:CGRectMake((self.frame.size.height/2.0) -(statusSize.width/2.0), 7, self.frame.size.height, self.frame.size.height-5)
+				 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
 	
 	
@@ -65,12 +70,12 @@
 
 	CGContextFillRect(ctx, CGRectMake(self.frame.size.height+1, 0, 137.5-(self.frame.size.height+1), self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:1].CGColor);
-	[name drawInRect:CGRectMake(self.frame.size.height+3, 2,137.5-(self.frame.size.height+3), self.frame.size.height-4) 
+	[name drawInRect:CGRectMake(self.frame.size.height+3, 5,137.5-(self.frame.size.height+3), self.frame.size.height-4) 
 			withFont:[UIFont boldSystemFontOfSize:14] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
-	CGContextSetLineWidth(ctx,2);
-	CGContextSetStrokeColorWithColor(ctx,  [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
-	CGContextStrokeRect(ctx, CGRectMake(.5, .5, self.frame.size.width-1, self.frame.size.height-1));
+	//CGContextSetLineWidth(ctx,2);
+//	CGContextSetStrokeColorWithColor(ctx,  [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
+//	CGContextStrokeRect(ctx, CGRectMake(.5, .5, self.frame.size.width-1, self.frame.size.height-1));
 	[self setNeedsDisplay];
 	
 	
