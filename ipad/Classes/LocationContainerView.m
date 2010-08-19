@@ -26,7 +26,7 @@
 		NSLog(@"loc: %@", newloc);
 		
 		
-		if([[self subviews]count]<8){
+		if([[self subviews]count]<=8){
 			[self addSubview:newloc];
 		}
 		
@@ -42,9 +42,9 @@
     CGContextRef ctx = UIGraphicsGetCurrentContext();
 	
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
-	CGContextFillRect(ctx, CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height/8.0));
+	CGContextFillRect(ctx, CGRectMake(0, 0, self.bounds.size.width, 22));
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-	[@"LOCATIONS" drawInRect:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height/8.0) 
+	[@"LOCATIONS" drawInRect:CGRectMake(0, 0, self.bounds.size.width, 22) 
 				 withFont:[UIFont boldSystemFontOfSize:18] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
 	
 	CGContextSetLineWidth(ctx,2);
@@ -62,11 +62,11 @@
 	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByPointer:)];
 	for(LocationView *subview in sortedArray){
 		if ( i < 3 ) {
-					subview.frame=CGRectMake(3, (self.bounds.size.height/22.0)+20 +(27*i), self.frame.size.height-150 , 25);
+			subview.frame=CGRectMake(7.6, 29.6 +(32.6*i), 133.6 , 25);
 
 		}
 		else{
-			subview.frame=CGRectMake(146, (self.bounds.size.height/22.0)+20 +(27*c), self.frame.size.height -150 , 25);
+			subview.frame=CGRectMake(148.8, 29.6 +(32.6*c), 133.6, 25);
 			c++;
 		}
 		//NSLog(@"Frame: %f",self.bounds.size.width);

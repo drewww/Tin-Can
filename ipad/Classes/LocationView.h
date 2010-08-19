@@ -12,6 +12,7 @@
 @interface LocationView : UIView {
 	NSString *name;
 	int numUsers;
+	UIColor *color;
 }
 
 - (id) initWithLocation:(Location *)theLocation;

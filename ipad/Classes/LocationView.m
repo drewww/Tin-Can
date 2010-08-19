@@ -49,8 +49,7 @@
 	
     // Drawing code
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
-	
-	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
+	CGContextSetFillColorWithColor(ctx, [UIColor blueColor].CGColor);
 	CGContextFillRect(ctx, CGRectMake(0, 0, self.frame.size.height, self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 		
@@ -61,12 +60,17 @@
 				 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
 	
 	
-	CGContextSetFillColorWithColor(ctx, [UIColor blueColor].CGColor);
-	CGContextFillRect(ctx, CGRectMake(self.frame.size.height+1, 0, self.frame.size.width-18, self.frame.size.height));
+	
+	CGContextSetFillColorWithColor(ctx, [UIColor clearColor].CGColor);
+
+	CGContextFillRect(ctx, CGRectMake(self.frame.size.height+1, 0, 133.6-(self.frame.size.height+1), self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:1].CGColor);
-	[name drawInRect:CGRectMake(self.frame.size.height+3, 2,self.frame.size.width - 18, self.frame.size.height) 
+	[name drawInRect:CGRectMake(self.frame.size.height+3, 2,133.6-(self.frame.size.height+3), self.frame.size.height) 
 			withFont:[UIFont boldSystemFontOfSize:14] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
+	CGContextSetLineWidth(ctx,2);
+	CGContextSetStrokeColorWithColor(ctx,  [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
+	CGContextStrokeRect(ctx, CGRectMake(.5, .5, self.frame.size.width-1, self.frame.size.height-1));
 	[self setNeedsDisplay];
 	
 	

@@ -68,7 +68,7 @@
     [self.view bringSubviewToFront:participantsContainer];
     [self.view bringSubviewToFront:taskContainer];
 	[self.view bringSubviewToFront:topicContainer];
-	[self.view bringSubviewToFront:locContainer];
+	//[self.view bringSubviewToFront:locContainer];
 
     queue = [[[NSOperationQueue alloc] init] retain];
 
