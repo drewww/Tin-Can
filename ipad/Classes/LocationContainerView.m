@@ -62,11 +62,11 @@
 	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByPointer:)];
 	for(LocationView *subview in sortedArray){
 		if ( i < 3 ) {
-			subview.frame=CGRectMake(7.6, 29.6 +(32.6*i), 133.6 , 25);
+			subview.frame=CGRectMake(5, 27 +(33.25*i), 137.5 , 28.25);
 
 		}
 		else{
-			subview.frame=CGRectMake(148.8, 29.6 +(32.6*c), 133.6, 25);
+			subview.frame=CGRectMake(147.5, 27 +(33.25*c), 137.5, 28.25);
 			c++;
 		}
 		//NSLog(@"Frame: %f",self.bounds.size.width);

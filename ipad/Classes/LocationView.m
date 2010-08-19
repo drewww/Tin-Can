@@ -63,9 +63,9 @@
 	
 	CGContextSetFillColorWithColor(ctx, [UIColor clearColor].CGColor);
 
-	CGContextFillRect(ctx, CGRectMake(self.frame.size.height+1, 0, 133.6-(self.frame.size.height+1), self.frame.size.height));
+	CGContextFillRect(ctx, CGRectMake(self.frame.size.height+1, 0, 137.5-(self.frame.size.height+1), self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:1].CGColor);
-	[name drawInRect:CGRectMake(self.frame.size.height+3, 2,133.6-(self.frame.size.height+3), self.frame.size.height) 
+	[name drawInRect:CGRectMake(self.frame.size.height+3, 2,137.5-(self.frame.size.height+3), self.frame.size.height-4) 
 			withFont:[UIFont boldSystemFontOfSize:14] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
 	CGContextSetLineWidth(ctx,2);
