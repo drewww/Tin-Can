@@ -198,6 +198,8 @@ def _handleNewTopic(event):
             createdAt=d["createdAt"])
         
     event.meeting.addTopic(newTopic)
+    event.actor._status="created new topic"
+    
     return event
     
 def _handleDeleteTopic(event):
@@ -205,6 +207,7 @@ def _handleDeleteTopic(event):
     topic = state.get_obj(event.params["topicUUID"], model.Topic)
     
     event.meeting.removeTopic(topic)
+    event.actor._status="deleted topic"
     
     return event
     
@@ -213,6 +216,7 @@ def _handleUpdateTopic(event):
     status = event.params["status"]
     
     topic.setStatus(status, event.actor)
+    event.actor._status="edited topic"
     
     return event
 
@@ -233,6 +237,7 @@ def _handleNewTask(event):
             taskUUID=d["uuid"], createdAt=d["createdAt"])
 
     event.meeting.addTask(newTask)
+    event.actor._status="added new task"
     
     return event
 
@@ -242,6 +247,7 @@ def _handleDeleteTask(event):
     logging.debug(task)
     
     event.meeting.removeTask(task)
+    event.actor._status="deleted task"
 
     return event
 
@@ -250,6 +256,7 @@ def _handleEditTask(event):
     task = state.get_obj(event.params["taskUUID"], model.Task)
     
     task.setText(text)
+    event.actor._status="edited task"
     return event
     
 def _handleAssignTask(event):
@@ -262,8 +269,11 @@ def _handleAssignTask(event):
     if(not deassign):
         assignedTo = state.get_obj(event.params["assignedTo"], model.User)
         task.assign(assignedBy,assignedTo)
+        assignedBy._status="assigned task"
+        assignedTo._status="claimed task"
     else:
         task.deassign(assignedBy)
+        assignedBy._status="deassigned task"
 
     event.params["assignedAt"]=task.assignedAt
     return event

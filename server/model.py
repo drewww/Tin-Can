@@ -567,7 +567,6 @@ class Location(Actor):
         return self.meeting
     
     def isLoggedIn(self):
-        logging.debug(len(self.users))
         return Actor.isLoggedIn(self) or len(self.users)>0
     
     def isInMeeting(self):
