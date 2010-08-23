@@ -39,9 +39,10 @@ def _handleNewMeeting(event):
     room = state.get_obj(event.params["room"], model.Room)
     room.set_meeting(newMeeting)
     
+    # UPDATE: don't need eventHistory anymore
     # add this event to the meeting, so it's included at the beginning of
     # every meeting history.
-    newMeeting.eventHistory.append(event)
+    # newMeeting.eventHistory.append(event)
     
     return event
 
@@ -319,21 +320,21 @@ EventType("LOCATION_LEFT_MEETING",  ["meeting"], _handleLocationLeftMeeting,
     
 EventType("EDIT_MEETING", ["meeting", "title"], _handleEditMeeting, True, False)
 
-EventType("NEW_TOPIC",      ["text"],               _handleNewTopic, False,
+EventType("NEW_TOPIC",      ["text"],               _handleNewTopic, True,
     True)
-EventType("DELETE_TOPIC",   ["topicUUID"],          _handleDeleteTopic, False,
+EventType("DELETE_TOPIC",   ["topicUUID"],          _handleDeleteTopic, True,
     True)
-EventType("UPDATE_TOPIC",   ["topicUUID", "status"],_handleUpdateTopic, False,
+EventType("UPDATE_TOPIC",   ["topicUUID", "status"],_handleUpdateTopic, True,
     True)
-EventType("SET_TOPIC_LIST", ["text"],               _handleTopicList, False,
+EventType("SET_TOPIC_LIST", ["text"],               _handleTopicList, True,
     True)
 
-EventType("NEW_TASK",      ["text"],                _handleNewTask, False,
+EventType("NEW_TASK",      ["text"],                _handleNewTask, True,
     True)
-EventType("DELETE_TASK",   ["taskUUID"],            _handleDeleteTask, False,
+EventType("DELETE_TASK",   ["taskUUID"],            _handleDeleteTask, True,
     True)
-EventType("EDIT_TASK",   ["taskUUID", "text"],      _handleEditTask, False,
+EventType("EDIT_TASK",   ["taskUUID", "text"],      _handleEditTask, True,
     True)
-EventType("ASSIGN_TASK", ["taskUUID", "assignedTo"],_handleAssignTask, False,
+EventType("ASSIGN_TASK", ["taskUUID", "assignedTo"],_handleAssignTask, True,
     True)
 

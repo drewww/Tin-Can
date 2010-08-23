@@ -68,6 +68,10 @@
 						conn.joinLocation($('#location')[0].value);
 					});
 					
+					$('#add_user_location').click(function() {
+						conn.joinLocation($('#location')[0].value, $('#user')[0].value);
+					});
+					
 					$('#join_room').click(function() {
 						conn.joinRoom($('#room')[0].value);
 					});
@@ -149,6 +153,7 @@
 <button id="logout" >Logout</button>
 <button id="join_room">Join Room</button>
 <button id="join_location">Join Location</button>
+<button id="add_user_location">Add User to Location</button>
 <button id="leave">Leave</button>
 <button id="stop">Stop</button>
 <input type="text" name="new_user" value="" id="new_input">

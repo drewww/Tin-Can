@@ -498,17 +498,25 @@ class JoinLocationHandler(BaseHandler):
     def post(self):
         actor = self.get_current_actor()
         
-        locationUUID = self.get_argument("locationUUID")
-        location = state.get_obj(locationUUID, Location)
-        if(location==None):
-            raise HTTPError(400, "Specified location UUID %s\
-            didn't exist or wasn't a valid location."%locationUUID)
-            return None
-        
-        # Trigger the actual event.
-        joinLocationEvent = Event("USER_JOINED_LOCATION", actor.uuid,
-            params={"location":location.uuid})
-        joinLocationEvent.dispatch()
+        if isinstance(actor, model.User):
+            locationUUID = self.get_argument("locationUUID")
+            location = state.get_obj(locationUUID, Location)
+            if(location==None):
+                raise HTTPError(400, "Specified location UUID %s\
+                didn't exist or wasn't a valid location."%locationUUID)
+                return None
+            
+            userUUID = self.get_argument("userUUID")
+
+            # Trigger the actual event.
+            if userUUID=="null":
+                joinLocationEvent = Event("USER_JOINED_LOCATION", actor.uuid,
+                    params={"location":location.uuid})
+                joinLocationEvent.dispatch()
+            else:
+                joinLocationEvent = Event("USER_JOINED_LOCATION", userUUID,
+                    params={"location":location.uuid})
+                joinLocationEvent.dispatch()
 
 class LeaveLocationHandler(BaseHandler):
     

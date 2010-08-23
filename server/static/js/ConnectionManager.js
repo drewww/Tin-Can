@@ -476,23 +476,39 @@ ConnectionManager.prototype = {
         });
     },
     
-    joinLocation: function(locationUUID) {
+    joinLocation: function(locationUUID, userUUID) {
         if(!this.validateConnected()) {return;}
         
         console.log("Joining location: " + locationUUID);
+        None=null
         
-        $.ajax({
-           url: '/locations/join',
-           type: "POST",
-           success: function () {
-               this.publishEvent(this.generateEvent("JOIN_LOCATION_COMPLETE",
-                {}));
-               },
-           error: function () { this.publishEvent(this.generateEvent(
-               "JOIN_LOCATION_COMPLETE", false));},
-           context: this,
-           data: { "locationUUID": locationUUID }
-        });
+        if (userUUID==null)
+            $.ajax({
+               url: '/locations/join',
+               type: "POST",
+               success: function () {
+                   this.publishEvent(this.generateEvent("JOIN_LOCATION_COMPLETE",
+                    {}));
+                   },
+               error: function () { this.publishEvent(this.generateEvent(
+                   "JOIN_LOCATION_COMPLETE", false));},
+               context: this,
+               data: { "locationUUID": locationUUID, "userUUID": "null" }
+            });
+        else{
+            $.ajax({
+               url: '/locations/join',
+               type: "POST",
+               success: function () {
+                   this.publishEvent(this.generateEvent("JOIN_LOCATION_COMPLETE",
+                    {}));
+                   },
+               error: function () { this.publishEvent(this.generateEvent(
+                   "JOIN_LOCATION_COMPLETE", false));},
+               context: this,
+               data: { "locationUUID": locationUUID, "userUUID": userUUID }
+            });
+        }
     },
     
     leaveLocation: function(locationUUID) {
