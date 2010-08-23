@@ -14,6 +14,7 @@ Copyright (c) 2010 MIT Media Lab. All rights reserved.
 import model
 import logging
 import state
+import time
 
 # DISPATCH METHODS
 # These methods will not be called by anyone other than the event dispatch
@@ -120,6 +121,8 @@ def _handleDeviceLeft(event):
 def _handleJoinedLocation(event):
     location = state.get_obj(event.params["location"], model.Location)
     location.userJoined(event.actor)
+    event.actor.status = ("joined location", time.time())
+    event.params["joinedAt"] = event.actor.status[1]
     
     # event.addResult("user", event.actor)
     
@@ -198,7 +201,7 @@ def _handleNewTopic(event):
             createdAt=d["createdAt"])
         
     event.meeting.addTopic(newTopic)
-    event.actor._status="created new topic"
+    event.actor.status=("created new topic", newTopic.createdAt)
     
     return event
     
@@ -207,7 +210,9 @@ def _handleDeleteTopic(event):
     topic = state.get_obj(event.params["topicUUID"], model.Topic)
     
     event.meeting.removeTopic(topic)
-    event.actor._status="deleted topic"
+    event.actor.status=("deleted topic", time.time())
+    #needed to keep track of statuses on client-side
+    event.params["deletedAt"] = event.actor.status[1]
     
     return event
     
@@ -216,7 +221,9 @@ def _handleUpdateTopic(event):
     status = event.params["status"]
     
     topic.setStatus(status, event.actor)
-    event.actor._status="edited topic"
+    event.actor.status=("edited topic", time.time())
+    #needed to keep track of statuses on client-side
+    event.params["editedAt"] = event.actor.status[1]
     
     return event
 
@@ -237,7 +244,7 @@ def _handleNewTask(event):
             taskUUID=d["uuid"], createdAt=d["createdAt"])
 
     event.meeting.addTask(newTask)
-    event.actor._status="added new task"
+    event.actor.status=("created new task", newTask.createdAt)
     
     return event
 
@@ -247,7 +254,9 @@ def _handleDeleteTask(event):
     logging.debug(task)
     
     event.meeting.removeTask(task)
-    event.actor._status="deleted task"
+    event.actor.status=("deleted task", time.time())
+    #needed to keep track of statuses on client-side
+    event.params["deletedAt"] = event.actor.status[1]
 
     return event
 
@@ -256,7 +265,9 @@ def _handleEditTask(event):
     task = state.get_obj(event.params["taskUUID"], model.Task)
     
     task.setText(text)
-    event.actor._status="edited task"
+    event.actor.status=("edited task", time.time())
+    #needed to keep track of statuses on client-side
+    event.params["editedAt"] = event.actor.status[1]
     return event
     
 def _handleAssignTask(event):
@@ -269,11 +280,11 @@ def _handleAssignTask(event):
     if(not deassign):
         assignedTo = state.get_obj(event.params["assignedTo"], model.User)
         task.assign(assignedBy,assignedTo)
-        assignedBy._status="assigned task"
-        assignedTo._status="claimed task"
+        assignedBy.status=("assigned task", task.assignedAt)
+        assignedTo.status=("claimed task", task.assignedAt)
     else:
         task.deassign(assignedBy)
-        assignedBy._status="deassigned task"
+        assignedBy.status=("deassigned task", task.assignedAt)
 
     event.params["assignedAt"]=task.assignedAt
     return event
@@ -345,6 +356,6 @@ EventType("DELETE_TASK",   ["taskUUID"],            _handleDeleteTask, True,
     True)
 EventType("EDIT_TASK",   ["taskUUID", "text"],      _handleEditTask, True,
     True)
-EventType("ASSIGN_TASK", ["taskUUID", "assignedTo"],_handleAssignTask, True,
+EventType("ASSIGN_TASK", ["taskUUID"],_handleAssignTask, True,
     True)
 

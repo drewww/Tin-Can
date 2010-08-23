@@ -106,10 +106,23 @@ StateManager.prototype = {
             
             
             if(user["location"]!=null) {
-                newUser = new User(user["uuid"], user["name"],
-                    user["location"]);
+                if (user["status"]!=null){
+                    newUser = new User(user["uuid"], user["name"],
+                        user["location"], user["status"], user["handRaised"]);
+                }
+                else{
+                    newUser = new User(user["uuid"], user["name"],
+                        user["location"], null, user["handRaised"]);
+                }
             } else {
-                newUser = new User(user["uuid"], user["name"], null);
+                if (user["status"]!=null){
+                    newUser = new User(user["uuid"], user["name"],
+                        null, user["status"], user["handRaised"]);
+                }
+                else{
+                    newUser = new User(user["uuid"], user["name"],
+                        null, null, user["handRaised"]);
+                }
             }
             
             this.actors.push(newUser);

@@ -476,7 +476,8 @@ class User(Actor):
         
         Actor.__init__(self, name, userUUID)
         
-        self._status = None
+        self.handRaised = False
+        self.status = None
         self.location = None
         self.tasks = set()
         
@@ -490,7 +491,11 @@ class User(Actor):
         
     def getDict(self):
         d = Actor.getDict(self)
-        d["status"] = self._status
+        d["handRaised"] = self.handRaised
+        if self.status!=None:
+            d["status"] = {"type":self.status[0], "time":self.status[1]}
+        else:
+            d["status"] = None
         
         if(self.location != None):
             d["location"] = self.location.uuid
@@ -621,7 +626,6 @@ class Location(Actor):
         else:
             return "[loc.%s %s meet:NONE users:%d devs:%d]"%(self.uuid[0:6],
                 self.name, len(self.users), len(self.getDevices()))
-            
 
 
 class MeetingObject(YarnBaseType):
