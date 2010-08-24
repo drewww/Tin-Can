@@ -68,6 +68,10 @@
 						conn.joinLocation($('#location')[0].value);
 					});
 					
+					$('#add_user_location').click(function() {
+						conn.joinLocation($('#location')[0].value, $('#user')[0].value);
+					});
+					
 					$('#join_room').click(function() {
 						conn.joinRoom($('#room')[0].value);
 					});
@@ -115,6 +119,9 @@
 						room = state.getObj($('#room')[0].value, Room);
 						conn.editMeeting(room.currentMeeting.uuid,$('#new_input')[0].value);
 					});
+					$('#hand_raise_button').click(function() {
+						conn.raiseHand($('#user')[0].value);
+					});
 				});
 		
 	</script>
@@ -149,6 +156,7 @@
 <button id="logout" >Logout</button>
 <button id="join_room">Join Room</button>
 <button id="join_location">Join Location</button>
+<button id="add_user_location">Add User to Location</button>
 <button id="leave">Leave</button>
 <button id="stop">Stop</button>
 <input type="text" name="new_user" value="" id="new_input">
@@ -180,7 +188,7 @@
 <button id="edit_task_button">Edit Task</button>
 <button id="assign_task_button">Assign Task</button>
 <button id="deassign_task_button">Deassign Task</button>
-
+<button id="hand_raise_button">Raise Hand</button>
 
 <div id="response">
 	

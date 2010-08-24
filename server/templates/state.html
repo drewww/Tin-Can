@@ -42,6 +42,10 @@
 			background-color: #ff9999;
 		}
 		
+		.handraised{
+			color: #ffffff;
+		}
+		
 		br.clear {
 			clear: both;
 		}
@@ -59,8 +63,18 @@
 <div class="user logged-out">
 {% end %}
 
+{% if user.handRaised %}
+<div class = "handraised">
 <span class="name">{{user.name}}</span>
-
+</div>
+{% else %}
+<span class="name">{{user.name}}</span>
+{% end %}
+{% if user.status != None %}
+<div>status: {{user.status[0]}} at {{time.strftime("%I:%M %p", time.localtime(user.status[1]))}}</div>
+{% else %}
+<div>status: None</div>
+{% end %}
 <span class="devices">
 
 	devices:

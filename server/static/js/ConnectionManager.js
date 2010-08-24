@@ -229,6 +229,8 @@ ConnectionManager.prototype = {
                 }
                 
                 console.log(user.name + " joined " + loc.name);
+                user.status = {type: "joined location", 
+                    time: new Date(ev["params"]["joinedAt"]*1000)}
                 break;
                 
             case "USER_LEFT_LOCATION":
@@ -303,6 +305,9 @@ ConnectionManager.prototype = {
                 topic.unswizzle();
 
                 console.log("Made a new topic!");
+                actor = state.getObj(ev.actorUUID, User)
+                actor.status = {type: "created new topic", 
+                    time: topicData["createdAt"]}
                 break;
             
             case "UPDATE_TOPIC":
@@ -327,6 +332,9 @@ ConnectionManager.prototype = {
                 topic.status=status;
                 
                 console.log("Set topic status to " + status)
+                actor = state.getObj(ev.actorUUID, User)
+                actor.status = {type: "edited topic", 
+                    time: new Date(ev["params"]["editedAt"]*1000)}
                 break;
                 
             case "NEW_TASK":
@@ -342,6 +350,9 @@ ConnectionManager.prototype = {
                 task.unswizzle();
                 
                 console.log("Made a new task!");
+                actor = state.getObj(ev.actorUUID, User)
+                actor.status = {type: "created new task", 
+                    time: taskData["createdAt"]}
                 break;
             
             case "DELETE_TASK":
@@ -351,6 +362,9 @@ ConnectionManager.prototype = {
                 console.log("Deleting task:" + task.uuid)
                 
                 meeting.removeTask(task);
+                actor = state.getObj(ev.actorUUID, User)
+                actor.status = {type: "deleted task", 
+                    time: new Date(ev["params"]["deletedAt"]*1000)}
                 break;
                 
             case "EDIT_TASK":
@@ -359,6 +373,9 @@ ConnectionManager.prototype = {
                 
                 console.log("Task "+task.uuid+ " is "+text);
                 task.text=text;
+                actor = state.getObj(ev.actorUUID, User)
+                actor.status = {type: "edited task", 
+                    time: new Date(ev["params"]["editedAt"]*1000)}
                 break;
                 
             case "ASSIGN_TASK":
@@ -373,12 +390,16 @@ ConnectionManager.prototype = {
                 task.assignedAt = new Date(ev["params"]["assignedAt"]*1000);
                 if(ev["params"]["deassign"]) {
                     console.log("Deassigning task.");
-                    task.deassign(assignedBy);                    
+                    task.deassign(assignedBy);
+                    assignedBy.status = {type: "deassigned task", time: task.assignedAt}                 
                 } else {
                     console.log("Assigning task.");
                     assignedTo = state.getObj(ev["params"]["assignedTo"],
                         User);                    
                     task.assign(assignedBy, assignedTo);
+                    assignedBy.status = {type: "assigned task", time: task.assignedAt}
+                    assignedTo.status = {type: "claimed task", time: task.assignedAt}
+                    
                 }
                 
                 break;
@@ -476,23 +497,39 @@ ConnectionManager.prototype = {
         });
     },
     
-    joinLocation: function(locationUUID) {
+    joinLocation: function(locationUUID, userUUID) {
         if(!this.validateConnected()) {return;}
         
         console.log("Joining location: " + locationUUID);
+        None=null
         
-        $.ajax({
-           url: '/locations/join',
-           type: "POST",
-           success: function () {
-               this.publishEvent(this.generateEvent("JOIN_LOCATION_COMPLETE",
-                {}));
-               },
-           error: function () { this.publishEvent(this.generateEvent(
-               "JOIN_LOCATION_COMPLETE", false));},
-           context: this,
-           data: { "locationUUID": locationUUID }
-        });
+        if (userUUID==null)
+            $.ajax({
+               url: '/locations/join',
+               type: "POST",
+               success: function () {
+                   this.publishEvent(this.generateEvent("JOIN_LOCATION_COMPLETE",
+                    {}));
+                   },
+               error: function () { this.publishEvent(this.generateEvent(
+                   "JOIN_LOCATION_COMPLETE", false));},
+               context: this,
+               data: { "locationUUID": locationUUID, "userUUID": "null" }
+            });
+        else{
+            $.ajax({
+               url: '/locations/join',
+               type: "POST",
+               success: function () {
+                   this.publishEvent(this.generateEvent("JOIN_LOCATION_COMPLETE",
+                    {}));
+                   },
+               error: function () { this.publishEvent(this.generateEvent(
+                   "JOIN_LOCATION_COMPLETE", false));},
+               context: this,
+               data: { "locationUUID": locationUUID, "userUUID": userUUID }
+            });
+        }
     },
     
     leaveLocation: function(locationUUID) {
@@ -780,6 +817,23 @@ ConnectionManager.prototype = {
             },
             error: function() {
                 this.publishEvent(this.generateEvent("ASSIGN_TASK_COMPLETE",
+                    {}, false));
+            }
+        });
+    },
+    
+    raiseHand: function(){
+        $.ajax({
+            url: '/users/hand',
+            type: "POST",
+            context: this,
+            data: {},
+            success: function () {
+                this.publishEvent(this.generateEvent("HAND_RAISE_COMPLETE",
+                    {}));
+            },
+            error: function() {
+                this.publishEvent(this.generateEvent("HAND_RAISE_COMPLETE",
                     {}, false));
             }
         });

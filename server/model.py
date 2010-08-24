@@ -108,8 +108,6 @@ class Meeting(YarnBaseType):
         self.allParticipants = set()
         
         self.locations = set()
-                
-        self.eventHistory = []
         
         self.topics = []
         self.tasks = []
@@ -216,7 +214,8 @@ class Meeting(YarnBaseType):
         
         logging.info("About to send to all users in meeting: %s"
             %eventToSend.meeting.getCurrentParticipants())
-            
+        
+        # JOINED is no longer an eventType.    
         if(eventToSend.eventType == "JOINED"):
             # This is tricky - we want to (in the JOINED event message)
             # include the history of everything that's happened in the meeting
@@ -233,15 +232,15 @@ class Meeting(YarnBaseType):
         else:
             # This is the normal path for all other event types.
             event.sendEventsToDevices(self.getDevices(), [eventToSend])
-
+        
+        # Getting rid of eventHistory
         # Save the event in the meeting history.
-        self.eventHistory.append(eventToSend)
+        # self.eventHistory.append(eventToSend)
         
     def __str__(self):
-        return "[meet.%s@%s %s locs:%d users:%d events:%d topics:%d tasks:%d]"%(
+        return "[meet.%s@%s %s locs:%d users:%d topics:%d tasks:%d]"%(
             self.uuid[0:6], self.room.name, self.title, len(self.locations),
-            len(self.getCurrentParticipants()), len(self.eventHistory),
-            len(self.topics), len(self.tasks))
+            len(self.getCurrentParticipants()), len(self.topics), len(self.tasks))
             
 
 class Device(YarnBaseType):
@@ -477,7 +476,8 @@ class User(Actor):
         
         Actor.__init__(self, name, userUUID)
         
-        self._status = None
+        self.handRaised = False
+        self.status = None
         self.location = None
         self.tasks = set()
         
@@ -491,7 +491,11 @@ class User(Actor):
         
     def getDict(self):
         d = Actor.getDict(self)
-        d["status"] = self._status
+        d["handRaised"] = self.handRaised
+        if self.status!=None:
+            d["status"] = {"type":self.status[0], "time":self.status[1]}
+        else:
+            d["status"] = None
         
         if(self.location != None):
             d["location"] = self.location.uuid
@@ -567,6 +571,9 @@ class Location(Actor):
     def getMeeting(self):
         return self.meeting
     
+    def isLoggedIn(self):
+        return Actor.isLoggedIn(self) or len(self.users)>0
+    
     def isInMeeting(self):
         return self.meeting != None
         
@@ -619,7 +626,6 @@ class Location(Actor):
         else:
             return "[loc.%s %s meet:NONE users:%d devs:%d]"%(self.uuid[0:6],
                 self.name, len(self.users), len(self.getDevices()))
-            
 
 
 class MeetingObject(YarnBaseType):

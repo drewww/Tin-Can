@@ -4,9 +4,16 @@
 // quite similar to model.py on the server, but is missing lots of the 
 // more complicated server logic that client types don't need.
 
-function User(uuid, name, loc) {
+function User(uuid, name, loc, status, handRaised) {
     this.uuid = uuid;
     this.name = name;
+    if (status != null){
+        this.status = {type: status["type"], time: status["time"]};
+    }
+    else{
+        this.status = null;
+    }
+    this.handRaised = handRaised;
     
     this.loc = loc;
     
