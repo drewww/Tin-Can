@@ -13,12 +13,24 @@
 
 @synthesize text;
 @synthesize timeStart;
+@synthesize timeFinished;
 - (id)initWithFrame:(CGRect)frame withTopic:(Topic *)agenda{
     if ((self = [super initWithFrame:frame])) {
 		self.frame=frame;
         topic=agenda;
 		text=topic.text;
 		//if([agenda.startTime isKindOfClass:[NSNull class]]){
+		if(agenda.stopTime !=nil){
+			timeFormat = [[[NSDateFormatter alloc] init] autorelease];
+			[timeFormat setDateFormat:@"HH:mm:ss"];
+			timeFinished=[[timeFormat stringFromDate:agenda.stopTime]retain];
+			hasEnded=TRUE;
+		}
+		else{
+			hasEnded=FALSE;
+			timeFinished=nil;
+		}
+		
 		if(agenda.startTime ==nil){
 				timeStart=@"START";
 		}
@@ -81,10 +93,37 @@
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 
 	
-	[timeStart drawInRect:CGRectMake(3, 16, 45, self.frame.size.height-12)
-			withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+	if(hasEnded==TRUE){
+	[@"Started:" drawInRect:CGRectMake(3, 2, 45, self.frame.size.height-15)
+					 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+		
+		
+	[timeStart drawInRect:CGRectMake(3, 12, 45, self.frame.size.height-12)
+					 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+		
+		
+	CGContextSetFillColorWithColor(ctx, [UIColor redColor].CGColor);
+	[@"Ended:" drawInRect:CGRectMake(3, 24, 45, self.frame.size.height-15)
+						withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 
-	
+	[timeFinished drawInRect:CGRectMake(3, 36, 45, self.frame.size.height-15)
+				 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+	}
+	else{
+		if (![timeStart isEqualToString:@"START"]){
+	[@"Started:" drawInRect:CGRectMake(3, 9, 45, self.frame.size.height-15)
+					   withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+		
+		
+	[timeStart drawInRect:CGRectMake(3, 20, 45, self.frame.size.height-12)
+					 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+	}	
+		else{
+			[timeStart drawInRect:CGRectMake(5, 18, 45, self.frame.size.height-12)
+						 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+		}
+		
+	}
 	CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
 	CGContextFillRect(ctx, CGRectMake(50, 0, self.frame.size.width-50, self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:.5].CGColor);
@@ -112,6 +151,16 @@
 //		[timeFormat release];
 //		[now release];
 
+	}
+	else if(timeFinished ==nil){
+		hasEnded=TRUE;
+		timeFormat = [[[NSDateFormatter alloc] init] autorelease];
+		[timeFormat setDateFormat:@"HH:mm:ss"];
+		
+		NSDate *now = [[[NSDate alloc] init] autorelease];
+		
+		
+		timeFinished = [[timeFormat stringFromDate:now] retain];
 	}	
 	[self setNeedsDisplay];
 
@@ -133,7 +182,8 @@
     // and an arbitrary (but stable) way to tell between tasks with identical text.
     // This is a rare case in real use, but happens a lot in testing, so this gives us some
     // protection from bad issues during demoing.
-    NSComparisonResult retVal = [self.timeStart compare:view.timeStart];
+   
+	NSComparisonResult retVal = [self.timeStart compare:view.timeStart];
     
     if(retVal==NSOrderedSame) {
         if (self < view)
