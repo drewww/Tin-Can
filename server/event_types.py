@@ -288,6 +288,11 @@ def _handleAssignTask(event):
 
     event.params["assignedAt"]=task.assignedAt
     return event
+    
+def _handleHandRaise(event):
+    event.actor.handRaised =  not event.actor.handRaised
+    
+    return event
 
 # This class just wraps the different features of an event into a nice 
 # container. Different events expect different parameters and are dispatched
@@ -358,4 +363,6 @@ EventType("EDIT_TASK",   ["taskUUID", "text"],      _handleEditTask, True,
     True)
 EventType("ASSIGN_TASK", ["taskUUID"],_handleAssignTask, True,
     True)
+    
+EventType("HAND_RAISE", [], _handleHandRaise, True, True)
 

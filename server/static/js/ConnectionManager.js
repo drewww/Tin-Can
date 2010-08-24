@@ -822,6 +822,23 @@ ConnectionManager.prototype = {
         });
     },
     
+    raiseHand: function(){
+        $.ajax({
+            url: '/users/hand',
+            type: "POST",
+            context: this,
+            data: {},
+            success: function () {
+                this.publishEvent(this.generateEvent("HAND_RAISE_COMPLETE",
+                    {}));
+            },
+            error: function() {
+                this.publishEvent(this.generateEvent("HAND_RAISE_COMPLETE",
+                    {}, false));
+            }
+        });
+    },
+    
     // Returns the meeting that this client is currently in. Might be null,
     // if this client hasn't joined a meeting yet. 
     getCurrentMeeting: function() {

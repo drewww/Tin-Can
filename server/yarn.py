@@ -63,6 +63,7 @@ class YarnApplication(tornado.web.Application):
             
             (r"/users/", AllUsersHandler),
             (r"/users/add", AddUserHandler),
+            (r"/users/hand", HandRaiseHandler),
             
             (r"/connect/", ConnectionHandler),
             (r"/connect/test", ConnectTestHandler),
@@ -649,6 +650,15 @@ class AssignTaskHandler(BaseHandler):
             actor.getMeeting().uuid,
             params = p)
         assignTaskEvent.dispatch()
+
+class HandRaiseHandler(BaseHandler):
+    def post(self):
+        actor = self.get_current_actor()
+        
+        if isinstance(actor, model.User):
+            handRaiseEvent = Event("HAND_RAISE", actor.uuid, 
+                actor.getMeeting().uuid, params = {})
+            handRaiseEvent.dispatch()
 
 class ReplayHandler(tornado.web.RequestHandler):
     def get(self):
