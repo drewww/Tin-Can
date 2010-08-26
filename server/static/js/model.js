@@ -190,8 +190,8 @@ Meeting.prototype = {
         currentParticipants = [];
         
         for(loc in this.locs) {
-            for(user in loc.getUsers()) {
-                currentParticipants.push(user);
+            for(key in this.locs[loc].users) {
+                currentParticipants.push(this.locs[loc].users[key]);
             }
         }   
         return currentParticipants;
@@ -325,6 +325,7 @@ Task.prototype = {
         if(this.assignedTo!=null) {
             this.assignedBy = byActor;
             this.assignedTo.removeTask(this);
+            this.assignedTo=null;
         }
     },
     

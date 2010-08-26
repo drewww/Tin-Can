@@ -307,7 +307,7 @@ ConnectionManager.prototype = {
                 console.log("Made a new topic!");
                 actor = state.getObj(ev.actorUUID, User)
                 actor.status = {type: "created new topic", 
-                    time: topicData["createdAt"]}
+                    time: topic.createdAt}
                 break;
             
             case "UPDATE_TOPIC":
@@ -352,7 +352,7 @@ ConnectionManager.prototype = {
                 console.log("Made a new task!");
                 actor = state.getObj(ev.actorUUID, User)
                 actor.status = {type: "created new task", 
-                    time: taskData["createdAt"]}
+                    time: task.createdAt}
                 break;
             
             case "DELETE_TASK":
