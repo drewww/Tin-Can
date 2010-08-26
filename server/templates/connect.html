@@ -41,8 +41,126 @@
 									+ "</option>");
 								break;	
 						}
+						
+						refresh();
 					}});
 
+					function refresh(){
+						$('#response').html("");
+						$('#response').append('<div id = "users"><h1>Users</h1></div>');
+						users=state.getUsers();
+						for (var i=0; i < users.length; i++){
+							key=i
+							//instead of login, we'll use isInLocation because clients can't
+							//keep track of devices. perhaps there's a way to just set a login
+							//flag when login events fire, but i'll skip that for now.
+							if (users[key].isInLocation()){
+								$('#users').append('<div class="user logged-in"></div>')
+							}
+							else{
+								$('#users').append('<div class="user logged-out"></div>')
+							}
+							
+							if (users[key].handRaised){
+								$('.user:eq('+key+')').append('<div class = "handraised"><span class="name">' 
+									+ users[key].name + '</span></div>');
+							}
+							else{
+								$('.user:eq('+key+')').append('<span class="name">' + users[key].name + '</span>');
+							}
+							
+							if (users[key].status != null){
+								$('.user:eq('+key+')').append('<div>status: ' + users[key].status.type +
+									' at ' + users[key].status.time + '</div>');
+							}
+							else{
+								$('.user:eq('+key+')').append('<div>status: None</div>');
+							}
+							
+							$('.user:eq('+key+')').append('<span class = "tasks usertask"> tasks: </span>');
+							for (task in users[key].tasks){
+								$('.usertask:eq('+task+')').append(users[key].tasks[task].text + ', ');
+							}
+						}
+						$('#users').append('<br class="clear"/>');
+						
+						$('#response').append('<div id = "locations"><h1>Locations</h1></div>');
+						locs = state.getLocations();
+						for (var i=0; i < locs.length; i++){
+							if (locs[i].users.length>0 || locs[i].meeting!=null){
+								$('#locations').append('<div class="location logged-in"></div>');
+								$('.location:eq('+i+')').append('<strong>'+locs[i].name+'</strong>');
+								$('.location:eq('+i+')').append('<div class = "locusers">users: </div>');
+								for (key in locs[i].users){
+									$('.locusers:eq('+i+')').append(locs[i].users[key].name +', ');
+								}
+								if (locs[i].meeting!=null){
+									$('.location:eq('+i+')').append('meeting: '+ locs[i].meeting.title + '@' +
+										locs[i].meeting.room.name);
+								}
+							}
+							else{
+								$('#locations').append('<div class="location logged-out"></div>');
+								$('.location:eq('+i+')').append(locs[i].name);
+								$('.location:eq('+i+')').append('<div class = "locusers"></div>');
+							}
+						}
+						$('#locations').append('<br class="clear"/>');
+						
+						$('#response').append('<div id = "rooms"><h1>Meetings</h1></div>');
+						rooms = state.rooms;
+						for (var i=0; i<rooms.length; i++){
+							if (rooms[i].currentMeeting==null){
+								$('#rooms').append('<div class="room logged-out">'+rooms[i].name +
+									': None</div>');
+								$('.room:eq('+i+')').append('<div class = "roomlocs"></div>');
+								$('.room:eq('+i+')').append('<div class = "roomusers"></div>');
+								$('.room:eq('+i+')').append('<div><ul class = "roomtopics"></ul></div>');
+								$('.room:eq('+i+')').append('<div><ul class = "roomtasks"></ul></div>');
+							}
+							else{
+								room = rooms[i]
+								$('#rooms').append('<div class="room logged-in"><strong>'+rooms[i].name +
+									': ' + rooms[i].currentMeeting.title+'</strong><div>Started At: '+ 
+									rooms[i].currentMeeting.startedAt +'</div></div>');
+								$('.room:eq('+i+')').append('<div class = "roomlocs">Locations: </div>');
+								for (key in room.currentMeeting.locs){
+									$('.roomlocs:eq('+i+')').append(room.currentMeeting.locs[key].name + ', ');
+								}
+								$('.room:eq('+i+')').append('<div class = "roomusers">Users: </div>');
+								users = room.currentMeeting.getCurrentParticipants()
+								for (key in users){
+									$('.roomusers:eq('+i+')').append(users[key].name + ', ');
+								}
+								$('.room:eq('+i+')').append('<div>Topics: <ul class = "roomtopics"></ul></div>');
+								for (key in room.currentMeeting.topics){
+									topic = room.currentMeeting.topics[key];
+									$('.roomtopics:eq('+i+')').append('<li class = "topic">'+topic.text+': '+topic.status +
+										'<div> Created by ' +topic.creator.name+' at '+topic.createdAt+
+										'</div></li>');
+									if (topic.status!="FUTURE"){
+										$('.topic:eq('+key+')').append('<div>Started by '+topic.startActor.name+
+											' at '+topic.startTime+'</div>');
+									}
+									if (topic.status=="PAST"){
+										$('.topic:eq('+key+')').append('<div>Stopped by '+topic.stopActor.name+
+											' at '+topic.stopTime+'</div>');
+									}
+								}
+								
+								$('.room:eq('+i+')').append('<div>Tasks: <ul class = "roomtasks"></ul></div>');
+								for (key in room.currentMeeting.tasks){
+									task = room.currentMeeting.tasks[key];
+									$('.roomtasks:eq('+i+')').append('<li class = "task">'+task.text+': <div> Created by ' +
+										task.creator.name+' at '+task.createdAt+'</div></li>');
+									if (task.assignedTo!=null){
+										$('.task:eq('+key+')').append('<div>Assigned by '+task.assignedBy.name+
+											' to '+task.assignedTo.name+' at '+task.assignedAt+'</div>');
+									}
+								}
+							}
+						}
+					}
 					
 					// Setup the button actions.
 					$("#login").click(function() {
@@ -125,6 +243,51 @@
 				});
 		
 	</script>
+	<style type="text/css" media="screen">
+		body {
+			font-family: Helvetica, Arial, sans-serif;
+		}
+		
+		ul, li{
+			padding-top:none;
+			padding-bottom:none;
+			margin-top:none;
+			margin-bottom:none;
+		}
+	
+		.user, .location, .room {
+			border: 1px solid black;
+			margin: 10px;
+			padding-left:3px;
+			
+			width: 350px;
+			float: left;
+		}
+		
+		.task, .topic{
+			
+		}
+		
+		.user .name {
+			
+		}
+		
+		.logged-in {
+			background-color: #99ff99;
+		}
+		
+		.logged-out {
+			background-color: #ff9999;
+		}
+		
+		.handraised{
+			color: #ffffff;
+		}
+		
+		br.clear {
+			clear: both;
+		}
+	</style>
 </head>
 <body id="connection_test" onload="">
 <div id="messages">
