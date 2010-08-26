@@ -14,14 +14,14 @@
 	NSString* timeStart;
 	NSString* timeFinished;
 	bool isTouched; 
-	bool hasEnded;
 	NSString *text;
+	NSString *state;
 	NSDateFormatter *timeFormat;
 }
 @property (nonatomic, retain) NSString *text;
 @property (nonatomic, retain) NSString *timeStart;
 @property (nonatomic, retain) NSString *timeFinished;
-
+@property (nonatomic, retain) NSString *state;
 - (id)initWithFrame:(CGRect)frame withTopic:(Topic *)agenda;
 - (id) initWithTopic:(Topic*)theTopic;
 @end
