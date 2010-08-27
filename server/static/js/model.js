@@ -8,7 +8,7 @@ function User(uuid, name, loc, status, handRaised) {
     this.uuid = uuid;
     this.name = name;
     if (status != null){
-        this.status = {type: status["type"], time: status["time"]};
+        this.status = {type: status["type"], time: new Date(status["time"]*1000)};
     }
     else{
         this.status = null;

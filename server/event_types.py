@@ -40,10 +40,10 @@ def _handleNewMeeting(event):
     room = state.get_obj(event.params["room"], model.Room)
     room.set_meeting(newMeeting)
     
-    # UPDATE: don't need eventHistory anymore
     # add this event to the meeting, so it's included at the beginning of
     # every meeting history.
-    # newMeeting.eventHistory.append(event)
+    newMeeting.eventHistory.append(event)
+    newMeeting.eventHistoryReadable.append("Meeting was created")
     
     return event
 
@@ -169,6 +169,9 @@ def _handleLocationJoinedMeeting(event):
     meeting = state.get_obj(event.params["meeting"], model.Meeting)
     
     location.joinedMeeting(meeting)
+    
+    meeting.eventHistoryReadable.append(location.name + " joined the meeting")
+    
     return event
 
 def _handleLocationLeftMeeting(event):
@@ -176,6 +179,8 @@ def _handleLocationLeftMeeting(event):
     meeting = state.get_obj(event.params["meeting"], model.Meeting)
 
     meeting.locationLeft(location)
+    meeting.eventHistoryReadable.append(location.name + " left the meeting")
+    
     return event
     
 def _handleEditMeeting(event):
@@ -183,6 +188,8 @@ def _handleEditMeeting(event):
     title = event.params["title"]
     
     meeting.setTitle(title)
+    
+    meeting.eventHistoryReadable.append(event.actor.name+"changed meeting name to "+title)
     return event
 
 def _handleNewTopic(event):
@@ -203,6 +210,8 @@ def _handleNewTopic(event):
     event.meeting.addTopic(newTopic)
     event.actor.status=("created new topic", newTopic.createdAt)
     
+    event.meeting.eventHistoryReadable.append(event.actor.name+" created new topic ("+text+")")
+    
     return event
     
 def _handleDeleteTopic(event):
@@ -214,6 +223,8 @@ def _handleDeleteTopic(event):
     #needed to keep track of statuses on client-side
     event.params["deletedAt"] = event.actor.status[1]
     
+    event.meeting.eventHistoryReadable.append(event.actor.name+" deleted topic ("+topic.text+")")
+    
     return event
     
 def _handleUpdateTopic(event):
@@ -224,6 +235,9 @@ def _handleUpdateTopic(event):
     event.actor.status=("edited topic", time.time())
     #needed to keep track of statuses on client-side
     event.params["editedAt"] = event.actor.status[1]
+    
+    event.meeting.eventHistoryReadable.append(event.actor.name+" changed the status of topic ("+
+        topic.text+") to "+status)
     
     return event
 
@@ -246,6 +260,8 @@ def _handleNewTask(event):
     event.meeting.addTask(newTask)
     event.actor.status=("created new task", newTask.createdAt)
     
+    event.meeting.eventHistoryReadable.append(event.actor.name+" created a new task ("+text+")")
+    
     return event
 
 def _handleDeleteTask(event):
@@ -257,17 +273,24 @@ def _handleDeleteTask(event):
     event.actor.status=("deleted task", time.time())
     #needed to keep track of statuses on client-side
     event.params["deletedAt"] = event.actor.status[1]
-
+    
+    event.meeting.eventHistoryReadable.append(event.actor.name+" deleted task ("+task.text+")")
+    
     return event
 
 def _handleEditTask(event):
     text = event.params["text"]
     task = state.get_obj(event.params["taskUUID"], model.Task)
     
+    event.meeting.eventHistoryReadable.append(event.actor.name+" changed task ("+task.text+") to task ("+text+")")
+    
     task.setText(text)
     event.actor.status=("edited task", time.time())
     #needed to keep track of statuses on client-side
     event.params["editedAt"] = event.actor.status[1]
+    
+    
+    
     return event
     
 def _handleAssignTask(event):
@@ -282,9 +305,13 @@ def _handleAssignTask(event):
         task.assign(assignedBy,assignedTo)
         assignedBy.status=("assigned task", task.assignedAt)
         assignedTo.status=("claimed task", task.assignedAt)
+        
+        event.meeting.eventHistoryReadable.append(assignedBy.name + " assigned task ("+task.text+") to "+assignedTo.name)
     else:
         task.deassign(assignedBy)
         assignedBy.status=("deassigned task", task.assignedAt)
+        
+        event.meeting.eventHistoryReadable.append(assignedBy.name + " deassigned task ("+task.text+")")
 
     event.params["assignedAt"]=task.assignedAt
     return event

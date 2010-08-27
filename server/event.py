@@ -242,6 +242,8 @@ failed" + str(self.params[paramKey]))
         # SEND EVENT TO APPROPRIATE CLIENTS
         if(self.eventType.isGlobal):
             sendEventsToDevices(state.get_devices(), [event])
+            if event.meeting != None:
+                event.meeting.sendEvent(event)
         else:
             # try:
             event.meeting.sendEvent(event)

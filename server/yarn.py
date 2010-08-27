@@ -43,6 +43,7 @@ class YarnApplication(tornado.web.Application):
             (r"/rooms/list", RoomsHandler),
             (r"/rooms/join", JoinRoomHandler),
             (r"/rooms/leave", LocationLeaveMeetingHandler),
+            (r"/rooms/history", MeetingHistoryHandler),
             
             (r"/locations/list", LocationsHandler),
             (r"/locations/add", AddLocationHandler),
@@ -677,6 +678,16 @@ class ReplayHandler(tornado.web.RequestHandler):
                 logging.debug("----server reset----")
                 break
             line= f.readline()
+
+class MeetingHistoryHandler(tornado.web.RequestHandler):
+    def get(self):
+        meeting = None
+        for room in state.rooms:
+            if room.currentMeeting != None:
+                meeting = room.currentMeeting
+                break
+        logging.debug(meeting.room.name)
+        self.render("history.html", meeting=meeting)
 
 class AgendaHandler(tornado.web.RequestHandler):
     def get(self):

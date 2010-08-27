@@ -109,6 +109,9 @@ class Meeting(YarnBaseType):
         
         self.locations = set()
         
+        self.eventHistory = []
+        self.eventHistoryReadable = []
+        
         self.topics = []
         self.tasks = []
         
@@ -233,14 +236,14 @@ class Meeting(YarnBaseType):
             # This is the normal path for all other event types.
             event.sendEventsToDevices(self.getDevices(), [eventToSend])
         
-        # Getting rid of eventHistory
         # Save the event in the meeting history.
-        # self.eventHistory.append(eventToSend)
+        self.eventHistory.append(eventToSend)
         
     def __str__(self):
-        return "[meet.%s@%s %s locs:%d users:%d topics:%d tasks:%d]"%(
+        return "[meet.%s@%s %s locs:%d users:%d events:%d topics:%d tasks:%d]"%(
             self.uuid[0:6], self.room.name, self.title, len(self.locations),
-            len(self.getCurrentParticipants()), len(self.topics), len(self.tasks))
+            len(self.getCurrentParticipants()), len(self.eventHistory), 
+            len(self.topics), len(self.tasks))
             
 
 class Device(YarnBaseType):

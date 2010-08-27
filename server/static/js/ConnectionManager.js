@@ -121,6 +121,7 @@ ConnectionManager.prototype = {
                     this.connections=tempConnections;
                     if (this.connections.length>10){
                         this.stopPersistentConnection();
+                        $('body').html("Connection failed. Please try again.")
                     }
                     
                 }
@@ -404,6 +405,17 @@ ConnectionManager.prototype = {
                 
                 break;
                 
+            case "HAND_RAISE":
+                actor = state.getObj(ev.actorUUID, User);
+                actor.handRaised = !actor.handRaised;
+                
+                if (actor.handRaised){
+                    console.log(actor.name+" raised a hand");
+                }
+                else{
+                    console.log(actor.name+" is no longer raising a hand");
+                }
+            
             case "NEW_DEVICE":
                 // I don't think we care about this, do we?
                 

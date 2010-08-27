@@ -55,31 +55,31 @@
 							//keep track of devices. perhaps there's a way to just set a login
 							//flag when login events fire, but i'll skip that for now.
 							if (users[key].isInLocation()){
-								$('#users').append('<div class="user logged-in"></div>')
+								$('#users').append('<div id = "'+ users[i].uuid+'" class="user logged-in"></div>')
 							}
 							else{
-								$('#users').append('<div class="user logged-out"></div>')
+								$('#users').append('<div id = "'+ users[i].uuid+'" class="user logged-out"></div>')
 							}
 							
 							if (users[key].handRaised){
-								$('.user:eq('+key+')').append('<div class = "handraised"><span class="name">' 
+								$('#'+users[i].uuid).append('<div class = "handraised"><span class="name">' 
 									+ users[key].name + '</span></div>');
 							}
 							else{
-								$('.user:eq('+key+')').append('<span class="name">' + users[key].name + '</span>');
+								$('#'+users[i].uuid).append('<span class="name">' + users[key].name + '</span>');
 							}
 							
 							if (users[key].status != null){
-								$('.user:eq('+key+')').append('<div>status: ' + users[key].status.type +
+								$('#'+users[i].uuid).append('<div>status: ' + users[key].status.type +
 									' at ' + users[key].status.time + '</div>');
 							}
 							else{
-								$('.user:eq('+key+')').append('<div>status: None</div>');
+								$('#'+users[i].uuid).append('<div>status: None</div>');
 							}
 							
-							$('.user:eq('+key+')').append('<span class = "tasks usertask"> tasks: </span>');
+							$('#'+users[i].uuid).append('<span class = "tasks usertask"> tasks: </span>');
 							for (task in users[key].tasks){
-								$('.usertask:eq('+task+')').append(users[key].tasks[task].text + ', ');
+								$('#'+users[i].uuid + ' .usertask').append(users[key].tasks[task].text + ', ');
 							}
 						}
 						$('#users').append('<br class="clear"/>');
@@ -88,21 +88,22 @@
 						locs = state.getLocations();
 						for (var i=0; i < locs.length; i++){
 							if (locs[i].users.length>0 || locs[i].meeting!=null){
-								$('#locations').append('<div class="location logged-in"></div>');
-								$('.location:eq('+i+')').append('<strong>'+locs[i].name+'</strong>');
-								$('.location:eq('+i+')').append('<div class = "locusers">users: </div>');
+								$('#locations').append('<div id = "'+locs[i].uuid+
+									'" class="location logged-in"></div>');
+								$('#'+locs[i].uuid).append('<strong>'+locs[i].name+'</strong>');
+								$('#'+locs[i].uuid).append('<div class = "locusers">users: </div>');
 								for (key in locs[i].users){
-									$('.locusers:eq('+i+')').append(locs[i].users[key].name +', ');
+									$('#'+locs[i].uuid+' .locusers').append(locs[i].users[key].name +', ');
 								}
 								if (locs[i].meeting!=null){
-									$('.location:eq('+i+')').append('meeting: '+ locs[i].meeting.title + '@' +
+									$('#'+locs[i].uuid).append('meeting: '+ locs[i].meeting.title + '@' +
 										locs[i].meeting.room.name);
 								}
 							}
 							else{
-								$('#locations').append('<div class="location logged-out"></div>');
-								$('.location:eq('+i+')').append(locs[i].name);
-								$('.location:eq('+i+')').append('<div class = "locusers"></div>');
+								$('#locations').append('<div id = "'+locs[i].uuid+
+									'" class="location logged-out"></div>');
+								$('#'+locs[i].uuid).append(locs[i].name);
 							}
 						}
 						$('#locations').append('<br class="clear"/>');
@@ -111,50 +112,50 @@
 						rooms = state.rooms;
 						for (var i=0; i<rooms.length; i++){
 							if (rooms[i].currentMeeting==null){
-								$('#rooms').append('<div class="room logged-out">'+rooms[i].name +
+								$('#rooms').append('<div id = "'+rooms[i].uuid+
+									'" class="room logged-out">'+rooms[i].name +
 									': None</div>');
-								$('.room:eq('+i+')').append('<div class = "roomlocs"></div>');
-								$('.room:eq('+i+')').append('<div class = "roomusers"></div>');
-								$('.room:eq('+i+')').append('<div><ul class = "roomtopics"></ul></div>');
-								$('.room:eq('+i+')').append('<div><ul class = "roomtasks"></ul></div>');
 							}
 							else{
 								room = rooms[i]
-								$('#rooms').append('<div class="room logged-in"><strong>'+rooms[i].name +
+								$('#rooms').append('<div id = "'+rooms[i].uuid+
+									'" class="room logged-in"><strong>'+rooms[i].name +
 									': ' + rooms[i].currentMeeting.title+'</strong><div>Started At: '+ 
 									rooms[i].currentMeeting.startedAt +'</div></div>');
-								$('.room:eq('+i+')').append('<div class = "roomlocs">Locations: </div>');
+								$('#'+room.uuid).append('<div class = "roomlocs">Locations: </div>');
 								for (key in room.currentMeeting.locs){
-									$('.roomlocs:eq('+i+')').append(room.currentMeeting.locs[key].name + ', ');
+									$('#'+room.uuid+' .roomlocs').append(room.currentMeeting.locs[key].name + ', ');
 								}
-								$('.room:eq('+i+')').append('<div class = "roomusers">Users: </div>');
+								$('#'+room.uuid).append('<div class = "roomusers">Users: </div>');
 								users = room.currentMeeting.getCurrentParticipants()
 								for (key in users){
-									$('.roomusers:eq('+i+')').append(users[key].name + ', ');
+									$('#'+room.uuid+' .roomusers').append(users[key].name + ', ');
 								}
-								$('.room:eq('+i+')').append('<div>Topics: <ul class = "roomtopics"></ul></div>');
+								$('#'+room.uuid).append('<div>Topics: <ul class = "roomtopics"></ul></div>');
 								for (key in room.currentMeeting.topics){
 									topic = room.currentMeeting.topics[key];
-									$('.roomtopics:eq('+i+')').append('<li class = "topic">'+topic.text+': '+topic.status +
+									$('#'+room.uuid+' .roomtopics').append('<li class = "topic">'+topic.text+
+										': '+topic.status +
 										'<div> Created by ' +topic.creator.name+' at '+topic.createdAt+
 										'</div></li>');
 									if (topic.status!="FUTURE"){
-										$('.topic:eq('+key+')').append('<div>Started by '+topic.startActor.name+
+										$('#'+room.uuid+' .topic').append('<div>Started by '+topic.startActor.name+
 											' at '+topic.startTime+'</div>');
 									}
 									if (topic.status=="PAST"){
-										$('.topic:eq('+key+')').append('<div>Stopped by '+topic.stopActor.name+
+										$('#'+room.uuid+' .topic').append('<div>Stopped by '+topic.stopActor.name+
 											' at '+topic.stopTime+'</div>');
 									}
 								}
 								
-								$('.room:eq('+i+')').append('<div>Tasks: <ul class = "roomtasks"></ul></div>');
+								$('#'+room.uuid).append('<div>Tasks: <ul class = "roomtasks"></ul></div>');
 								for (key in room.currentMeeting.tasks){
 									task = room.currentMeeting.tasks[key];
-									$('.roomtasks:eq('+i+')').append('<li class = "task">'+task.text+': <div> Created by ' +
+									$('#'+room.uuid+' .roomtasks').append('<li class = "task">'+task.text+
+										': <div> Created by ' +
 										task.creator.name+' at '+task.createdAt+'</div></li>');
 									if (task.assignedTo!=null){
-										$('.task:eq('+key+')').append('<div>Assigned by '+task.assignedBy.name+
+										$('#'+room.uuid+' .task').append('<div>Assigned by '+task.assignedBy.name+
 											' to '+task.assignedTo.name+' at '+task.assignedAt+'</div>');
 									}
 								}
