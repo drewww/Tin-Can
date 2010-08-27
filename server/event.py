@@ -239,11 +239,12 @@ failed" + str(self.params[paramKey]))
         event = handler(self)
         logging.warning("self.meeting: " + str(self.meeting) + "; event: " + str(event))
         
+        #all events are global now. else statement is never reached.
         # SEND EVENT TO APPROPRIATE CLIENTS
         if(self.eventType.isGlobal):
             sendEventsToDevices(state.get_devices(), [event])
             if event.meeting != None:
-                event.meeting.sendEvent(event)
+                event.meeting.eventHistory.append(event)
         else:
             # try:
             event.meeting.sendEvent(event)

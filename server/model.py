@@ -212,6 +212,7 @@ class Meeting(YarnBaseType):
         
         return d
     
+    #this method is never called
     def sendEvent(self, eventToSend):
         """Sends the 'event' to all participants in 'meeting'."""
         

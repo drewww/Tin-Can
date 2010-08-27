@@ -189,7 +189,7 @@ def _handleEditMeeting(event):
     
     meeting.setTitle(title)
     
-    meeting.eventHistoryReadable.append(event.actor.name+"changed meeting name to "+title)
+    meeting.eventHistoryReadable.append("Meeting name changed to "+title)
     return event
 
 def _handleNewTopic(event):

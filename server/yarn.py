@@ -600,7 +600,7 @@ class AddTaskHandler(BaseHandler):
     @tornado.web.authenticated
     def post(self):
         actor = self.get_current_actor()
-
+        
         newTaskEvent = Event("NEW_TASK", actor.uuid ,
             actor.getMeeting().uuid,
             params={"text": self.get_argument("text")})
