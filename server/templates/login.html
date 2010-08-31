@@ -3,7 +3,6 @@
 	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-
 <head>
 	<meta name="viewport" content="width=320; initial-scale=1.0; minimum-scale=1.0; maximum-scale=1.0; user-scalable=0;">
 	<title>login</title>
@@ -13,9 +12,6 @@
 <script type="text/javascript" src="{{static_url('js/ConnectionManager.js')}}"></script>
 <script type="text/javascript" src="{{static_url('js/StateManager.js')}}"></script>
 <script type="text/javascript" src="{{static_url('js/model.js')}}"></script>
-<script type="text/javascript" src="{{static_url('js/jquery.cookie.js')}}"></script>
-<script type="text/javascript" src="{{static_url('js/agenda.js')}}"></script>
-<script type="text/javascript" src="{{static_url('js/meeting.js')}}"></script>
 <script type="text/javascript" charset="utf-8">
 	var userListElement;
 	var roomListElement;
@@ -37,13 +33,13 @@
 	var locElements = [];
 	var addIsToggled=false; //keeps track of whether you can select usernames
 	var clickEnabled=true;
-	
+
 	$(document).ready(function(){
 		//initializes variables
 		//locTemplate and locationTemplate have similar names - not sure how to distunguish.
 		//locTemplate is for the location page, locationTemplate is for the rooms page (the 
 		//squares that show number of people in each location in the rooms).
-		
+
 		userListElement = $("#usernamelist");
 		nameTemplate = $("#nametemplate");
 		locListElement=$("#loclist");
@@ -51,7 +47,7 @@
 		roomListElement = $("#roomlist");
 		roomTemplate = $("#roomtemplate");
 		locationTemplate = $("#locationtemplate");
-		
+
 		//hides templates and locations/rooms pages
 		nameTemplate.hide();
 		locTemplate.hide();
@@ -60,14 +56,15 @@
 		$("#searchtype").hide();
 		$("#newuser").hide();
 		$("#newlocation").hide();
-		$("#locs").hide();
+		// $("#locs").hide();
 		$("#rooms").hide();
-		
+		// $("#meeting").hide();
+
 		//handlers for add user and searching
 		$("#newname").keypress(enterUser);
 		$("#newloc").keypress(enterLoc);
 		$("#searchname").keyup(searchForUser);
-		
+
 		//wait for state to be updated before function is executed
 		connection.addListener({connectionEvent: function(e) {
 			console.log("event: " + e.eventType);
@@ -75,11 +72,11 @@
 				case "GET_STATE_COMPLETE":
 					update();
 					break;
-					
+
 				case "LOGIN_COMPLETE":
 				//only sent to one device, so this event shouldn't trigger anything on other devices
 					t=setTimeout("tempfunction()",100);
-					
+
 	            case "ADD_ACTOR_DEVICE":
 					update();
 	                break;
@@ -118,7 +115,7 @@
 	            case "LOCATION_LEFT_MEETING":
 	                update();
 	                break;
-				
+
 				case "LEAVE_MEETING_COMPLETE":
 					update();
 					if (leftloc){
@@ -131,16 +128,16 @@
 							connection.leaveLocation(user.loc.uuid);
 						}
 					}
-				
+
 	            case "NEW_DEVICE":
-	
+
 	                break;
-				
+
 	        }
 		}});
 		connection.getState();
 	});
-	
+
 	//needs a better name. need to wait for getState to finish after logging in
 	//so setTimeout is necessary
 	function tempfunction(){
@@ -152,61 +149,60 @@
 		}
 		selectUser(user);
 	}
-	
+
 	//updates room/user/loc lists from state and redisplays them
 	function update(){
 		displayNameList();
 		displayLocList();
 		displayRoomList();
 	}
-	
-	
+
 	//removes all name elements, gets new userlist from state and creates new name elements
 	function displayNameList(){
 		for (nameElement in nameElements){
 			nameElements[nameElement].remove();
 		}
-		
+
 		users=state.getUsers();
 		names=[];
 		nameElements=[];
 		for (user in users){
 			names.push(users[user].name);
 		}
-		
+
 		for (var name in names){
 			var newNameElement = createNewNameItem(names[name]);
 			userListElement.append(newNameElement);
 			nameElements.push(newNameElement);
 		}
 	}
-	
+
 	//removes all loc elements, gets new locations from state and creates new loc elements
 	function displayLocList(){
 		for (locElement in locElements){
 			locElements[locElement].remove();
 		}
-		
+
 		locs=state.getLocations();
 		locNames=[];
 		locElements=[];
 		for (loc in locs){
 			locNames.push(locs[loc].name);
 		}
-		
+
 		for (var loc in locs){
 			var newLocElement = createNewLocItem(locs[loc]);
 			locListElement.append(newLocElement);
 			locElements.push(newLocElement);
 		}
 	}
-	
+
 	//removes all room elements, gets new rooms from state and creates new room elements
 	function displayRoomList(){
 		for (roomElement in roomElements){
 			roomElements[roomElement].remove();
 		}
-		
+
 		rooms=state.rooms; //I have no idea how I did this. will probably get replaced with a method
 		roomNames=[];
 		roomElements=[];
@@ -220,21 +216,21 @@
 			roomElements.push(newRoomElement);
 		}
 	}
-	
+
 	function createNewNameItem(name){
 		var newNameElement = nameTemplate.clone();
 		newNameElement.find("div").html(name);
 		newNameElement.show();
 		return newNameElement;
 	}
-	
+
 	function createNewLocItem(loc){
 		var newLocElement = locTemplate.clone();
 		newLocElement.find("div").html(loc.name);
 		newLocElement.show();
 		return newLocElement;
 	}
-	
+
 	function createNewRoomItem(room){
 		newRoomElement = roomTemplate.clone();
 		if (room.currentMeeting!=null){ 
@@ -252,14 +248,14 @@
 		else{
 			newRoomElement.find("em").html(room.name);
 		}
-		
+
 		//associates timeline with room
 		newRoomElement.data("timeline",new Timeline(newRoomElement.find("canvas")[0]));
 		newRoomElement.data("timeline").start();
 		newRoomElement.show();
 		return newRoomElement;
 	}
-	
+
 	//only used in search. will probably get deleted.
 	//hide all elements. go through names. if a name is in list, show the name element.
 	function displayList(list){
@@ -270,13 +266,13 @@
 			}
 		}
 	}
-	
+
 	//hides and shows the "add new user" box
 	function toggleAddUser(){
 		clearSearch();
 		var addName=$("#newuser")[0];
 		$("#searchtype").hide();
-		
+
 		if (addName.style.display!="block"){
 			addName.style.display="block";
 			$("#newname").focus();
@@ -288,7 +284,7 @@
 			addIsToggled=false;
 		}
 	}
-	
+
 	//allows enter to submit the name of the new user instead of having to click the button
 	function enterUser(e){
 		if (e.which==13){
@@ -296,7 +292,7 @@
 			submitNewUser();
 		}
 	}
-	
+
 	//submits new users to the server. 
 	function submitNewUser(){
 		var newName=$("#newname")[0].value;
@@ -310,12 +306,12 @@
 			connection.addUser(newName,true);
 		}
 	}
-	
+
 	//hides and shows the "add new user" box
 	function toggleAddLoc(){
 		clearSearch();
 		var addLoc=$("#newlocation")[0];
-		
+
 		if (addLoc.style.display!="block"){
 			addLoc.style.display="block";
 			$("#newloc").focus();
@@ -327,7 +323,7 @@
 			addIsToggled=false;
 		}
 	}
-	
+
 	//allows enter to submit the name of the new user instead of having to click the button
 	function enterLoc(e){
 		if (e.which==13){
@@ -335,7 +331,7 @@
 			submitNewLoc();
 		}
 	}
-	
+
 	//submits new users to the server. 
 	function submitNewLoc(){
 		var newLoc=$("#newloc")[0].value;
@@ -349,14 +345,14 @@
 			connection.addLocation(newLoc);
 		}
 	}
-	
+
 	//next few functions are for search, which we'll probably delete anyways...
 	function toggleSearch(){
 		select=true;
 		$(".name").css("background","white");s
 		search=$("#searchtype")[0];
 		$("#newuser").hide();
-		
+
 		if (search.style.display!="block"){
 			search.style.display="block";
 			$("#searchname").focus();
@@ -367,7 +363,7 @@
 			displayList(names);
 		}
 	}
-	
+
 	function searchForUser(){
 		$(".name").css("background","white");
 		searchName=$("#searchname")[0].value.toUpperCase();
@@ -379,23 +375,22 @@
 		}
 		displayList(newList);
 	}
-	
+
 	function clearSearch(){
 		$(".name").css("background","white");
 		$("#searchname")[0].value="";
 		displayList(names);
 		$("#searchname").focus();
 	}
-	
+
 	//slides the screen left slightly
 	function slideLeft(userspos,locspos,roomspos,meetingpos){
 		$("#users").offset({left:userspos-5,top:0});
 		$("#locs").offset({left:locspos-5,top:0});
 		$("#rooms").offset({left:roomspos-5,top:0});
 		$("#meeting").offset({left:meetingpos-5,top:0});
-		
 	}
-	
+
 	//slides the screen right slightly
 	function slideRight(userspos,locspos,roomspos,meetingpos){
 		$("#users").offset({left:userspos+5,top:0});
@@ -403,7 +398,7 @@
 		$("#rooms").offset({left:roomspos+5,top:0});
 		$("#meeting").offset({left:meetingpos+5,top:0});
 	}
-	
+
 	//highlights the clicked user and logs in (if add is not toggled)
 	function highlightUser(item){
 		$(".name").css("background","white");
@@ -422,19 +417,19 @@
 			toggleAddUser();
 		}		
 	}
-	
+
 	//if user is in a location, slide to rooms page; otherwise, slide to locs page
 	function selectUser(user){
 		console.log(user);
 		if (user.isInLocation()){
 			console.log("hi");
 			$("#rooms").css({left:324,top:0});
+			$("#meeting").css({left:648,top:0});
 			selectLoc(user);
 			//this is really hacky...it doesn't let me set the css to -320 and -640 
 			//(maybe because they're negative?), so I'm just making them move again
 			$("#users").animate({"left": "-=324px"},"fast");
 			$("#locs").animate({"left": "-=324px"},"fast");
-			$("#meeting").animate({"left": "-=324px"},"fast");
 		}
 		else{
 		//	selectUserAnimation();
@@ -443,19 +438,19 @@
 			if ($("#locs").offset().left>=0){
 				$("#locs").animate({"left": "-=324px"},"slow");
 				$("#users").animate({"left": "-=324px"},"slow");
-				$("#meeting").animate({"left": "-=324px"},"slow");
 				//$("#rooms").animate({"left": "-=324px"},"slow");
 				$("#rooms").css({left:324,top:0});
+				$("#meeting").css({left:648,top:0});
 				console.log($("#rooms").offset().left);
 				var t = setTimeout("clickEnabled=true",600);
 			}
 		}
 	}
-	
+
 	function selectUserAnimation(){
 		$("#locs").show();
 		if($("#locs").offset().left>=5){
-			slideLeft($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left,$("#meeting").offset().left);
+			slideLeft($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
 			var t = setTimeout("selectUserAnimation()", 2);
 		}
 
@@ -463,11 +458,10 @@
 			$("#users").hide();
 			$("#locs").offset({left:0,top:0});
 			$("#users").offset({left:0,top:0});
-			$("#rooms").offset({left:0,top:0});0
-			$("#meeting").offset({left:0,top:0});
+			$("#rooms").offset({left:0,top:0});
 		}
 	}
-	
+
 	//highlights the clicked loc and joins the loc
 	function highlightLoc(item){
 	/*	for (key in users){
@@ -475,7 +469,7 @@
 				user=users[key]
 			}
 		}	*/	
-		
+
 		if (!addIsToggled){
 			if (clickEnabled){
 				$(".loc").css("background","white");
@@ -501,7 +495,7 @@
 			toggleAddLoc();
 		}
 	}
-	
+
 	//sets the "location:" and slides to the room page. if the loc is in a meeting, sets "room:" as well
 	function selectLoc(user){
 		$("#rooms").show();
@@ -522,33 +516,30 @@
 			$("#currentloc").append("\nroom: " + user.loc.meeting.room.name);
 		}
 	}
-	
+
 	function selectLocAnimation(){
 		if($("#rooms").offset().left>=5){
-			slideLeft($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left,$("#meeting").offset().left);
+			slideLeft($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
 			var t = setTimeout("selectLocAnimation()", 2);
 		}
-		
+
 		else{
 			$("#locs").hide();
 			$("#rooms").offset({left:0,top:0});
 			$("#locs").offset({left:0,top:0});
 			$("#users").offset({left:0,top:0});
-			$("#meeting").offset({left:0,top:0});
 		}
 	}
-	
+
 	//if the location is not in a meeting, the loc joins the selected meeting; otherwise, nothing happens
 	function selectRoom(item){
 		$(".meetingroom").css("background","white");
-		
+
 		for (key in users){
 			if (users[key].uuid==connection.userUUID){
 				user=users[key]
 			}
 		}
-
-		$.cookie('userUUID', user.uuid, { expires: 7 });
 
 		roomname = $(item).find("div").find("strong").html();
 		if (roomname==""){
@@ -556,7 +547,7 @@
 		}
 
 		room=rooms[$.inArray(roomname,roomNames)];
-		
+
 		if (!user.loc.isInMeeting()){
 			$("#currentloc").html("location: " + user.loc.name);
 			$("#currentloc").append("\nroom: " + roomname);
@@ -567,17 +558,17 @@
 			$("#currentloc").html("location: " + user.loc.name);
 			connection.leaveMeeting(user.loc.meeting.uuid);
 		}
-		
-		
+
+
 
 		//item.style.background="#00CCFF";
 		statusbar($(item));
 	}
-	
+
 	function statusbar(item){
 		item.data("timeline").draw();
 	}
-	
+
 	//slides to users page
 	function backToUsers(){
 		if (clickEnabled){
@@ -586,10 +577,9 @@
 			$("#users").animate({"left": "+=324px"},"slow");
 			$("#locs").animate({"left": "+=324px"},"slow");
 			$("#rooms").animate({"left": "+=324px"},"slow");
-			$("#meeting").animate({"left": "+=324px"}),"slow");
 			var t = setTimeout("$('#locs').hide();clickEnabled=true;",600);
 		}
-	
+
 	/*	if($("#users").offset().left<=-5){
 			slideRight($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
 			var t = setTimeout("backToUsers()", 2);
@@ -602,7 +592,7 @@
 			$("#users").offset({left:0,top:0});
 		}*/
 	}
-	
+
 	//slides to locs page
 	//should separate this into two functions eventually...
 	function backToLocs(){
@@ -627,16 +617,15 @@
 					connection.leaveLocation(user.loc.uuid);
 				}
 			}
-			
+
 			$("#locs").show();
 			clickEnabled=false;
 			$("#users").animate({"left": "+=324px"},"slow");
 			$("#locs").animate({"left": "+=324px"},"slow");
 			$("#rooms").animate({"left": "+=324px"},"slow");
-			$("#meeting").animate({"left": "+=324px"},"slow");
 			var t = setTimeout("$('#rooms').hide();clickEnabled=true;leftloc=false;",600);
 		}
-		
+
 	/*	if($("#locs").offset().left<=-5){
 			slideRight($("#users").offset().left,$("#locs").offset().left,$("#rooms").offset().left);
 			var t = setTimeout("backToLocs()", 2);
@@ -650,7 +639,7 @@
 			//connection.
 		}*/
 	}
-	
+
 </script>
 
 <style type="text/css" media="screen">
@@ -687,6 +676,7 @@
 		position:absolute;
 		top:0px;
 		left:648px;
+	}
 	#meeting{
 		float:left;
 		position:absolute;
@@ -849,7 +839,7 @@
 		padding:none;
 		clear:both;
 		border:solid 2px;
-	
+
 	.textbox{
 		height:25px;
 		margin-top:7px;
@@ -864,14 +854,13 @@
 	#searchtype{
 		display:none;
 	}
-	
+
 
 </style>
 </head>
 
-
-<div id = "login">>
 <body>
+<div id="login">
 	<div id = "users">
 	<div id="header">
 		<div id = "adduser"><button id="addbutton" onclick = "toggleAddUser();">Add</button></div>
@@ -898,7 +887,7 @@
 	</ul>
 	</div>
 	</div>
-	
+
 	<div id = "locs">
 	<div id="header">
 		<div id = "backtousers"><button id="backbutton" onclick="backToUsers();">< Users</button></div>
@@ -917,7 +906,7 @@
 		</li>
 	</ul>
 	</div>
-	
+
 	<div id = "rooms">
 	<div id="header">
 		<div id = "backtolocs"><button id="backbutton" onclick="backToLocs();">< Locations</button></div>
@@ -935,10 +924,92 @@
 		</li>
 	</ul>
 	</div>
-</body>
 </div>
-	
 
-<div id = "meeting">
+<div id="meeting">
+	
+	<ul class="tabs">
+	    <li><a href="#tab1">Tasks</a></li>
+	    <li><a href="#tab2">Topics</a></li>
+		<li><a href="#tab3">Attendance</a></li>
+	</ul>
+
+	<div class="tab_container">
+	    <div id="tab1" class="tab_content">
+	        <ul id = "tasks">
+				<li class = "task">
+					<div class = "creator">Drew</div>
+					<div class = "taskname">
+						this task name is really long
+						<img class = "next" src = "{{ static_url("images/next.png")}}">
+					</div>
+					<div class = "assignee"><em>Unassigned</em></div>
+				</li>
+				<li class = "task">
+					<div class = "creator">Paula</div>
+					<div class = "taskname">
+						short task
+						<img class = "next" src = "{{ static_url("images/next.png")}}">
+					</div>
+					<div class = "assignee"><em>Unassigned</em></div>
+				</li>
+				<li class = "task">
+					<div class = "creator">Ariel</div>
+					<div class = "taskname">
+						sleep
+						<img class = "next" src = "{{ static_url("images/next.png")}}">
+					</div>
+					<div class = "assignee"><em>Drew</em></div>
+				</li>
+				<li class = "task">
+					<div class = "creator">Stephanie</div>
+					<div class = "taskname">
+						drink bubble tea every freaking day!
+						<img class = "next" src = "{{ static_url("images/next.png")}}">
+					</div>
+					<div class = "assignee"><em>Ariel</em></div>
+				</li>
+			</ul>
+	    </div>
+	
+	    <div id="tab2" class="tab_content">
+	        <div align="center"> 
+				<!-- <img src="../static/images/add.png" onclick="showTextbox()" width="26" height="26" alt="Add"> -->
+
+			</div>
+			<div id="newItemInput">
+				<input type="text" name="item" value="" id="itemTextbox" class="textbox">
+				<img src="{{static_url('images/accept.png')}}" id="submitButton" onclick="sendTopicToServer();">
+				<!-- <button type = "submit" id="submitButton" onclick="sendTopicToServer();">Submit</button> -->
+			</div>
+			
+			<div id="container">
+
+				<div id="futureTemplate" class="template">
+					<span id="text"></span><br />
+					<button type="submit" class="startButton">Start</button>
+				</div>
+
+				<div id="extraOptions">
+					<img src="../static/images/delete.png" id="deleteButton" width="36" height="36" alt="Delete">
+			
+				</div>
+			</div>
+			
+	    </div>
+	
+		<div id ="tab3" class="tab_content">
+			Users
+			<ul id = "names">
+				<li id = "name"><div>hi</div></li>
+			</ul>
+			Locations
+			<ul id = "locs">
+				<li id = "loc"><div>hi</div></li>
+			</ul>
+		</div>
+	</div>
+	
 </div>
+</body>
 </html>
