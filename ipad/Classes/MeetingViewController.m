@@ -71,6 +71,7 @@
     
     [self initUsers];
     [self initTasks];
+    [self initTopics];
     
     NSLog(@"Done loading view.");
     
@@ -306,6 +307,23 @@
     [taskContainer setNeedsDisplay];
     
     [unassignedTasks release];
+}
+
+- (void) initTopics {
+    NSLog(@"in initTopics");
+    NSSet *topics = [[[StateManager sharedInstance].meeting.topics copy] retain];
+    NSLog(@"got some topics.");
+    NSLog(@"%d topics", [topics count]);
+//    NSLog(@"topics: %@", topics);
+    
+    for (Topic *topic in topics) {
+        NSLog(@"topic");
+        [topicContainer addSubview:[topic getView]];
+    }
+    
+    [topicContainer setNeedsLayout];
+    
+    [topics release];
 }
 
 

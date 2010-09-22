@@ -46,6 +46,7 @@
 
 - (void) initUsers;
 - (void) initTasks;
+- (void) initTopics;
 
 - (void) clk;
 

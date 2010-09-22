@@ -304,6 +304,21 @@ static ConnectionManager *sharedInstance = nil;
         case kNEW_TOPIC:
             results = (NSDictionary *)[e.results objectForKey:@"topic"];
             
+            NSDate *startTime;
+            NSDate *stopTime;
+            
+            if([[results objectForKey:@"startTime"] isKindOfClass:[NSNull class]]) {
+                startTime = nil; 
+            } else {
+                startTime = [NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"startTime"] doubleValue]];
+            }
+
+            if([[results objectForKey:@"stopTime"] isKindOfClass:[NSNull class]]) {
+                stopTime = nil; 
+            } else {
+                stopTime = [NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"stopTime"] doubleValue]];
+            }
+            
             topic = [[Topic alloc] initWithUUID:[results objectForKey:@"uuid"]
                                        withText:[results objectForKey:@"text"]
                                 withCreatorUUID:[results objectForKey:@"createdBy"]
@@ -311,8 +326,8 @@ static ConnectionManager *sharedInstance = nil;
                                 withMeetingUUID:[results objectForKey:@"meeting"]
                              withStartActorUUID:[results objectForKey:@"startActor"]
                               withStopActorUUID:[results objectForKey:@"stopActor"]
-                                  withStartTime:[NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"startTime"] doubleValue]]
-                                   withStopTime:[NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"stopTime"] doubleValue]]
+                                  withStartTime:startTime
+                                   withStopTime:stopTime
                                     withUIColor:[UIColor blueColor]];
             
             // TODO hook up the color transmission. The problem is we need to decompose a hex color string
