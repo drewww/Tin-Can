@@ -17,4 +17,9 @@
 
 }
 
+
+- (void) setRoom:(NSString *)newRoom;
+- (void) setMeeting:(Meeting *)newMeeting;
+- (void) setCounted:(int)newCounted;
+
 @end

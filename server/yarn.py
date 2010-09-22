@@ -43,6 +43,7 @@ class YarnApplication(tornado.web.Application):
             (r"/rooms/list", RoomsHandler),
             (r"/rooms/join", JoinRoomHandler),
             (r"/rooms/leave", LocationLeaveMeetingHandler),
+            (r"/rooms/history", MeetingHistoryHandler),
             
             (r"/locations/list", LocationsHandler),
             (r"/locations/add", AddLocationHandler),
@@ -63,6 +64,7 @@ class YarnApplication(tornado.web.Application):
             
             (r"/users/", AllUsersHandler),
             (r"/users/add", AddUserHandler),
+            (r"/users/hand", HandRaiseHandler),
             
             (r"/connect/", ConnectionHandler),
             (r"/connect/test", ConnectTestHandler),
@@ -498,17 +500,25 @@ class JoinLocationHandler(BaseHandler):
     def post(self):
         actor = self.get_current_actor()
         
-        locationUUID = self.get_argument("locationUUID")
-        location = state.get_obj(locationUUID, Location)
-        if(location==None):
-            raise HTTPError(400, "Specified location UUID %s\
-            didn't exist or wasn't a valid location."%locationUUID)
-            return None
-        
-        # Trigger the actual event.
-        joinLocationEvent = Event("USER_JOINED_LOCATION", actor.uuid,
-            params={"location":location.uuid})
-        joinLocationEvent.dispatch()
+        if isinstance(actor, model.User):
+            locationUUID = self.get_argument("locationUUID")
+            location = state.get_obj(locationUUID, Location)
+            if(location==None):
+                raise HTTPError(400, "Specified location UUID %s\
+                didn't exist or wasn't a valid location."%locationUUID)
+                return None
+            
+            userUUID = self.get_argument("userUUID")
+
+            # Trigger the actual event.
+            if userUUID=="null":
+                joinLocationEvent = Event("USER_JOINED_LOCATION", actor.uuid,
+                    params={"location":location.uuid})
+                joinLocationEvent.dispatch()
+            else:
+                joinLocationEvent = Event("USER_JOINED_LOCATION", userUUID,
+                    params={"location":location.uuid})
+                joinLocationEvent.dispatch()
 
 class LeaveLocationHandler(BaseHandler):
     
@@ -590,7 +600,7 @@ class AddTaskHandler(BaseHandler):
     @tornado.web.authenticated
     def post(self):
         actor = self.get_current_actor()
-
+        
         newTaskEvent = Event("NEW_TASK", actor.uuid ,
             actor.getMeeting().uuid,
             params={"text": self.get_argument("text")})
@@ -642,6 +652,15 @@ class AssignTaskHandler(BaseHandler):
             params = p)
         assignTaskEvent.dispatch()
 
+class HandRaiseHandler(BaseHandler):
+    def post(self):
+        actor = self.get_current_actor()
+        
+        if isinstance(actor, model.User):
+            handRaiseEvent = Event("HAND_RAISE", actor.uuid, 
+                actor.getMeeting().uuid, params = {})
+            handRaiseEvent.dispatch()
+
 class ReplayHandler(tornado.web.RequestHandler):
     def get(self):
         f = open("events.log", "r")
@@ -659,6 +678,16 @@ class ReplayHandler(tornado.web.RequestHandler):
                 logging.debug("----server reset----")
                 break
             line= f.readline()
+
+class MeetingHistoryHandler(tornado.web.RequestHandler):
+    def get(self):
+        meeting = None
+        for room in state.rooms:
+            if room.currentMeeting != None:
+                meeting = room.currentMeeting
+                break
+        logging.debug(meeting.room.name)
+        self.render("history.html", meeting=meeting)
 
 class AgendaHandler(tornado.web.RequestHandler):
     def get(self):

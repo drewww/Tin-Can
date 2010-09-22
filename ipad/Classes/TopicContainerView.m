@@ -18,7 +18,47 @@
 		
         rot = M_PI/2;
 		[self setTransform:CGAffineTransformMakeRotation(rot)];
+		Topic *newTopic = [[Topic alloc] initWithUUID:@"1c40c27d-0765-4746-bde7-fbf8d4325a19"
+											 withText:@"Rawr, new topic"
+									  withCreatorUUID:@"b3dd5d24-408d-4686-bf05-1ac20c05214e"
+											createdAt:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-600]
+									  withMeetingUUID:@"07823bd0-212e-444e-a7b8-c3a4eb3a1392"
+								   withStartActorUUID:@"183ebc3a-9c8c-44a4-a2e4-a1f36b19c48f"
+									withStopActorUUID:@"ba5082c9-6fd2-489f-8768-4eca94420ed0"
+										withStartTime:nil
+										 withStopTime:nil
+										  withUIColor:[UIColor blueColor]];
+		Topic *newTopic2 = [[Topic alloc] initWithUUID:@"1c40c27d-0765-4746-bde7-fbf8d4325a19"
+											 withText:@"Rawr, new topic"
+									  withCreatorUUID:@"b3dd5d24-408d-4686-bf05-1ac20c05214e"
+											createdAt:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-600]
+									  withMeetingUUID:@"07823bd0-212e-444e-a7b8-c3a4eb3a1392"
+								   withStartActorUUID:@"183ebc3a-9c8c-44a4-a2e4-a1f36b19c48f"
+									withStopActorUUID:@"ba5082c9-6fd2-489f-8768-4eca94420ed0"
+										withStartTime:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-400]
+										 withStopTime:nil
+										  withUIColor:[UIColor blueColor]];
+		Topic *newTopic3 = [[Topic alloc] initWithUUID:@"1c40c27d-0765-4746-bde7-fbf8d4325a19"
+											 withText:@"Rawr, new topic"
+									  withCreatorUUID:@"b3dd5d24-408d-4686-bf05-1ac20c05214e"
+											createdAt:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-600]
+									  withMeetingUUID:@"07823bd0-212e-444e-a7b8-c3a4eb3a1392"
+								   withStartActorUUID:@"183ebc3a-9c8c-44a4-a2e4-a1f36b19c48f"
+									withStopActorUUID:@"ba5082c9-6fd2-489f-8768-4eca94420ed0"
+										withStartTime:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-400]
+										 withStopTime:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-200]
+										  withUIColor:[UIColor blueColor]];
 		
+		NSLog(@"topic: %@", newTopic);
+		
+		TopicView *newTopicView = [newTopic getView];
+		TopicView *newTopicView2 = [newTopic2 getView];
+		TopicView *newTopicView3 = [newTopic3 getView];
+
+		[self addSubview:newTopicView];
+		[self addSubview:newTopicView2];
+		[self addSubview:newTopicView3];
+	
 		
 		[self setNeedsLayout];
 		
@@ -50,8 +90,9 @@
 
 - (void)layoutSubviews{
 	int i =0;
-	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByPointer:)];
+	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByState:)];
 	for(TopicView *subview in sortedArray){
+		
 		subview.frame=CGRectMake(7, (self.bounds.size.height/22.0)+6.5 +(56.5*i), (self.bounds.size.width)-14, 50);
 		//NSLog(@"Frame: %f",self.bounds.size.width);
 //		
@@ -71,8 +112,8 @@
 										 withMeetingUUID:@"07823bd0-212e-444e-a7b8-c3a4eb3a1392"
 									  withStartActorUUID:@"183ebc3a-9c8c-44a4-a2e4-a1f36b19c48f"
 									   withStopActorUUID:@"ba5082c9-6fd2-489f-8768-4eca94420ed0"
-										   withStartTime:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-400]
-											withStopTime:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-200]
+										   withStartTime:nil
+											withStopTime:nil
 										  withUIColor:[UIColor blueColor]];
 	
 	NSLog(@"topic: %@", newTopic);

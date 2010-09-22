@@ -7,10 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Location.h"
 
 @interface LocationView : UIView {
-
+	NSString *name;
+	int numUsers;
+	UIColor *color;
 }
+
+- (id) initWithLocation:(Location *)theLocation;
+- (id) initWithFrame:(CGRect)frame withName:(NSString *)theName withUsers:(int)users;
+
+@property (nonatomic, retain) NSString *name;
 
 @end

@@ -4,9 +4,16 @@
 // quite similar to model.py on the server, but is missing lots of the 
 // more complicated server logic that client types don't need.
 
-function User(uuid, name, loc) {
+function User(uuid, name, loc, status, handRaised) {
     this.uuid = uuid;
     this.name = name;
+    if (status != null){
+        this.status = {type: status["type"], time: new Date(status["time"]*1000)};
+    }
+    else{
+        this.status = null;
+    }
+    this.handRaised = handRaised;
     
     this.loc = loc;
     
@@ -183,8 +190,8 @@ Meeting.prototype = {
         currentParticipants = [];
         
         for(loc in this.locs) {
-            for(user in loc.getUsers()) {
-                currentParticipants.push(user);
+            for(key in this.locs[loc].users) {
+                currentParticipants.push(this.locs[loc].users[key]);
             }
         }   
         return currentParticipants;
@@ -318,6 +325,7 @@ Task.prototype = {
         if(this.assignedTo!=null) {
             this.assignedBy = byActor;
             this.assignedTo.removeTask(this);
+            this.assignedTo=null;
         }
     },
     

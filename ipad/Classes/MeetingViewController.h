@@ -12,6 +12,7 @@
 #import "Todo.h"
 #import "TaskContainerView.h"
 #import "TopicContainerView.h"
+#import "LocationContainerView.h"
 #import "Event.h"
 
 @class Todo;
@@ -21,7 +22,8 @@
     
     TaskContainerView *taskContainer;
     TopicContainerView *topicContainer;
-	
+	LocationContainerView *locContainer;
+    
     NSMutableSet *todoViews;
 
     

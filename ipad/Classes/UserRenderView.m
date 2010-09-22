@@ -29,6 +29,8 @@
     self.bounds = CGRectMake(-BASE_WIDTH/2, -(BASE_HEIGHT + TAB_HEIGHT)/2, BASE_WIDTH, BASE_HEIGHT + TAB_HEIGHT);
     self.center = CGPointMake(0, 0);
     
+	//for LocationView in 
+	//if self.User.location
     color = [UIColor blueColor];
     
     [self setBackgroundColor:[UIColor clearColor]];

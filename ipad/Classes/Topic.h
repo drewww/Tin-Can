@@ -52,6 +52,9 @@ typedef enum {
 
 - (void) setStatusWithString:(NSString *)stringStatus byActor:(Actor *)actor;
 
+- (UIView *)getView;
+
+
 @property (readonly) NSString *text;
 
 @property (nonatomic, retain) Actor *startActor;

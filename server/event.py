@@ -103,27 +103,31 @@ class Event:
 self.actor to be None.")
             self.actor = None
 
+        # UPDATE: no more global events
         # TODO Think about changing this. Makes returning the UUID
         # of the new object easier if we just say that new meetings REQUIRE
         # UUIDs too, and it's the job of the person creating a new meeting
         # event to create the UUID at that point and pass it down the chain.
         # TODO Figure out how to merge these event details into the main
         # event specification data structure, too.
-        if(not self.eventType.isGlobal):
-            # any event other than NEW MEETING needs to have a meeting param
+        #if(not self.eventType.isGlobal):
+        #    # any event other than NEW MEETING needs to have a meeting param
+        #    self.meeting = state.get_obj(meetingUUID, model.Meeting)
+        #    logging.warning("Set meeting to: " + str(self.meeting))
+        #    if(self.meeting==None):
+        #        # TODO We need to raise an exception here, not return none.
+        #        # Returning None doesn't seem to do anything except end
+        #        # the constructor. 
+        #        logging.error("""Tried to create an event with invalid 
+        #                        meetingUUID %s"""%meetingUUID)
+        #        return None
+        #else:
+        #    self.meeting = None
+        
+        if meetingUUID != None:
             self.meeting = state.get_obj(meetingUUID, model.Meeting)
-            logging.warning("Set meeting to: " + str(self.meeting))
-            if(self.meeting==None):
-                # TODO We need to raise an exception here, not return none.
-                # Returning None doesn't seem to do anything except end
-                # the constructor. 
-                logging.error("""Tried to create an event with invalid 
-                                meetingUUID %s"""%meetingUUID)
-                return None
         else:
             self.meeting = None
-       
-        
         
     
     def addResult(self, key, value):
@@ -235,9 +239,12 @@ failed" + str(self.params[paramKey]))
         event = handler(self)
         logging.warning("self.meeting: " + str(self.meeting) + "; event: " + str(event))
         
+        #all events are global now. else statement is never reached.
         # SEND EVENT TO APPROPRIATE CLIENTS
         if(self.eventType.isGlobal):
             sendEventsToDevices(state.get_devices(), [event])
+            if event.meeting != None:
+                event.meeting.eventHistory.append(event)
         else:
             # try:
             event.meeting.sendEvent(event)

@@ -14,6 +14,7 @@ Copyright (c) 2010 MIT Media Lab. All rights reserved.
 import model
 import logging
 import state
+import time
 
 # DISPATCH METHODS
 # These methods will not be called by anyone other than the event dispatch
@@ -42,6 +43,7 @@ def _handleNewMeeting(event):
     # add this event to the meeting, so it's included at the beginning of
     # every meeting history.
     newMeeting.eventHistory.append(event)
+    newMeeting.eventHistoryReadable.append("Meeting was created")
     
     return event
 
@@ -119,6 +121,8 @@ def _handleDeviceLeft(event):
 def _handleJoinedLocation(event):
     location = state.get_obj(event.params["location"], model.Location)
     location.userJoined(event.actor)
+    event.actor.status = ("joined location", time.time())
+    event.params["joinedAt"] = event.actor.status[1]
     
     # event.addResult("user", event.actor)
     
@@ -165,6 +169,9 @@ def _handleLocationJoinedMeeting(event):
     meeting = state.get_obj(event.params["meeting"], model.Meeting)
     
     location.joinedMeeting(meeting)
+    
+    meeting.eventHistoryReadable.append(location.name + " joined the meeting")
+    
     return event
 
 def _handleLocationLeftMeeting(event):
@@ -172,6 +179,8 @@ def _handleLocationLeftMeeting(event):
     meeting = state.get_obj(event.params["meeting"], model.Meeting)
 
     meeting.locationLeft(location)
+    meeting.eventHistoryReadable.append(location.name + " left the meeting")
+    
     return event
     
 def _handleEditMeeting(event):
@@ -179,6 +188,8 @@ def _handleEditMeeting(event):
     title = event.params["title"]
     
     meeting.setTitle(title)
+    
+    meeting.eventHistoryReadable.append("Meeting name changed to "+title)
     return event
 
 def _handleNewTopic(event):
@@ -197,6 +208,10 @@ def _handleNewTopic(event):
             createdAt=d["createdAt"])
         
     event.meeting.addTopic(newTopic)
+    event.actor.status=("created new topic", newTopic.createdAt)
+    
+    event.meeting.eventHistoryReadable.append(event.actor.name+" created new topic ("+text+")")
+    
     return event
     
 def _handleDeleteTopic(event):
@@ -204,6 +219,11 @@ def _handleDeleteTopic(event):
     topic = state.get_obj(event.params["topicUUID"], model.Topic)
     
     event.meeting.removeTopic(topic)
+    event.actor.status=("deleted topic", time.time())
+    #needed to keep track of statuses on client-side
+    event.params["deletedAt"] = event.actor.status[1]
+    
+    event.meeting.eventHistoryReadable.append(event.actor.name+" deleted topic ("+topic.text+")")
     
     return event
     
@@ -212,6 +232,12 @@ def _handleUpdateTopic(event):
     status = event.params["status"]
     
     topic.setStatus(status, event.actor)
+    event.actor.status=("edited topic", time.time())
+    #needed to keep track of statuses on client-side
+    event.params["editedAt"] = event.actor.status[1]
+    
+    event.meeting.eventHistoryReadable.append(event.actor.name+" changed the status of topic ("+
+        topic.text+") to "+status)
     
     return event
 
@@ -232,6 +258,9 @@ def _handleNewTask(event):
             taskUUID=d["uuid"], createdAt=d["createdAt"])
 
     event.meeting.addTask(newTask)
+    event.actor.status=("created new task", newTask.createdAt)
+    
+    event.meeting.eventHistoryReadable.append(event.actor.name+" created a new task ("+text+")")
     
     return event
 
@@ -241,14 +270,27 @@ def _handleDeleteTask(event):
     logging.debug(task)
     
     event.meeting.removeTask(task)
-
+    event.actor.status=("deleted task", time.time())
+    #needed to keep track of statuses on client-side
+    event.params["deletedAt"] = event.actor.status[1]
+    
+    event.meeting.eventHistoryReadable.append(event.actor.name+" deleted task ("+task.text+")")
+    
     return event
 
 def _handleEditTask(event):
     text = event.params["text"]
     task = state.get_obj(event.params["taskUUID"], model.Task)
     
+    event.meeting.eventHistoryReadable.append(event.actor.name+" changed task ("+task.text+") to task ("+text+")")
+    
     task.setText(text)
+    event.actor.status=("edited task", time.time())
+    #needed to keep track of statuses on client-side
+    event.params["editedAt"] = event.actor.status[1]
+    
+    
+    
     return event
     
 def _handleAssignTask(event):
@@ -261,10 +303,22 @@ def _handleAssignTask(event):
     if(not deassign):
         assignedTo = state.get_obj(event.params["assignedTo"], model.User)
         task.assign(assignedBy,assignedTo)
+        assignedBy.status=("assigned task", task.assignedAt)
+        assignedTo.status=("claimed task", task.assignedAt)
+        
+        event.meeting.eventHistoryReadable.append(assignedBy.name + " assigned task ("+task.text+") to "+assignedTo.name)
     else:
         task.deassign(assignedBy)
+        assignedBy.status=("deassigned task", task.assignedAt)
+        
+        event.meeting.eventHistoryReadable.append(assignedBy.name + " deassigned task ("+task.text+")")
 
     event.params["assignedAt"]=task.assignedAt
+    return event
+    
+def _handleHandRaise(event):
+    event.actor.handRaised =  not event.actor.handRaised
+    
     return event
 
 # This class just wraps the different features of an event into a nice 
@@ -319,21 +373,23 @@ EventType("LOCATION_LEFT_MEETING",  ["meeting"], _handleLocationLeftMeeting,
     
 EventType("EDIT_MEETING", ["meeting", "title"], _handleEditMeeting, True, False)
 
-EventType("NEW_TOPIC",      ["text"],               _handleNewTopic, False,
+EventType("NEW_TOPIC",      ["text"],               _handleNewTopic, True,
     True)
-EventType("DELETE_TOPIC",   ["topicUUID"],          _handleDeleteTopic, False,
+EventType("DELETE_TOPIC",   ["topicUUID"],          _handleDeleteTopic, True,
     True)
-EventType("UPDATE_TOPIC",   ["topicUUID", "status"],_handleUpdateTopic, False,
+EventType("UPDATE_TOPIC",   ["topicUUID", "status"],_handleUpdateTopic, True,
     True)
-EventType("SET_TOPIC_LIST", ["text"],               _handleTopicList, False,
+EventType("SET_TOPIC_LIST", ["text"],               _handleTopicList, True,
     True)
 
-EventType("NEW_TASK",      ["text"],                _handleNewTask, False,
+EventType("NEW_TASK",      ["text"],                _handleNewTask, True,
     True)
-EventType("DELETE_TASK",   ["taskUUID"],            _handleDeleteTask, False,
+EventType("DELETE_TASK",   ["taskUUID"],            _handleDeleteTask, True,
     True)
-EventType("EDIT_TASK",   ["taskUUID", "text"],      _handleEditTask, False,
+EventType("EDIT_TASK",   ["taskUUID", "text"],      _handleEditTask, True,
     True)
-EventType("ASSIGN_TASK", ["taskUUID", "assignedTo"],_handleAssignTask, False,
+EventType("ASSIGN_TASK", ["taskUUID"],_handleAssignTask, True,
     True)
+    
+EventType("HAND_RAISE", [], _handleHandRaise, True, True)
 

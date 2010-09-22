@@ -57,6 +57,7 @@
 					update();
 					if (!set){
 						connection.setUser(users[0].uuid);
+						// connection.setUser($.cookie('user'))
 						connection.connect();
 						set=true;
 					}

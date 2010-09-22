@@ -13,14 +13,28 @@
 
 @synthesize text;
 @synthesize timeStart;
+@synthesize timeFinished;
+//@synthesize timeCreated;
+@synthesize state;
 - (id)initWithFrame:(CGRect)frame withTopic:(Topic *)agenda{
     if ((self = [super initWithFrame:frame])) {
 		self.frame=frame;
         topic=agenda;
 		text=topic.text;
 		//if([agenda.startTime isKindOfClass:[NSNull class]]){
+		if(agenda.stopTime !=nil){
+			timeFormat = [[[NSDateFormatter alloc] init] autorelease];
+			[timeFormat setDateFormat:@"HH:mm:ss"];
+			timeFinished=[[timeFormat stringFromDate:agenda.stopTime]retain];
+			state=@"a-ended";
+		}
+		else{
+			timeFinished=nil;
+		}
+		
 		if(agenda.startTime ==nil){
-				timeStart=@"START";
+			timeStart=@"START";
+			state=@"c-notStarted";
 		}
 		else{
 			timeFormat = [[[NSDateFormatter alloc] init] autorelease];
@@ -28,8 +42,9 @@
 			timeStart=[[timeFormat stringFromDate:agenda.startTime]retain];
 			NSLog(@"Time:%@", agenda.startTime);
 			NSLog(@"Time:%@",timeStart);
-			
+			state=@"b-started";
 		}
+		//timeCreated=agenda.
 		self.userInteractionEnabled = YES; 
 		isTouched= FALSE;
 		
@@ -81,10 +96,34 @@
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 
 	
-	[timeStart drawInRect:CGRectMake(3, 16, 45, self.frame.size.height-12)
-			withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+	if([state isEqualToString:@"a-ended"]){
+	[@"Started:" drawInRect:CGRectMake(3, 2, 45, self.frame.size.height-15)
+					 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+		
+		
+	[timeStart drawInRect:CGRectMake(3, 12, 45, self.frame.size.height-12)
+					 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+		
+		
+	CGContextSetFillColorWithColor(ctx, [UIColor redColor].CGColor);
+	[@"Ended:" drawInRect:CGRectMake(3, 24, 45, self.frame.size.height-15)
+						withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 
-	
+	[timeFinished drawInRect:CGRectMake(3, 36, 45, self.frame.size.height-15)
+				 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+	}
+	else if([state isEqualToString:@"b-started"]){
+	[@"Started:" drawInRect:CGRectMake(3, 9, 45, self.frame.size.height-15)
+					   withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+		
+		
+	[timeStart drawInRect:CGRectMake(3, 20, 45, self.frame.size.height-12)
+					 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+	}	
+	else if([state isEqualToString:@"c-notStarted"]){
+			[timeStart drawInRect:CGRectMake(5, 18, 45, self.frame.size.height-12)
+						 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+	}
 	CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
 	CGContextFillRect(ctx, CGRectMake(50, 0, self.frame.size.width-50, self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:.5].CGColor);
@@ -105,13 +144,23 @@
 		
 		
 		timeStart = [[timeFormat stringFromDate:now] retain];
-		
+		state=@"b-started";
 		
 		NSLog(@"Time:%@",timeStart);
 		NSLog(@"current date:%@",[NSDate date]);
 //		[timeFormat release];
 //		[now release];
 
+	}
+	else if([state isEqualToString:@"b-started"]){
+		state=@"a-ended";
+		timeFormat = [[[NSDateFormatter alloc] init] autorelease];
+		[timeFormat setDateFormat:@"HH:mm:ss"];
+		
+		NSDate *now = [[[NSDate alloc] init] autorelease];
+		
+		
+		timeFinished = [[timeFormat stringFromDate:now] retain];
 	}	
 	[self setNeedsDisplay];
 
@@ -123,28 +172,34 @@
 	NSLog(@"I have been touched but now I am not"); 
 	
 	isTouched=FALSE;	
-	[self setNeedsDisplay];
+	[self.superview setNeedsDisplay];
+	[self.superview setNeedsLayout];
 }
 
-- (NSComparisonResult) compareByPointer:(TopicView *)view {
+- (NSComparisonResult) compareByState:(TopicView *)view {
     
     // Tries to comare by strings, but if they end up being exactly the same string,
     // it will resolve the ties by comparing pointers. This is a deterministic comparison
     // and an arbitrary (but stable) way to tell between tasks with identical text.
     // This is a rare case in real use, but happens a lot in testing, so this gives us some
     // protection from bad issues during demoing.
-    NSComparisonResult retVal = [self.text compare:view.text];
-    
-    if(retVal==NSOrderedSame) {
-        if (self < view)
-            retVal = NSOrderedAscending;
-        else if (self > view) 
-            retVal = NSOrderedDescending;
-    }
-    
+	
+	
+	NSComparisonResult retVal = [self.state compare:view.state];
+	if(retVal==NSOrderedSame) {
+		if([self.state isEqualToString:@"a-ended"]){
+			retVal=[self.timeFinished compare:view.timeFinished];
+		}
+		else if([self.state isEqualToString:@"b-started"]){
+			retVal=[self.timeStart compare:view.timeStart];
+		}	
+		//else if([self.state isEqualToString:@"notStarted"]){
+		///	retVal=[self.timeCreated compare:view.timeCreated];
+		//}		
+	}
+	
     return retVal;
 }
-
 - (void)dealloc {
     [super dealloc];
 }
