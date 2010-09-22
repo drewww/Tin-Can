@@ -30,7 +30,7 @@
  
     self.locations = [NSMutableSet set];
     
-    allParticipants = [[NSMutableSet set] retain];
+    allParticipants = [[NSMutableSet set] retain];  
     currentParticipants = [[NSMutableSet set] retain];
     
     self.title = myTitle;

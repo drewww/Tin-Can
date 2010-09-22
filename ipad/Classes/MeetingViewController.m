@@ -319,10 +319,8 @@
     NSSet *topics = [[[StateManager sharedInstance].meeting.topics copy] retain];
     NSLog(@"got some topics.");
     NSLog(@"%d topics", [topics count]);
-//    NSLog(@"topics: %@", topics);
     
     for (Topic *topic in topics) {
-        NSLog(@"topic");
         [topicContainer addSubview:[topic getView]];
     }
     

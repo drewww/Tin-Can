@@ -11,40 +11,13 @@
 
 @implementation TopicView
 
-@synthesize text;
-@synthesize timeStart;
-@synthesize timeFinished;
-//@synthesize timeCreated;
-@synthesize state;
-- (id)initWithFrame:(CGRect)frame withTopic:(Topic *)agenda{
+@synthesize topic;
+
+- (id)initWithFrame:(CGRect)frame withTopic:(Topic *)theTopic{
     if ((self = [super initWithFrame:frame])) {
 		self.frame=frame;
-        topic=agenda;
-		text=topic.text;
-		//if([agenda.startTime isKindOfClass:[NSNull class]]){
-		if(agenda.stopTime !=nil){
-			timeFormat = [[[NSDateFormatter alloc] init] autorelease];
-			[timeFormat setDateFormat:@"HH:mm:ss"];
-			timeFinished=[[timeFormat stringFromDate:agenda.stopTime]retain];
-			state=@"a-ended";
-		}
-		else{
-			timeFinished=nil;
-		}
-		
-		if(agenda.startTime ==nil){
-			timeStart=@"START";
-			state=@"c-notStarted";
-		}
-		else{
-			timeFormat = [[[NSDateFormatter alloc] init] autorelease];
-			[timeFormat setDateFormat:@"HH:mm:ss"];
-			timeStart=[[timeFormat stringFromDate:agenda.startTime]retain];
-			NSLog(@"Time:%@", agenda.startTime);
-			NSLog(@"Time:%@",timeStart);
-			state=@"b-started";
-		}
-		//timeCreated=agenda.
+        topic=theTopic;
+        
 		self.userInteractionEnabled = YES; 
 		isTouched= FALSE;
 		
@@ -96,75 +69,58 @@
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 
 	
-	if([state isEqualToString:@"a-ended"]){
+	if(topic.status == kPAST){
 	[@"Started:" drawInRect:CGRectMake(3, 2, 45, self.frame.size.height-15)
 					 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 		
 		
-	[timeStart drawInRect:CGRectMake(3, 12, 45, self.frame.size.height-12)
-					 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+//	[timeStart drawInRect:CGRectMake(3, 12, 45, self.frame.size.height-12)
+//					 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 		
 		
 	CGContextSetFillColorWithColor(ctx, [UIColor redColor].CGColor);
 	[@"Ended:" drawInRect:CGRectMake(3, 24, 45, self.frame.size.height-15)
 						withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 
-	[timeFinished drawInRect:CGRectMake(3, 36, 45, self.frame.size.height-15)
-				 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+//	[timeFinished drawInRect:CGRectMake(3, 36, 45, self.frame.size.height-15)
+//				 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	}
-	else if([state isEqualToString:@"b-started"]){
+	else if(topic.status == kCURRENT){
 	[@"Started:" drawInRect:CGRectMake(3, 9, 45, self.frame.size.height-15)
 					   withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 		
 		
-	[timeStart drawInRect:CGRectMake(3, 20, 45, self.frame.size.height-12)
-					 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+//	[timeStart drawInRect:CGRectMake(3, 20, 45, self.frame.size.height-12)
+//					 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	}	
-	else if([state isEqualToString:@"c-notStarted"]){
-			[timeStart drawInRect:CGRectMake(5, 18, 45, self.frame.size.height-12)
+	else if(topic.status == kFUTURE){
+			[@"START" drawInRect:CGRectMake(5, 18, 45, self.frame.size.height-12)
 						 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	}
 	CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
 	CGContextFillRect(ctx, CGRectMake(50, 0, self.frame.size.width-50, self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:.5].CGColor);
-	[text drawInRect:CGRectMake(54, 10, self.frame.size.width-54, self.frame.size.height-10) 
+    
+    NSLog(@"topic text: %@", topic.text);
+	[topic.text drawInRect:CGRectMake(54, 10, self.frame.size.width-54, self.frame.size.height-10) 
 			withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
 	[self setNeedsDisplay];
 	
 }
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	NSLog(@"I have been touched");
 	isTouched=TRUE;
-	if ([timeStart isEqualToString:@"START"]){
-		timeFormat = [[[NSDateFormatter alloc] init] autorelease];
-		[timeFormat setDateFormat:@"HH:mm:ss"];
-		
-		NSDate *now = [[[NSDate alloc] init] autorelease];
-		
-		
-		timeStart = [[timeFormat stringFromDate:now] retain];
-		state=@"b-started";
-		
-		NSLog(@"Time:%@",timeStart);
-		NSLog(@"current date:%@",[NSDate date]);
-//		[timeFormat release];
-//		[now release];
+	if (topic.status == kFUTURE){
 
+        NSLog(@"Future item touched - end the current item and make this one current.");
+        
 	}
-	else if([state isEqualToString:@"b-started"]){
-		state=@"a-ended";
-		timeFormat = [[[NSDateFormatter alloc] init] autorelease];
-		[timeFormat setDateFormat:@"HH:mm:ss"];
-		
-		NSDate *now = [[[NSDate alloc] init] autorelease];
-		
-		
-		timeFinished = [[timeFormat stringFromDate:now] retain];
+	else if(topic.status == kCURRENT){
+        
+        NSLog(@"Current item touched - end it.");
 	}	
 	[self setNeedsDisplay];
 
-	NSLog(@"leaving touches began");
 }
 
 
@@ -184,18 +140,22 @@
     // This is a rare case in real use, but happens a lot in testing, so this gives us some
     // protection from bad issues during demoing.
 	
+    // TODO Make sure this is right! We might need to flip ascending/descending. It's not obvious
+    // to me what those actually mean in this context. 
 	
-	NSComparisonResult retVal = [self.state compare:view.state];
-	if(retVal==NSOrderedSame) {
-		if([self.state isEqualToString:@"a-ended"]){
-			retVal=[self.timeFinished compare:view.timeFinished];
+    NSComparisonResult retVal;
+    if(topic.status < view.topic.status) {
+        retVal = NSOrderedDescending;
+    } else if (topic.status > view.topic.status) {
+        retVal = NSOrderedAscending;
+    }
+    
+	if(topic.status == view.topic.status) {
+		if(topic.status == kPAST){
+			retVal=[topic.startTime compare:view.topic.startTime];
 		}
-		else if([self.state isEqualToString:@"b-started"]){
-			retVal=[self.timeStart compare:view.timeStart];
-		}	
-		//else if([self.state isEqualToString:@"notStarted"]){
-		///	retVal=[self.timeCreated compare:view.timeCreated];
-		//}		
+        // For future items, ordering doesn't matter (although we might order by creation time - or will there be some pre-meeting fixed ordering?)
+        // For current items, there can be only one. Perhaps throw an error if we hit more than one in this process?
 	}
 	
     return retVal;

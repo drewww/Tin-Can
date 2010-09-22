@@ -47,7 +47,7 @@
     self.stopTime = myStopTime;
     self.color = myColor;
     
-    text = myText;
+    text = [myText retain];
     
     // How does this actually get set from the server? Worried about this
     // not being properly connected.
