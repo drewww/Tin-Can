@@ -143,14 +143,11 @@
     // This is a rare case in real use, but happens a lot in testing, so this gives us some
     // protection from bad issues during demoing.
 	
-    // TODO Make sure this is right! We might need to flip ascending/descending. It's not obvious
-    // to me what those actually mean in this context. 
-	
     NSComparisonResult retVal;
     if(topic.status < view.topic.status) {
-        retVal = NSOrderedDescending;
-    } else if (topic.status > view.topic.status) {
         retVal = NSOrderedAscending;
+    } else if (topic.status > view.topic.status) {
+        retVal = NSOrderedDescending;
     }
     
 	if(topic.status == view.topic.status) {
