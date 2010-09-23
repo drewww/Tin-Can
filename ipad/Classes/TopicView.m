@@ -8,6 +8,7 @@
 
 #import "TopicView.h"
 #import "Topic.h"
+#import "ConnectionManager.h"
 
 @implementation TopicView
 
@@ -113,11 +114,13 @@
 	if (topic.status == kFUTURE){
 
         NSLog(@"Future item touched - end the current item and make this one current.");
+        [[ConnectionManager sharedInstance] updateTopic:topic withStatus:kCURRENT];
         
 	}
 	else if(topic.status == kCURRENT){
         
         NSLog(@"Current item touched - end it.");
+        [[ConnectionManager sharedInstance] updateTopic:topic withStatus:kPAST];
 	}	
 	[self setNeedsDisplay];
 

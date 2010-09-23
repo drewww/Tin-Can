@@ -12,6 +12,7 @@
 #import "tincan.h"
 #import "Event.h"
 #import "Task.h"
+#import "Topic.h"
 
 
 @interface ConnectionManager : NSObject {
@@ -72,6 +73,8 @@
 
 - (void) assignTask:(Task *)theTask toUser:(User *)theUser;
 - (void) deassignTask:(Task *)theTask;
+
+- (void) updateTopic:(Topic *)theTopic withStatus:(TopicStatus)theStatus;
 
 
 + (ConnectionManager*)sharedInstance;

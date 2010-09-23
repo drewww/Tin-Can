@@ -79,6 +79,11 @@
     status = newStatus;
     
     [enumMapping release];
+    
+    // Trigger a draw update, if we have a view right now.
+    if(view != nil) {
+        [view setNeedsDisplay];
+    }
 }
 
 

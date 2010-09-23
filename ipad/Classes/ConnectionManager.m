@@ -487,6 +487,21 @@ static ConnectionManager *sharedInstance = nil;
     [request startAsynchronous];         
 }
 
+- (void) updateTopic:(Topic *)theTopic withStatus:(TopicStatus)theStatus {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/topics/update"]];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request setPostValue:theTopic.uuid forKey:@"topicUUID"];
+    
+    // I hate doing this, in case the enum changes, but I haven't seen a good way around it yet.
+    NSArray *enumMapping = [[NSArray arrayWithObjects:@"PAST", @"CURRENT", @"FUTURE", nil] retain];
+    
+    [request setPostValue:[enumMapping objectAtIndex:theStatus]  forKey:@"status"];    
+    [request setDelegate:self];
+    [request startAsynchronous]; 
+    
+    [enumMapping release];
+}
+
 
 
 #pragma mark -
