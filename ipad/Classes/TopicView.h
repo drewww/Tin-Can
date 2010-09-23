@@ -15,7 +15,7 @@
 	NSDateFormatter *timeFormat;
 }
 
-@property Topic *topic;
+@property (nonatomic, retain) Topic *topic;
 
 - (id)initWithFrame:(CGRect)frame withTopic:(Topic *)theTopic;
 - (id)initWithTopic:(Topic*)theTopic;

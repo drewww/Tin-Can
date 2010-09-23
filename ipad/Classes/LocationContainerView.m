@@ -72,6 +72,9 @@
 		//NSLog(@"Frame: %f",self.bounds.size.width);
 		//		
 		//		NSLog(@"Subview frame: %f",subview.bounds.size.width);
+        
+        NSLog(@"+++++LAYOUT location.name=%@", subview.location.name);
+        
 		i++;
 	}
     

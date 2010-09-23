@@ -10,14 +10,13 @@
 #import "Location.h"
 
 @interface LocationView : UIView {
-	NSString *name;
-	int numUsers;
 	UIColor *color;
+    Location *location;
 }
+
+@property (nonatomic, retain) Location *location;
 
 - (id) initWithLocation:(Location *)theLocation;
 - (id) initWithFrame:(CGRect)frame withName:(NSString *)theName withUsers:(int)users;
-
-@property (nonatomic, retain) NSString *name;
 
 @end

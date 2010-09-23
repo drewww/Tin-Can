@@ -7,17 +7,19 @@
 //
 
 #import "TaskView.h"
-
+#import "Task.h"
 
 @implementation TaskView
 
-@synthesize text;
+@synthesize task;
 
-- (id)initWithFrame:(CGRect)frame withText:(NSString *)taskText{
+- (id)initWithFrame:(CGRect)frame withTask:(Task *)theTask{
     if ((self = [super initWithFrame:frame])) {
 		self.frame=frame;
-        text=taskText;
-		initialOrigin = CGPointMake(self.frame.origin.x, self.frame.origin.y);//self.frame.origin;  
+
+		task = theTask;
+        
+        initialOrigin = CGPointMake(self.frame.origin.x, self.frame.origin.y);//self.frame.origin;  
 		self.userInteractionEnabled = YES; 
 		isTouched= FALSE;
 		
@@ -36,13 +38,7 @@
 }
 
 - (id) initWithTask:(Task *)theTask {
-    
-    // This is just a weak passthrough. Eventually, we'll knock out the initWithFrame
-    // version and initWithTask will be the only option. Leaving the old one for compatibility
-    // reasons, because making tasks by hand on the client is a bit tedious for testing.
-    task = theTask;
-    
-    return [self initWithFrame:CGRectMake(0, 0, 230, 50) withText:task.text];
+    return [self initWithFrame:CGRectMake(0, 0, 230, 50) withTask:theTask];
 }
 
 -(void)setFrameWidthWithContainerWidth:(CGFloat )width{
@@ -66,7 +62,7 @@
 
 	CGContextFillRect(ctx, CGRectMake(10, 0, self.frame.size.width-12, self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:.5].CGColor);
-	[text drawInRect:CGRectMake(15, 2, self.frame.size.width-16, self.frame.size.height) 
+	[task.text drawInRect:CGRectMake(15, 2, self.frame.size.width-16, self.frame.size.height) 
 			withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
 	CGContextSetLineWidth(ctx,2);
@@ -127,7 +123,8 @@
     // and an arbitrary (but stable) way to tell between tasks with identical text.
     // This is a rare case in real use, but happens a lot in testing, so this gives us some
     // protection from bad issues during demoing.
-    NSComparisonResult retVal = [self.text compare:view.text];
+        
+    NSComparisonResult retVal = [self.task.text compare:view.task.text];
     
     if(retVal==NSOrderedSame) {
         if (self < view)
