@@ -22,6 +22,7 @@
 		[self setNeedsLayout];
 		
     }
+    
     return self;
 }
 

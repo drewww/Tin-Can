@@ -10,7 +10,7 @@
 
 
 @interface TopicContainerView : UIView {
-	float rot;
+	float rot;    
 }
 
 @end
