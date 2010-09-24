@@ -50,4 +50,6 @@
 
 - (void) setHoverState:(bool)state;
 
+- (User *)getUser;
+
 @end

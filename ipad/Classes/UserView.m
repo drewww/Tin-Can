@@ -110,15 +110,17 @@
         curFrame.size.height = curFrame.size.height - lastHeightChange*2;
         self.bounds = curFrame;
         
-        
         [UIView commitAnimations];        
         taskDrawerExtended = false;
     }
-    
 }
 
 - (void) taskAssigned:(Task *)theTask {
     [taskContainerView addSubview:[theTask getView]];
+    
+    [self setHoverState:false];
+    [self setNeedsDisplay];
+    [userRenderView setNeedsDisplay];
 }
 
 - (void) taskRemoved:(Task *)theTask {
@@ -131,6 +133,11 @@
     NSLog(@"setting hover state to %d on %@", state, userRenderView.user.name);
     userRenderView.hover = state;
     [userRenderView setNeedsDisplay];
+}
+
+// Figure out how to merge this into the .user format? Would be nice it it was transparent.
+- (User *)getUser {
+    return userRenderView.user;
 }
 
 //- (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event {

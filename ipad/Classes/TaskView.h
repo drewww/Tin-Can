@@ -37,6 +37,9 @@
 - (id)initWithFrame:(CGRect)frame withTask:(Task *)task;
 - (id)initWithTask:(Task *)theTask;
 
+- (void) startAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime;
+- (void) finishAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime;
+
 - (NSComparisonResult) compareByPointer:(TaskView *)view;
 -(void)setFrameWidthWithContainerWidth:(CGFloat )width;
 

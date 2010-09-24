@@ -130,7 +130,7 @@ static DragManager *sharedInstance = nil;
     [lastTaskDropTargets setValue:lastDropTarget forKey:task.uuid];
 }
 
-- (bool) taskDragEndedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)Task {
+- (bool) taskDragEndedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task {
     // Get the current target
     UserView *curTargetView = [self userViewAtTouch:touch withEvent:event];	
     
@@ -138,7 +138,7 @@ static DragManager *sharedInstance = nil;
     if(curTargetView != nil) {
         
         // Do the actual task assignment.
-        
+        [[task getView] startAssignToUser:[curTargetView getUser] byActor:[StateManager sharedInstance].location atTime:[NSDate date]];
         
         return true;
     }

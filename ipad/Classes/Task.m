@@ -39,11 +39,21 @@
     return assignedTo != nil && ![assignedTo isKindOfClass:[NSNull class]];
 }
 
+
+- (void) startAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime {
+    
+    // It's a bit annoying to have to pass all this stuff through the whole chain, but I'm not
+    // sure how else to get it back, other than some kind of closure trick.
+    [view startAssignToUser:toUser byActor:byActor atTime:assignTime];
+    
+}
+
+
 - (void) assignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime{
     self.assignedAt = assignTime;
     self.assignedBy = byActor;
     self.assignedTo = toUser;
-    
+        
     [self.assignedTo assignTask:self];
 }
 

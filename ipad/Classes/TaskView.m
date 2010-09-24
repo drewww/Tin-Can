@@ -87,6 +87,24 @@
 }
 
 
+- (void) startAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime {
+    
+    
+    // First, just say we're done immediately and do the assignment. 
+    [self finishAssignToUser:toUser byActor:byActor atTime:assignTime];
+}
+
+- (void) finishAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime {
+    
+    // Remove the TaskView from its current super view and assign it to its new container.
+    [[task getView] removeFromSuperview];
+    
+    [toUser assignTask:task];
+    
+    [task assignToUser:toUser byActor:byActor atTime:assignTime];
+}
+
+
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
 	// When we move, we want to know the delta from its previous location
 	// and then we can adjust our position accordingly. 
@@ -129,6 +147,7 @@
             // We were dropped on an actual drop target. Something else will handle our
             // animation at this point (although we should think about moving it here for
             // consistency.
+        NSLog(@"dropped on drop target.");
     }
     
 
