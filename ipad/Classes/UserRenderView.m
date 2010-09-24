@@ -14,7 +14,6 @@
 
 @implementation UserRenderView
 
-
 @synthesize user;
 @synthesize hover;
 

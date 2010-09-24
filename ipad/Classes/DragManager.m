@@ -50,8 +50,13 @@ static DragManager *sharedInstance = nil;
     
     if([returnedView isKindOfClass:[UserView class]]) {
         return ((UserView *) returnedView);
-    }
-    else {
+    } else if ([returnedView isKindOfClass:[UserRenderView class]]) {
+        
+        // This is a bit convoluted - should the RenderView have a ref
+        // back to its parent?
+        return [((UserRenderView *) returnedView).user getView];
+        
+    } else {
         return nil;
     }
     
