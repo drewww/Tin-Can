@@ -88,7 +88,6 @@
 
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-	NSLog(@"I have been moved and touched");
 	// When we move, we want to know the delta from its previous location
 	// and then we can adjust our position accordingly. 
 	

@@ -129,6 +129,8 @@
  
     // Do something. 
     NSLog(@"setting hover state to %d on %@", state, userRenderView.user.name);
+    userRenderView.hover = state;
+    [userRenderView setNeedsDisplay];
 }
 
 //- (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event {

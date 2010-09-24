@@ -78,12 +78,18 @@ static DragManager *sharedInstance = nil;
 	// if cur is nothing and last is something, release and set false
 	// if cur is something and last is nothing, retain and set true
 	
+//    NSLog(@"Drop targets: (last) %@ =? %@ (cur)", lastDropTarget, curDropTarget);
+    
 	if(curDropTarget != nil) {
 		if (lastDropTarget == nil) {
+//            NSLog(@" entering new drop target");
 			[curDropTarget setHoverState:true];
 			[curDropTarget retain];
 			lastDropTarget = curDropTarget;			
 		} else if(curDropTarget != lastDropTarget) {
+            
+//            NSLog(@"transitioning from one drop target to a different one");
+            
 			// transition.
 			[lastDropTarget setHoverState:false];
 			[lastDropTarget release];
@@ -99,6 +105,9 @@ static DragManager *sharedInstance = nil;
 	} else {
 		// curTargetView IS nil.
 		if(lastDropTarget != nil) {
+            
+//            NSLog(@"transitioning out of drop target to nothing");
+            
 			[lastDropTarget setHoverState:false];
 			[lastDropTarget release];		
 			lastDropTarget = nil;
@@ -107,14 +116,15 @@ static DragManager *sharedInstance = nil;
 		// If they're both nil, do nothing.
 	}
 	
-	
-	[lastDropTarget setHoverState:false];
-	[lastDropTarget release];
-	if(curDropTarget !=nil) {
-		[curDropTarget setHoverState:true];
-		lastDropTarget = curDropTarget;
-		[lastDropTarget retain];
-	}
+
+	// Why was this code ever here? This seems totally naive and wrong.
+//	[lastDropTarget setHoverState:false];
+//	[lastDropTarget release];
+//	if(curDropTarget !=nil) {
+//		[curDropTarget setHoverState:true];
+//		lastDropTarget = curDropTarget;
+//		[lastDropTarget retain];
+//	}
     
     // Now push the current last into the dictionary.
     [lastTaskDropTargets setValue:lastDropTarget forKey:task.uuid];
