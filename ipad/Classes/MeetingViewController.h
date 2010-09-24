@@ -16,17 +16,17 @@
 @class Todo;
 
 @interface MeetingViewController : UIViewController {    
-    UIView *participantsContainer;
+    UIView *userContainer;
     
     TaskContainerView *taskContainer;
     TopicContainerView *topicContainer;
 	LocationContainerView *locContainer;
     
-    NSMutableSet *todoViews;
+    NSMutableSet *taskViews;
 
     
-    NSMutableDictionary *participants;
-    NSMutableDictionary *todos;
+    NSMutableDictionary *users;
+    NSMutableDictionary *tasks;
     
     MeetingTimerView *meetingTimerView;
     NSTimer *clock;
@@ -39,11 +39,6 @@
 }
 
 
-// These are deprecated, but I'm leaving them behind so we can still test thsoe views
-// if the server-based objects turn into a problem.
-- (void) initParticipantsView;
-- (void) initTodoViews;
-
 - (void) initUsers;
 - (void) initTasks;
 - (void) initTopics;
@@ -51,9 +46,6 @@
 - (void) clk;
 
 - (void) handleConnectionEvent:(Event *)event;
-
-
-- (CGPoint) getNextTodoPosition;
 
 @end
 

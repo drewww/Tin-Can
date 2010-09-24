@@ -9,6 +9,18 @@
 #import <UIKit/UIKit.h>
 #import "Task.h"
 
+
+//@class TaskDragDelegate;
+
+@protocol TaskDragDelegate
+- (void) taskDragMovedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task;
+
+// Returns true if the drag ended on a drop target, false otherwise.
+// (TODO should this actually return the target we dropped on instead of just true/false?)
+// (alternatively, should we have a generic drop target interface? Hmm.)
+- (bool) taskDragEndedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTodo:(Task *)task;
+@end
+
 @interface TaskView : UIView {
 	CGPoint    initialOrigin;
 	bool isTouched; 

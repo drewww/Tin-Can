@@ -25,6 +25,7 @@
 		3A2A6BF111F0B5FD00FF373C /* rightarrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A2A6BEF11F0B5FD00FF373C /* rightarrow.png */; };
 		3A2A6C7C11F0D86500FF373C /* ConnectionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6C7B11F0D86500FF373C /* ConnectionManager.m */; };
 		3A2A6C9811F0F68300FF373C /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6C9711F0F68300FF373C /* Event.m */; };
+		3A4941B8124D209B0068C6D6 /* DragManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4941B7124D209B0068C6D6 /* DragManager.m */; };
 		3A57217F11EB7515004C2687 /* MeetingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57217E11EB7515004C2687 /* MeetingViewController.m */; };
 		3A57237811EBDE0B004C2687 /* TinCanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57237711EBDE0B004C2687 /* TinCanViewController.m */; };
 		3AA06D1411AAD1C500C3D279 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AA06D1311AAD1C500C3D279 /* Icon.png */; };
@@ -109,6 +110,8 @@
 		3A2A6C7B11F0D86500FF373C /* ConnectionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConnectionManager.m; sourceTree = "<group>"; };
 		3A2A6C9611F0F68300FF373C /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
 		3A2A6C9711F0F68300FF373C /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
+		3A4941B6124D209B0068C6D6 /* DragManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DragManager.h; sourceTree = "<group>"; };
+		3A4941B7124D209B0068C6D6 /* DragManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DragManager.m; sourceTree = "<group>"; };
 		3A57217D11EB7515004C2687 /* MeetingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeetingViewController.h; sourceTree = "<group>"; };
 		3A57217E11EB7515004C2687 /* MeetingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeetingViewController.m; sourceTree = "<group>"; };
 		3A57237611EBDE0B004C2687 /* TinCanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TinCanViewController.h; sourceTree = "<group>"; };
@@ -402,6 +405,8 @@
 				3AD66E5A120B80C000F974DA /* UserRenderView.m */,
 				3AD674441214A56900F974DA /* UserContainer.h */,
 				3AD674451214A56900F974DA /* UserContainer.m */,
+				3A4941B6124D209B0068C6D6 /* DragManager.h */,
+				3A4941B7124D209B0068C6D6 /* DragManager.m */,
 			);
 			name = Meeting;
 			sourceTree = "<group>";
@@ -566,6 +571,7 @@
 				3AD674461214A56900F974DA /* UserContainer.m in Sources */,
 				DA72601F1215A116008A0E0C /* LocationView.m in Sources */,
 				DA7260221215A15E008A0E0C /* LocationContainerView.m in Sources */,
+				3A4941B8124D209B0068C6D6 /* DragManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

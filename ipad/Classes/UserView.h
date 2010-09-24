@@ -49,4 +49,6 @@
 - (void) taskAssigned:(Task *)theTask;
 - (void) taskRemoved:(Task *)theTask;
 
+- (void) setHoverState:(bool)state;
+
 @end

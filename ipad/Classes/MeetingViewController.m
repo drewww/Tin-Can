@@ -16,6 +16,7 @@
 #import "Event.h"
 #import "Location.h"
 #import "UserContainer.h"
+#import "DragManager.h"
 
 #define INITIAL_REVISION_NUMBER 10000
 
@@ -43,9 +44,9 @@
 	
 					 
     // Create the participants view.
-    participantsContainer = [[UserContainer alloc] initWithFrame:self.view.frame];
-    [participantsContainer retain];
-    [self.view addSubview:participantsContainer];
+    userContainer = [[UserContainer alloc] initWithFrame:self.view.frame];
+    [userContainer retain];
+    [self.view addSubview:userContainer];
             
 	taskContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) withRot: M_PI/2];
 
@@ -57,10 +58,10 @@
 	[self.view addSubview:topicContainer];
 	[self.view addSubview:locContainer];
 
-    //[[DragManager sharedInstance] initWithRootView:self.view withParticipantsContainer:participantsContainer];
+    [[DragManager sharedInstance] setRootView:self.view andUsersContainer:userContainer];
 
 	[self.view bringSubviewToFront:meetingTimerView];
-    [self.view bringSubviewToFront:participantsContainer];
+    [self.view bringSubviewToFront:userContainer];
     [self.view bringSubviewToFront:taskContainer];
 	[self.view bringSubviewToFront:topicContainer];
 	//[self.view bringSubviewToFront:locContainer];
@@ -163,7 +164,7 @@
             if([curMeeting.locations containsObject:location]) {
                 NSLog(@"User joined a location in this meeting!");
                 User *user = (User *)[state getObjWithUUID:event.actorUUID withType:[User class]];
-                [participantsContainer addSubview:[user getView]];
+                [userContainer addSubview:[user getView]];
             }
             
             // Also, ask the user's location to redraw itself.
@@ -194,7 +195,7 @@
             if([curMeeting.locations containsObject:location]) {
                 NSLog(@"another location joined this meeting! with users: %@", location.users);
                 for(User *user in location.users) {
-                    [participantsContainer addSubview:[user getView]];
+                    [userContainer addSubview:[user getView]];
                 }
             }
             
@@ -255,8 +256,8 @@
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
-    [participantsContainer release];
-    participantsContainer = nil;
+    [userContainer release];
+    userContainer = nil;
     
     [meetingTimerView release];
     meetingTimerView = nil;
@@ -267,12 +268,12 @@
     [super dealloc];
     [self.view release];
     
-    [participantsContainer release];
+    [userContainer release];
     
-    [participants release];
-    [todos release];
+    [users release];
+    [tasks release];
     
-    [todoViews release];
+    [taskViews release];
     
     [queue release];
     
@@ -300,7 +301,7 @@
         // This will avoid double-creating if for some reason someone else needs the User's view.
         UserView *view = (UserView *)[user getView];//changed UIView to UserView to get rid of yellow error
         
-        [participantsContainer addSubview:view];
+        [userContainer addSubview:view];
         
         [view setNeedsDisplay];
         i++;
@@ -335,116 +336,6 @@
     [topicContainer setNeedsLayout];
     
     [topics release];
-}
-
-
-- (void)initParticipantsView {
-	
-	
-    
-    participants = [[NSMutableDictionary dictionary] retain];
-        
-    // Make a set of names.
-    NSMutableArray *names = [NSMutableArray arrayWithCapacity:10];
-    [names addObject:@"Matt"];
-    [names addObject:@"Andrea"];
-    [names addObject:@"Jaewoo"];
-    [names addObject:@"Charlie"];
-    [names addObject:@"Chris"];
-    [names addObject:@"Paula"];
-    [names addObject:@"Ig-Jae"];
-    [names addObject:@"Trevor"];
-    [names addObject:@"Paulina"];
-    [names addObject:@"Dori"];
-    
-	int i = 0;
-	
-	for (NSString *name in names) {
-        // This is going to get really ugly for now, since we don't
-        // have a nice participant layout manager. Just hardcode
-        // positions.
-        UIColor *color;
-        NSString *uuid;
-        switch(i) {
-            case 0:
-                
-                color = [UIColor redColor];
-                uuid = @"e124824b-13c1-4357-b901-cd69a289c8ab";
-                break;
-            case 1:
-                color = [UIColor redColor];
-                uuid = @"844e0960-513b-44f2-9540-07356c827750";
-                break;
-            case 2:
-               
-                color = [UIColor redColor];
-                uuid = @"6b23a18d-a134-4507-a546-5f567ef3226a";
-                break;
-            case 3:
-				color = [UIColor blueColor];
-                uuid = @"1d9ae851-c555-493f-957b-a2ff8badfe99";
-                break;
-            case 4:
-                color = [UIColor blueColor];
-                uuid = @"62c76fb7-efd8-46fa-ae03-b1c694f620f8";
-                break;
-            case 5:
-                color = [UIColor blueColor];
-                uuid = @"c1c47f73-4fba-46e4-b005-014ef81676f9";
-                break;
-            case 6:
-                color = [UIColor yellowColor];
-                uuid = @"9ae23576-c7a9-4e6d-96b6-b00fd928e049";
-                break;
-            case 7:
-                color = [UIColor yellowColor];
-                uuid = @"f0748716-7553-45d6-867d-ddcbe27dd04c";
-                break;
-            case 8:
-                color = [UIColor greenColor];
-                uuid = @"384f2c76-59d8-4561-b6ed-8c1bf0d3b721";
-                break;
-            case 9:        
-                color = [UIColor purpleColor];
-                uuid = @"15318475-e45d-4384-a875-9d2147afec3d";
-                break;
-        }
-        
-        //Participant *p = [[Participant alloc] initWithName:name withUUID:uuid];
-
-        User *u = [[User alloc] initWithUUID:uuid withName:name withLocationUUID:nil];
-        
-        [participants setObject:u forKey:u.uuid];
-        
-        // Now make the matching view.
-        UserView *newUserView = [[UserView alloc] initWithUser:u];
-        
-        
-        
-        
-        
-        //newUserView.center = [[[position objectAtIndex:0] objectAtIndex:i]CGPointValue];
-        
-        //NSLog(@"center: %f,%f", newUserView.center.x, newUserView.center.y);
-        
-        
-        // This is used for debugging the entire layout by pushing users off the edge so you can see
-        // the entire view.
-//        newUserView.center = CGPointMake(newUserView.center.x + 100, newUserView.center.y + 100);
-
-//        CGRect newFrame = CGRectMake(origin.x, origin.y, newUserView.frame.size.width, newUserView.frame.size.width);
-        
-//        newUserView.frame = newFrame;
-        
-       // CGFloat rot = [[[position objectAtIndex:1] objectAtIndex:i]floatValue];
-//        [newUserView setTransform:CGAffineTransformMakeRotation(rot)];
-//        
-//        p.view = newParticipantView;
-        [participantsContainer addSubview:newUserView];
-        [participantsContainer bringSubviewToFront:newUserView];
-        [newUserView setNeedsDisplay];
-        i++;
-    }
 }
 
 
