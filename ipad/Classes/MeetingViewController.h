@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "MeetingTimerView.h"
-#import "ParticipantView.h"
-#import "Todo.h"
 #import "TaskContainerView.h"
 #import "TopicContainerView.h"
 #import "LocationContainerView.h"
@@ -51,13 +49,6 @@
 - (void) initTopics;
 
 - (void) clk;
-
-- (void) addTodo:(Todo *)todo;
-
-- (void) dispatchTodoCommandString:(NSString *)operation fromRevision:(int)revision;
-
-- (void) handleNewTodoWithArguments:(NSArray *)args;
-- (void) handleAssignTodoWithArguments:(NSArray *)args;
 
 - (void) handleConnectionEvent:(Event *)event;
 

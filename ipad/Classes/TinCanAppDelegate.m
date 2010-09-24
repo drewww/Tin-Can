@@ -7,7 +7,6 @@
 //
 
 #import "TinCanAppDelegate.h"
-#import "ParticipantView.h"
 #import "TinCanViewController.h"
 #import "LoginMasterViewController.h"
 
