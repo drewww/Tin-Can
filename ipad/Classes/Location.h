@@ -31,6 +31,7 @@
 - (void) leftMeeting:(Meeting *)theMeeting;
 - (BOOL) isInMeeting;
 - (void) unswizzle;
+- (UIView *) getView;
 
 @property(nonatomic, retain) NSMutableSet *users;
 @property(nonatomic, retain) Meeting *meeting;
