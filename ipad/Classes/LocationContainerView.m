@@ -21,7 +21,7 @@
 		[self setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 		for (Location *loc in  [StateManager sharedInstance].meeting.locations ){
 			NSLog(@"location: %@", loc);
-			LocationView *newloc = [[LocationView alloc] initWithLocation:loc];
+			LocationView *newloc = [loc getView];
 		
 		NSLog(@"loc: %@", newloc);
 		

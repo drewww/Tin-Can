@@ -10,6 +10,7 @@
 #import "StateManager.h"
 #import "Meeting.h"
 #import "tincan.h"
+#import "LocationView.h"
 
 @implementation Location
 
@@ -91,6 +92,17 @@
         return [NSString stringWithFormat:@"[loc.%@ %@ meet:null users:%d]", [self.uuid substringToIndex:6],
                 self.name, [self.users count]];
 
+}
+
+- (UIView *)getView {
+    
+    if(view==nil) {
+        // construct a new TaskView
+        view = [[LocationView alloc] initWithLocation:self];
+    }
+    
+    // return the current view
+    return view;
 }
 
 @end

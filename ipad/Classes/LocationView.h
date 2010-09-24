@@ -17,6 +17,6 @@
 @property (nonatomic, retain) Location *location;
 
 - (id) initWithLocation:(Location *)theLocation;
-- (id) initWithFrame:(CGRect)frame withName:(NSString *)theName withUsers:(int)users;
+- (id) initWithFrame:(CGRect)frame withLocation:(Location *)theLocation;
 
 @end

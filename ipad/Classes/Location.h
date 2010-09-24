@@ -19,6 +19,8 @@
     Meeting *meeting;
     UUID *meetingUUID;
     
+    UIView *view;
+    
     NSMutableSet *users;
 }
 
