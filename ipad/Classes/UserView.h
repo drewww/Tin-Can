@@ -36,7 +36,6 @@
     
     float lastHeightChange;
 	float initialHeight;
-
 }
 
 

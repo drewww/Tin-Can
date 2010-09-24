@@ -128,6 +128,7 @@
 - (void) setHoverState:(bool)state {
  
     // Do something. 
+    NSLog(@"setting hover state to %d on %@", state, userRenderView.user.name);
 }
 
 //- (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event {

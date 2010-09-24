@@ -8,10 +8,12 @@
 
 #import "TaskView.h"
 #import "Task.h"
+#import "DragManager.h"
 
 @implementation TaskView
 
 @synthesize task;
+@synthesize delegate;
 
 - (id)initWithFrame:(CGRect)frame withTask:(Task *)theTask{
     if ((self = [super initWithFrame:frame])) {
@@ -23,6 +25,9 @@
 		self.userInteractionEnabled = YES; 
 		isTouched= FALSE;
 		
+        // Set our own delegate on init.
+        self.delegate = [DragManager sharedInstance];
+        
 		self.alpha = 0;
 		[UIView beginAnimations:@"fade_in" context:self];
 		
@@ -95,11 +100,20 @@
 	
 	[self setNeedsDisplay];
 
+    
+    // Inform the delegate.
+    [self.delegate taskDragMovedWithTouch:touch withEvent:event withTask:self.task];
+    
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	   NSLog(@"I have been touched but now I am not"); 
 
+    // TODO think about multitouch for this!
+    UITouch *touch = [touches anyObject];
+    
+    if (![self.delegate taskDragEndedWithTouch:touch withEvent:event withTask:self.task]) {
+        //
+        
         [UIView beginAnimations:@"snap_to_initial_position" context:nil];
         
         [UIView setAnimationDuration:1.0f];
@@ -112,6 +126,12 @@
         [UIView commitAnimations];
 		isTouched=FALSE;
 		[self.superview sendSubviewToBack:self];
+    } else {
+            // We were dropped on an actual drop target. Something else will handle our
+            // animation at this point (although we should think about moving it here for
+            // consistency.
+    }
+    
 
 		[self setNeedsDisplay];
 }

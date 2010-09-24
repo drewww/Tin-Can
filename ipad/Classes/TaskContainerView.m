@@ -82,13 +82,7 @@
 }
 
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    NSLog(@"touch ended on task container view");
-    TaskView *newTask=[[TaskView alloc] initWithFrame:CGRectMake(10, 100, 230, 50) 
-                                             withText: @"Ooo! I added a Task. Spiffeh"];
-	if([[self subviews]count]<(floor(self.bounds.size.height/30.0))){
-		[self addSubview:newTask];
-	}
-    [self setNeedsLayout];
+    // Used to create tasks programmatically here. Knocking that out now, since we're hooked up to the server.
 }
 
 - (void)dealloc {
