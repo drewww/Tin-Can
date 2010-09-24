@@ -61,6 +61,9 @@
     self.assignedAt = assignTime;
     self.assignedBy = byActor;
     self.assignedTo = toUser;
+    
+    
+    
         
     [self.assignedTo assignTask:self];
 }

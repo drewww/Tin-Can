@@ -10,6 +10,7 @@
 #import "Task.h"
 #import "UserView.h"
 #import "ASIFormDataRequest.h"
+#import "ConnectionManager.h"
 
 @implementation DragManager
 
@@ -54,7 +55,7 @@ static DragManager *sharedInstance = nil;
         
         // This is a bit convoluted - should the RenderView have a ref
         // back to its parent?
-        return [((UserRenderView *) returnedView).user getView];
+        return (UserView *)[((UserRenderView *) returnedView).user getView];
         
     } else {
         return nil;
@@ -138,7 +139,14 @@ static DragManager *sharedInstance = nil;
     if(curTargetView != nil) {
         
         // Do the actual task assignment.
-        [[task getView] startAssignToUser:[curTargetView getUser] byActor:[StateManager sharedInstance].location atTime:[NSDate date]];
+        [(TaskView *)[task getView] startAssignToUser:[curTargetView getUser] byActor:[StateManager sharedInstance].location atTime:[NSDate date]];
+        
+        // Send the message to the server that the task has been assigned.
+        // We're doing this here and not in any of the other model-based methods beacuse those
+        // are going to be called when assignment happens on other clients, and we want to avoid
+        // triggering a cascade. This chunk of code only gets called for the client that
+        // physically does the assignment.
+        [[ConnectionManager sharedInstance] assignTask:task toUser:[curTargetView getUser]];
         
         return true;
     }
