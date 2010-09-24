@@ -44,12 +44,20 @@
     
     // It's a bit annoying to have to pass all this stuff through the whole chain, but I'm not
     // sure how else to get it back, other than some kind of closure trick.
-    [view startAssignToUser:toUser byActor:byActor atTime:assignTime];
+    [(TaskView *)view startAssignToUser:toUser byActor:byActor atTime:assignTime];
     
 }
 
 
 - (void) assignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime{
+    
+    if(self.assignedTo != nil) {
+        // deassign it. This is different from the deassign call because this is for transfers,
+        // while that call is for being assigned to nothing (ie back to the unassigned pool)
+        // There may be a better abstraction for this.
+        [self.assignedTo removeTask:self];
+    }
+    
     self.assignedAt = assignTime;
     self.assignedBy = byActor;
     self.assignedTo = toUser;

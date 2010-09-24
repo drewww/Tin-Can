@@ -38,9 +38,13 @@
 }
 
 - (void) removeTask:(id)task {
+    NSLog(@"removing task from %@", self);
+    
     if([task isKindOfClass:[Task class]]) {
         [self.tasks removeObject:task];
     }
+    
+    [view setNeedsDisplay];
 }
 
 - (BOOL) isInLocation {

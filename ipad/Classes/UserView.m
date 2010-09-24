@@ -120,11 +120,16 @@
     
     [self setHoverState:false];
     [self setNeedsDisplay];
-    [userRenderView setNeedsDisplay];
 }
 
 - (void) taskRemoved:(Task *)theTask {
     [theTask removeFromSuperview];
+    [self setNeedsDisplay];
+}
+
+- (void) setNeedsDisplay {
+    [super setNeedsDisplay];
+    [userRenderView setNeedsDisplay];
 }
 
 - (void) setHoverState:(bool)state {
