@@ -157,7 +157,7 @@
 	
 	
 	// for testing
-	testDate= [[ testDate addTimeInterval:60] retain];
+	// testDate= [[ testDate addTimeInterval:60] retain];
 	
 	
 	

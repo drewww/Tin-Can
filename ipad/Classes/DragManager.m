@@ -60,7 +60,6 @@ static DragManager *sharedInstance = nil;
     } else {
         return nil;
     }
-    
 }
 
 

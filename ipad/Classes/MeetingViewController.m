@@ -38,7 +38,8 @@
     NSLog(@"starting time in seconds: %f", [startingTime timeIntervalSince1970]);
     NSTimeInterval startingTimeInSeconds = [startingTime timeIntervalSince1970];//-1800;
     
-    meetingTimerView = [[MeetingTimerView alloc] initWithFrame:CGRectMake(200, 200, 200, 200) withStartTime:[NSDate dateWithTimeIntervalSince1970:startingTimeInSeconds]];
+    // Pull the meeting start time from the actual meeting object that comes from the server.
+    meetingTimerView = [[MeetingTimerView alloc] initWithFrame:CGRectMake(200, 200, 200, 200) withStartTime:[StateManager sharedInstance].meeting.startedAt];
     [meetingTimerView retain];
     [self.view addSubview:meetingTimerView];
 	
