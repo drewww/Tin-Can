@@ -66,6 +66,7 @@
     NSLog(@"touch ended on task container view");
    
     [self setNeedsLayout];
+
 }
 
 - (void)dealloc {

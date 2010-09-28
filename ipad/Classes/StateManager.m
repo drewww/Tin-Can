@@ -159,12 +159,14 @@ static StateManager *sharedInstance = nil;
                                               withText:[results objectForKey:@"text"]
                                        withCreatorUUID:[results objectForKey:@"createdBy"]
                                              createdAt:[results objectForKey:@"createdAt"]
+                                            withStatus:[results objectForKey:@"status"]
                                        withMeetingUUID:[results objectForKey:@"meeting"]
                                     withStartActorUUID:[results objectForKey:@"startActor"]
                                      withStopActorUUID:[results objectForKey:@"stopActor"]
                                          withStartTime:startTime
                                           withStopTime:stopTime
                                            withUIColor:[UIColor blueColor]];
+
             
             [topic unswizzle];
         }

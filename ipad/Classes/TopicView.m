@@ -50,7 +50,7 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-	
+	    
     // Drawing code
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	
@@ -68,7 +68,6 @@
 
 	}
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-
 	
 	if(topic.status == kPAST){
 	[@"Started:" drawInRect:CGRectMake(3, 2, 45, self.frame.size.height-15)

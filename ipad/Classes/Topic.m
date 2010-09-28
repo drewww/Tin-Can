@@ -30,6 +30,7 @@
            withText:(NSString *)myText
     withCreatorUUID:(UUID *)myCreatorUUID
           createdAt:(NSDate *)myCreatedAt
+        withStatus:(NSString *)statusString
     withMeetingUUID:(UUID *)myMeetingUUID 
  withStartActorUUID:(UUID *)myStartActorUUID
   withStopActorUUID:(UUID *)myStopActorUUID
@@ -51,7 +52,9 @@
     
     // How does this actually get set from the server? Worried about this
     // not being properly connected.
-    status = kFUTURE;
+    NSArray *enumMapping = [[NSArray arrayWithObjects:@"PAST", @"CURRENT", @"FUTURE", nil] retain];    
+    status = (TopicStatus)[enumMapping indexOfObject:statusString];
+    [enumMapping release];
     
     return self;
 }

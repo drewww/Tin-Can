@@ -43,6 +43,7 @@ typedef enum {
            withText:(NSString *)myText
     withCreatorUUID:(UUID *)myCreatorUUID
           createdAt:(NSDate *)myCreatedAt
+         withStatus:(NSString *)statusString
     withMeetingUUID:(UUID *)myMeetingUUID 
  withStartActorUUID:(UUID *)myStartActorUUID
   withStopActorUUID:(UUID *)myStopActorUUID
