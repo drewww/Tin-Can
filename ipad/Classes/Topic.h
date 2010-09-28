@@ -54,6 +54,8 @@ typedef enum {
 
 - (UIView *)getView;
 
+- (NSComparisonResult) compareByStartTime:(Topic *)topic;
+
 
 @property (readonly) NSString *text;
 

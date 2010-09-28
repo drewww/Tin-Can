@@ -287,7 +287,7 @@
 #pragma mark Internal Methods
 
 - (void)clk {
-    [meetingTimerView setNeedsDisplay];
+    [meetingTimerView clk];
 }   
 
 

@@ -7,7 +7,8 @@
 //
 
 #import "MeetingTimerView.h"
-
+#import "StateManager.h"
+#import "Topic.h"
 
 @implementation MeetingTimerView
 
@@ -40,7 +41,7 @@
         
         // Color management. This is temporary until colors start coming from the server so all the
         // places that we render topics have unified coloring.
-		colorWheel= [[NSMutableArray arrayWithObjects: [UIColor redColor], [UIColor greenColor], [UIColor blueColor], [UIColor cyanColor], 
+		colorWheel= [[NSMutableArray arrayWithObjects: [UIColor whiteColor], [UIColor greenColor], [UIColor blueColor], [UIColor cyanColor], 
 					  [UIColor yellowColor], [UIColor magentaColor],[UIColor orangeColor],[UIColor purpleColor], nil] retain];
 		indexForColorWheel=0;
 		currentTimerColor=[colorWheel objectAtIndex: indexForColorWheel];
@@ -93,7 +94,78 @@
 }
 
 
+-  (NSMutableArray *)generateTimeBoundariesFromMeeting {
+   // This function looks into the data model and from the topics there, generates
+   // a data structure that can be used by the rendering side of this class.
+   // In general, this is a pretty straightforward process: turn topic start points
+   // into arc boundaries and pick an appropriate color for them. It's complicated,
+   // though, by lack of very diligant tracking of topics - there will be gaps
+   // between them, they won't start at the start of the meeting, etc.
+   //
+   // The other thing we have to watch out for is hour boundaries. Because of the 
+   // way the rendering internals work, we need to do something special there
+   // that I don't precisely understand yet. It probably involves just creating
+   // extra boundaries on exactly the hour mark so no arc crosses the boundary.
+    
+   // First we need to sort the topics that come out of the meeting, since they're
+   // in a set and not a list (because there are lots of ways one COULD sort them)
+    
+    NSMutableArray *boundaries = [NSMutableArray array];
+    
+    NSMutableArray *sortedTopics = [NSMutableArray arrayWithArray:[[StateManager sharedInstance].meeting.topics allObjects]];
+    [sortedTopics sortUsingSelector:@selector(compareByStartTime:)];
+    
+    int colorIndex = 0;
+    // Okay, now lets loop through these topics.
+    for (Topic *topic in sortedTopics) {
+        // For each topic, we're going to add a boundary at the start and at the end.
+        // Boundaries at the end are going to always have a gray color to show
+        // inter-topic periods clearly.
+        if(topic.startTime==nil) {
+            NSLog(@"Found topic with no start time - skipping: %@", topic);
+            continue;
+        }
 
+        NSLog(@"found a started topic: %@", topic);
+                
+        NSMutableArray *entry = [NSMutableArray array];
+        [entry addObject:[NSNumber numberWithFloat:[self getMinRotationWithDate:topic.startTime]]];
+        [entry addObject:topic.startTime];
+        [entry addObject:[UIColor grayColor]];
+        
+        // This bit is for sure wrong, but we're going to just hard code for now to get the rest working.
+        [entry addObject:[NSNumber numberWithFloat:hourCounter]];
+        
+        // This distinguishes between "touch" type boundaries (ie real changes in topic) and
+        // "hour" boundaries which we insert on hour boundaries to make rendering possible.
+        // I guess this is a useful distinction, but it's a bit of a clunky way to represent it.
+        [entry addObject:@"touch"];
+        
+        [boundaries addObject:entry];
+        
+        entry = [NSMutableArray array];
+        
+        if(topic.stopTime != nil) {
+            NSLog(@"Found topic with end time.");
+            [entry addObject:[NSNumber numberWithFloat:[self getMinRotationWithDate:topic.stopTime]]];
+            [entry addObject:topic.stopTime];
+            [entry addObject:[colorWheel objectAtIndex:colorIndex]];
+            [entry addObject:[NSNumber numberWithFloat:hourCounter]];
+            [entry addObject:@"touch"];
+            [boundaries addObject:entry];
+        }
+        
+        colorIndex = colorIndex + 1;
+        NSLog(@"colorIndex now: %d", colorIndex);
+        if(colorIndex==[colorWheel count]) {
+            NSLog(@"resetting color index");
+            colorIndex = 0;
+        }
+        
+    }
+    NSLog(@"boundaries: %@", boundaries);
+    return boundaries;
+}
 
 
 //Creates a Time Arc from an Array of Time Arc information and the current index
@@ -159,8 +231,10 @@
 	CGContextSetFillColorWithColor(ctx, colorRetrieved.CGColor);
 	CGContextFillPath(ctx);
 	
-	//setting up blackspace on hour change
-	if ((boundaryIndex==[times count]-1)&([[times objectAtIndex:boundaryIndex] objectAtIndex:4]==@"Hour")){
+    NSLog(@"drawing with color: %@", colorRetrieved);
+    
+	// setting up blackspace on hour change
+	if ((boundaryIndex==[times count]-1)&&([[times objectAtIndex:boundaryIndex] objectAtIndex:4]==@"Hour")){
 		CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
 		CGContextAddArc(ctx, 0, 0, 132-(hourCounter*10), 0, 2*M_PI , 0); 
 		CGContextFillPath(ctx);
@@ -174,15 +248,21 @@
 }
 
 
+- (void) clk {
+    
+    [curTime release];
+    curTime = [[NSDate date] retain];
+    [self setNeedsDisplay];
+}
+
 
 - (void)drawRect:(CGRect)rect {
 	
-	
+	NSMutableArray *boundaries = [self generateTimeBoundariesFromMeeting];
+    
 	// for testing
 	// curTime= [[ curTime addTimeInterval:60] retain];
-	
-	
-	
+		
 	// Drawing our Clock!
 	
 	
@@ -223,8 +303,8 @@
     // Do the bulk of the actual drawing here. Loop through each boundary marker
     // and draw an appropriate arc for that boundary.
 	int i=0;
-	while(i< [selectedTimes count]){
-		[self drawArcWithTimes:selectedTimes withIndex:i  withContext:ctx];
+	while(i< [boundaries count]){
+		[self drawArcWithTimes:boundaries withIndex:i  withContext:ctx];
 		CGContextRestoreGState(ctx);
 		CGContextSaveGState(ctx);
 		i++;
@@ -243,7 +323,7 @@
 	//for the initial case where selectedTimes is empty:
 	//we want the updating TIME ARC to be between the start and now,
 	//starting with the intial Rotation
-	if([selectedTimes count] == 0) {
+	if([boundaries count] == 0) {
 		elapsedSeconds = abs([startTime timeIntervalSinceDate:curTime]);
 		
 		rotation = initialRot;
@@ -253,8 +333,8 @@
 	// the last TIMEARC.
 	// elapsedSeconds is similarly updated.
 	else {
-		elapsedSeconds = abs([[[selectedTimes lastObject] objectAtIndex:1] timeIntervalSinceDate:curTime]);
-		rotation = [[[selectedTimes lastObject] objectAtIndex:0]floatValue];
+		elapsedSeconds = abs([[[boundaries lastObject] objectAtIndex:1] timeIntervalSinceDate:curTime]);
+		rotation = [[[boundaries lastObject] objectAtIndex:0]floatValue];
 	}   
 	
 	// We want the updating TIME ARC to have the color of the next saved TIME ARC and the proper rotation
@@ -288,7 +368,8 @@
 		UIColor *colorToStore=currentTimerColor;
 		
         // Creates a new boundary marker at the hour to make rendering easier.
-		[selectedTimes addObject:[self storeNewTimeWithColor: colorToStore withTime:curTime withHour: hourCounter withType:@"Hour"]];
+        // We're going to need to fake this in the boundary generating thing. 
+		//[selectedTimes addObject:[self storeNewTimeWithColor: colorToStore withTime:curTime withHour: hourCounter withType:@"Hour"]];
 		hourCounter ++;
 		
 	}
@@ -363,7 +444,7 @@
 	currentTimerColor= [colorWheel objectAtIndex: indexForColorWheel];
 	
 	//Stores important time info per touch
-	[selectedTimes addObject:[self storeNewTimeWithColor: colorToStore withTime:curTime withHour: hourCounter withType:@"Touch"]];	
+	//[selectedTimes addObject:[self storeNewTimeWithColor: colorToStore withTime:curTime withHour: hourCounter withType:@"Touch"]];	
 }
 
 

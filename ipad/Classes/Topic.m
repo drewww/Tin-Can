@@ -115,6 +115,22 @@
     [self.meeting addTopic:self];
 }
 
+- (NSComparisonResult) compareByStartTime:(Topic *)topic {
+    
+    // a few bonus cases to check - is start time defined? any defined
+    // start time is always before any undefined start time, eg rear-load
+    // in a sort any topics that haven't started yet.
+    if(self.startTime != nil && topic.startTime != nil) {
+        return [self.startTime compare:topic.startTime];
+    } else if (self.startTime==nil && topic.startTime == nil) {
+        return NSOrderedSame;
+    } else if (self.startTime==nil && topic.startTime != nil) {
+        return NSOrderedDescending;
+    } else { //if (self.startTime!=nil && topic.startTime==nil) { (if we get this far, this case is true - but it's easier to write it out.)
+        return NSOrderedAscending;
+    }
+}
+
 - (NSString *)description {
         return [NSString stringWithFormat:@"[topic.%@ %@ started:%@ stopped:%@]", [self.uuid substringToIndex:6],
                 self.text, self.startTime, self.stopTime];
