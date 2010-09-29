@@ -89,6 +89,8 @@ static DragManager *sharedInstance = nil;
     // We'll push it back when it gets dropped again.
     
     [draggedItemsContainer.superview bringSubviewToFront:draggedItemsContainer];
+    NSLog(@"unhiding the items container");
+    [draggedItemsContainer setHidden:false];
     
     TaskView *taskView = (TaskView *)[task getView];
     
@@ -173,7 +175,7 @@ static DragManager *sharedInstance = nil;
 
 - (bool) taskDragEndedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task {
     // Get the current target
-    UIView *curTargetView = [self userViewAtTouch:touch withEvent:event];	
+    UIView <TaskDropTarget> *curTargetView = [self userViewAtTouch:touch withEvent:event];	
     
     // Assign the Task.
     if(curTargetView != nil) {
@@ -190,11 +192,14 @@ static DragManager *sharedInstance = nil;
         if([curTargetView isKindOfClass:[UserView class]]) {
             UserView *curTargetUserView = (UserView *)curTargetView;
             [[ConnectionManager sharedInstance] assignTask:task toUser:[curTargetUserView getUser]];
+            [curTargetView setHoverState:false];
         } else if ([curTargetView isKindOfClass:[TaskContainerView class]]) {
             NSLog(@"got a drop on a task container, deassign the task now!");
             [[ConnectionManager sharedInstance] deassignTask:task];
+            [curTargetView setHoverState:false];
         }
         
+        [draggedItemsContainer setHidden:true];
         return true;
     } else {
      // We need to add it back to its original home view. 
@@ -207,7 +212,11 @@ static DragManager *sharedInstance = nil;
         taskView.center = p;
 
         [taskView.lastParentView addSubview:taskView];
-        [draggedItemsContainer.superview sendSubviewToBack:draggedItemsContainer];
+        
+        NSLog(@"setting draggedItemsContainer to hidden");
+        [draggedItemsContainer setHidden:true];
+
+//        [draggedItemsContainer.superview sendSubviewToBack:draggedItemsContainer];
     }
     
     return false;
