@@ -70,9 +70,14 @@
     [self.assignedTo assignTask:self];
 }
 
-- (void) deassignByActor:(Actor *)newAssignedBy atTime:(NSDate *)deassignTime{
+- (void) startDeassignByActor:(Actor *)byActor atTime:(NSDate *)deassignTime withTaskContainer:(UIView *)taskContainer {
+    [(TaskView *)view startDeassignByActor:byActor atTime:deassignTime withTaskContainer:taskContainer];   
+}
+
+
+- (void) deassignByActor:(Actor *)byActor atTime:(NSDate *)deassignTime{
     if(self.assignedTo != nil) {
-        self.assignedBy = newAssignedBy;
+        self.assignedBy = byActor;
         self.assignedAt = deassignTime;
 
         [self.assignedTo removeTask:self];

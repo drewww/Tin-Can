@@ -114,6 +114,20 @@
 }
 
 
+- (void) startDeassignByActor:(Actor *)byActor atTime:(NSDate *)assignTime withTaskContainer:(UIView *)taskContainer {
+    [self finishDeassignByActor:byActor atTime:assignTime withTaskContainer:taskContainer];
+}
+
+- (void) finishDeassignByActor:(Actor *)byActor atTime:(NSDate *)assignTime withTaskContainer:(UIView *)taskContainer {
+    [[task getView] removeFromSuperview];
+    [taskContainer addSubview:[task getView]];
+    
+    [task.assignedTo removeTask:task];
+    
+    [task deassignByActor:byActor atTime:assignTime];    
+}
+
+
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
 	// When we move, we want to know the delta from its previous location
 	// and then we can adjust our position accordingly. 

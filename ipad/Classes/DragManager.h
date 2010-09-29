@@ -26,7 +26,7 @@
 
 - (UIView *) userViewAtTouch:(UITouch *)touch withEvent:(UIEvent *)event;
 
-- (void) setRootView:(UIView *)view andUsersContainer:(UIView *)container;
+- (void) setRootView:(UIView *)view andUsersContainer:(UIView *)container andTaskContainer:(UIView *)theTaskContainer;
 
 - (void) taskDragMovedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task;
 - (bool) taskDragEndedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task;

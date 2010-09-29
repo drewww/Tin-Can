@@ -42,8 +42,14 @@
 - (id)initWithFrame:(CGRect)frame withTask:(Task *)task;
 - (id)initWithTask:(Task *)theTask;
 
+
+
 - (void) startAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime;
 - (void) finishAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime;
+
+
+- (void) startDeassignByActor:(Actor *)byActor atTime:(NSDate *)assignTime withTaskContainer:(UIView *)taskContainer;
+- (void) finishDeassignByActor:(Actor *)byActor atTime:(NSDate *)assignTime withTaskContainer:(UIView *)taskContainer;
 
 - (NSComparisonResult) compareByPointer:(TaskView *)view;
 -(void)setFrameWidthWithContainerWidth:(CGFloat )width;

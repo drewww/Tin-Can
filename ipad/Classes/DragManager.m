@@ -192,6 +192,7 @@ static DragManager *sharedInstance = nil;
             [[ConnectionManager sharedInstance] assignTask:task toUser:[curTargetUserView getUser]];
         } else if ([curTargetView isKindOfClass:[TaskContainerView class]]) {
             NSLog(@"got a drop on a task container, deassign the task now!");
+            [[ConnectionManager sharedInstance] deassignTask:task];
         }
         
         return true;

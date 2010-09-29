@@ -8,6 +8,7 @@
 
 #import "MeetingViewController.h"
 #import "TaskView.h"
+#import "Task.h"
 #import "TaskContainerView.h"
 #import "UserView.h"
 #import "StateManager.h"
@@ -226,6 +227,26 @@
             break;
             
         case kASSIGN_TASK:
+            NSLog(@"assigning tasks in the meeting view controller because I'm a bad person");
+            
+            Task *task = (Task *)[state getObjWithUUID:[event.params objectForKey:@"taskUUID"] withType:[Task class]];
+            
+            NSLog(@"in assign task handler");
+            
+            Actor *assignedBy = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
+            NSDate *assignedAt = [NSDate dateWithTimeIntervalSince1970:[[event.params objectForKey:@"assignedAt"] doubleValue]];
+            
+            // TODO Check this execution path! I don't have a way to do deassignment quite yet. 
+            if([((NSNumber *)[event.params objectForKey:@"deassign"]) intValue] == 1) {
+                // Do deassign logic.   
+                [task startDeassignByActor:assignedBy atTime:assignedAt withTaskContainer:taskContainer];
+            } else {
+                // Do assign logic.
+                User *assignedTo = (User *)[state getObjWithUUID:[event.params objectForKey:@"assignedTo"] withType:[User class]];
+                
+                [task startAssignToUser:assignedTo byActor:assignedBy atTime:assignedAt];
+            }
+                        
             break;
             
         case kEDIT_MEETING:

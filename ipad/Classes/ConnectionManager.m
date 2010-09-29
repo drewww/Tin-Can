@@ -389,23 +389,15 @@ static ConnectionManager *sharedInstance = nil;
             break;
             
         case kASSIGN_TASK:
-            task = (Task *)[state getObjWithUUID:[e.params objectForKey:@"taskUUID"] withType:[Task class]];
+
+            // Okay, so this is a bit of a tricky thing. This is not being handled here because when
+            // we go to deassign, we need to send a reference to the taskContainer to the taskView so
+            // it knows who to attach to. This is BAD FORM and shouldn't be happening, but I can't come
+            // up with a nicer way to structure it right now. 
             
-            NSLog(@"in assign task handler");
+            // So yeah, that's why there's nothing here. It's all handled in MeetingViewController's
+            // event handler code.
             
-            Actor *assignedBy = (Actor *)[state getObjWithUUID:e.actorUUID withType:[Actor class]];
-            NSDate *assignedAt = [NSDate dateWithTimeIntervalSince1970:[[e.params objectForKey:@"assignedAt"] doubleValue]];
-            
-            // TODO Check this execution path! I don't have a way to do deassignment quite yet. 
-            if([((NSNumber *)[e.params objectForKey:@"deassign"]) intValue] == 1) {
-                // Do deassign logic.   
-                [task deassignByActor:assignedBy atTime:assignedAt];
-            } else {
-                // Do assign logic.
-                User *assignedTo = (User *)[state getObjWithUUID:[e.params objectForKey:@"assignedTo"] withType:[User class]];
-                
-                [task startAssignToUser:assignedTo byActor:assignedBy atTime:assignedAt];
-            }
             break;
             
         case kEDIT_MEETING:
