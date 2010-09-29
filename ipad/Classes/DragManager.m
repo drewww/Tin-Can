@@ -18,6 +18,7 @@ static DragManager *sharedInstance = nil;
 
 @synthesize rootView;
 @synthesize usersContainer;
+@synthesize taskContainer;
 
 #pragma mark -
 #pragma mark class instance methods
@@ -32,10 +33,11 @@ static DragManager *sharedInstance = nil;
     return self;
 }
 
-- (void) setRootView:(UIView *)view andUsersContainer:(UIView *)container {
+- (void) setRootView:(UIView *)view andUsersContainer:(UIView *)container andTaskContainer:(TaskContainerView *)theTaskContainer{
     
     self.rootView = view;
-    self.usersContainer = container;    
+    self.usersContainer = container;
+    self.taskContainer = theTaskContainer;
     
     draggedItemsContainer = [[UIView alloc] initWithFrame:self.rootView.frame];
     [draggedItemsContainer setTransform:CGAffineTransformMakeRotation(M_PI/2)];
@@ -53,8 +55,16 @@ static DragManager *sharedInstance = nil;
     // TODO We'll need to hit-test the taskContainer separately here, which is annoying, unless
     // we add it to the UsersContainer. 
     UIView *returnedView = [self.usersContainer hitTest:point withEvent:event];
-        
-    if(returnedView==nil) {
+    
+    if([taskContainer pointInside:[taskContainer convertPoint:point fromView:self.rootView] withEvent:event]) {
+        NSLog(@"point in task container, returning that!");
+        return taskContainer;
+    }
+    
+    UIView *potentialTaskContainer = [self.taskContainer hitTest:point withEvent:event];
+
+    
+    if(returnedView==nil && potentialTaskContainer==nil) {
         return nil;
     }
     

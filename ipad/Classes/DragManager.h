@@ -13,6 +13,7 @@
 @interface DragManager : NSObject <TaskDragDelegate> {
     UIView *rootView;
     UIView *usersContainer;
+    UIView *taskContainer;
     
     UIView *draggedItemsContainer;
     
@@ -33,6 +34,7 @@
 
 @property (nonatomic, retain) UIView *rootView;
 @property (nonatomic, retain) UIView *usersContainer;
+@property (nonatomic, retain) UIView *taskContainer;
 
 
 @end

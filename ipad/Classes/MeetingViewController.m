@@ -59,7 +59,7 @@
 	[self.view addSubview:topicContainer];
 	[self.view addSubview:locContainer];
 
-    [[DragManager sharedInstance] setRootView:self.view andUsersContainer:userContainer];
+    [[DragManager sharedInstance] setRootView:self.view andUsersContainer:userContainer andTaskContainer:taskContainer];
 
 	[self.view bringSubviewToFront:meetingTimerView];
     [self.view bringSubviewToFront:userContainer];
