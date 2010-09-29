@@ -37,16 +37,29 @@
 
 - (void)drawRect:(CGRect)rect {
     CGContextRef ctx = UIGraphicsGetCurrentContext();
-	
+    
+    UIColor *backgroundColor;
+    if(hover) {
+        backgroundColor = [UIColor darkGrayColor];
+    } else {
+        backgroundColor = [UIColor blackColor];
+    }
+        
+
+    CGContextSetFillColorWithColor(ctx, backgroundColor.CGColor);
+    CGContextFillRect(ctx, CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height));
+
+    
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
 	CGContextFillRect(ctx, CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height/22.0));
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 	[@"TASKS" drawInRect:CGRectMake(0, self.bounds.size.height/150.0, self.bounds.size.width, self.bounds.size.height/25.0 - self.bounds.size.height/100.0) 
                 withFont:[UIFont boldSystemFontOfSize:self.bounds.size.height/33.3] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
-	
+
 	CGContextSetLineWidth(ctx,2);
 	CGContextSetStrokeColorWithColor(ctx,  [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
 	CGContextStrokeRect(ctx, CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height));
+    
 		
 	
 }
@@ -86,7 +99,8 @@
 }
 
 - (void) setHoverState:(bool)state {
-    NSLog(@"Setting hover state on task container");
+    hover = state;
+    [self setNeedsDisplay];
 }
 
 - (void)dealloc {

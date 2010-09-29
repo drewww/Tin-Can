@@ -11,6 +11,7 @@
 
 @interface TaskContainerView : UIView <TaskDropTarget> {
     float rot;
+    bool hover;
 }
 
 - (void) setRot:(float) newRot;
