@@ -21,6 +21,8 @@
     TaskContainerView *taskContainer;
     TopicContainerView *topicContainer;
 	LocationContainerView *locContainer;
+
+    
     
     NSMutableSet *taskViews;
 

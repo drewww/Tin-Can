@@ -10,6 +10,7 @@
 #import "User.h"
 #import "TaskContainerView.h"
 #import "UserRenderView.h"
+#import "TaskDropTarget.h"
 
 #define BASE_HEIGHT 70
 #define BASE_WIDTH 180
@@ -27,7 +28,7 @@
 
 @class UserRenderView;
 
-@interface UserView : UIView {
+@interface UserView : UIView <TaskDropTarget> {
     
     TaskContainerView *taskContainerView;
     UserRenderView *userRenderView;

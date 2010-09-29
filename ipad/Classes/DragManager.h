@@ -14,11 +14,16 @@
     UIView *rootView;
     UIView *usersContainer;
     
+    UIView *draggedItemsContainer;
+    
     NSMutableDictionary *lastTaskDropTargets;
 }
 
 
 + (DragManager*)sharedInstance;
+
+
+- (UIView *) userViewAtTouch:(UITouch *)touch withEvent:(UIEvent *)event;
 
 - (void) setRootView:(UIView *)view andUsersContainer:(UIView *)container;
 

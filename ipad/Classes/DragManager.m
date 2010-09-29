@@ -36,13 +36,22 @@ static DragManager *sharedInstance = nil;
     
     self.rootView = view;
     self.usersContainer = container;    
+    
+    draggedItemsContainer = [[UIView alloc] initWithFrame:self.rootView.frame];
+    [draggedItemsContainer setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+    
+    [self.rootView addSubview:draggedItemsContainer];
+    [self.rootView bringSubviewToFront:draggedItemsContainer];
+    
 }
 
 
-- (UserView *) userViewAtTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+- (UIView <TaskDropTarget> *) userViewAtTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     
     CGPoint point = [touch locationInView:self.rootView];
     
+    // TODO We'll need to hit-test the taskContainer separately here, which is annoying, unless
+    // we add it to the UsersContainer. 
     UIView *returnedView = [self.usersContainer hitTest:point withEvent:event];
         
     if(returnedView==nil) {
@@ -65,13 +74,35 @@ static DragManager *sharedInstance = nil;
 
 #pragma mark TaskDragDelegate
 
-- (void) taskDragMovedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task{
+- (void) taskDragStartedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task {
+    // When we get the first touch, pull it out of its current superview and put it on the root view.
+    // We'll push it back when it gets dropped again.
+    
+    [draggedItemsContainer.superview bringSubviewToFront:draggedItemsContainer];
+    
+    TaskView *taskView = (TaskView *)[task getView];
+    
+        
+    CGPoint p = [draggedItemsContainer convertPoint:taskView.center fromView:taskView.lastParentView];
+    
+    
+    NSLog(@"current center: (%f,%f), center in global coords: (%f, %f)", taskView.center.x, taskView.center.y, p.x, p.y);
+    
+    
+    [draggedItemsContainer addSubview:[task getView]];
+    
+    taskView.center = p;
+    
+    
+}
+
+- (void) taskDragMovedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task {
     
     // Get the last target
-    UserView *lastDropTarget = [lastTaskDropTargets objectForKey:task.uuid];
+    UIView <TaskDropTarget> *lastDropTarget = [lastTaskDropTargets objectForKey:task.uuid];
     
     // Now check and see if we're over a participant right now.
-	UserView *curDropTarget = [self userViewAtTouch:touch withEvent:event];
+	UIView <TaskDropTarget> *curDropTarget = [self userViewAtTouch:touch withEvent:event];
 
 	// if cur and last are the same, do nothing.
 	// if they're different, release the old and retain the new and manage states.
@@ -132,7 +163,7 @@ static DragManager *sharedInstance = nil;
 
 - (bool) taskDragEndedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task {
     // Get the current target
-    UserView *curTargetView = [self userViewAtTouch:touch withEvent:event];	
+    UIView *curTargetView = [self userViewAtTouch:touch withEvent:event];	
     
     // Assign the Task.
     if(curTargetView != nil) {
@@ -145,9 +176,27 @@ static DragManager *sharedInstance = nil;
         // are going to be called when assignment happens on other clients, and we want to avoid
         // triggering a cascade. This chunk of code only gets called for the client that
         // physically does the assignment.
-        [[ConnectionManager sharedInstance] assignTask:task toUser:[curTargetView getUser]];
+        
+        if([curTargetView isKindOfClass:[UserView class]]) {
+            UserView *curTargetUserView = (UserView *)curTargetView;
+            [[ConnectionManager sharedInstance] assignTask:task toUser:[curTargetUserView getUser]];
+        } else if ([curTargetView isKindOfClass:[TaskContainerView class]]) {
+            NSLog(@"got a drop on a task container, deassign the task now!");
+        }
         
         return true;
+    } else {
+     // We need to add it back to its original home view. 
+    
+        NSLog(@"Adding the task back to its original parent view since dragging is done.");
+        TaskView *taskView = (TaskView *)[task getView];
+        
+        // Do the position translation back again.
+        CGPoint p = [taskView.lastParentView convertPoint:taskView.center fromView:draggedItemsContainer];
+        taskView.center = p;
+
+        [taskView.lastParentView addSubview:taskView];
+        [draggedItemsContainer.superview sendSubviewToBack:draggedItemsContainer];
     }
     
     return false;

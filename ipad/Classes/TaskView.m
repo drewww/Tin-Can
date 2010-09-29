@@ -14,6 +14,7 @@
 
 @synthesize task;
 @synthesize delegate;
+@synthesize lastParentView;
 
 - (id)initWithFrame:(CGRect)frame withTask:(Task *)theTask{
     if ((self = [super initWithFrame:frame])) {
@@ -79,10 +80,18 @@
 }
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	NSLog(@"I have been touched");
+    UITouch *touch = [touches anyObject];
+
 	isTouched=TRUE;
 	//self.frame=CGRectMake(self.frame.origin.x, self.frame.origin.y, self.bounds.size.width-100, 50);
 	[self setNeedsDisplay];
 	[self.superview bringSubviewToFront:self];
+    
+    // retain this? can get away without it, right, since it's in the hierarchy and 
+    // not going to get released any time soon?
+    lastParentView = self.superview;
+    
+    [self.delegate taskDragStartedWithTouch:touch withEvent:event withTask:self.task];
    
 }
 
@@ -129,8 +138,7 @@
     UITouch *touch = [touches anyObject];
     
     if (![self.delegate taskDragEndedWithTouch:touch withEvent:event withTask:self.task]) {
-        //
-        
+                
         [UIView beginAnimations:@"snap_to_initial_position" context:nil];
         
         [UIView setAnimationDuration:1.0f];

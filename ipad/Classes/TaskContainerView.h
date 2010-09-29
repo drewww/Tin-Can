@@ -7,13 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TaskDropTarget.h"
 
-
-@interface TaskContainerView : UIView {
+@interface TaskContainerView : UIView <TaskDropTarget> {
     float rot;
 }
 
 - (void) setRot:(float) newRot;
 - (id)initWithFrame:(CGRect)frame withRot:(float)rotation;
+
+
+- (void) setHoverState:(bool)state;
 
 @end

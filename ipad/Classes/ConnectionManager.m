@@ -396,7 +396,8 @@ static ConnectionManager *sharedInstance = nil;
             Actor *assignedBy = (Actor *)[state getObjWithUUID:e.actorUUID withType:[Actor class]];
             NSDate *assignedAt = [NSDate dateWithTimeIntervalSince1970:[[e.params objectForKey:@"assignedAt"] doubleValue]];
             
-            if([e.params objectForKey:@"deassign"]==true) {
+            // TODO Check this execution path! I don't have a way to do deassignment quite yet. 
+            if([((NSNumber *)[e.params objectForKey:@"deassign"]) intValue] == 1) {
                 // Do deassign logic.   
                 [task deassignByActor:assignedBy atTime:assignedAt];
             } else {

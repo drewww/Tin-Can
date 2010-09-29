@@ -85,6 +85,10 @@
     // Used to create tasks programmatically here. Knocking that out now, since we're hooked up to the server.
 }
 
+- (void) setHoverState:(bool)state {
+    NSLog(@"Setting hover state on task container");
+}
+
 - (void)dealloc {
     [super dealloc];
 }

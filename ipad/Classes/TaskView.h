@@ -13,6 +13,8 @@
 //@class TaskDragDelegate;
 
 @protocol TaskDragDelegate
+
+- (void) taskDragStartedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task;
 - (void) taskDragMovedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task;
 
 // Returns true if the drag ended on a drop target, false otherwise.
@@ -26,12 +28,15 @@
 	bool isTouched; 
     Task *task;
     
+    UIView *lastParentView;
+    
     // A delegate (the drag manager) to be notified of drag operations.
     id <TaskDragDelegate> delegate;
 }
 
 @property (nonatomic, readonly) Task *task;
 @property (nonatomic, assign) id <TaskDragDelegate> delegate;
+@property (nonatomic, assign) UIView *lastParentView;
 
 
 - (id)initWithFrame:(CGRect)frame withTask:(Task *)task;
