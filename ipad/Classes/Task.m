@@ -41,6 +41,7 @@
 
 
 - (void) startAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime {
+    NSLog(@"starting task assignment to user in Task object");
     
     // It's a bit annoying to have to pass all this stuff through the whole chain, but I'm not
     // sure how else to get it back, other than some kind of closure trick.
@@ -50,6 +51,7 @@
 
 
 - (void) assignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime{
+    NSLog(@"assigning task to user: %@", toUser);
     
     if(self.assignedTo != nil) {
         // deassign it. This is different from the deassign call because this is for transfers,

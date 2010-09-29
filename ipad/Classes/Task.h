@@ -36,6 +36,7 @@
          assignedAt:(NSDate *)myAssignedAt;
 
 - (void) deassignByActor:(Actor *)newAssignedBy atTime:(NSDate *)deassignTime;
+- (void) startAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime;
 - (void) assignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime;
 
 - (UIView *)getView;

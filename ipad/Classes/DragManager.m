@@ -138,7 +138,7 @@ static DragManager *sharedInstance = nil;
     if(curTargetView != nil) {
         
         // Do the actual task assignment.
-        [(TaskView *)[task getView] startAssignToUser:[curTargetView getUser] byActor:[StateManager sharedInstance].location atTime:[NSDate date]];
+//        [(TaskView *)[task getView] startAssignToUser:[curTargetView getUser] byActor:[StateManager sharedInstance].location atTime:[NSDate date]];
         
         // Send the message to the server that the task has been assigned.
         // We're doing this here and not in any of the other model-based methods beacuse those

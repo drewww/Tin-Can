@@ -116,6 +116,7 @@
 }
 
 - (void) taskAssigned:(Task *)theTask {
+    NSLog(@"Task assigned to user. Requesting redraw.");
     [taskContainerView addSubview:[theTask getView]];
     
     [self setHoverState:false];
@@ -130,6 +131,7 @@
 - (void) setNeedsDisplay {
     [super setNeedsDisplay];
     [userRenderView setNeedsDisplay];
+    [taskContainerView setNeedsDisplay];
 }
 
 - (void) setHoverState:(bool)state {

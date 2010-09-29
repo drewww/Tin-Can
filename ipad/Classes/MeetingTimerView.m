@@ -123,6 +123,10 @@
     int colorIndex = 0;
     // Okay, now lets loop through these topics.
     bool topicOpen = true;
+    int currentHour = 0;
+    
+    NSDate *curHourStart = [startTime copy];
+    
     for (Topic *topic in sortedTopics) {
         // For each topic, we're going to add a boundary at the start and at the end.
         // Boundaries at the end are going to always have a gray color to show
@@ -142,14 +146,46 @@
         [entry addObject:[UIColor grayColor]];
         
         // This bit is for sure wrong, but we're going to just hard code for now to get the rest working.
-        [entry addObject:[NSNumber numberWithFloat:hourCounter]];
+        [entry addObject:[NSNumber numberWithInt:currentHour]];
         
-        // This distinguishes between "touch" type boundaries (ie real changes in topic) and
+        // This distinguishes between "touch" type boundaries (ie real changes in txxopic) and
         // "hour" boundaries which we insert on hour boundaries to make rendering possible.
         // I guess this is a useful distinction, but it's a bit of a clunky way to represent it.
         [entry addObject:@"touch"];
         
         [boundaries addObject:entry];
+        
+        
+        
+        // Okay, we need to detect hour boundaries between the start and the end times in this event.
+        // All hours are measured relative to the startTime of the entire clock, so test if the seconds
+        // since curHourStart is greater ethan 3600. If it is, then add a boundary at curHourStart+3600
+        // and move curHourStart to that value. 
+        NSDate *testTime;
+        if(topic.stopTime !=nil) {
+            testTime = topic.stopTime;
+        } else {
+            testTime = [NSDate date];
+        }
+        
+        if([testTime timeIntervalSinceDate:curHourStart] > 3600) {
+            NSLog(@"crossed the hour boundary!");
+            
+            curHourStart = [NSDate dateWithTimeIntervalSince1970:[curHourStart timeIntervalSince1970] + 3600];
+            currentHour = currentHour+1;
+            
+            
+            entry = [NSMutableArray array];
+            [entry addObject:[NSNumber numberWithFloat:[self getMinRotationWithDate:curHourStart]]];
+            [entry addObject:curHourStart];
+            [entry addObject:[colorWheel objectAtIndex:colorIndex]];
+            [entry addObject:[NSNumber numberWithInt:currentHour]];
+            [entry addObject:@"Hour"];
+            
+            [boundaries addObject:entry];
+        }
+            
+        
         
         entry = [NSMutableArray array];
         
@@ -158,36 +194,36 @@
             [entry addObject:[NSNumber numberWithFloat:[self getMinRotationWithDate:topic.stopTime]]];
             [entry addObject:topic.stopTime];
             [entry addObject:[colorWheel objectAtIndex:colorIndex]];
-            [entry addObject:[NSNumber numberWithFloat:hourCounter]];
+            [entry addObject:[NSNumber numberWithInt:currentHour]];
             [entry addObject:@"touch"];
             [boundaries addObject:entry];
-            topicOpen = false;
-        }
+            topicOpen = false;        
         
-        colorIndex = colorIndex + 1;
-        NSLog(@"colorIndex now: %d", colorIndex);
-        if(colorIndex==[colorWheel count]) {
-            NSLog(@"resetting color index");
-            colorIndex = 0;
+            colorIndex = colorIndex + 1;
+            NSLog(@"colorIndex now: %d", colorIndex);
+            if(colorIndex==[colorWheel count]) {
+                NSLog(@"resetting color index");
+                colorIndex = 0;
+            }
         }
         
     }
     
     // Add a boundary for "now", which will force it to draw the last chunk with the right color.
-    NSMutableArray *entry = [NSMutableArray array];
-    [entry addObject:[NSNumber numberWithFloat:[self getMinRotationWithDate:[NSDate date]]]];
-    [entry addObject:[NSDate date]];
+    NSMutableArray *curTimeEntry = [NSMutableArray array];
+    [curTimeEntry addObject:[NSNumber numberWithFloat:[self getMinRotationWithDate:[NSDate date]]]];
+    [curTimeEntry addObject:[NSDate date]];
     if(topicOpen) 
-        [entry addObject:[colorWheel objectAtIndex:colorIndex]];
+        [curTimeEntry addObject:[colorWheel objectAtIndex:colorIndex]];
     else
-        [entry addObject:[UIColor grayColor]];
+        [curTimeEntry addObject:[UIColor grayColor]];
 
-    [entry addObject:[NSNumber numberWithFloat:hourCounter]];
-    [entry addObject:@"touch"];
-    [boundaries addObject:entry];
+    [curTimeEntry addObject:[NSNumber numberWithFloat:hourCounter]];
+    [curTimeEntry addObject:@"touch"];
+    [boundaries addObject:curTimeEntry];
     
     
-    NSLog(@"boundaries: %@", boundaries);
+    //NSLog(@"boundaries: %@", boundaries);
     return boundaries;
 }
 
@@ -254,9 +290,7 @@
 	UIColor *colorRetrieved=[[times objectAtIndex:boundaryIndex] objectAtIndex:COLOR_INDEX];	
 	CGContextSetFillColorWithColor(ctx, colorRetrieved.CGColor);
 	CGContextFillPath(ctx);
-	
-    NSLog(@"drawing with color: %@", colorRetrieved);
-    
+	    
 	// setting up blackspace on hour change
 	if ((boundaryIndex==[times count]-1)&&([[times objectAtIndex:boundaryIndex] objectAtIndex:TYPE_INDEX]==@"Hour")){
 		CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);

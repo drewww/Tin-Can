@@ -323,6 +323,7 @@ static ConnectionManager *sharedInstance = nil;
                                        withText:[results objectForKey:@"text"]
                                 withCreatorUUID:[results objectForKey:@"createdBy"]
                                       createdAt:[results objectForKey:@"createdAt"]
+                                     withStatus:[results objectForKey:@"status"]
                                 withMeetingUUID:[results objectForKey:@"meeting"]
                              withStartActorUUID:[results objectForKey:@"startActor"]
                               withStopActorUUID:[results objectForKey:@"stopActor"]
@@ -390,16 +391,19 @@ static ConnectionManager *sharedInstance = nil;
         case kASSIGN_TASK:
             task = (Task *)[state getObjWithUUID:[e.params objectForKey:@"taskUUID"] withType:[Task class]];
             
+            NSLog(@"in assign task handler");
+            
             Actor *assignedBy = (Actor *)[state getObjWithUUID:e.actorUUID withType:[Actor class]];
             NSDate *assignedAt = [NSDate dateWithTimeIntervalSince1970:[[e.params objectForKey:@"assignedAt"] doubleValue]];
             
-            if([e.params objectForKey:@"deassign"]) {
+            if([e.params objectForKey:@"deassign"]==true) {
                 // Do deassign logic.   
                 [task deassignByActor:assignedBy atTime:assignedAt];
             } else {
                 // Do assign logic.
                 User *assignedTo = (User *)[state getObjWithUUID:[e.params objectForKey:@"assignedTo"] withType:[User class]];
-                [task assignToUser:assignedTo byActor:assignedBy atTime:assignedAt];
+                
+                [task startAssignToUser:assignedTo byActor:assignedBy atTime:assignedAt];
             }
             break;
             
