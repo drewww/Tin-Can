@@ -120,6 +120,8 @@
     NSMutableArray *sortedTopics = [NSMutableArray arrayWithArray:[[StateManager sharedInstance].meeting.topics allObjects]];
     [sortedTopics sortUsingSelector:@selector(compareByStartTime:)];
     
+    NSLog(@"sorted topics: %@", sortedTopics);
+    
     int colorIndex = 0;
     // Okay, now lets loop through these topics.
     bool topicOpen = true;

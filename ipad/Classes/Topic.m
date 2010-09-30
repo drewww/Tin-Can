@@ -69,12 +69,12 @@
     NSArray *enumMapping = [[NSArray arrayWithObjects:@"PAST", @"CURRENT", @"FUTURE", nil] retain];
     
     TopicStatus newStatus = (TopicStatus)[enumMapping indexOfObject:stringStatus];
-    
+        
     // Manage the logic around storing actors on state change.
     if(status==kFUTURE && newStatus==kCURRENT) {
         self.startActor = actor;
         self.startTime = [NSDate date];
-    } else if (status==kCURRENT && newStatus == kFUTURE) {
+    } else if (status==kCURRENT && newStatus == kPAST) {
         self.stopActor = actor;
         self.stopTime = [NSDate date];
     }
