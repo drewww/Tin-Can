@@ -148,11 +148,11 @@
         // Boundaries at the end are going to always have a gray color to show
         // inter-topic periods clearly.
         if(topic.startTime==nil) {
-            NSLog(@"Found topic with no start time - skipping: %@", topic);
+       //     NSLog(@"Found topic with no start time - skipping: %@", topic);
             continue;
         }
 
-        NSLog(@"found a started topic: %@", topic);
+       // NSLog(@"found a started topic: %@", topic);
         topicOpen = true;
 
         
@@ -164,14 +164,12 @@
         // This bit is for sure wrong, but we're going to just hard code for now to get the rest working.
         [entry addObject:[NSNumber numberWithInt:currentHour]];
         
-        // This distinguishes between "touch" type boundaries (ie real changes in txxopic) and
+        // This distinguishes between "touch" type boundaries (ie real changes in topic) and
         // "hour" boundaries which we insert on hour boundaries to make rendering possible.
         // I guess this is a useful distinction, but it's a bit of a clunky way to represent it.
         [entry addObject:@"touch"];
         
         [boundaries addObject:entry];
-        
-        
         
         // Okay, we need to detect hour boundaries between the start and the end times in this event.
         // All hours are measured relative to the startTime of the entire clock, so test if the seconds
@@ -181,11 +179,19 @@
         if(topic.stopTime !=nil) {
             testTime = topic.stopTime;
         } else {
-            testTime = [NSDate date];
+            testTime = curTime;
         }
         
+//        NSLog(@" time since the hour started: %f", [testTime timeIntervalSinceDate:curHourStart]);
+        
+        // This part is not quite right - for a topic that extends over an hour long, it needs to
+        // run through this multiple times. So really it should divide the time by 3600 and add
+        // one of these for each hour. That's a bit of an edge case though. All of this is, really.
+        // For demos, we can easily get away with less than an hour long meeting. So we'll go with
+        // that for now.
+        //
         if([testTime timeIntervalSinceDate:curHourStart] > 3600) {
-            NSLog(@"crossed the hour boundary!");
+//            NSLog(@"crossed the hour boundary!");
             
             curHourStart = [NSDate dateWithTimeIntervalSince1970:[curHourStart timeIntervalSince1970] + 3600];
             currentHour = currentHour+1;
@@ -227,8 +233,8 @@
     
     // Add a boundary for "now", which will force it to draw the last chunk with the right color.
     NSMutableArray *curTimeEntry = [NSMutableArray array];
-    [curTimeEntry addObject:[NSNumber numberWithFloat:[self getMinRotationWithDate:[NSDate date]]]];
-    [curTimeEntry addObject:[NSDate date]];
+    [curTimeEntry addObject:[NSNumber numberWithFloat:[self getMinRotationWithDate:curTime]]];
+    [curTimeEntry addObject:curTime];
     
     // If topic open is true, it eans that there is a current topic that doesn't have 
     // an end time. If that's the case, then the last boundary we add should have the
@@ -246,7 +252,7 @@
     [boundaries addObject:curTimeEntry];
     
     
-    NSLog(@"boundaries: %@", boundaries);
+//    NSLog(@"boundaries: %@", boundaries);
     return boundaries;
 }
 
@@ -292,8 +298,6 @@
     
     //On any drawing pass other than the first one...
 	if (boundaryIndex!=0){
-        
-        
 		float lastHour=[[[times objectAtIndex:boundaryIndex-1] objectAtIndex:HOUR_INDEX]floatValue];
 		if (currentHour!=lastHour){
 			CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
@@ -328,16 +332,16 @@
 		//}
 	}
 	CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
-	CGContextAddArc(ctx, 0, 0, 50, 0, 2*M_PI , 0); 
+	CGContextAddArc(ctx, 0, 0, 50, 0, 2*M_PI , 0);
 	CGContextFillPath(ctx);
 	
 }
 
 
 - (void) clk {
-    
-    [curTime release];
-    curTime = [[NSDate date] retain];
+//    [curTime release];
+//    curTime = [[NSDate date] retain];
+    curTime = [[curTime addTimeInterval:60] retain];
     [self setNeedsDisplay];
 }
 
@@ -449,25 +453,25 @@
     // the one hour mark. This is going to be a problem moving forward, because we don't want
     // to force the actual topic objects to break on hours. Perhaps we need a separate internal
     // representation afterall?
-	if (timeToCompare <= abs([startTime timeIntervalSinceDate:curTime])) {
-		
-        NSLog(@"In the weird drawing if statement that also stores a new time. Why are we here?");
-        
-		timeToCompare= timeToCompare + 3600;
-		indexForColorWheel= indexForColorWheel +1;
-		
-		if (indexForColorWheel >= ([colorWheel count]-1)){
-			indexForColorWheel=0;
-		}
-
-		UIColor *colorToStore=currentTimerColor;
-		
-        // Creates a new boundary marker at the hour to make rendering easier.
-        // We're going to need to fake this in the boundary generating thing. 
-		//[selectedTimes addObject:[self storeNewTimeWithColor: colorToStore withTime:curTime withHour: hourCounter withType:@"Hour"]];
-		hourCounter ++;
-		
-	}
+//	if (timeToCompare <= abs([startTime timeIntervalSinceDate:curTime])) {
+//		
+//        NSLog(@"In the weird drawing if statement that also stores a new time. Why are we here?");
+//        
+//		timeToCompare= timeToCompare + 3600;
+//		indexForColorWheel= indexForColorWheel +1;
+//		
+//		if (indexForColorWheel >= ([colorWheel count]-1)){
+//			indexForColorWheel=0;
+//		}
+//
+//		UIColor *colorToStore=currentTimerColor;
+//		
+//        // Creates a new boundary marker at the hour to make rendering easier.
+//        // We're going to need to fake this in the boundary generating thing. 
+//		//[selectedTimes addObject:[self storeNewTimeWithColor: colorToStore withTime:curTime withHour: hourCounter withType:@"Hour"]];
+//		hourCounter ++;
+//		
+//	}
 	
 	
 	CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
