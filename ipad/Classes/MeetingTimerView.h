@@ -28,6 +28,8 @@
 	float timeToCompare;
 	int hourCheck;
 	
+    
+    UIColor *emptyTimeColor;
 }
 
 - (id)initWithFrame:(CGRect)frame withStartTime:(NSDate *)time;

@@ -19,7 +19,7 @@
 #define HEIGHT_MARGIN 50
 
 #define TAB_WIDTH 15
-#define TAB_HEIGHT 8
+#define TAB_HEIGHT 15
 #define TAB_MARGIN 5
 
 #define STATUS_HEIGHT 30

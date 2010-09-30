@@ -111,6 +111,8 @@
     [toUser assignTask:task];
     
     [task assignToUser:toUser byActor:byActor atTime:assignTime];
+    
+    isTouched = false;
 }
 
 
@@ -125,6 +127,8 @@
     [task.assignedTo removeTask:task];
     
     [task deassignByActor:byActor atTime:assignTime];    
+
+    isTouched = false;
 }
 
 

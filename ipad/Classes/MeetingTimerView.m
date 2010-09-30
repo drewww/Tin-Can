@@ -51,6 +51,8 @@
 		indexForColorWheel=0;
 		currentTimerColor=[colorWheel objectAtIndex: indexForColorWheel];
         
+        emptyTimeColor = [[UIColor colorWithWhite:0.2 alpha:1.0] retain];
+        
     }
     return self;
 }
@@ -159,7 +161,7 @@
         NSMutableArray *entry = [NSMutableArray array];
         [entry addObject:[NSNumber numberWithFloat:[self getMinRotationWithDate:topic.startTime]]];
         [entry addObject:topic.startTime];
-        [entry addObject:[UIColor grayColor]];
+        [entry addObject:emptyTimeColor];
         
         // This bit is for sure wrong, but we're going to just hard code for now to get the rest working.
         [entry addObject:[NSNumber numberWithInt:currentHour]];
@@ -244,7 +246,7 @@
         [curTimeEntry addObject:[colorWheel objectAtIndex:colorIndex]];
     }
     else {
-        [curTimeEntry addObject:[UIColor grayColor]];
+        [curTimeEntry addObject:emptyTimeColor];
     }
 
     [curTimeEntry addObject:[NSNumber numberWithFloat:hourCounter]];
@@ -339,9 +341,9 @@
 
 
 - (void) clk {
-//    [curTime release];
-//    curTime = [[NSDate date] retain];
-    curTime = [[curTime addTimeInterval:60] retain];
+    [curTime release];
+    curTime = [[NSDate date] retain];
+//    curTime = [[curTime addTimeInterval:60] retain];
     [self setNeedsDisplay];
 }
 
@@ -435,7 +437,7 @@
 //    if([boundaries count] > 0) 
 //        currentArcColor = [[boundaries lastObject] objectAtIndex:COLOR_INDEX];
 //    else {
-//        currentArcColor = [UIColor grayColor];
+//        currentArcColor = [UIColor darkGrayColor];
 //    }
 //
 //	CGContextSetFillColorWithColor(ctx, currentArcColor.CGColor);
