@@ -141,18 +141,18 @@
         
         if(isTouched==FALSE){
             CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
-            CGContextFillRect(ctx, CGRectMake(0, 0, 50, self.frame.size.height));
+            CGContextFillEllipseInRect(ctx, CGRectMake(0, 0, 50, self.frame.size.height));
             CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
             
         }
         else {
             CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.4 green:.4 blue:.4 alpha:1].CGColor );
-            CGContextFillRect(ctx, CGRectMake(0, 0, 50, self.frame.size.height));
+            CGContextFillEllipseInRect(ctx, CGRectMake(0, 0, 50, self.frame.size.height));
             CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1].CGColor );
         }  
         
         // Now draw the start button.
-        [@"START" drawInRect:CGRectMake(5, 18, 45, self.frame.size.height-12)
+        [@"START" drawInRect:CGRectMake(6, 18, 45, self.frame.size.height-12)
         	 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
         
     }
