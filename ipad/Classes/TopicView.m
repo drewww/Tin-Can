@@ -63,12 +63,26 @@
     CGContextFillRect(ctx, self.frame);
 
     
+    
     // We're going to draw a little arc that represents the time this topic was talked about, if 
     // the topic has started or finished. If it hasn't started yet, we'll put a start button
     // there instead.
     
     if(topic.status == kPAST || topic.status == kCURRENT) {
         NSLog(@"Trying to draw the fancy thing.");
+        
+        UIColor *backgroundColor;
+        if(topic.status == kPAST) {
+            backgroundColor = [UIColor colorWithWhite:0.2 alpha:1.0];
+        } else {
+            backgroundColor = [UIColor colorWithHue:0.61 saturation:0.51 brightness:0.21 alpha:1.0];
+        }
+        
+        // Mark out the icon area.
+        CGContextSetFillColorWithColor(ctx, backgroundColor.CGColor);
+        CGContextFillRect(ctx, CGRectMake(0, 0, 50, 50));
+        
+        
         // In this mode, we're basically going to steal the rendering code from the clock. We want to
         // make a little arc.  
         
@@ -110,12 +124,12 @@
         
         //CGContextAddArc(ctx, 25, 25, 50, -M_PI/2 - arcLength, -M_PI/2 , 0); 
         CGContextMoveToPoint(ctx, 25, 25);
-        CGContextAddArc(ctx, 25, 25, 23, rotation- M_PI/2, rotation + arcLength - M_PI/2, 0);
+        CGContextAddArc(ctx, 25, 25, 21, rotation- M_PI/2, rotation + arcLength - M_PI/2, 0);
         CGContextFillPath(ctx);
         
         
         // now block out the middle chunk.         
-        CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
+        CGContextSetFillColorWithColor(ctx, backgroundColor.CGColor);
         CGContextMoveToPoint(ctx, 25, 25);
         CGContextAddEllipseInRect(ctx, CGRectMake(10, 10, 30, 30));
         CGContextFillPath(ctx);
@@ -144,53 +158,15 @@
     }
     
     
-	//if(isTouched==FALSE){
-//		CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
-//		CGContextFillRect(ctx, CGRectMake(0, 0, 50, self.frame.size.height));
-//		CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-//
-//	}
-//	else {
-//		CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.4 green:.4 blue:.4 alpha:1].CGColor );
-//		CGContextFillRect(ctx, CGRectMake(0, 0, 50, self.frame.size.height));
-//		CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1].CGColor );
-//
-//
-//	}
-//	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-//	
-//	if(topic.status == kPAST){
-//	[@"Started:" drawInRect:CGRectMake(3, 2, 45, self.frame.size.height-15)
-//					 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
-//		
-//		
-////	[timeStart drawInRect:CGRectMake(3, 12, 45, self.frame.size.height-12)
-////					 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
-//		
-//		
-//	CGContextSetFillColorWithColor(ctx, [UIColor redColor].CGColor);
-//	[@"Ended:" drawInRect:CGRectMake(3, 24, 45, self.frame.size.height-15)
-//						withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
-//
-////	[timeFinished drawInRect:CGRectMake(3, 36, 45, self.frame.size.height-15)
-////				 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
-//	}
-//	else if(topic.status == kCURRENT){
-//	[@"Started:" drawInRect:CGRectMake(3, 9, 45, self.frame.size.height-15)
-//					   withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
-//		
-//		
-////	[timeStart drawInRect:CGRectMake(3, 20, 45, self.frame.size.height-12)
-////					 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
-//	}	
-//	else if(topic.status == kFUTURE){
-//			[@"START" drawInRect:CGRectMake(5, 18, 45, self.frame.size.height-12)
-//						 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
-//	}
-//	CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
-//	CGContextFillRect(ctx, CGRectMake(50, 0, self.frame.size.width-50, self.frame.size.height));
-//    
-    
+    if(topic.status==kCURRENT) {
+        
+        // Draw a border around the item.
+        NSLog(@"drawing border around current item");
+        CGContextSetStrokeColorWithColor(ctx, [UIColor grayColor].CGColor);
+        CGContextSetLineWidth(ctx, 2.0);
+        CGContextStrokeRect(ctx, CGRectMake(0,0, self.frame.size.width, self.frame.size.height));
+        
+    }
     
     NSLog(@"topic text: %@", topic.text);
     CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:.5].CGColor);
