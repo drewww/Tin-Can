@@ -16,8 +16,9 @@
 
 @synthesize meeting;
 @synthesize users;
+@synthesize color;
 
-- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withMeeting:(UUID *)myMeetingUUID withUsers:(NSArray *)myUsers {
+- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withMeeting:(UUID *)myMeetingUUID withUsers:(NSArray *)myUsers withColor:(UIColor *)theColor {
     self = [super initWithUUID:myUuid withName:myName];
     
     meetingUUID = [myMeetingUUID retain];
@@ -30,6 +31,8 @@
     // our use.
     self.users = [NSMutableSet set];
     [self.users addObjectsFromArray:myUsers];
+    
+    self.color = theColor;
     
     return self;
 }
@@ -86,11 +89,11 @@
 - (NSString *)description {
     
     if([self isInMeeting]) 
-        return [NSString stringWithFormat:@"[loc.%@ %@ meet:%@ users:%d]", [self.uuid substringToIndex:6],
-            self.name, self.meeting, [self.users count]];
+        return [NSString stringWithFormat:@"[loc.%@ %@ meet:%@ users:%d color:%@]", [self.uuid substringToIndex:6],
+            self.name, self.meeting, [self.users count], self.color];
     else 
-        return [NSString stringWithFormat:@"[loc.%@ %@ meet:null users:%d]", [self.uuid substringToIndex:6],
-                self.name, [self.users count]];
+        return [NSString stringWithFormat:@"[loc.%@ %@ meet:null users:%d color: %@]", [self.uuid substringToIndex:6],
+                self.name, [self.users count], self.color];
 
 }
 

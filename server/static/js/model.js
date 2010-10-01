@@ -56,12 +56,14 @@ User.prototype = {
 };
 
 
-function Location(uuid, name, meeting, users) {
+function Location(uuid, name, meeting, users, color) {
     this.uuid = uuid;
     this.name = name;
     
     this.meeting = meeting;
     this.users = users;
+    
+    this.color = color;
     
     state.putObj(this.uuid, this);
 }

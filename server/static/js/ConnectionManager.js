@@ -210,7 +210,8 @@ ConnectionManager.prototype = {
             case "NEW_LOCATION":
                 locData = ev["results"]["actor"];
                 loc = new Location(locData["uuid"], locData["name"],
-                    locData["meetingUUID"], locData["users"]);
+                    locData["meetingUUID"], locData["users"],
+                    locData["color"]);
                 loc.unswizzle();
                 state.actors.push(loc);
                 console.log("New location: " + loc.name);

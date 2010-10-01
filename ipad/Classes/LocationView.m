@@ -45,12 +45,12 @@
 	
     // Drawing code
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
-	CGContextSetFillColorWithColor(ctx, [UIColor blueColor].CGColor);
+	CGContextSetFillColorWithColor(ctx, location.color.CGColor);
+    
+    NSLog(@"drawing location with color: %@, equals? %d -> %@", location.color, [location.color isEqual:[UIColor blueColor]], [UIColor blueColor]);
+    
 	CGContextFillRect(ctx, CGRectMake(0, 0, self.frame.size.height, self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-		
-	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-	
 	
 	CGSize statusSize = [[NSString stringWithFormat:@"%d",[location.users count]] sizeWithFont:[UIFont boldSystemFontOfSize:11]];
 	
@@ -62,9 +62,9 @@
 	
 	
 	
-	CGContextSetFillColorWithColor(ctx, [UIColor clearColor].CGColor);
+//	CGContextSetFillColorWithColor(ctx, [UIColor clearColor].CGColor);
 
-	CGContextFillRect(ctx, CGRectMake(self.frame.size.height+1, 0, 137.5-(self.frame.size.height+1), self.frame.size.height));
+	//CGContextFillRect(ctx, CGRectMake(self.frame.size.height+1, 0, 137.5-(self.frame.size.height+1), self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:1].CGColor);
 	[location.name drawInRect:CGRectMake(self.frame.size.height+3, 5,137.5-(self.frame.size.height+3), self.frame.size.height-4) 
 			withFont:[UIFont boldSystemFontOfSize:14] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];

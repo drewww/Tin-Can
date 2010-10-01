@@ -30,7 +30,7 @@
     
 	//for LocationView in 
 	//if self.User.location
-    color = [UIColor blueColor];
+    color = user.location.color;
     
     [self setBackgroundColor:[UIColor clearColor]];
     

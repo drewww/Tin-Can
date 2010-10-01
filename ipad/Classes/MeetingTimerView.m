@@ -122,8 +122,6 @@
     NSMutableArray *sortedTopics = [NSMutableArray arrayWithArray:[[StateManager sharedInstance].meeting.topics allObjects]];
     [sortedTopics sortUsingSelector:@selector(compareByStartTime:)];
     
-    NSLog(@"sorted topics: %@", sortedTopics);
-    
     int colorIndex = 0;
     // Okay, now lets loop through these topics.
     bool topicOpen = true;
@@ -246,7 +244,6 @@
     // If topic open is true, it eans that there is a current topic that doesn't have 
     // an end time. If that's the case, then the last boundary we add should have the
     // color of the topic. If there is no current topic, the color should be gray. 
-    NSLog(@"at end of loop, deciding how to color the growing section; topicOpen: %d", topicOpen);
     if(topicOpen) {
         [curTimeEntry addObject:lastOpenTopicColor];
     }

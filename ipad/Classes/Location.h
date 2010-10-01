@@ -22,9 +22,10 @@
     UIView *view;
     
     NSMutableSet *users;
+    UIColor *color;
 }
 
-- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withMeeting:(UUID *)myMeeting withUsers:(NSArray *)myUsers;
+- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withMeeting:(UUID *)myMeeting withUsers:(NSArray *)myUsers withColor:(UIColor *)theColor;
 - (void) userJoined:(User *)theUser;
 - (void) userLeft:(User *)theUser;
 - (void) joinedMeeting:(Meeting *)theMeeting;
@@ -35,5 +36,6 @@
 
 @property(nonatomic, retain) NSMutableSet *users;
 @property(nonatomic, retain) Meeting *meeting;
+@property(nonatomic, retain) UIColor *color;
 
 @end

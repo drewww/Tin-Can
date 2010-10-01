@@ -144,7 +144,7 @@ StateManager.prototype = {
             }
             
             this.actors.push(new Location(loc["uuid"], loc["name"],
-                meetingUUID, locationUsers));
+                meetingUUID, locationUsers, loc["color"]));
         }
         
         for(key in rooms) {

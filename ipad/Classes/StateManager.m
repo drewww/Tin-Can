@@ -14,6 +14,7 @@
 #import "tincan.h"
 #import "Topic.h"
 #import "Task.h"
+#import "UIColor+Util.h"
 
 static StateManager *sharedInstance = nil;
 
@@ -82,7 +83,9 @@ static StateManager *sharedInstance = nil;
         Location *newLocation = [[Location alloc] initWithUUID:[l objectForKey:@"uuid"]
                                                       withName:[l objectForKey:@"name"]
                                                    withMeeting:[l objectForKey:@"meetingUUID"]
-                                                     withUsers:[l objectForKey:@"users"]];
+                                                     withUsers:[l objectForKey:@"users"]
+                                                     withColor:[UIColor colorWithHexString:[l objectForKey:@"color"]]
+                                                    ];
         [actors addObject:newLocation];
     }
     
