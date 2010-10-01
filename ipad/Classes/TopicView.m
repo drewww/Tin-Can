@@ -79,8 +79,8 @@
         }
         
         // Mark out the icon area.
-        CGContextSetFillColorWithColor(ctx, backgroundColor.CGColor);
-        CGContextFillRect(ctx, CGRectMake(0, 0, 50, 50));
+//        CGContextSetFillColorWithColor(ctx, backgroundColor.CGColor);
+//        CGContextFillRect(ctx, CGRectMake(0, 0, 50, 50));
         
         
         // In this mode, we're basically going to steal the rendering code from the clock. We want to
@@ -94,9 +94,6 @@
         [gregorian release];
         float rotation = ((minute*60 + second)/3600.0f) * (2*M_PI);
         
-        CGContextSaveGState(ctx);
-        // Enter into the rotated reference frame.
-//        CGContextRotateCTM(ctx, rotation);
         CGContextMoveToPoint(ctx, 0, 0);
         
         CGContextSetFillColorWithColor(ctx, topic.color.CGColor);
@@ -127,15 +124,18 @@
         CGContextAddArc(ctx, 25, 25, 21, rotation- M_PI/2, rotation + arcLength - M_PI/2, 0);
         CGContextFillPath(ctx);
         
-        
         // now block out the middle chunk.         
-        CGContextSetFillColorWithColor(ctx, backgroundColor.CGColor);
+        CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
         CGContextMoveToPoint(ctx, 25, 25);
-        CGContextAddEllipseInRect(ctx, CGRectMake(10, 10, 30, 30));
+        CGContextAddEllipseInRect(ctx, CGRectMake(13, 13, 24, 24));
         CGContextFillPath(ctx);
         
-        // Pop back to the normal non rotated reference frame.
-        CGContextRestoreGState(ctx);
+        
+        // Now draw the clock outline. A pair of 1px circles at the right radii should do it.
+        CGContextSetStrokeColorWithColor(ctx, [UIColor grayColor].CGColor);
+        CGContextStrokeEllipseInRect(ctx, CGRectMake(4, 4, 42, 42));
+        CGContextStrokeEllipseInRect(ctx, CGRectMake(13, 13, 24, 24));
+        
         
     } else {
         
