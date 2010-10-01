@@ -21,7 +21,10 @@
         
 		self.userInteractionEnabled = YES; 
 		isTouched= FALSE;
+        
+        [self setBackgroundColor:[UIColor blackColor]];
 		
+        
 		self.alpha = 0;
 		[UIView beginAnimations:@"fade_in" context:self];
 		
@@ -56,6 +59,9 @@
     // Drawing code
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	
+    CGContextSetRGBFillColor(ctx, 0, 0, 0, 1.0);
+    CGContextFillRect(ctx, self.frame);
+
     
     // We're going to draw a little arc that represents the time this topic was talked about, if 
     // the topic has started or finished. If it hasn't started yet, we'll put a start button
@@ -88,7 +94,7 @@
         if(topic.stopTime != nil) {
             endTime = topic.stopTime;
         } else {
-            endTime = [[NSDate date] autorelease];
+            endTime = [NSDate date];
         }
         
         float elapsedTime = abs([topic.startTime  timeIntervalSinceDate:endTime ]);
@@ -104,16 +110,15 @@
         
         //CGContextAddArc(ctx, 25, 25, 50, -M_PI/2 - arcLength, -M_PI/2 , 0); 
         CGContextMoveToPoint(ctx, 25, 25);
-        CGContextAddArc(ctx, 25, 25, 25, rotation- M_PI/2, rotation + arcLength - M_PI/2, 0);
+        CGContextAddArc(ctx, 25, 25, 23, rotation- M_PI/2, rotation + arcLength - M_PI/2, 0);
         CGContextFillPath(ctx);
         
         
-//        CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
-//        CGContextAddEllipseInRect(ctx, CGRectMake(25, 25, 35, 35));
-//        CGContextFillPath(ctx);
-
-        // now block out the middle chunk. 
-        
+        // now block out the middle chunk.         
+        CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
+        CGContextMoveToPoint(ctx, 25, 25);
+        CGContextAddEllipseInRect(ctx, CGRectMake(10, 10, 30, 30));
+        CGContextFillPath(ctx);
         
         // Pop back to the normal non rotated reference frame.
         CGContextRestoreGState(ctx);

@@ -62,6 +62,14 @@
     
 }
 
+- (void) setNeedsDisplay {
+    [super setNeedsDisplay];
+    
+    for(UIView *v in self.subviews) {
+        [v setNeedsDisplay];
+    }
+}
+
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     NSLog(@"touch ended on task container view");
    
