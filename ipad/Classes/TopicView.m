@@ -96,7 +96,7 @@
         
         CGContextMoveToPoint(ctx, 0, 0);
         
-        CGContextSetFillColorWithColor(ctx, topic.color.CGColor);
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.7 alpha:1.0].CGColor);
 
         
         //lets draw our TIME ARC!
