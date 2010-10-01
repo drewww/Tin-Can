@@ -39,6 +39,8 @@ typedef enum {
     UIView *view;
 }
 
+
+
 - (id) initWithUUID:(UUID *)myUUID
            withText:(NSString *)myText
     withCreatorUUID:(UUID *)myCreatorUUID
@@ -57,6 +59,8 @@ typedef enum {
 
 - (NSComparisonResult) compareByStartTime:(Topic *)topic;
 
+
++ (UIColor *) getNextTopicColor;
 
 @property (readonly) NSString *text;
 

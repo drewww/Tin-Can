@@ -26,6 +26,7 @@
 
 @synthesize view;
 
+
 - (id) initWithUUID:(UUID *)myUUID
            withText:(NSString *)myText
     withCreatorUUID:(UUID *)myCreatorUUID
@@ -56,6 +57,11 @@
     status = (TopicStatus)[enumMapping indexOfObject:statusString];
     [enumMapping release];
     
+    if(status == kCURRENT || status==kPAST) {
+        // Get a color, plz.
+        self.color = [Topic getNextTopicColor];
+    }
+    
     return self;
 }
 
@@ -74,6 +80,11 @@
     if(status==kFUTURE && newStatus==kCURRENT) {
         self.startActor = actor;
         self.startTime = [NSDate date];
+        
+        
+        // Pick a color at this point. We're just faking this in the client for now. 
+        self.color = [Topic getNextTopicColor];
+        
     } else if (status==kCURRENT && newStatus == kPAST) {
         self.stopActor = actor;
         self.stopTime = [NSDate date];
@@ -137,6 +148,22 @@
 - (NSString *)description {
         return [NSString stringWithFormat:@"[topic.%@ %@ started:%@ stopped:%@]", [self.uuid substringToIndex:6],
                 self.text, self.startTime, self.stopTime];
+}
+
+
+static int topicColorIndex = 0;
++ (UIColor *) getNextTopicColor {
+    NSArray *colors = [NSArray arrayWithObjects:[UIColor colorWithWhite:0.4 alpha:1.0], [UIColor colorWithWhite:0.6 alpha:1.0], nil];
+    
+    topicColorIndex += 1;
+
+    if(topicColorIndex == [colors count]) {
+        topicColorIndex = 0;
+    }
+    
+    NSLog(@"color: %@ @ index %d", [colors objectAtIndex:topicColorIndex], topicColorIndex);
+
+    return [colors objectAtIndex:topicColorIndex];
 }
 
 @end

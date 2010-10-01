@@ -145,6 +145,9 @@
     
 
     topicOpen = false;
+    
+    UIColor *lastOpenTopicColor;
+    
     for (Topic *topic in sortedTopics) {
         // For each topic, we're going to add a boundary at the start and at the end.
         // Boundaries at the end are going to always have a gray color to show
@@ -156,6 +159,7 @@
 
        // NSLog(@"found a started topic: %@", topic);
         topicOpen = true;
+        lastOpenTopicColor = topic.color;
 
         
         NSMutableArray *entry = [NSMutableArray array];
@@ -184,6 +188,7 @@
             testTime = curTime;
         }
         
+        
 //        NSLog(@" time since the hour started: %f", [testTime timeIntervalSinceDate:curHourStart]);
         
         // This part is not quite right - for a topic that extends over an hour long, it needs to
@@ -202,7 +207,7 @@
             entry = [NSMutableArray array];
             [entry addObject:[NSNumber numberWithFloat:[self getMinRotationWithDate:curHourStart]]];
             [entry addObject:curHourStart];
-            [entry addObject:[colorWheel objectAtIndex:colorIndex]];
+            [entry addObject:topic.color];
             [entry addObject:[NSNumber numberWithInt:currentHour]];
             [entry addObject:@"Hour"];
             
@@ -217,7 +222,7 @@
             NSLog(@"Found topic with end time.");
             [entry addObject:[NSNumber numberWithFloat:[self getMinRotationWithDate:topic.stopTime]]];
             [entry addObject:topic.stopTime];
-            [entry addObject:[colorWheel objectAtIndex:colorIndex]];
+            [entry addObject:topic.color];
             [entry addObject:[NSNumber numberWithInt:currentHour]];
             [entry addObject:@"touch"];
             [boundaries addObject:entry];
@@ -243,7 +248,7 @@
     // color of the topic. If there is no current topic, the color should be gray. 
     NSLog(@"at end of loop, deciding how to color the growing section; topicOpen: %d", topicOpen);
     if(topicOpen) {
-        [curTimeEntry addObject:[colorWheel objectAtIndex:colorIndex]];
+        [curTimeEntry addObject:lastOpenTopicColor];
     }
     else {
         [curTimeEntry addObject:emptyTimeColor];

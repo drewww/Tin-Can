@@ -99,7 +99,7 @@
 //        CGContextRotateCTM(ctx, rotation);
         CGContextMoveToPoint(ctx, 0, 0);
         
-        CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+        CGContextSetFillColorWithColor(ctx, topic.color.CGColor);
 
         
         //lets draw our TIME ARC!
