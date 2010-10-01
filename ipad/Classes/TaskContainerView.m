@@ -103,6 +103,15 @@
     [self setNeedsDisplay];
 }
 
+- (void) setNeedsDisplay {
+    [super setNeedsDisplay];
+    
+    for(UIView *v in self.subviews) {
+        [v setNeedsDisplay];
+    }
+    
+}
+
 - (void)dealloc {
     [super dealloc];
 }

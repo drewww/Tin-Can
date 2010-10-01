@@ -309,6 +309,7 @@
 
 - (void)clk {
     [meetingTimerView clk];
+    [topicContainer setNeedsDisplay];
 }   
 
 

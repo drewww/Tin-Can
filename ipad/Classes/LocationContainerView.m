@@ -21,7 +21,7 @@
 		[self setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 		for (Location *loc in  [StateManager sharedInstance].meeting.locations ){
 			NSLog(@"location: %@", loc);
-			LocationView *newloc = [loc getView];
+			LocationView *newloc = (LocationView *)[loc getView];
 		
 		NSLog(@"loc: %@", newloc);
 		
@@ -44,7 +44,7 @@
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
 	CGContextFillRect(ctx, CGRectMake(0, 0, self.bounds.size.width, 22));
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-	[@"LOCATIONS" drawInRect:CGRectMake(0, 0, self.bounds.size.width, 22) 
+	[@"PARTICIPANTS" drawInRect:CGRectMake(0, 0, self.bounds.size.width, 22) 
 				 withFont:[UIFont boldSystemFontOfSize:18] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
 	
 	CGContextSetLineWidth(ctx,2);
