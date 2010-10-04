@@ -9,19 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "RoomCellView.h"
 #import "TimerBar.h"
+#import "Room.h"
 
 @interface RoomCell : UITableViewCell {
 	RoomCellView *roomCellView;
-    NSString *room;
-	Meeting *meeting;
-	int counted;
-	
-	TimerBar *timerBar;
-	
 }
 
-- (void) setRoom:(NSString *)room;
-- (void) setMeeting:(Meeting *)meeting;
-- (void) setCounted:(int)counted;
+- (void) setRoom:(Room *)room;
 
 @end
