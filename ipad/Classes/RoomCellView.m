@@ -34,21 +34,10 @@
         
         
         // For now, this is all bad data. We'll make it work off real data soon. 
-    	NSDate *startingTime = [NSDate date];
-    	NSLog(@"starting time in seconds: %f", [startingTime timeIntervalSince1970]);
-    	NSTimeInterval startingTimeInSeconds = [startingTime timeIntervalSince1970] -1800;
+    	TimerBar *timerBar=[[TimerBar alloc]initWithFrame: CGRectMake(10, 80, 270, 10) withMeeting:room.currentMeeting];
     	
-    	NSMutableArray *times=[[NSMutableArray alloc] initWithCapacity:6];
-    	[times addObject:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-1000]];
-    	[times addObject:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-600]];
-    	[times addObject:[NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]-400]];
-    	
-    	TimerBar *timerBar=[[TimerBar alloc]initWithFrame: CGRectMake(10, 80, 270, 10) withStartTime:[NSDate dateWithTimeIntervalSince1970:startingTimeInSeconds] 
-    							 withEventTimes:times];
-    	
-    		[self addSubview:timerBar];
-    	}   
-    
+   		[self addSubview:timerBar];
+   	}       
 }
 
 //Fills Cell with Information on the room
