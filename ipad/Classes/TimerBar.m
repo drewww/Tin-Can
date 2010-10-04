@@ -32,6 +32,8 @@
 }
 -(void)setLength{
 	CGFloat diff=abs([meeting.startedAt  timeIntervalSinceDate:curDate ]);
+    
+    // The ceil function here manages to decrease in scale once we cross hour boundaries.
 	pixelsPerSecond= (300/ceil(diff/3600.0))/3600.0;
 	meetingDuration =diff;
 	
@@ -43,28 +45,12 @@
 	}
     NSLog(@"about to get color at %d", indexForColorWheel);
 	return [colorWheel objectAtIndex:indexForColorWheel];
-	
-	
 }
 
 - (void)clk {
     [self update];
 	[self setNeedsDisplay];
 } 
-
-// I'm not sure about this function - why do we do the main render and keep track of
-// the boundaries and then do this? Shouldn't we be able to calculate the boundaries
-// a priori?
-//-(void)markHoursWithTimes:(NSMutableArray *)times withContext:(CGContextRef) ctx{
-//	for(NSDate *time in times){
-//		float elapsedTime = abs([meeting.startedAt  timeIntervalSinceDate:time]);
-//		CGContextSetFillColorWithColor(ctx,  [UIColor whiteColor].CGColor);
-//		CGContextFillRect(ctx, CGRectMake(pixelsPerSecond*elapsedTime, 0, 5, self.frame.size.height));
-//	}
-//	
-//}
-
-
 
 //Creates a Time bar from an array of times
 -(void)drawBarWithTimes:(NSMutableArray *)boundariesList withContext:(CGContextRef) ctx{
@@ -115,6 +101,8 @@
     // Normal speed time.
     [curDate release];
 	curDate= [[NSDate date] retain];
+
+
     
     // Generate the current set of times from the meeting object. 
     // This is a bit time consuming, but easier than updating on events
@@ -169,7 +157,19 @@
 //	}
     
     // Handle the hour markers (not using the internal method anymore)
-	//[self markHoursWithTimes:timesToMarkHours withContext:ctx];
+    int numHours = floor(abs([curDate timeIntervalSinceDate:meeting.startedAt])/3600.0);
+    
+    // For each hour, go an hour in and draw a white box.
+    // Slightly wacky for loop for loop since we're not drawing
+    // a box at the starting point, only at the subsequent
+    // hour markers.
+    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+    for(int i=1; i<=numHours; i++) {
+        
+        int hourPoint = i*3600*pixelsPerSecond;
+        
+        CGContextFillRect(ctx, CGRectMake(hourPoint - 1, 0, 2, self.frame.size.height));
+    }
 	
 }
 
