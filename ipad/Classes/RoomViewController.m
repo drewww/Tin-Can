@@ -19,7 +19,7 @@
 @synthesize roomList;
 @synthesize meetingList;
 @synthesize countedList;
-#define ROW_HEIGHT 60
+#define ROW_HEIGHT 100
 
 - (id)initWithFrame:(CGRect)frame withController:(LoginMasterViewController *)control{
 	if (self = [super init]) {
@@ -41,6 +41,8 @@
 
 		
 		[self.view setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+        
+        self.tableView.rowHeight = ROW_HEIGHT;
 	}
 	return self;
 }
@@ -90,6 +92,9 @@
     
     if(testCell==nil) {
         testCell = [[[RoomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        
+        // This actually more like 400. The container tableview is 400 wide, so the resulting cells
+        // are probably more like 380-390 wide. Not 100% sure. 
         testCell.frame = CGRectMake(0.0, 0.0, 320.0, ROW_HEIGHT);
     }
     

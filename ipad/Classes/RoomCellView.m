@@ -89,13 +89,14 @@
     }
     
     CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
-    [meetingTitle drawInRect:CGRectMake(10, 10, 210, 25) withFont:[UIFont systemFontOfSize:24]];
+    [meetingTitle drawInRect:CGRectMake(10, 10, 210, 20) withFont:[UIFont systemFontOfSize:24]];
     
     // Now do the generic stuff, like drawing the room name and participant counter.
     
-    CGRect roomNameRect = CGRectMake(230, 10, 80, 10);
-    CGRect peopleLabelRect = CGRectMake(230, 36, 80, 10);
-    CGRect peopleCountRect = CGRectMake(230, 20, 80, 20);
+    CGRect roomNameRect = CGRectMake(290, 10, 80, 20);
+    CGRect peopleCountRect = CGRectMake(290, 30, 80, 30);
+    CGRect peopleLabelRect = CGRectMake(290, 60, 80, 20);
+    CGRect totalRect = CGRectMake(290, 10, 80, 70);
     
     CGContextSetFillColorWithColor(ctx, [UIColor blueColor].CGColor);
     CGContextFillRect(ctx, roomNameRect);
@@ -103,11 +104,11 @@
     CGContextFillRect(ctx, peopleLabelRect);
     
     CGContextSetStrokeColorWithColor(ctx, [UIColor blueColor].CGColor);
-    CGContextStrokeRect(ctx, peopleCountRect);
+    CGContextStrokeRect(ctx, totalRect);
     
     CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-    [room.name drawInRect:roomNameRect withFont:[UIFont systemFontOfSize:10] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
-    [@"people" drawInRect:peopleLabelRect withFont:[UIFont systemFontOfSize:10] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
+    [[room.name uppercaseString] drawInRect:roomNameRect withFont:[UIFont boldSystemFontOfSize:16] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
+    [@"people" drawInRect:peopleLabelRect withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
     
 
     
