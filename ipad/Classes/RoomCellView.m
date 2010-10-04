@@ -67,7 +67,57 @@
 - (void)drawRect:(CGRect)rect {
 	NSLog(@"Drawing room cell");
     
-    [room.name drawInRect:self.bounds withFont:[UIFont systemFontOfSize:24] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentLeft];
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+
+    // Think about doing something interesting if there's no non-default title - show the names of 
+    // participants to help suggest to people what might be going on? 
+    
+    int numParticipants = 0;
+    NSString *meetingTitle;
+    if(room.currentMeeting != nil) {
+        NSLog(@"This room has a meeting in it, do the meeting view version.");
+        
+        // Grab the meeting name.
+        meetingTitle = room.currentMeeting.title;
+        numParticipants = [room.currentMeeting.currentParticipants count];
+        
+    } else {
+        NSLog(@"No meeting in this room, just put up a 'start a meeting' notice.");
+        
+        meetingTitle = @"Start a new meeting";
+        numParticipants = 0;
+    }
+    
+    CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
+    [meetingTitle drawInRect:CGRectMake(10, 10, 210, 25) withFont:[UIFont systemFontOfSize:24]];
+    
+    // Now do the generic stuff, like drawing the room name and participant counter.
+    
+    CGRect roomNameRect = CGRectMake(230, 10, 80, 10);
+    CGRect peopleLabelRect = CGRectMake(230, 36, 80, 10);
+    CGRect peopleCountRect = CGRectMake(230, 20, 80, 20);
+    
+    CGContextSetFillColorWithColor(ctx, [UIColor blueColor].CGColor);
+    CGContextFillRect(ctx, roomNameRect);
+    
+    CGContextFillRect(ctx, peopleLabelRect);
+    
+    CGContextSetStrokeColorWithColor(ctx, [UIColor blueColor].CGColor);
+    CGContextStrokeRect(ctx, peopleCountRect);
+    
+    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+    [room.name drawInRect:roomNameRect withFont:[UIFont systemFontOfSize:10] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
+    [@"people" drawInRect:peopleLabelRect withFont:[UIFont systemFontOfSize:10] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
+    
+
+    
+    CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
+    NSString *participantsCountString = [NSString stringWithFormat:@"%d", numParticipants];
+    [participantsCountString drawInRect:peopleCountRect withFont:[UIFont systemFontOfSize:20] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];  
+     
+    
+    
+                                           
     
     
 //	NSString *string = room ;
