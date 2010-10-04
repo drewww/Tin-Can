@@ -20,20 +20,14 @@
     NSMutableArray *timeBoundaries;
 	CGFloat pixelsPerSecond;
 
-    
-    
-	int elapsedSeconds;
-	CGFloat hourCounter;
-	CGFloat timeToCompare;
-	CGFloat lastPoint;
-	NSMutableArray *timesToMarkHours;
-	NSTimer *clock;
-	
+    NSTimer *clock;
+
+    CGFloat lastPoint;
 }
 
 - (id)initWithFrame:(CGRect)frame withMeeting:(Meeting *)theMeeting;
 
--(UIColor *)findNewColor;
+-(UIColor *)getNextColor;
 
 -(void)drawBarWithTimes:(NSMutableArray *)times withContext:(CGContextRef) context;
 

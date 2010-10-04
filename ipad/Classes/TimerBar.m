@@ -22,7 +22,7 @@
 		curDate= [[NSDate date] retain];
 
 		indexForColorWheel=0;
-		colorWheel = [NSMutableArray arrayWithObjects:[UIColor colorWithWhite:0.6 alpha:1.0], [UIColor colorWithWhite:0.4 alpha:1.0], nil];
+		colorWheel = [[NSMutableArray arrayWithObjects:[UIColor colorWithWhite:0.6 alpha:1.0], [UIColor colorWithWhite:0.4 alpha:1.0], nil] retain];
         
         
 		clock = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(clk) userInfo:nil repeats:YES];
@@ -36,11 +36,12 @@
 	meetingDuration =diff;
 	
 }	
--(UIColor *)findNewColor{
+-(UIColor *)getNextColor{
 	indexForColorWheel= indexForColorWheel +1;
-	if (indexForColorWheel >= ([colorWheel count]-1)){
+	if (indexForColorWheel == ([colorWheel count])){
 		indexForColorWheel=0;
 	}
+    NSLog(@"about to get color at %d", indexForColorWheel);
 	return [colorWheel objectAtIndex:indexForColorWheel];
 	
 	
@@ -71,7 +72,6 @@
 	NSDate *tempEndTime;
 	NSDate *tempStartTime;
 	float elapsedTime;
-	CGContextSetFillColorWithColor(ctx,  [UIColor blackColor].CGColor);
     
     // Change how colors are selected so they're just alternating grays, like
     // on the latest version of the clock. This saves our weird oscilllating issue,
@@ -80,7 +80,8 @@
     
     
 	CGContextFillRect(ctx, CGRectMake(0, 0, self.frame.size.width, self.frame.size.height));
-	while (i<= [boundariesList count]) {
+	while (i< [boundariesList count]) {
+        NSLog(@"rendering boundry %d: %@", i, [boundariesList objectAtIndex:i]);
 		if (i==0){
             // For the first entry, start at the meeting start time and go to the 
             // first item in the boundariesList (which is the start of the first topic.
@@ -90,35 +91,22 @@
             elapsedTime = abs([ tempStartTime  timeIntervalSinceDate:tempEndTime ]);
             CGContextSetFillColorWithColor(ctx,  [UIColor colorWithWhite:0.3 alpha:1.0].CGColor);
             CGContextFillRect(ctx, CGRectMake(0, 0, elapsedTime*pixelsPerSecond, self.frame.size.height));
-            lastPoint=	elapsedTime*pixelsPerSecond;
-		}
-		else if(i==[boundariesList count]){
-            // Ths is for the last item in the list. We don't really need this anymore
-            // since we're updating the list every second to be up to date, but we'll leave
-            // it for now. (Actually, this might be important for when we're between
-            // topics.
-			CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.3 alpha:1.0].CGColor);
-			elapsedTime= abs([ curDate  timeIntervalSinceDate:tempEndTime ]);
-			CGContextFillRect(ctx, CGRectMake(lastPoint, 0, (elapsedTime*pixelsPerSecond), self.frame.size.height));
-			
-		}
-		
-		else{
+            lastPoint =	elapsedTime*pixelsPerSecond;
+		} else {
             // This is the normal situation - rending every zone except the first/last.
 			tempStartTime=[boundariesList objectAtIndex:i-1] ;
 			tempEndTime=[boundariesList objectAtIndex:i];
             
-			elapsedTime = abs([ tempStartTime  timeIntervalSinceDate:tempEndTime ]);
+			elapsedTime = abs([tempStartTime  timeIntervalSinceDate:tempEndTime ]);
             
             if(elapsedTime < 1) {
-                NSLog(@"Found a zero second window (between a topic starting and ending, presumably) - skipping.");
                 i++;
                 continue;
             }
             
-			CGContextSetFillColorWithColor(ctx, [UIColor blueColor].CGColor);
+			CGContextSetFillColorWithColor(ctx, [self getNextColor].CGColor);
 			CGContextFillRect(ctx, CGRectMake(lastPoint, 0, (elapsedTime*pixelsPerSecond), self.frame.size.height));	
-			lastPoint=	lastPoint+ elapsedTime*pixelsPerSecond;
+            lastPoint = elapsedTime*pixelsPerSecond;
 		}
 		i++;
 	}
@@ -133,8 +121,14 @@
     // for now. 
     NSMutableArray *newTimeBoundaries = [NSMutableArray array];
     NSLog(@"generating boundaries");
-    for(Topic *topic in meeting.topics) {
-        
+    
+    // Make sure the topics are sorted properly first.
+    
+    NSMutableArray *sortedTopics = [NSMutableArray arrayWithArray:[meeting.topics allObjects]];
+    [sortedTopics sortUsingSelector:@selector(compareByStartTime:)];
+
+    
+    for(Topic *topic in sortedTopics) {
         if(topic.startTime != nil) {
             [newTimeBoundaries addObject:topic.startTime];
             
@@ -168,11 +162,11 @@
 	[self drawBarWithTimes:timeBoundaries withContext:ctx];
 	
 	
-	int diff=(int)meetingDuration% 3600;
-	//Maybe use time rather than point
-	if(diff ==0){
-		[timesToMarkHours addObject: curDate];
-	}
+//	int diff=(int)meetingDuration% 3600;
+//	//Maybe use time rather than point
+//	if(diff ==0){
+//		[timesToMarkHours addObject: curDate];
+//	}
     
     // Handle the hour markers (not using the internal method anymore)
 	//[self markHoursWithTimes:timesToMarkHours withContext:ctx];
@@ -184,7 +178,6 @@
     [super dealloc];
     [clock release];
     [colorWheel release];
-    [timesToMarkHours release];
 }
 
 
