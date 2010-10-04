@@ -66,9 +66,7 @@
 							[hexStringCleared substringWithRange:NSMakeRange(1, 1)],[hexStringCleared substringWithRange:NSMakeRange(1, 1)],
 							[hexStringCleared substringWithRange:NSMakeRange(2, 1)],[hexStringCleared substringWithRange:NSMakeRange(2, 1)]];
 	}
-//	if(hexStringCleared.length == 6) {
-//		hexStringCleared = [hexStringCleared stringByAppendingString:@"ff"];
-//	}
+
 	[[NSScanner scannerWithString:hexStringCleared] scanHexInt:&colorValue];
 	
 	/* now build the UIColor with standard allocators */
