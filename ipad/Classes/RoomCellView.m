@@ -111,7 +111,7 @@
     [[room.name uppercaseString] drawInRect:roomNameRect withFont:[UIFont boldSystemFontOfSize:16] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
     
     if (!newMeeting) {
-        [@"people" drawInRect:peopleLabelRect withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
+        [@"people" drawInRect:peopleLabelRect withFont:[UIFont boldSystemFontOfSize:16] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
         
         CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
         NSString *participantsCountString = [NSString stringWithFormat:@"%d", numParticipants];

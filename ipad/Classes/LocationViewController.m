@@ -37,7 +37,9 @@
 		//NSLog(@" Locations list: %@", [[StateManager sharedInstance] getLocations]);
 
 		[self.view setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-		
+	
+        
+        self.tableView.rowHeight = ROW_HEIGHT;
 	}
 	return self;
 }
