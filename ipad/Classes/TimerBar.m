@@ -144,7 +144,14 @@
 - (void)drawRect:(CGRect)rect {
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 
+    // Make sure to reset this, otherwise it accumulates state across drawing runs
+    // and causes weird issues with colors oscillating.
+    indexForColorWheel = 0;
 	
+    // Make the background super light gray.
+    CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.88 alpha:1.0].CGColor);
+    CGContextFillRect(ctx, CGRectMake(0, 0, self.frame.size.width, self.frame.size.height));
+    
 	[self setLength];
 	
 	[self drawBarWithTimes:timeBoundaries withContext:ctx];
