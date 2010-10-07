@@ -63,7 +63,7 @@
         CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
         
         NSString *fullMeetingString = [NSString stringWithFormat:@"%@ in %@", loc.meeting.title, loc.meeting.room.name];
-        [fullMeetingString drawInRect:meetingStatusRect withFont:[UIFont boldSystemFontOfSize:12]];
+        [fullMeetingString drawInRect:CGRectInset(meetingStatusRect, 2, 2) withFont:[UIFont boldSystemFontOfSize:12]];
     }
     
     
