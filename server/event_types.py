@@ -128,7 +128,7 @@ def _handleJoinedLocation(event):
     
     if event.meeting != None:
         event.meeting.eventHistoryReadable.append(event.actor.name+
-            " joined the meeting in location "+location.name)
+        " joined the meeting in location "+location.name)
     
     # event.addResult("user", event.actor)
     

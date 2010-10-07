@@ -11,6 +11,7 @@ import model
 import simplejson as json
 import logging
 import traceback
+import time
 
 from event import *
 
@@ -95,30 +96,63 @@ def init_demo():
     locations = state.get_locations()
     rooms = [room for room in state.get_rooms()]
     
-    userJoinedLocationEvent = Event("USER_JOINED_LOCATION", users[0].uuid, None, {"location":locations[0].uuid})
-    userJoinedLocationEvent.dispatch()
-    userJoinedLocationEvent = Event("USER_JOINED_LOCATION", users[1].uuid, None, {"location":locations[0].uuid})
-    userJoinedLocationEvent.dispatch()
-    userJoinedLocationEvent = Event("USER_JOINED_LOCATION", users[2].uuid, None, {"location":locations[1].uuid})
-    userJoinedLocationEvent.dispatch()
-    userJoinedLocationEvent = Event("USER_JOINED_LOCATION", users[3].uuid, None, {"location":locations[1].uuid})
-    userJoinedLocationEvent.dispatch()
-    userJoinedLocationEvent = Event("USER_JOINED_LOCATION", users[4].uuid, None, {"location":locations[2].uuid})
-    userJoinedLocationEvent.dispatch()
+    # This is cheating. We should be using events to generate server changes, but
+    # we create meetings/topics/tasks "in the past," so we'll just mess with the server state
+    # directly. It will be okay since this is only for demo-ing. Doing this will make inconsistent
+    # timestamps for events, but we don't use those for anything except the status pages
     
-    newMeetingEvent = Event("NEW_MEETING", locations[0].uuid, None, {"room":rooms[0].uuid})
-    newMeetingEvent.dispatch()
+    locations[0].userJoined(users[0])
+    locations[0].userJoined(users[1])
+    locations[1].userJoined(users[2])
+    locations[1].userJoined(users[3])
+    locations[2].userJoined(users[4])
     
-    locationJoinedMeetingEvent = Event("LOCATION_JOINED_MEETING", locations[0].uuid, None, 
-        {"meeting":rooms[0].currentMeeting.uuid})
-    locationJoinedMeetingEvent.dispatch()
-    locationJoinedMeetingEvent = Event("LOCATION_JOINED_MEETING", locations[1].uuid, None, 
-        {"meeting":rooms[0].currentMeeting.uuid})
-    locationJoinedMeetingEvent.dispatch()
-    locationJoinedMeetingEvent = Event("LOCATION_JOINED_MEETING", locations[2].uuid, None, 
-        {"meeting":rooms[0].currentMeeting.uuid})
-    locationJoinedMeetingEvent.dispatch()
+    #new meeting. I've only created one, hope that's okay.
+    meeting = model.Meeting(rooms[0].uuid, startedAt=time.time()-15*60)
+    rooms[0].set_meeting(meeting)
     
+    locations[0].joinedMeeting(meeting)
+    locations[1].joinedMeeting(meeting)
+    locations[2].joinedMeeting(meeting)
+    
+    #new topics
+    newTopic = model.Topic(meeting.uuid, users[0].uuid, "topic one",
+        status=model.Topic.FUTURE, color="006600", createdAt=time.time()-14*60)
+    meeting.addTopic(newTopic)
+    users[0].status=("created new topic", newTopic.createdAt)
+    newTopic = model.Topic(meeting.uuid, users[3].uuid, "topic two",
+        status=model.Topic.FUTURE, color="006600", createdAt=time.time()-14*60)
+    meeting.addTopic(newTopic)
+    users[3].status=("created new topic", newTopic.createdAt)
+    newTopic = model.Topic(meeting.uuid, users[2].uuid, "topic three",
+        status=model.Topic.FUTURE, color="006600", createdAt=time.time()-13*60)
+    meeting.addTopic(newTopic)
+    users[2].status=("created new topic", newTopic.createdAt)
+    
+    topics = meeting.topics
+    
+    #changing topic status
+    topics[0].setStatus(model.Topic.CURRENT, users[4], time.time()-14*60)
+    users[4].status=("edited topic", time.time()-14*60)
+    topics[0].setStatus(model.Topic.PAST, users[3], time.time()-8*60)
+    users[3].status=("edited topic", time.time()-8*60)
+    topics[1].setStatus(model.Topic.CURRENT, users[3], time.time()-8*60)
+    users[3].status=("edited topic", time.time()-8*60)
+    
+    #new tasks
+    newTask = model.Task(meeting.uuid, users[1].uuid, "task one", createdAt=time.time()-10*60)
+    meeting.addTask(newTask)
+    users[1].status=("created new task", newTask.createdAt)
+    newTask = model.Task(meeting.uuid, users[0].uuid, "task two", createdAt=time.time()-3*60)
+    meeting.addTask(newTask)
+    users[0].status=("created new task", newTask.createdAt)
+    
+    tasks = meeting.tasks
+    
+    #assigning tasks
+    tasks[0].assign(users[2],users[4], time.time()-4*60)
+    users[2].status=("assigned task", tasks[0].assignedAt)
+    users[4].status=("claimed task", tasks[0].assignedAt)
 
 def get_obj(key, type=None):
     """Returns the object of 'type' with that UUID from the object store.

@@ -720,15 +720,18 @@ class Task(MeetingObject):
     def setText(self, text):
         self.text = text
     
-    def assign(self, assignedBy, assignedTo):        
+    def assign(self, assignedBy, assignedTo, time=None):        
         self.assignedBy=assignedBy
         self.assignedTo=assignedTo
-        self.assignedAt=time.time()
+        if time==None:
+            self.assignedAt=time.time()
+        else:
+            self.assignedAt=time
         
         # inform the user object of its assignment.
         assignedTo.assignTask(self)
     
-    def deassign(self, deassignedBy):
+    def deassign(self, deassignedBy, time=None):
         # do some quick assertion checking.
         if(self.assignedTo==None):
             logging.warning("Tried to deassign a task %s that was not\
@@ -736,7 +739,7 @@ class Task(MeetingObject):
             return
         
         self.assignedBy = deassignedBy
-        self.assignedAt = time.time()
+        self.assignedAt=time.time()
         
         self.assignedTo.removeTask(self)
         self.assignedTo = None
@@ -806,16 +809,22 @@ class Topic(MeetingObject):
         self.color = color
         
     
-    def setStatus(self, status, actor):
+    def setStatus(self, status, actor, time=None):
         if(status in [Topic.PAST, Topic.CURRENT, Topic.FUTURE]):
             
             # look for some specific transitions
             if(self.status==Topic.FUTURE and status==Topic.CURRENT):
                 self.startActor = actor
-                self.startTime = time.time()
+                if time==None:
+                    self.startTime = time.time()
+                else:
+                    self.startTime = time
             elif(self.status==Topic.CURRENT and status==Topic.PAST):
                 self.stopActor = actor
-                self.stopTime = time.time()
+                if time==None:
+                    self.stopTime = time.time()
+                else:
+                    self.stopTime = time
                 
             self.status = status
         else:
