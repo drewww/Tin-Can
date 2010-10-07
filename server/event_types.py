@@ -123,6 +123,10 @@ def _handleJoinedLocation(event):
     location.userJoined(event.actor)
     event.actor.status = ("joined location", time.time())
     event.params["joinedAt"] = event.actor.status[1]
+    if location.isInMeeting():
+        event.meeting = location.meeting
+    
+    event.meeting.eventHistoryReadable.append(event.actor.name+" joined the meeting in location "+location.name)
     
     # event.addResult("user", event.actor)
     

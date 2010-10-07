@@ -174,11 +174,25 @@ ConnectionManager.prototype = {
         switch(ev.eventType) {
             case "ADD_ACTOR_DEVICE":
                 // We don't really care about this one, actually.
+                actor = state.get_obj(ev["actorUUID"], User);
+                actor.devices=actor.devices+1;
+                actor.loggedIn = true;
+                
                 break;
+            
+            case "DEVICE_LEFT":
+                actor = state.get_obj(ev["actorUUID"], User);
+                if (!actor.isInLocation() && actor.devices == 0){
+                    actor.loggedIn = false;
+                }
             
             case "DEVICE_LEFT_COMPLETE":
                 console.log("hi");
                 this.stopPersistentConnection();
+                if (!this.user.isInLocation() && this.user.devices == 0){
+                    this.user.loggedIn = false;
+                }
+                
                 break;
                 
             case "NEW_MEETING":
@@ -220,6 +234,7 @@ ConnectionManager.prototype = {
                 loc = state.getObj(ev["params"]["location"], Location);
                 user = state.getObj(ev["actorUUID"], User);
                 loc.userJoined(user);
+                user.loggedIn=true;
                 
                 if(user.uuid == this.userUUID){
                     this.user = user;
@@ -245,6 +260,10 @@ ConnectionManager.prototype = {
                         this.loc = null;
                         console.log("Local location set to null.");
                     }
+                }
+                
+                if (user.devices == 0){
+                    user.loggedIn = false;
                 }
                 
                 console.log(user.name + " left " + loc.name);

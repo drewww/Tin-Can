@@ -19,6 +19,8 @@ function User(uuid, name, loc, status, handRaised) {
     
     // Tasks assigned to this user. 
     this.tasks = [];
+    this.loggedIn = false;
+    this.devices = 0;
     
     state.putObj(this.uuid, this);
 }
