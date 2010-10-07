@@ -155,14 +155,7 @@
 	[self setLength];
 	
 	[self drawBarWithTimes:timeBoundaries withContext:ctx];
-	
-	
-//	int diff=(int)meetingDuration% 3600;
-//	//Maybe use time rather than point
-//	if(diff ==0){
-//		[timesToMarkHours addObject: curDate];
-//	}
-    
+	    
     // Handle the hour markers (not using the internal method anymore)
     int numHours = floor(abs([curDate timeIntervalSinceDate:meeting.startedAt])/3600.0);
     
@@ -177,7 +170,6 @@
         
         CGContextFillRect(ctx, CGRectMake(hourPoint - 1, 0, 2, self.frame.size.height));
     }
-	
 }
 
 

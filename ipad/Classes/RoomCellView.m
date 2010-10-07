@@ -50,6 +50,7 @@
     // participants to help suggest to people what might be going on? 
     
     int numParticipants = 0;
+    bool newMeeting = false;
     NSString *meetingTitle;
     if(room.currentMeeting != nil) {
         NSLog(@"This room has a meeting in it, do the meeting view version.");
@@ -63,41 +64,59 @@
         
         numParticipants = [room.currentMeeting.currentParticipants count];
         
+        newMeeting = false;
+        
     } else {
         NSLog(@"No meeting in this room, just put up a 'start a meeting' notice.");
         
-        meetingTitle = @"Start a new meeting with a really long wrapping test name";
+        meetingTitle = @"Start a new meeting here";
         numParticipants = 0;
+        newMeeting = true;
     }
     
-    CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
+    // Draw things differently if it's a new meeting versus an existing meeting. Dim the text some,
+    // and don't draw the people counter. Basically, try to make rooms with meetings stand out in
+    // a bunch of different ways. 
+    
+    if(!newMeeting) {
+        CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
+    } else {
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.4 alpha:1.0].CGColor);
+    }
+
     [meetingTitle drawInRect:CGRectMake(10, 10, 270, 46) withFont:[UIFont systemFontOfSize:20]];
-    
-//    CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
-//    CGContextStrokeRect(ctx, CGRectMake(10, 10, 270, 60));
-    
+        
     // Now do the generic stuff, like drawing the room name and participant counter.
     
     CGRect roomNameRect = CGRectMake(290, 10, 80, 20);
     CGRect peopleCountRect = CGRectMake(290, 30, 80, 40);
     CGRect peopleLabelRect = CGRectMake(290, 70, 80, 20);
     CGRect totalRect = CGRectMake(290, 10, 80, 80);
-    
-    CGContextSetFillColorWithColor(ctx, [UIColor blueColor].CGColor);
+
+    if(newMeeting) {
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.4 alpha:1.0].CGColor);
+    } else {
+        CGContextSetFillColorWithColor(ctx, [UIColor blueColor].CGColor);
+    }
     CGContextFillRect(ctx, roomNameRect);
     
-    CGContextFillRect(ctx, peopleLabelRect);
-    
-    CGContextSetStrokeColorWithColor(ctx, [UIColor blueColor].CGColor);
-    CGContextStrokeRect(ctx, totalRect);
-    
+    if(!newMeeting) {
+        CGContextFillRect(ctx, peopleLabelRect);
+        
+        CGContextSetStrokeColorWithColor(ctx, [UIColor blueColor].CGColor);
+        CGContextStrokeRect(ctx, totalRect);
+    }
+
     CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
     [[room.name uppercaseString] drawInRect:roomNameRect withFont:[UIFont boldSystemFontOfSize:16] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
-    [@"people" drawInRect:peopleLabelRect withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
     
-    CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
-    NSString *participantsCountString = [NSString stringWithFormat:@"%d", numParticipants];
-    [participantsCountString drawInRect:peopleCountRect withFont:[UIFont systemFontOfSize:30] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];       
+    if (!newMeeting) {
+        [@"people" drawInRect:peopleLabelRect withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
+        
+        CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
+        NSString *participantsCountString = [NSString stringWithFormat:@"%d", numParticipants];
+        [participantsCountString drawInRect:peopleCountRect withFont:[UIFont systemFontOfSize:30] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];       
+    }
 }
 
 - (void)dealloc {
