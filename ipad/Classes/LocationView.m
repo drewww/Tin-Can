@@ -10,13 +10,14 @@
 #import "Location.h"
 
 @implementation LocationView
-@synthesize name;
 
-- (id)initWithFrame:(CGRect)frame withName:(NSString *)theName withUsers:(int)users{
+@synthesize location;
+
+- (id)initWithFrame:(CGRect)frame withLocation:(Location *)theLocation{
     if ((self = [super initWithFrame:frame])) {
+        
+        self.location = theLocation;
 		self.frame=frame;
-        name=theName;
-		numUsers=users;
 		self.alpha = 0;
 		[UIView beginAnimations:@"fade_in" context:self];
 		
@@ -33,12 +34,7 @@
 
 - (id) initWithLocation:(Location *)theLocation {
     
-    // This is just a weak passthrough. Eventually, we'll knock out the initWithFrame
-    // version and initWithTask will be the only option. Leaving the old one for compatibility
-    // reasons, because making tasks by hand on the client is a bit tedious for testing.
-    Location *loc = theLocation;
-    
-    return [self initWithFrame:CGRectMake(0, 0, 230, 25) withName:loc.name withUsers:[loc.users count]];
+    return [self initWithFrame:CGRectMake(0, 0, 230, 25) withLocation:theLocation];
 }
 
 -(void)setFrameWidthWithContainerWidth:(CGFloat )width{
@@ -49,28 +45,28 @@
 	
     // Drawing code
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
-	CGContextSetFillColorWithColor(ctx, [UIColor blueColor].CGColor);
+	CGContextSetFillColorWithColor(ctx, location.color.CGColor);
+    
+    NSLog(@"drawing location with color: %@, equals? %d -> %@", location.color, [location.color isEqual:[UIColor blueColor]], [UIColor blueColor]);
+    
 	CGContextFillRect(ctx, CGRectMake(0, 0, self.frame.size.height, self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-		
-	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 	
-	
-	CGSize statusSize = [[NSString stringWithFormat:@"%d",numUsers] sizeWithFont:[UIFont boldSystemFontOfSize:11]];
+	CGSize statusSize = [[NSString stringWithFormat:@"%d",[location.users count]] sizeWithFont:[UIFont boldSystemFontOfSize:11]];
 	
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 
 	
-	[[NSString stringWithFormat:@"%d",numUsers] drawInRect:CGRectMake((self.frame.size.height/2.0) -(statusSize.width/2.0), 7, self.frame.size.height, self.frame.size.height-5)
+	[[NSString stringWithFormat:@"%d",[location.users count]] drawInRect:CGRectMake((self.frame.size.height/2.0) -(statusSize.width/2.0), 7, self.frame.size.height, self.frame.size.height-5)
 				 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
 	
 	
-	CGContextSetFillColorWithColor(ctx, [UIColor clearColor].CGColor);
+//	CGContextSetFillColorWithColor(ctx, [UIColor clearColor].CGColor);
 
-	CGContextFillRect(ctx, CGRectMake(self.frame.size.height+1, 0, 137.5-(self.frame.size.height+1), self.frame.size.height));
+	//CGContextFillRect(ctx, CGRectMake(self.frame.size.height+1, 0, 137.5-(self.frame.size.height+1), self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:1].CGColor);
-	[name drawInRect:CGRectMake(self.frame.size.height+3, 5,137.5-(self.frame.size.height+3), self.frame.size.height-4) 
+	[location.name drawInRect:CGRectMake(self.frame.size.height+3, 5,137.5-(self.frame.size.height+3), self.frame.size.height-4) 
 			withFont:[UIFont boldSystemFontOfSize:14] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
 	//CGContextSetLineWidth(ctx,2);
@@ -87,7 +83,7 @@
     // and an arbitrary (but stable) way to tell between tasks with identical text.
     // This is a rare case in real use, but happens a lot in testing, so this gives us some
     // protection from bad issues during demoing.
-    NSComparisonResult retVal = [self.name compare:view.name];
+    NSComparisonResult retVal = [self.location.name compare:view.location.name];
     
     if(retVal==NSOrderedSame) {
         if (self < view)

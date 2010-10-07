@@ -14,7 +14,6 @@
 
 @implementation UserRenderView
 
-
 @synthesize user;
 @synthesize hover;
 
@@ -31,7 +30,7 @@
     
 	//for LocationView in 
 	//if self.User.location
-    color = [UIColor blueColor];
+    color = user.location.color;
     
     [self setBackgroundColor:[UIColor clearColor]];
     
@@ -106,7 +105,7 @@
     
     // Draw the tabs to show that this person has tasks assigned.
     // Hardcoding the number of tasks for now.
-    CGContextSetFillColorWithColor(ctx, [color colorByChangingAlphaTo:0.6].CGColor);
+    CGContextSetFillColorWithColor(ctx, [color colorByChangingAlphaTo:0.9].CGColor);
     CGFloat xPos = 15;
     NSLog(@"about to render a user, with %d tasks", [user.tasks count]);
     

@@ -7,74 +7,132 @@
 //
 
 #import "DragManager.h"
-#import "Todo.h"
-#import "ParticipantView.h"
+#import "Task.h"
+#import "UserView.h"
 #import "ASIFormDataRequest.h"
+#import "ConnectionManager.h"
 
 @implementation DragManager
 
 static DragManager *sharedInstance = nil;
 
 @synthesize rootView;
-@synthesize participantsContainer;
+@synthesize usersContainer;
+@synthesize taskContainer;
 
 #pragma mark -
 #pragma mark class instance methods
 
 
-- (void) initWithRootView:(UIView *)view withParticipantsContainer:(UIView *)container {
- 
-    self.rootView = view;
-    self.participantsContainer = container;
+- (id) init {
     
-    lastTodoDropTargets = [[NSMutableDictionary dictionary] retain];
+    self = [super init];
+    
+    lastTaskDropTargets = [[NSMutableDictionary dictionary] retain];
+   
+    return self;
+}
+
+- (void) setRootView:(UIView *)view andUsersContainer:(UIView *)container andTaskContainer:(TaskContainerView *)theTaskContainer{
+    
+    self.rootView = view;
+    self.usersContainer = container;
+    self.taskContainer = theTaskContainer;
+    
+    draggedItemsContainer = [[UIView alloc] initWithFrame:self.rootView.frame];
+    [draggedItemsContainer setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+    
+    [self.rootView addSubview:draggedItemsContainer];
+    [self.rootView bringSubviewToFront:draggedItemsContainer];
+    
 }
 
 
-- (ParticipantView *) participantAtTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+- (UIView <TaskDropTarget> *) userViewAtTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     
     CGPoint point = [touch locationInView:self.rootView];
     
-    UIView *returnedView = [self.participantsContainer hitTest:point withEvent:event];
+    // TODO We'll need to hit-test the taskContainer separately here, which is annoying, unless
+    // we add it to the UsersContainer. 
+    UIView *returnedView = [self.usersContainer hitTest:point withEvent:event];
     
-//    NSLog(@"checking participantAtTouch. point: %f, %f. returned view: %@", point.x, point.y, returnedView);
+    if([taskContainer pointInside:[taskContainer convertPoint:point fromView:self.rootView] withEvent:event]) {
+        NSLog(@"point in task container, returning that!");
+        return taskContainer;
+    }
     
-    if(returnedView==nil) {
+    UIView *potentialTaskContainer = [self.taskContainer hitTest:point withEvent:event];
+
+    
+    if(returnedView==nil && potentialTaskContainer==nil) {
         return nil;
     }
     
-    if([returnedView isKindOfClass:[ParticipantView class]]) {
-        return ((ParticipantView *) returnedView);
-    }
-    else {
+    if([returnedView isKindOfClass:[UserView class]]) {
+        return ((UserView *) returnedView);
+    } else if ([returnedView isKindOfClass:[UserRenderView class]]) {
+        
+        // This is a bit convoluted - should the RenderView have a ref
+        // back to its parent?
+        return (UserView *)[((UserRenderView *) returnedView).user getView];
+        
+    } else {
         return nil;
     }
-    
 }
 
 
-#pragma mark TodoDragDelegate
+#pragma mark TaskDragDelegate
 
-- (void) todoDragMovedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTodo:(Todo *)todo{
+- (void) taskDragStartedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task {
+    // When we get the first touch, pull it out of its current superview and put it on the root view.
+    // We'll push it back when it gets dropped again.
+    
+    [draggedItemsContainer.superview bringSubviewToFront:draggedItemsContainer];
+    NSLog(@"unhiding the items container");
+    [draggedItemsContainer setHidden:false];
+    
+    TaskView *taskView = (TaskView *)[task getView];
+    
+        
+    CGPoint p = [draggedItemsContainer convertPoint:taskView.center fromView:taskView.lastParentView];
+    
+    
+    NSLog(@"current center: (%f,%f), center in global coords: (%f, %f)", taskView.center.x, taskView.center.y, p.x, p.y);
+    
+    
+    [draggedItemsContainer addSubview:[task getView]];
+    
+    taskView.center = p;
+    
+    
+}
+
+- (void) taskDragMovedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task {
     
     // Get the last target
-    ParticipantView *lastDropTarget = [lastTodoDropTargets objectForKey:todo];
+    UIView <TaskDropTarget> *lastDropTarget = [lastTaskDropTargets objectForKey:task.uuid];
     
     // Now check and see if we're over a participant right now.
-	ParticipantView *curDropTarget = [self participantAtTouch:touch withEvent:event];
-    
-	// rethinking this...
+	UIView <TaskDropTarget> *curDropTarget = [self userViewAtTouch:touch withEvent:event];
+
 	// if cur and last are the same, do nothing.
 	// if they're different, release the old and retain the new and manage states.
 	// if cur is nothing and last is something, release and set false
 	// if cur is something and last is nothing, retain and set true
 	
+//    NSLog(@"Drop targets: (last) %@ =? %@ (cur)", lastDropTarget, curDropTarget);
+    
 	if(curDropTarget != nil) {
 		if (lastDropTarget == nil) {
+//            NSLog(@" entering new drop target");
 			[curDropTarget setHoverState:true];
 			[curDropTarget retain];
 			lastDropTarget = curDropTarget;			
 		} else if(curDropTarget != lastDropTarget) {
+            
+//            NSLog(@"transitioning from one drop target to a different one");
+            
 			// transition.
 			[lastDropTarget setHoverState:false];
 			[lastDropTarget release];
@@ -88,8 +146,11 @@ static DragManager *sharedInstance = nil;
 		// If they're the same, do nothing - don't want to be sending the
 		// retain count through the roof.
 	} else {
-		// curTargetView IS nul.
+		// curTargetView IS nil.
 		if(lastDropTarget != nil) {
+            
+//            NSLog(@"transitioning out of drop target to nothing");
+            
 			[lastDropTarget setHoverState:false];
 			[lastDropTarget release];		
 			lastDropTarget = nil;
@@ -98,50 +159,67 @@ static DragManager *sharedInstance = nil;
 		// If they're both nil, do nothing.
 	}
 	
-	
-	[lastDropTarget setHoverState:false];
-	[lastDropTarget release];
-	if(curDropTarget !=nil) {
-		[curDropTarget setHoverState:true];
-		lastDropTarget = curDropTarget;
-		[lastDropTarget retain];
-	}
+
+	// Why was this code ever here? This seems totally naive and wrong.
+//	[lastDropTarget setHoverState:false];
+//	[lastDropTarget release];
+//	if(curDropTarget !=nil) {
+//		[curDropTarget setHoverState:true];
+//		lastDropTarget = curDropTarget;
+//		[lastDropTarget retain];
+//	}
     
     // Now push the current last into the dictionary.
-    [lastTodoDropTargets setValue:lastDropTarget forKey:todo];
+    [lastTaskDropTargets setValue:lastDropTarget forKey:task.uuid];
 }
 
-- (bool) todoDragEndedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTodo:(Todo *)todo {
+- (bool) taskDragEndedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task {
     // Get the current target
-    ParticipantView *curTargetView = [self participantAtTouch:touch withEvent:event];	
+    UIView <TaskDropTarget> *curTargetView = [self userViewAtTouch:touch withEvent:event];	
     
-    // Assign the todo.
+    // Assign the Task.
     if(curTargetView != nil) {
-        // For now, disable this part - let it happen in the loopback through toqbot. 
-        //        [curTargetView.participant assignTodo:todo];
-        //        [curTargetView setHoverState:false];
         
-        // Now, send a message back to toqbot about the assignment.
-        // TODO abstract this out into some nice communication singleton
+        // Do the actual task assignment.
+//        [(TaskView *)[task getView] startAssignToUser:[curTargetView getUser] byActor:[StateManager sharedInstance].location atTime:[NSDate date]];
         
-        NSLog(@"about to try to post something.");
-        ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"http://toqbot.com/db/"]];
-        [request setPostValue:[NSString stringWithFormat:@"ASSIGN_TODO %@ %@", todo.uuid, curTargetView.participant.uuid] forKey:@"tincan"];
-        [request setDelegate:self];
-        [request startAsynchronous];
+        // Send the message to the server that the task has been assigned.
+        // We're doing this here and not in any of the other model-based methods beacuse those
+        // are going to be called when assignment happens on other clients, and we want to avoid
+        // triggering a cascade. This chunk of code only gets called for the client that
+        // physically does the assignment.
         
+        if([curTargetView isKindOfClass:[UserView class]]) {
+            UserView *curTargetUserView = (UserView *)curTargetView;
+            [[ConnectionManager sharedInstance] assignTask:task toUser:[curTargetUserView getUser]];
+            [curTargetView setHoverState:false];
+        } else if ([curTargetView isKindOfClass:[TaskContainerView class]]) {
+            NSLog(@"got a drop on a task container, deassign the task now!");
+            [[ConnectionManager sharedInstance] deassignTask:task];
+            [curTargetView setHoverState:false];
+        }
+        
+        [draggedItemsContainer setHidden:true];
         return true;
+    } else {
+     // We need to add it back to its original home view. 
+    
+        NSLog(@"Adding the task back to its original parent view since dragging is done.");
+        TaskView *taskView = (TaskView *)[task getView];
+        
+        // Do the position translation back again.
+        CGPoint p = [taskView.lastParentView convertPoint:taskView.center fromView:draggedItemsContainer];
+        taskView.center = p;
+
+        [taskView.lastParentView addSubview:taskView];
+        
+        NSLog(@"setting draggedItemsContainer to hidden");
+        [draggedItemsContainer setHidden:true];
+
+//        [draggedItemsContainer.superview sendSubviewToBack:draggedItemsContainer];
     }
     
     return false;
-}
-
-- (void) requestFinished:(ASIHTTPRequest *)request {
-    NSLog(@"request finished! %@", [request responseString]);
-}
-
-- (void) requestFailed:(ASIHTTPRequest *)request {
-    NSLog(@"request failed: %@", [request error]);
 }
 
 
@@ -190,4 +268,3 @@ static DragManager *sharedInstance = nil;
 }
 
 @end
-

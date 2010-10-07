@@ -7,20 +7,28 @@
 //
 
 #import "TaskView.h"
-
+#import "Task.h"
+#import "DragManager.h"
 
 @implementation TaskView
 
-@synthesize text;
+@synthesize task;
+@synthesize delegate;
+@synthesize lastParentView;
 
-- (id)initWithFrame:(CGRect)frame withText:(NSString *)taskText{
+- (id)initWithFrame:(CGRect)frame withTask:(Task *)theTask{
     if ((self = [super initWithFrame:frame])) {
 		self.frame=frame;
-        text=taskText;
-		initialOrigin = CGPointMake(self.frame.origin.x, self.frame.origin.y);//self.frame.origin;  
+
+		task = theTask;
+        
+        initialOrigin = CGPointMake(self.frame.origin.x, self.frame.origin.y);//self.frame.origin;  
 		self.userInteractionEnabled = YES; 
 		isTouched= FALSE;
 		
+        // Set our own delegate on init.
+        self.delegate = [DragManager sharedInstance];
+        
 		self.alpha = 0;
 		[UIView beginAnimations:@"fade_in" context:self];
 		
@@ -36,13 +44,7 @@
 }
 
 - (id) initWithTask:(Task *)theTask {
-    
-    // This is just a weak passthrough. Eventually, we'll knock out the initWithFrame
-    // version and initWithTask will be the only option. Leaving the old one for compatibility
-    // reasons, because making tasks by hand on the client is a bit tedious for testing.
-    task = theTask;
-    
-    return [self initWithFrame:CGRectMake(0, 0, 230, 50) withText:task.text];
+    return [self initWithFrame:CGRectMake(0, 0, 230, 50) withTask:theTask];
 }
 
 -(void)setFrameWidthWithContainerWidth:(CGFloat )width{
@@ -66,7 +68,7 @@
 
 	CGContextFillRect(ctx, CGRectMake(10, 0, self.frame.size.width-12, self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:.5].CGColor);
-	[text drawInRect:CGRectMake(15, 2, self.frame.size.width-16, self.frame.size.height) 
+	[task.text drawInRect:CGRectMake(15, 2, self.frame.size.width-16, self.frame.size.height) 
 			withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
 	CGContextSetLineWidth(ctx,2);
@@ -78,16 +80,59 @@
 }
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	NSLog(@"I have been touched");
+    UITouch *touch = [touches anyObject];
+
 	isTouched=TRUE;
 	//self.frame=CGRectMake(self.frame.origin.x, self.frame.origin.y, self.bounds.size.width-100, 50);
 	[self setNeedsDisplay];
 	[self.superview bringSubviewToFront:self];
+    
+    // retain this? can get away without it, right, since it's in the hierarchy and 
+    // not going to get released any time soon?
+    lastParentView = self.superview;
+    
+    [self.delegate taskDragStartedWithTouch:touch withEvent:event withTask:self.task];
    
 }
 
 
+- (void) startAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime {
+    
+    
+    // First, just say we're done immediately and do the assignment. 
+    [self finishAssignToUser:toUser byActor:byActor atTime:assignTime];
+}
+
+- (void) finishAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime {
+    
+    // Remove the TaskView from its current super view and assign it to its new container.
+    [[task getView] removeFromSuperview];
+    
+    [toUser assignTask:task];
+    
+    [task assignToUser:toUser byActor:byActor atTime:assignTime];
+    
+    isTouched = false;
+}
+
+
+- (void) startDeassignByActor:(Actor *)byActor atTime:(NSDate *)assignTime withTaskContainer:(UIView *)taskContainer {
+    [self finishDeassignByActor:byActor atTime:assignTime withTaskContainer:taskContainer];
+}
+
+- (void) finishDeassignByActor:(Actor *)byActor atTime:(NSDate *)assignTime withTaskContainer:(UIView *)taskContainer {
+    [[task getView] removeFromSuperview];
+    [taskContainer addSubview:[task getView]];
+    
+    [task.assignedTo removeTask:task];
+    
+    [task deassignByActor:byActor atTime:assignTime];    
+
+    isTouched = false;
+}
+
+
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-	NSLog(@"I have been moved and touched");
 	// When we move, we want to know the delta from its previous location
 	// and then we can adjust our position accordingly. 
 	
@@ -99,11 +144,19 @@
 	
 	[self setNeedsDisplay];
 
+    
+    // Inform the delegate.
+    [self.delegate taskDragMovedWithTouch:touch withEvent:event withTask:self.task];
+    
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	   NSLog(@"I have been touched but now I am not"); 
 
+    // TODO think about multitouch for this!
+    UITouch *touch = [touches anyObject];
+    
+    if (![self.delegate taskDragEndedWithTouch:touch withEvent:event withTask:self.task]) {
+                
         [UIView beginAnimations:@"snap_to_initial_position" context:nil];
         
         [UIView setAnimationDuration:1.0f];
@@ -116,6 +169,13 @@
         [UIView commitAnimations];
 		isTouched=FALSE;
 		[self.superview sendSubviewToBack:self];
+    } else {
+            // We were dropped on an actual drop target. Something else will handle our
+            // animation at this point (although we should think about moving it here for
+            // consistency.
+        NSLog(@"dropped on drop target.");
+    }
+    
 
 		[self setNeedsDisplay];
 }
@@ -127,7 +187,8 @@
     // and an arbitrary (but stable) way to tell between tasks with identical text.
     // This is a rare case in real use, but happens a lot in testing, so this gives us some
     // protection from bad issues during demoing.
-    NSComparisonResult retVal = [self.text compare:view.text];
+        
+    NSComparisonResult retVal = [self.task.text compare:view.task.text];
     
     if(retVal==NSOrderedSame) {
         if (self < view)

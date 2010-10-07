@@ -10,6 +10,10 @@
 
 
 @interface MeetingTimerView : UIView {
+    
+    NSDate *curTime;
+
+    
     CGFloat initialRot;
     NSDate *startTime;
 	NSDate *newDate;
@@ -18,11 +22,14 @@
 	NSMutableArray *colorWheel;
 	int indexForColorWheel;
 	int elapsedSeconds;
-	NSDate *testDate;
+
+
 	float hourCounter;
 	float timeToCompare;
 	int hourCheck;
 	
+    
+    UIColor *emptyTimeColor;
 }
 
 - (id)initWithFrame:(CGRect)frame withStartTime:(NSDate *)time;
@@ -30,5 +37,8 @@
 -(CGFloat)getMinRotationWithDate:(NSDate *)date;
 -(CGFloat)getHourRotationWithDate: (NSDate *)date; 
 -(NSMutableArray *)storeNewTimeWithColor:(UIColor *)color withTime: (NSDate *)time withHour:(float) hour withType:(NSString *)type;
-	-(void)drawArcWithTimes:(NSMutableArray *)times withIndex:(int) index  withContext:(CGContextRef) context;
+-(void)drawArcWithTimes:(NSMutableArray *)times withIndex:(int) index  withContext:(CGContextRef) context;
+
+- (void) clk;
+
 @end

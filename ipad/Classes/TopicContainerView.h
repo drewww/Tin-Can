@@ -8,9 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-
 @interface TopicContainerView : UIView {
-	float rot;
+	float rot;    
 }
 
 @end

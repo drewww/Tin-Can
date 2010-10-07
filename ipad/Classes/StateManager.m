@@ -14,6 +14,7 @@
 #import "tincan.h"
 #import "Topic.h"
 #import "Task.h"
+#import "UIColor+Util.h"
 
 static StateManager *sharedInstance = nil;
 
@@ -82,7 +83,9 @@ static StateManager *sharedInstance = nil;
         Location *newLocation = [[Location alloc] initWithUUID:[l objectForKey:@"uuid"]
                                                       withName:[l objectForKey:@"name"]
                                                    withMeeting:[l objectForKey:@"meetingUUID"]
-                                                     withUsers:[l objectForKey:@"users"]];
+                                                     withUsers:[l objectForKey:@"users"]
+                                                     withColor:[UIColor colorWithHexString:[l objectForKey:@"color"]]
+                                                    ];
         [actors addObject:newLocation];
     }
     
@@ -135,16 +138,38 @@ static StateManager *sharedInstance = nil;
         for(NSDictionary *results in [m objectForKey:@"topics"]) {
             NSLog(@"unpacking topics: %@", results);
          
+            // This is the exact same code as in ConnectionManager.m's NEW_TOPIC handling code.
+            // I'd like a way to abstract this out, but I don't really want to make the argument
+            // for topic withStartTime a generic object. That's the only real solution I see,
+            // and it feels weird to push this code in there. 
+            NSDate *startTime;
+            NSDate *stopTime;
+            
+            if([[results objectForKey:@"startTime"] isKindOfClass:[NSNull class]]) {
+                startTime = nil; 
+            } else {
+                startTime = [NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"startTime"] doubleValue]];
+            }
+            
+            if([[results objectForKey:@"stopTime"] isKindOfClass:[NSNull class]]) {
+                stopTime = nil; 
+            } else {
+                stopTime = [NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"stopTime"] doubleValue]];
+            }
+            
+            
             Topic *topic = [[Topic alloc] initWithUUID:[results objectForKey:@"uuid"]
                                               withText:[results objectForKey:@"text"]
                                        withCreatorUUID:[results objectForKey:@"createdBy"]
                                              createdAt:[results objectForKey:@"createdAt"]
+                                            withStatus:[results objectForKey:@"status"]
                                        withMeetingUUID:[results objectForKey:@"meeting"]
                                     withStartActorUUID:[results objectForKey:@"startActor"]
                                      withStopActorUUID:[results objectForKey:@"stopActor"]
-                                         withStartTime:[NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"startTime"] doubleValue]]
-                                          withStopTime:[NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"stopTime"] doubleValue]]
+                                         withStartTime:startTime
+                                          withStopTime:stopTime
                                            withUIColor:[UIColor blueColor]];
+
             
             [topic unswizzle];
         }

@@ -545,10 +545,23 @@ class Location(Actor):
     Users are often the important distinction. 
     """
     
+    colorIndex = 0
+    colors = ["387432", "2D7474", "2F3E74", "643374", "773333",
+        "765732", "6D7432"]
+    
     def __init__(self, name=None, actorUUID=None):
         Actor.__init__(self, name, actorUUID)
         self.meeting = None
         self.users = set()
+        self.color = Location.getColor()
+        
+        
+    @staticmethod
+    def getColor():
+        color = Location.colors[Location.colorIndex]
+        
+        Location.colorIndex = (Location.colorIndex+1) % len(Location.colors)
+        return color
     
     def userJoined(self, user):
         """Adds the specified user to this location."""
@@ -614,6 +627,7 @@ class Location(Actor):
         # this is stupid, but I can't figure out how to get JSONEncoder
         # to take sets, so we have to convert to lists on the way out.
         d["users"] = [user.uuid for user in self.users]
+        d["color"] = self.color
         
         if(self.meeting!=None):
             d["meetingUUID"] = self.meeting.uuid;
@@ -624,12 +638,14 @@ class Location(Actor):
 
     def __str__(self):
         if(self.isInMeeting()):
-            return "[loc.%s %s meet:%s users:%d devs:%d]"%(self.uuid[0:6],
-                self.name, str(self.meeting.title) + "@" + self.meeting.room.name,
-                len(self.users), len(self.getDevices()))
+            return "[loc.%s %s meet:%s users:%d devs:%d color:%s]"%(
+                self.uuid[0:6], self.name, str(self.meeting.title) +
+                "@" + self.meeting.room.name, len(self.users),
+                len(self.getDevices()), self.color)
         else:
-            return "[loc.%s %s meet:NONE users:%d devs:%d]"%(self.uuid[0:6],
-                self.name, len(self.users), len(self.getDevices()))
+            return "[loc.%s %s meet:NONE users:%d devs:%d color:%s]"%(
+                self.uuid[0:6],self.name, len(self.users),
+                len(self.getDevices()), self.color)
 
 
 class MeetingObject(YarnBaseType):

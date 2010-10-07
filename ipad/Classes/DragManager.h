@@ -7,29 +7,34 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Todo.h"
-#import "TodoItemView.h"
+#import "Task.h"
+#import "TaskView.h"
 
-@interface DragManager : NSObject <TodoDragDelegate> {
+@interface DragManager : NSObject <TaskDragDelegate> {
     UIView *rootView;
-    UIView *participantsContainer;
+    UIView *usersContainer;
+    UIView *taskContainer;
     
-    NSMutableDictionary *lastTodoDropTargets;
+    UIView *draggedItemsContainer;
+    
+    NSMutableDictionary *lastTaskDropTargets;
 }
 
 
 + (DragManager*)sharedInstance;
 
-// I feel weird having an init method that returns void, but since it's a singleton, not sure
-// what else to do. 
-- (void) initWithRootView:(UIView *)view withParticipantsContainer:(UIView *)container;
 
-- (void) todoDragMovedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTodo:(Todo *)todo;
-- (bool) todoDragEndedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTodo:(Todo *)todo;
+- (UIView *) userViewAtTouch:(UITouch *)touch withEvent:(UIEvent *)event;
+
+- (void) setRootView:(UIView *)view andUsersContainer:(UIView *)container andTaskContainer:(UIView *)theTaskContainer;
+
+- (void) taskDragMovedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task;
+- (bool) taskDragEndedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task;
 
 
 @property (nonatomic, retain) UIView *rootView;
-@property (nonatomic, retain) UIView *participantsContainer;
+@property (nonatomic, retain) UIView *usersContainer;
+@property (nonatomic, retain) UIView *taskContainer;
 
 
 @end

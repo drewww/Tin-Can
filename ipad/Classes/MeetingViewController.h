@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "MeetingTimerView.h"
-#import "ParticipantView.h"
-#import "Todo.h"
 #import "TaskContainerView.h"
 #import "TopicContainerView.h"
 #import "LocationContainerView.h"
@@ -18,17 +16,19 @@
 @class Todo;
 
 @interface MeetingViewController : UIViewController {    
-    UIView *participantsContainer;
+    UIView *userContainer;
     
     TaskContainerView *taskContainer;
     TopicContainerView *topicContainer;
 	LocationContainerView *locContainer;
-    
-    NSMutableSet *todoViews;
 
     
-    NSMutableDictionary *participants;
-    NSMutableDictionary *todos;
+    
+    NSMutableSet *taskViews;
+
+    
+    NSMutableDictionary *users;
+    NSMutableDictionary *tasks;
     
     MeetingTimerView *meetingTimerView;
     NSTimer *clock;
@@ -41,27 +41,13 @@
 }
 
 
-// These are deprecated, but I'm leaving them behind so we can still test thsoe views
-// if the server-based objects turn into a problem.
-- (void) initParticipantsView;
-- (void) initTodoViews;
-
 - (void) initUsers;
 - (void) initTasks;
+- (void) initTopics;
 
 - (void) clk;
 
-- (void) addTodo:(Todo *)todo;
-
-- (void) dispatchTodoCommandString:(NSString *)operation fromRevision:(int)revision;
-
-- (void) handleNewTodoWithArguments:(NSArray *)args;
-- (void) handleAssignTodoWithArguments:(NSArray *)args;
-
 - (void) handleConnectionEvent:(Event *)event;
-
-
-- (CGPoint) getNextTodoPosition;
 
 @end
 

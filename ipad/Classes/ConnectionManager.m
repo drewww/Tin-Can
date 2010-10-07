@@ -304,15 +304,31 @@ static ConnectionManager *sharedInstance = nil;
         case kNEW_TOPIC:
             results = (NSDictionary *)[e.results objectForKey:@"topic"];
             
+            NSDate *startTime;
+            NSDate *stopTime;
+            
+            if([[results objectForKey:@"startTime"] isKindOfClass:[NSNull class]]) {
+                startTime = nil; 
+            } else {
+                startTime = [NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"startTime"] doubleValue]];
+            }
+
+            if([[results objectForKey:@"stopTime"] isKindOfClass:[NSNull class]]) {
+                stopTime = nil; 
+            } else {
+                stopTime = [NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"stopTime"] doubleValue]];
+            }
+            
             topic = [[Topic alloc] initWithUUID:[results objectForKey:@"uuid"]
                                        withText:[results objectForKey:@"text"]
                                 withCreatorUUID:[results objectForKey:@"createdBy"]
                                       createdAt:[results objectForKey:@"createdAt"]
+                                     withStatus:[results objectForKey:@"status"]
                                 withMeetingUUID:[results objectForKey:@"meeting"]
                              withStartActorUUID:[results objectForKey:@"startActor"]
                               withStopActorUUID:[results objectForKey:@"stopActor"]
-                                  withStartTime:[NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"startTime"] doubleValue]]
-                                   withStopTime:[NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"stopTime"] doubleValue]]
+                                  withStartTime:startTime
+                                   withStopTime:stopTime
                                     withUIColor:[UIColor blueColor]];
             
             // TODO hook up the color transmission. The problem is we need to decompose a hex color string
@@ -373,19 +389,15 @@ static ConnectionManager *sharedInstance = nil;
             break;
             
         case kASSIGN_TASK:
-            task = (Task *)[state getObjWithUUID:[e.params objectForKey:@"taskUUID"] withType:[Task class]];
+
+            // Okay, so this is a bit of a tricky thing. This is not being handled here because when
+            // we go to deassign, we need to send a reference to the taskContainer to the taskView so
+            // it knows who to attach to. This is BAD FORM and shouldn't be happening, but I can't come
+            // up with a nicer way to structure it right now. 
             
-            Actor *assignedBy = (Actor *)[state getObjWithUUID:e.actorUUID withType:[Actor class]];
-            NSDate *assignedAt = [NSDate dateWithTimeIntervalSince1970:[[e.params objectForKey:@"assignedAt"] doubleValue]];
+            // So yeah, that's why there's nothing here. It's all handled in MeetingViewController's
+            // event handler code.
             
-            if([e.params objectForKey:@"deassign"]) {
-                // Do deassign logic.   
-                [task deassignByActor:assignedBy atTime:assignedAt];
-            } else {
-                // Do assign logic.
-                User *assignedTo = (User *)[state getObjWithUUID:[e.params objectForKey:@"assignedTo"] withType:[User class]];
-                [task assignToUser:assignedTo byActor:assignedBy atTime:assignedAt];
-            }
             break;
             
         case kEDIT_MEETING:
@@ -470,6 +482,21 @@ static ConnectionManager *sharedInstance = nil;
     [request setPostValue:@"1" forKey:@"deassign"];    
     [request setDelegate:self];
     [request startAsynchronous];         
+}
+
+- (void) updateTopic:(Topic *)theTopic withStatus:(TopicStatus)theStatus {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/topics/update"]];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request setPostValue:theTopic.uuid forKey:@"topicUUID"];
+    
+    // I hate doing this, in case the enum changes, but I haven't seen a good way around it yet.
+    NSArray *enumMapping = [[NSArray arrayWithObjects:@"PAST", @"CURRENT", @"FUTURE", nil] retain];
+    
+    [request setPostValue:[enumMapping objectAtIndex:theStatus]  forKey:@"status"];    
+    [request setDelegate:self];
+    [request startAsynchronous]; 
+    
+    [enumMapping release];
 }
 
 

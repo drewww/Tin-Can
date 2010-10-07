@@ -10,6 +10,7 @@
 #import "User.h"
 #import "TaskContainerView.h"
 #import "UserRenderView.h"
+#import "TaskDropTarget.h"
 
 #define BASE_HEIGHT 70
 #define BASE_WIDTH 180
@@ -18,7 +19,7 @@
 #define HEIGHT_MARGIN 50
 
 #define TAB_WIDTH 15
-#define TAB_HEIGHT 8
+#define TAB_HEIGHT 15
 #define TAB_MARGIN 5
 
 #define STATUS_HEIGHT 30
@@ -27,7 +28,7 @@
 
 @class UserRenderView;
 
-@interface UserView : UIView {
+@interface UserView : UIView <TaskDropTarget> {
     
     TaskContainerView *taskContainerView;
     UserRenderView *userRenderView;
@@ -36,7 +37,6 @@
     
     float lastHeightChange;
 	float initialHeight;
-
 }
 
 
@@ -44,9 +44,13 @@
 
 - (void) userTouched;
 
-- (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event;
+//- (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event;
 
 - (void) taskAssigned:(Task *)theTask;
 - (void) taskRemoved:(Task *)theTask;
+
+- (void) setHoverState:(bool)state;
+
+- (User *)getUser;
 
 @end

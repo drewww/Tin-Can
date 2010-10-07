@@ -4,7 +4,7 @@ var items = [];  // array of agenda items
 var currentItemId; // current item's id - string
 var lastClicked = 'item0'; 
 var currentClicked; // element
-var uuidDict = {};
+var uuidDict = {}; // item id keys to uuid values dictionary
 var newItemText;
 
 $(document).ready(function(){
@@ -50,24 +50,18 @@ $(document).ready(function(){
 		tempUuid = uuidDict[tempId];
 		connection.updateTopic(tempUuid, "CURRENT");
 		
-		// extraOptions = $("#extraOptions");
-		// currentIndex = items.indexOf($("#"+currentItemId)[0].id);
-		// $("#"+currentItemId)[0].className = "PAST";
-		// $("#"+currentItemId).click(function() {
-		// 	extraOptions.hide();
-		// });			
-		// items.splice(currentIndex, 1);
-		// $("#doneButton").hide();
-		// $(".startButton").show();
 	});
 	connection.getState();
 });
 	
+
 	function updateTopic(uuid, status){
 		id = lookupByUuid(uuid);
 		console.log(id);
 		$("#"+id)[0].className = status;
 		
+		// if changing a Future item to a Current item, find the position of the first
+		// Future item and insert the new Current item above it in the list view
 		if (status == "CURRENT") {
 			for (key in uuidDict) {
 				if ($("#"+key)[0].className == "FUTURE"){
@@ -123,7 +117,7 @@ $(document).ready(function(){
 		newItemText=$("#itemTextbox")[0].value;
 		connection.addTopic(newItemText);
 		$("#itemTextbox")[0].value="";
-        // $("#newItemInput")[0].style.display="none"
+
 	}
 	
 //grab input from textbox and generate item in list
@@ -144,15 +138,10 @@ $(document).ready(function(){
 			clone.click(function (e) {
 			extraOptions = $("#extraOptions");
 			currentClicked = $(this);
-			// console.log('items: ' + items);
-			// console.log('index of current clicked is ' + items.indexOf(currentClicked[0].id));
-			// console.log('current clicked id is ' + currentClicked[0].id);
-
-						
+					
 			// toggle showing the extra options
-			// first, if item is not in items array, then it has been marked done - do nothing i.e. don't show extra options
-			
-			// only update click handler if item is active, not done items
+			// first, if item is not in items array, then it has been marked done - do nothing i.e. don't show extra options.
+			// Only update click handler if item is active, not done items
 			if ($.inArray(currentClicked[0].id, items)) console.log("currentClicked is in ITEMS");
 			
 				// if an item has been clicked on an even number of times (i.e. twice), hide the options
@@ -182,13 +171,13 @@ $(document).ready(function(){
 	
 	function defineDeleteButtonClick() {
 		$("#deleteButton").click(function (e) {
-			console.log("DELETE BUTTON");
 			e.stopPropagation();
+			
+			//grab parent div (box container in the list view)
 			currentClicked = $(this.parentNode.parentNode);
+			
 			tempId = currentClicked[0].id;
-			console.log(tempId);
 			tempUuid = uuidDict[tempId];
-			console.log(tempUuid);
 			connection.removeTopic(tempUuid);
 		});
 	}
@@ -197,8 +186,8 @@ $(document).ready(function(){
 		$(".startButton").click(function (e) {
 			e.stopPropagation();
 			
+			//find item currently marked as Current, and change it to a Past item
 			for (key in uuidDict) {
-				console.log(key);
 				if ($("#"+key)[0].className == "CURRENT"){
 					uuid = uuidDict[key]
 					connection.updateTopic(uuid, "PAST");
@@ -211,18 +200,6 @@ $(document).ready(function(){
 			tempId = currentClicked[0].id;
 			tempUuid = uuidDict[tempId];
 			connection.updateTopic(tempUuid, "CURRENT");
-			
-			
-			// clickedIndex = items.indexOf(currentClicked[0].id);
-			// temp = items[clickedIndex];
-			// 
-			// items.splice(clickedIndex, 1);
-			// items.splice(0,0,temp);
-			// lastCurrentElement = $("#"+currentItemId);
-			// 
-			// 
-			// currentItemId = $(this.parentNode)[0].id;
-
 		});
 		
 	}
@@ -233,36 +210,8 @@ $(document).ready(function(){
 			extraOptions = $("#extraOptions");
 			extraOptions.hide();
 			$("#container").append(extraOptions);
-			// currentIndex = items.indexOf(currentClicked[0].id);
-			// items.splice(currentIndex, 1);
 			currentClicked.remove();
 		
-	}
-	
-
-	
-	function makeNext() {
-		console.log('current ITEM is ' + currentItemId);
-		console.log(currentItemId);
-		console.log(currentClicked);
-		
-		if (currentItemId == currentClicked[0].id) {
-			return;
-		}
-		else{
-			// update the items array to reflect the new order of items
-			// remove the item to be queued from array, set as temp, then insert in the new position
-			clickedIndex = items.indexOf(currentClicked[0].id);
-			temp = items[clickedIndex];
-			items.splice(clickedIndex, 1);
-			currentIndex = items.indexOf(currentItemId);
-			tempindex = currentIndex + 1;
-			items.splice(tempindex,0,temp);
-			console.log('updated items list: ');
-			console.log(items);			
-			(currentClicked).insertAfter($("#"+currentItemId));
-
-		}
 	}
 
 	function submitWithEnterKey(e){

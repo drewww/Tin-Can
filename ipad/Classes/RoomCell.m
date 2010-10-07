@@ -8,6 +8,7 @@
 
 #import "RoomCell.h"
 #import "TimerBar.h"
+#import "Room.h"
 
 @implementation RoomCell
 
@@ -28,16 +29,9 @@
     return self;
 }
 
-- (void)setRoom:(NSString *)newRoom {
+- (void)setRoom:(Room *)newRoom {
     
     [roomCellView setRoom:newRoom];
-}
-- (void)setMeeting:(Meeting *)newMeeting {
-    
-    [roomCellView setMeeting:newMeeting];
-}
-- (void) setCounted:(int)newCounted {
-    [roomCellView setCounted:newCounted];
 }
 
 - (void)dealloc {

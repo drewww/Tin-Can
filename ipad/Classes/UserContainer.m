@@ -28,8 +28,7 @@
     int arrayCounter=0;
     int sideLimit= ceil(numViews/4.0);
     int topLimit=trunc(numViews/4.0);
-    NSLog(@"Sides:%d", sideLimit);
-    NSLog(@"points:%d", topLimit);
+
     //assigns number of participants to a side
     NSMutableArray *sides=[[NSMutableArray arrayWithObjects:[NSNumber numberWithInt: 0],[NSNumber numberWithInt:0],
                             [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],nil]retain];

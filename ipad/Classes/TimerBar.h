@@ -7,33 +7,31 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Meeting.h"
 
 @interface TimerBar : UIView {
-	CGFloat initialRot;
-    NSDate *startTime;
-	NSDate *newDate;
-	UIColor *currentTimerColor;
-	NSMutableArray *selectedTimes;
-	NSMutableArray *colorWheel;
-	int indexForColorWheel;
-	int elapsedSeconds;
-	NSDate *testDate;
-	CGFloat hourCounter;
-	CGFloat timeToCompare;
-	CGFloat lastPoint;
-	CGFloat lengthOfSecond;
-	CGFloat differenceInTime;
-	NSMutableArray *timesToMarkHours;
-	NSTimer *clock;
+    Meeting *meeting;
+	NSDate *curDate;
 	
+	int indexForColorWheel;
+	NSMutableArray *colorWheel;
+	int meetingDuration;
+
+    NSMutableArray *timeBoundaries;
+	CGFloat pixelsPerSecond;
+
+    NSTimer *clock;
+
+    CGFloat lastPoint;
 }
 
-- (id)initWithFrame:(CGRect)frame withStartTime:(NSDate *)time withEventTimes:(NSArray *)times;
--(UIColor *)findNewColor;
+- (id)initWithFrame:(CGRect)frame withMeeting:(Meeting *)theMeeting;
+
+-(UIColor *)getNextColor;
+
 -(void)drawBarWithTimes:(NSMutableArray *)times withContext:(CGContextRef) context;
--(void)markHoursWithTimes:(NSMutableArray *)times withContext:(CGContextRef) ctx;
+
 -(void)setLength;
--(void)updateTime;
+-(void)update;
 - (void)clk;
 @end

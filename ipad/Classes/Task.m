@@ -39,17 +39,45 @@
     return assignedTo != nil && ![assignedTo isKindOfClass:[NSNull class]];
 }
 
+
+- (void) startAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime {
+    NSLog(@"starting task assignment to user in Task object");
+    
+    // It's a bit annoying to have to pass all this stuff through the whole chain, but I'm not
+    // sure how else to get it back, other than some kind of closure trick.
+    [(TaskView *)view startAssignToUser:toUser byActor:byActor atTime:assignTime];
+    
+}
+
+
 - (void) assignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime{
+    NSLog(@"assigning task to user: %@", toUser);
+    
+    if(self.assignedTo != nil) {
+        // deassign it. This is different from the deassign call because this is for transfers,
+        // while that call is for being assigned to nothing (ie back to the unassigned pool)
+        // There may be a better abstraction for this.
+        [self.assignedTo removeTask:self];
+    }
+    
     self.assignedAt = assignTime;
     self.assignedBy = byActor;
     self.assignedTo = toUser;
     
+    
+    
+        
     [self.assignedTo assignTask:self];
 }
 
-- (void) deassignByActor:(Actor *)newAssignedBy atTime:(NSDate *)deassignTime{
+- (void) startDeassignByActor:(Actor *)byActor atTime:(NSDate *)deassignTime withTaskContainer:(UIView *)taskContainer {
+    [(TaskView *)view startDeassignByActor:byActor atTime:deassignTime withTaskContainer:taskContainer];   
+}
+
+
+- (void) deassignByActor:(Actor *)byActor atTime:(NSDate *)deassignTime{
     if(self.assignedTo != nil) {
-        self.assignedBy = newAssignedBy;
+        self.assignedBy = byActor;
         self.assignedAt = deassignTime;
 
         [self.assignedTo removeTask:self];

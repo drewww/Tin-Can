@@ -8,46 +8,23 @@
 
 #import "TopicView.h"
 #import "Topic.h"
+#import "ConnectionManager.h"
 
 @implementation TopicView
 
-@synthesize text;
-@synthesize timeStart;
-@synthesize timeFinished;
-//@synthesize timeCreated;
-@synthesize state;
-- (id)initWithFrame:(CGRect)frame withTopic:(Topic *)agenda{
+@synthesize topic;
+
+- (id)initWithFrame:(CGRect)frame withTopic:(Topic *)theTopic{
     if ((self = [super initWithFrame:frame])) {
 		self.frame=frame;
-        topic=agenda;
-		text=topic.text;
-		//if([agenda.startTime isKindOfClass:[NSNull class]]){
-		if(agenda.stopTime !=nil){
-			timeFormat = [[[NSDateFormatter alloc] init] autorelease];
-			[timeFormat setDateFormat:@"HH:mm:ss"];
-			timeFinished=[[timeFormat stringFromDate:agenda.stopTime]retain];
-			state=@"a-ended";
-		}
-		else{
-			timeFinished=nil;
-		}
-		
-		if(agenda.startTime ==nil){
-			timeStart=@"START";
-			state=@"c-notStarted";
-		}
-		else{
-			timeFormat = [[[NSDateFormatter alloc] init] autorelease];
-			[timeFormat setDateFormat:@"HH:mm:ss"];
-			timeStart=[[timeFormat stringFromDate:agenda.startTime]retain];
-			NSLog(@"Time:%@", agenda.startTime);
-			NSLog(@"Time:%@",timeStart);
-			state=@"b-started";
-		}
-		//timeCreated=agenda.
+        topic=theTopic;
+        
 		self.userInteractionEnabled = YES; 
 		isTouched= FALSE;
+        
+        [self setBackgroundColor:[UIColor blackColor]];
 		
+        
 		self.alpha = 0;
 		[UIView beginAnimations:@"fade_in" context:self];
 		
@@ -76,95 +53,145 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-	
+    
+    NSLog(@"------------------------TOPIC VIEW DRAW------------------");
+    
     // Drawing code
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	
-	if(isTouched==FALSE){
-		CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
-		CGContextFillRect(ctx, CGRectMake(0, 0, 50, self.frame.size.height));
-		CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+    CGContextSetRGBFillColor(ctx, 0, 0, 0, 1.0);
+    CGContextFillRect(ctx, self.frame);
 
-	}
-	else {
-		CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.4 green:.4 blue:.4 alpha:1].CGColor );
-		CGContextFillRect(ctx, CGRectMake(0, 0, 50, self.frame.size.height));
-		CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1].CGColor );
+    
+    
+    // We're going to draw a little arc that represents the time this topic was talked about, if 
+    // the topic has started or finished. If it hasn't started yet, we'll put a start button
+    // there instead.
+    
+    if(topic.status == kPAST || topic.status == kCURRENT) {
+        NSLog(@"Trying to draw the fancy thing.");
+        
+        UIColor *backgroundColor;
+        if(topic.status == kPAST) {
+            backgroundColor = [UIColor colorWithWhite:0.2 alpha:1.0];
+        } else {
+            backgroundColor = [UIColor colorWithHue:0.61 saturation:0.51 brightness:0.21 alpha:1.0];
+        }
+        
+        // Mark out the icon area.
+//        CGContextSetFillColorWithColor(ctx, backgroundColor.CGColor);
+//        CGContextFillRect(ctx, CGRectMake(0, 0, 50, 50));
+        
+        
+        // In this mode, we're basically going to steal the rendering code from the clock. We want to
+        // make a little arc.  
+        
+        // First, figure out the rotation we need. That's based on the start time.
+        NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+        NSDateComponents *dateComponents = [gregorian components:(NSHourCalendarUnit  | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:topic.startTime];
+        NSInteger minute = [dateComponents minute];
+        NSInteger second = [dateComponents second];
+        [gregorian release];
+        float rotation = ((minute*60 + second)/3600.0f) * (2*M_PI);
+        
+        CGContextMoveToPoint(ctx, 0, 0);
+        
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.7 alpha:1.0].CGColor);
 
+        
+        //lets draw our TIME ARC!
+        NSDate *endTime;
+        
+        if(topic.stopTime != nil) {
+            endTime = topic.stopTime;
+        } else {
+            endTime = [NSDate date];
+        }
+        
+        float elapsedTime = abs([topic.startTime  timeIntervalSinceDate:endTime ]);
 
-	}
-	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+        
+        CGFloat arcLength = elapsedTime/3600.0f * (2*M_PI);
+        CGContextMoveToPoint(ctx, 25, 25);
+        
+//        CGContextAddEllipseInRect(ctx, CGRectMake(25, 25, 2, 2));
+//        CGContextFillPath(ctx);
+        
+        NSLog(@"rotation: %f ; arcLength: %f", rotation, arcLength);
+        
+        //CGContextAddArc(ctx, 25, 25, 50, -M_PI/2 - arcLength, -M_PI/2 , 0); 
+        CGContextMoveToPoint(ctx, 25, 25);
+        CGContextAddArc(ctx, 25, 25, 21, rotation- M_PI/2, rotation + arcLength - M_PI/2, 0);
+        CGContextFillPath(ctx);
+        
+        // now block out the middle chunk.         
+        CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
+        CGContextMoveToPoint(ctx, 25, 25);
+        CGContextAddEllipseInRect(ctx, CGRectMake(13, 13, 24, 24));
+        CGContextFillPath(ctx);
+        
+        
+        // Now draw the clock outline. A pair of 1px circles at the right radii should do it.
+        CGContextSetStrokeColorWithColor(ctx, [UIColor grayColor].CGColor);
+        CGContextStrokeEllipseInRect(ctx, CGRectMake(4, 4, 42, 42));
+        CGContextStrokeEllipseInRect(ctx, CGRectMake(13, 13, 24, 24));
+        
+        
+    } else {
+        
+        if(isTouched==FALSE){
+            CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
+            CGContextFillEllipseInRect(ctx, CGRectMake(0, 0, 50, self.frame.size.height));
+            CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+            
+        }
+        else {
+            CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.4 green:.4 blue:.4 alpha:1].CGColor );
+            CGContextFillEllipseInRect(ctx, CGRectMake(0, 0, 50, self.frame.size.height));
+            CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1].CGColor );
+        }  
+        
+        // Now draw the start button.
+        [@"START" drawInRect:CGRectMake(6, 18, 45, self.frame.size.height-12)
+        	 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+        
+    }
+    
+    
+    if(topic.status==kCURRENT) {
+        
+        // Draw a border around the item.
+        NSLog(@"drawing border around current item");
+        CGContextSetStrokeColorWithColor(ctx, [UIColor grayColor].CGColor);
+        CGContextSetLineWidth(ctx, 2.0);
+        CGContextStrokeRect(ctx, CGRectMake(0,0, self.frame.size.width, self.frame.size.height));
+        
+    }
+    
+    NSLog(@"topic text: %@", topic.text);
+    CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:.5].CGColor);
 
-	
-	if([state isEqualToString:@"a-ended"]){
-	[@"Started:" drawInRect:CGRectMake(3, 2, 45, self.frame.size.height-15)
-					 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
-		
-		
-	[timeStart drawInRect:CGRectMake(3, 12, 45, self.frame.size.height-12)
-					 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
-		
-		
-	CGContextSetFillColorWithColor(ctx, [UIColor redColor].CGColor);
-	[@"Ended:" drawInRect:CGRectMake(3, 24, 45, self.frame.size.height-15)
-						withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
-
-	[timeFinished drawInRect:CGRectMake(3, 36, 45, self.frame.size.height-15)
-				 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
-	}
-	else if([state isEqualToString:@"b-started"]){
-	[@"Started:" drawInRect:CGRectMake(3, 9, 45, self.frame.size.height-15)
-					   withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
-		
-		
-	[timeStart drawInRect:CGRectMake(3, 20, 45, self.frame.size.height-12)
-					 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
-	}	
-	else if([state isEqualToString:@"c-notStarted"]){
-			[timeStart drawInRect:CGRectMake(5, 18, 45, self.frame.size.height-12)
-						 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
-	}
-	CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
-	CGContextFillRect(ctx, CGRectMake(50, 0, self.frame.size.width-50, self.frame.size.height));
-	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:.5].CGColor);
-	[text drawInRect:CGRectMake(54, 10, self.frame.size.width-54, self.frame.size.height-10) 
+	[topic.text drawInRect:CGRectMake(54, 10, self.frame.size.width-54, self.frame.size.height-10) 
 			withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
 	[self setNeedsDisplay];
 	
 }
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	NSLog(@"I have been touched");
 	isTouched=TRUE;
-	if ([timeStart isEqualToString:@"START"]){
-		timeFormat = [[[NSDateFormatter alloc] init] autorelease];
-		[timeFormat setDateFormat:@"HH:mm:ss"];
-		
-		NSDate *now = [[[NSDate alloc] init] autorelease];
-		
-		
-		timeStart = [[timeFormat stringFromDate:now] retain];
-		state=@"b-started";
-		
-		NSLog(@"Time:%@",timeStart);
-		NSLog(@"current date:%@",[NSDate date]);
-//		[timeFormat release];
-//		[now release];
+	if (topic.status == kFUTURE){
 
+        NSLog(@"Future item touched - end the current item and make this one current.");
+        [[ConnectionManager sharedInstance] updateTopic:topic withStatus:kCURRENT];
+        
 	}
-	else if([state isEqualToString:@"b-started"]){
-		state=@"a-ended";
-		timeFormat = [[[NSDateFormatter alloc] init] autorelease];
-		[timeFormat setDateFormat:@"HH:mm:ss"];
-		
-		NSDate *now = [[[NSDate alloc] init] autorelease];
-		
-		
-		timeFinished = [[timeFormat stringFromDate:now] retain];
+	else if(topic.status == kCURRENT){
+        
+        NSLog(@"Current item touched - end it.");
+        [[ConnectionManager sharedInstance] updateTopic:topic withStatus:kPAST];
 	}	
 	[self setNeedsDisplay];
 
-	NSLog(@"leaving touches began");
 }
 
 
@@ -184,18 +211,19 @@
     // This is a rare case in real use, but happens a lot in testing, so this gives us some
     // protection from bad issues during demoing.
 	
-	
-	NSComparisonResult retVal = [self.state compare:view.state];
-	if(retVal==NSOrderedSame) {
-		if([self.state isEqualToString:@"a-ended"]){
-			retVal=[self.timeFinished compare:view.timeFinished];
+    NSComparisonResult retVal;
+    if(topic.status < view.topic.status) {
+        retVal = NSOrderedAscending;
+    } else if (topic.status > view.topic.status) {
+        retVal = NSOrderedDescending;
+    }
+    
+	if(topic.status == view.topic.status) {
+		if(topic.status == kPAST){
+			retVal=[topic.startTime compare:view.topic.startTime];
 		}
-		else if([self.state isEqualToString:@"b-started"]){
-			retVal=[self.timeStart compare:view.timeStart];
-		}	
-		//else if([self.state isEqualToString:@"notStarted"]){
-		///	retVal=[self.timeCreated compare:view.timeCreated];
-		//}		
+        // For future items, ordering doesn't matter (although we might order by creation time - or will there be some pre-meeting fixed ordering?)
+        // For current items, there can be only one. Perhaps throw an error if we hit more than one in this process?
 	}
 	
     return retVal;

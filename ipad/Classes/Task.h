@@ -35,7 +35,10 @@
      assignedByUUID:(UUID *)myAssignedByUUID
          assignedAt:(NSDate *)myAssignedAt;
 
-- (void) deassignByActor:(Actor *)newAssignedBy atTime:(NSDate *)deassignTime;
+- (void) startDeassignByActor:(Actor *)byActor atTime:(NSDate *)deassignTime withTaskContainer:(UIView *)taskContainer;
+- (void) deassignByActor:(Actor *)byActor atTime:(NSDate *)deassignTime;
+    
+- (void) startAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime;
 - (void) assignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime;
 
 - (UIView *)getView;

@@ -8,18 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "TimerBar.h"
-#import "Meeting.h"
+#import "Room.h"
 
 @interface RoomCellView : UIView {
-	NSString *room;
-	Meeting *meeting;
-	int counted;
 
+	Room *room;
 }
 
 
-- (void) setRoom:(NSString *)newRoom;
-- (void) setMeeting:(Meeting *)newMeeting;
-- (void) setCounted:(int)newCounted;
+- (void) setRoom:(Room *)newRoom;
 
 @end
