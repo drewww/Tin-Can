@@ -11,7 +11,10 @@
 #import "LocationViewController.h"
 #import "RoomViewController.h"
 #import "TinCanViewController.h"
+#import "Location.h"
+#import "Room.h"
 
+// Do we need all of these? Should check sometime. 
 @class LoginMasterViewController;
 @class LocationViewController;
 @class RoomViewController;
@@ -28,8 +31,8 @@
 	CGFloat currentPoint;
 	
 	// These track the user selections
-	NSString *chosenLocation;
-	NSString *chosenRoom;
+	Location *chosenLocation;
+	Room *chosenRoom;
 	
 	// Text to appear on screen
 	UILabel *loginInstructions;
@@ -39,15 +42,25 @@
 	UILabel *logoSlide;
 	UIButton *loginButton;
 	
-	
-	
 	LocationViewController *locViewController;
 	RoomViewController *roomViewController;
 	TinCanViewController *controller;
 }
-- (id)initWithController:(TinCanViewController *)control;
--(void)moveWithBegin:(CGFloat)begin withEnd:(CGFloat)end;
--(void)infoButtonPressed:(id)sender;
--(void)chooseLocationWithLocation:(NSString *)loc;
--(void)chooseRoomWithRoom:(NSString *)room withMeeting:(NSString *)meeting withCount:(NSString*)counted;
+
+
+- (id) initWithController:(TinCanViewController *)control;
+
+- (void) moveWithBegin:(CGFloat)begin withEnd:(CGFloat)end;
+
+- (void) loginButtonPressed:(id)sender;
+
+- (void) chooseLocation:(Location *)loc;
+- (void) chooseRoom:(Room *)room;
+
+- (void) updateLoginButton;
+- (void) setLoginButtonEnabled:(bool) enabled;
+
+
+
+
 @end

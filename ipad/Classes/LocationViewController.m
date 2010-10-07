@@ -54,11 +54,7 @@
 //Sends information to MasterViewController
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	
-    [controller chooseLocationWithLocation:[locList objectAtIndex:indexPath.row]];
-	[[ConnectionManager sharedInstance] setLocation:((Location *)[locList objectAtIndex:indexPath.row]).uuid];
-	[[ConnectionManager sharedInstance] connect];
-	
-  
+    [controller chooseLocation:[locList objectAtIndex:indexPath.row]];	
 }
 
 - (void)viewDidLoad {

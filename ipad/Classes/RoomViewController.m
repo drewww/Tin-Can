@@ -37,9 +37,7 @@
 		
 		self.roomList = [[NSMutableArray alloc] initWithArray:[[[StateManager sharedInstance] getRooms] allObjects]];
 		NSLog(@" Rooms list: %@", [[StateManager sharedInstance] getRooms]);
-			
-
-		
+        
 		[self.view setTransform:CGAffineTransformMakeRotation(M_PI/2)];
         
         self.tableView.rowHeight = ROW_HEIGHT;
@@ -54,8 +52,7 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	[controller chooseRoomWithRoom:[roomList objectAtIndex:indexPath.row] withMeeting:[meetingList objectAtIndex:indexPath.row] withCount:[countedList objectAtIndex:indexPath.row]];
-	[[ConnectionManager sharedInstance] joinRoomWithUUID:((Room *)[roomList objectAtIndex:indexPath.row]).uuid];
+	[controller chooseRoom:[roomList objectAtIndex:indexPath.row]];
 } 
 
 

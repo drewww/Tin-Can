@@ -18,6 +18,8 @@
 #import "ConnectionManager.h"
 #import "Location.h"
 #import "WebViewController.h"
+
+
 @class TinCanViewController;
 
 @implementation LoginMasterViewController
@@ -59,23 +61,26 @@
 		loginButton.backgroundColor = [UIColor clearColor];
 		[loginButton setTitle:@"Login" forState: UIControlStateNormal];
 		[loginButton setFont:[UIFont boldSystemFontOfSize:30.0f]];
-		[loginButton addTarget:self action:@selector(infoButtonPressed:)forControlEvents:UIControlEventTouchUpInside];
+		[loginButton addTarget:self action:@selector(loginButtonPressed:)forControlEvents:UIControlEventTouchUpInside];
 		[loginButton setEnabled: NO];
 		
 		// Disabled Settings for Login Button
 		
-		[loginButton setBackgroundImage:[UIImage imageNamed:@"greyButton-1.png"] forState:UIControlStateDisabled];
-		loginButton.adjustsImageWhenDisabled = YES;
+        
+        // This must be what makes the disabled button look terrible. Clean this up!
+        // TODO
+//		[loginButton setBackgroundImage:[UIImage imageNamed:@"greyButton-1.png"] forState:UIControlStateDisabled];
+//		loginButton.adjustsImageWhenDisabled = YES;
 		if( loginButton.enabled==NO){
 			
 			// sets user intructions for login
 			loginInstructions = [[UILabel alloc]
 								 initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200-100,self.view.frame.size.height/2.0-250+600+250, 300,600)];
 			[loginInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-			loginInstructions.text = @"Have not chosen \n a Location \nAND\n a Room";
+			loginInstructions.text = @" ";
 			loginInstructions.numberOfLines = 0;
 			loginInstructions.textAlignment = UITextAlignmentCenter;
-			loginInstructions.textColor = [UIColor redColor];
+			loginInstructions.textColor = [UIColor whiteColor];
 			loginInstructions.backgroundColor = [UIColor clearColor];
 			loginInstructions.font = [UIFont boldSystemFontOfSize:20.0f];
 			[self.view addSubview:loginInstructions];
@@ -104,24 +109,24 @@
 		logoSlide.font = [UIFont systemFontOfSize:30.0f];
 		[logoSlide setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 		
-		locationInstructions = [[UILabel alloc] 
-								initWithFrame:CGRectMake(-200,self.view.frame.size.height/2.0-50,500,100)];
-		locationInstructions.text = @"Choose your physical location \n Then Slide";
-		locationInstructions.numberOfLines = 0;
-		locationInstructions.textAlignment = UITextAlignmentCenter;
-		locationInstructions.textColor = [UIColor whiteColor];
-		locationInstructions.backgroundColor = [UIColor clearColor];
-		locationInstructions.font = [UIFont systemFontOfSize:30.0f];
-		[locationInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-		
-		roomInstructions = [[UILabel alloc] initWithFrame:CGRectMake(-200,self.view.frame.size.height/2.0-50 +600,500,100)];
-		roomInstructions.numberOfLines = 0;
-		roomInstructions.text = @"Choose a virtual room";
-		roomInstructions.textAlignment = UITextAlignmentCenter;
-		roomInstructions.textColor = [UIColor whiteColor];
-		roomInstructions.backgroundColor = [UIColor blackColor];
-		roomInstructions.font = [UIFont systemFontOfSize:30.0f];
-		[roomInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+		//locationInstructions = [[UILabel alloc] 
+//								initWithFrame:CGRectMake(-200,self.view.frame.size.height/2.0-50,500,100)];
+//		locationInstructions.text = @"Choose your physical location \n Then Slide";
+//		locationInstructions.numberOfLines = 0;
+//		locationInstructions.textAlignment = UITextAlignmentCenter;
+//		locationInstructions.textColor = [UIColor whiteColor];
+//		locationInstructions.backgroundColor = [UIColor clearColor];
+//		locationInstructions.font = [UIFont systemFontOfSize:30.0f];
+//		[locationInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+//		
+//		roomInstructions = [[UILabel alloc] initWithFrame:CGRectMake(-200,self.view.frame.size.height/2.0-50 +600,500,100)];
+//		roomInstructions.numberOfLines = 0;
+//		roomInstructions.text = @"Choose a virtual room";
+//		roomInstructions.textAlignment = UITextAlignmentCenter;
+//		roomInstructions.textColor = [UIColor whiteColor];
+//		roomInstructions.backgroundColor = [UIColor blackColor];
+//		roomInstructions.font = [UIFont systemFontOfSize:30.0f];
+//		[roomInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 		
 		//self.wvTutorial = [[WebViewController alloc] initWithNibName:@"WebView" bundle:[NSBundle mainBundle]];
 		
@@ -129,13 +134,11 @@
 		//[self.view addSubview:wvTutorial];
 		[self.view addSubview:picView];
 		[self.view addSubview:loginButton];
-		[self.view addSubview:arrowView];
-		[self.view addSubview:arrowView2];
+//		[self.view addSubview:arrowView];
+//		[self.view addSubview:arrowView2];
 		[self.view addSubview:roomInstructions];
 		[self.view addSubview:locationInstructions];
 		[self.view addSubview:logoSlide];
-		//[self.view addSubview:roomBorder];
-		//[self.view addSubview:locationBorder];
 		[self.view addSubview:locViewController.view];
 		[self.view addSubview:roomViewController.view];
 		[self.view addSubview:headerLocation];
@@ -177,10 +180,25 @@
 }	
 
 // Dictates what action to take when a User makes a selection
--(void)infoButtonPressed:(id)sender{
+-(void)loginButtonPressed:(id)sender{
+    // Turn off the button immediately to avoid double presses.
+    [self setLoginButtonEnabled:false];
 	
-	NSLog(@"I have been pressed");
+	NSLog(@"Login button pressed.");
+    NSLog(@"location: %@; room: %@", chosenLocation, chosenRoom);
     
+    ConnectionManager *connMan = [ConnectionManager sharedInstance];
+    
+    // Do the login work here.
+    [connMan setLocation:chosenLocation.uuid];
+	[connMan connect];
+    
+    sleep(1);
+    
+    [connMan joinRoomWithUUID:chosenRoom.uuid];
+    
+    sleep(1);
+
     // This is dangerous. Multiple presses will create multiple view controllers, and this view
     // controller is never going to get released. Really need to find a nicer way to do this.
     // Controllers should be owned by the TinCanViewController, perhaps, and not
@@ -190,36 +208,48 @@
 
 
 
+- (void) setLoginButtonEnabled:(bool) enabled {
+    if(enabled) {
+        loginButton.alpha = 1.0;
+        loginButton.enabled = true;
+    } else {
+        loginButton.alpha = 0.6;
+        loginButton.enabled = false;
+    }
+}
+
 // Stores the location the User seleted in chosenLocation then updates login instructions
--(void)chooseLocationWithLocation:(NSString *)loc{
+-(void)chooseLocation:(Location *)loc{
 	
 	chosenLocation= loc;
-	 //Updates our Login Button and Login intstructions to match the Users selections
-	if(chosenRoom!=NULL){
-		[loginButton setEnabled: YES];
-		loginInstructions.text = @" ";
-	}
-	else{
-		loginInstructions.text = @"Have not choosen \n a Room";
-	}
-	
+    [self updateLoginButton];	
 }		
 
 
 // Stores the room the user seleted in chosenRoom then updates login instructions
--(void)chooseRoomWithRoom:(NSString *)room withMeeting:(NSString *)meeting withCount:(NSString*)counted{
+-(void)chooseRoom:(Room *)room {
 	
 	chosenRoom= room;
-	//Updates our Login Button and Login Intstuctions to match the Users selections
-	if(chosenLocation!=NULL){
-		[loginButton setEnabled: YES];
-		loginInstructions.text = @" ";
-	}
-	else{
-		loginInstructions.text = @"Have not chosen \n a Location";
-	}
-	
+    
+    [self updateLoginButton];    
 }	
+
+- (void) updateLoginButton {
+ 
+    // Looks at the current state of selected room/location and
+    // updates the login button and login instruction text
+    // appropriately.
+    if(chosenRoom != nil && chosenLocation != nil) {
+        [self setLoginButtonEnabled:true];
+        loginInstructions.text = @"";
+    } else if (chosenRoom != nil && chosenLocation==nil) {
+        [self setLoginButtonEnabled:false];
+        loginInstructions.text = @"Please select a room to join.";
+    } else if (chosenLocation != nil && chosenRoom==nil) {
+        [self setLoginButtonEnabled:false];
+        loginInstructions.text = @"Please select a meeting to join.";
+    }
+}
 
 
 // Decides what movement to take based on our current location (currentPage) and the size and direction of our stroke (begin-end)
