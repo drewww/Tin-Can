@@ -31,6 +31,7 @@ from event import *
 define("port", default=8888, help="run on the given port", type=int)
 define("readFromFile", default=False, help="re-creating server state from logs?", type=bool)
 define("eraseLogs", default=False, help="erase logs or append to logs", type=bool)
+define("demoMode", default=False, help="start in demo mode?", type=bool)
 
 # TODO We need to load this out of a file somewhere so it's consistent
 #      across reboots.
@@ -760,7 +761,11 @@ if __name__ == '__main__':
             f2 = open(filename2, "a")
             f1.write("----server reset----\n")
             f2.write("\n----server reset----\n\n")
-        state.init_test()
+        
+        if options.demoMode:
+            state.init_demo()
+        else:
+            state.init_test()
     else:
         f1 = open(filename,"a")
         f2 = open(filename2, "a")

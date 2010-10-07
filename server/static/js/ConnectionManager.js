@@ -174,14 +174,14 @@ ConnectionManager.prototype = {
         switch(ev.eventType) {
             case "ADD_ACTOR_DEVICE":
                 // We don't really care about this one, actually.
-                actor = state.get_obj(ev["actorUUID"], User);
+                actor = state.getObj(ev["actorUUID"], User);
                 actor.devices=actor.devices+1;
                 actor.loggedIn = true;
                 
                 break;
             
             case "DEVICE_LEFT":
-                actor = state.get_obj(ev["actorUUID"], User);
+                actor = state.getObj(ev["actorUUID"], User);
                 if (!actor.isInLocation() && actor.devices == 0){
                     actor.loggedIn = false;
                 }

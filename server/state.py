@@ -60,7 +60,65 @@ def init_test():
     newRoomEvent = Event("NEW_ROOM", params={"name":"Saturn"})
     newRoomEvent.dispatch()
     
-
+def init_demo():
+    """Initialize the internal state for demos"""
+    newUserEvent = Event("NEW_USER", params={"name":"Drew"})
+    newUserEvent.dispatch()
+    newUserEvent = Event("NEW_USER", params={"name":"Paula"})
+    newUserEvent.dispatch()
+    newUserEvent = Event("NEW_USER", params={"name":"Stephanie"})
+    newUserEvent.dispatch()
+    newUserEvent = Event("NEW_USER", params={"name":"Ariel"})
+    newUserEvent.dispatch()
+    newUserEvent = Event("NEW_USER", params={"name":"Josh"})
+    newUserEvent.dispatch()
+    
+    newLocationEvent = Event("NEW_LOCATION", params={"name":"Garden"})
+    newLocationEvent.dispatch()
+    newLocationEvent = Event("NEW_LOCATION", params={"name":"Orange+Green"})
+    newLocationEvent.dispatch()
+    newLocationEvent = Event("NEW_LOCATION", params={"name":"S+M Group Area"})
+    newLocationEvent.dispatch()
+    newLocationEvent = Event("NEW_LOCATION", params={"name":"E14-395"})
+    newLocationEvent.dispatch()
+    
+    newRoomEvent = Event("NEW_ROOM", params={"name":"Mars"})
+    newRoomEvent.dispatch()
+    newRoomEvent = Event("NEW_ROOM", params={"name":"Jupiter"})
+    newRoomEvent.dispatch()
+    newRoomEvent = Event("NEW_ROOM", params={"name":"Venus"})
+    newRoomEvent.dispatch()
+    newRoomEvent = Event("NEW_ROOM", params={"name":"Saturn"})
+    newRoomEvent.dispatch()
+    
+    users = state.get_users()
+    locations = state.get_locations()
+    rooms = [room for room in state.get_rooms()]
+    
+    userJoinedLocationEvent = Event("USER_JOINED_LOCATION", users[0].uuid, None, {"location":locations[0].uuid})
+    userJoinedLocationEvent.dispatch()
+    userJoinedLocationEvent = Event("USER_JOINED_LOCATION", users[1].uuid, None, {"location":locations[0].uuid})
+    userJoinedLocationEvent.dispatch()
+    userJoinedLocationEvent = Event("USER_JOINED_LOCATION", users[2].uuid, None, {"location":locations[1].uuid})
+    userJoinedLocationEvent.dispatch()
+    userJoinedLocationEvent = Event("USER_JOINED_LOCATION", users[3].uuid, None, {"location":locations[1].uuid})
+    userJoinedLocationEvent.dispatch()
+    userJoinedLocationEvent = Event("USER_JOINED_LOCATION", users[4].uuid, None, {"location":locations[2].uuid})
+    userJoinedLocationEvent.dispatch()
+    
+    newMeetingEvent = Event("NEW_MEETING", locations[0].uuid, None, {"room":rooms[0].uuid})
+    newMeetingEvent.dispatch()
+    
+    locationJoinedMeetingEvent = Event("LOCATION_JOINED_MEETING", locations[0].uuid, None, 
+        {"meeting":rooms[0].currentMeeting.uuid})
+    locationJoinedMeetingEvent.dispatch()
+    locationJoinedMeetingEvent = Event("LOCATION_JOINED_MEETING", locations[1].uuid, None, 
+        {"meeting":rooms[0].currentMeeting.uuid})
+    locationJoinedMeetingEvent.dispatch()
+    locationJoinedMeetingEvent = Event("LOCATION_JOINED_MEETING", locations[2].uuid, None, 
+        {"meeting":rooms[0].currentMeeting.uuid})
+    locationJoinedMeetingEvent.dispatch()
+    
 
 def get_obj(key, type=None):
     """Returns the object of 'type' with that UUID from the object store.
