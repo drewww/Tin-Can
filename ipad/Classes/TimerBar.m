@@ -43,7 +43,6 @@
 	if (indexForColorWheel == ([colorWheel count])){
 		indexForColorWheel=0;
 	}
-    NSLog(@"about to get color at %d", indexForColorWheel);
 	return [colorWheel objectAtIndex:indexForColorWheel];
 }
 
@@ -67,7 +66,7 @@
     
 	CGContextFillRect(ctx, CGRectMake(0, 0, self.frame.size.width, self.frame.size.height));
 	while (i< [boundariesList count]) {
-        NSLog(@"rendering boundry %d: %@", i, [boundariesList objectAtIndex:i]);
+        // NSLog(@"rendering boundry %d: %@", i, [boundariesList objectAtIndex:i]);
 		if (i==0){
             // For the first entry, start at the meeting start time and go to the 
             // first item in the boundariesList (which is the start of the first topic.
@@ -108,10 +107,8 @@
     // This is a bit time consuming, but easier than updating on events
     // for now. 
     NSMutableArray *newTimeBoundaries = [NSMutableArray array];
-    NSLog(@"generating boundaries");
     
     // Make sure the topics are sorted properly first.
-    
     NSMutableArray *sortedTopics = [NSMutableArray arrayWithArray:[meeting.topics allObjects]];
     [sortedTopics sortUsingSelector:@selector(compareByStartTime:)];
 
@@ -135,8 +132,6 @@
     
     [timeBoundaries release];
     timeBoundaries = [newTimeBoundaries retain];
-    
-    NSLog(@"Time boundaries: %@", timeBoundaries);
 }
 	
 // Only override drawRect: if you perform custom drawing.

@@ -146,7 +146,24 @@
 		[self.view setNeedsDisplay];
 		
 		
-	}
+	} else if (event.type==kADD_ACTOR_DEVICE) {
+        NSLog(@"In ADD_ACTOR_DEVICE callback. Doing room joining now.");
+        [[ConnectionManager sharedInstance] joinRoomWithUUID:chosenRoom.uuid];
+    } else if (event.type==kLOCATION_JOINED_MEETING) {
+
+        NSLog(@"LOCATION_JOINED_MEETING");
+        // This is dangerous. Multiple presses will create multiple view controllers, and this view
+        // controller is never going to get released. Really need to find a nicer way to do this.
+        // Controllers should be owned by the TinCanViewController, perhaps, and not
+        // created by people trying to switch into something specific. 
+        
+        NSLog(@"Would normally be switching viewcontrollers now, but not going to.");
+        
+        // Deregister ourselves for server messages.
+        [[ConnectionManager sharedInstance] removeListener:self];
+        
+        [controller switchToViewController:[[[MeetingViewController alloc] init] retain]];        
+    }
 
 	if(self.view != nil) {
 		NSLog(@"calling reload data:");
@@ -182,7 +199,7 @@
 // Dictates what action to take when a User makes a selection
 -(void)loginButtonPressed:(id)sender{
     // Turn off the button immediately to avoid double presses.
-    [self setLoginButtonEnabled:false];
+    //[self setLoginButtonEnabled:false];
 	
 	NSLog(@"Login button pressed.");
     NSLog(@"location: %@; room: %@", chosenLocation, chosenRoom);
@@ -193,17 +210,11 @@
     [connMan setLocation:chosenLocation.uuid];
 	[connMan connect];
     
-    sleep(1);
+    // Now we need to join a room, but we need to block on getting
+    // an acknowedgement from the server that we've logged in 
+    // successfully. So move this up to the handleConnectionEvent
+    // method. 
     
-    [connMan joinRoomWithUUID:chosenRoom.uuid];
-    
-    sleep(1);
-
-    // This is dangerous. Multiple presses will create multiple view controllers, and this view
-    // controller is never going to get released. Really need to find a nicer way to do this.
-    // Controllers should be owned by the TinCanViewController, perhaps, and not
-    // created by people trying to switch into something specific. 
-	[controller switchToViewController:[[[MeetingViewController alloc] init] retain]];
 }
 
 

@@ -427,6 +427,7 @@ static ConnectionManager *sharedInstance = nil;
 - (void) removeListener:(NSObject *)listener {
     NSLog(@"removing listener: %@", listener);
     [eventListeners removeObject:listener];
+    NSLog(@"remaining listeners: %@", eventListeners);
 }
 
 - (void) publishEvent:(Event *)e {

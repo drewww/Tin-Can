@@ -55,6 +55,7 @@
     
     barButtonItem.title = @"Root List";
     NSMutableArray *items = [[toolbar items] mutableCopy];
+    
     [items insertObject:barButtonItem atIndex:0];
     [toolbar setItems:items animated:YES];
     [items release];

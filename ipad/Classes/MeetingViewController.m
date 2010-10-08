@@ -34,10 +34,11 @@
 
     // Now, drop the MeetingTimer in the middle of the screen.
     // Add the timer first, so it's underneath everything.
+
     
-    NSDate *startingTime = [NSDate date];
-    NSLog(@"starting time in seconds: %f", [startingTime timeIntervalSince1970]);
-    NSTimeInterval startingTimeInSeconds = [startingTime timeIntervalSince1970];//-1800;
+    
+    Meeting *meeting = [StateManager sharedInstance].meeting;
+    NSLog(@" about to init the meeting timer view, meeting: %@; meeting.startedAt: %@", meeting, meeting.startedAt);
     
     // Pull the meeting start time from the actual meeting object that comes from the server.
     meetingTimerView = [[MeetingTimerView alloc] initWithFrame:CGRectMake(200, 200, 200, 200) withStartTime:[StateManager sharedInstance].meeting.startedAt];
