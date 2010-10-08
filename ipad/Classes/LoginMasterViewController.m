@@ -195,11 +195,6 @@
 -(void)loginButtonPressed:(id)sender{
     // Turn off the button immediately to avoid double presses.
     [self setLoginButtonEnabled:false];
-    
-    
-    loggingInStatus.text = @"Connecting...";
-    [self.view addSubview:loggingInStatus];
-    
 	
 	NSLog(@"Login button pressed.");
     NSLog(@"location: %@; room: %@", chosenLocation, chosenRoom);
@@ -242,6 +237,10 @@
 -(void)chooseRoom:(Room *)room {
 	
 	chosenRoom= room;
+    
+    // Now pass a message to the LocationViewController so it can highlight 
+    // physical locations appropropriately.
+    [locViewController setSelectedRoom:room];
     
     [self updateLoginButton];    
 }	

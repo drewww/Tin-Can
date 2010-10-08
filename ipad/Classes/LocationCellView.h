@@ -8,9 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "Location.h"
+#import "LocationViewController.h"
 
 @interface LocationCellView : UIView {
     Location *loc;
+    
+    LocationViewController *controller;
 }
 
 @end

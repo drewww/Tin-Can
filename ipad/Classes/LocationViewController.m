@@ -85,6 +85,22 @@
 }
 
 
+// I really should be using the fancy synthesize stuff, but I don't feel
+// like learning how right now. 
+
+- (void) setSelectedRoom:(Room *)theSelectedRoom {
+    selectedRoom = theSelectedRoom;
+    
+    // We need to push this into the view somehow, or have the view
+    // call back home when it draws. Not sure which.
+    [self update];
+}
+
+- (Room *) getSelectedRoom {
+    return selectedRoom;
+}
+
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath  {
     
     static NSString *CellIdentifier = @"LoginCell";
@@ -98,6 +114,7 @@
     //
     Location *loc = [locList objectAtIndex:indexPath.row];
 	testCell.loc = loc;
+    [testCell setController:self];
  	//NSLog(@" Location names: %@", loc.name);
 	
     return testCell;

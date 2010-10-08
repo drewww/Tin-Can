@@ -9,13 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "LocationCellView.h"
 #import "Location.h"
+#import "LocationViewController.h"
+
 @interface LocationCell : UITableViewCell {
     LocationCellView *locCellView;
     Location *loc;
 }
 
 - (void) setLoc:(Location *)newLoc;
-
-//@property (nonatomic, retain) Location *loc;
+- (void) setController:(LocationViewController *)theController;
+- (void) setNeedsDisplay;
 
 @end

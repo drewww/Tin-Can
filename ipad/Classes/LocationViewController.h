@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ConnectionManager.h"
 #import "StateManager.h"
+#import "Room.h"
 
 @class LoginMasterViewController;
 
@@ -18,12 +19,16 @@
     NSMutableArray *locList;
 	LoginMasterViewController *controller;
 
+    
+    Room *selectedRoom;
 }
-//- (void)handleConnectionEvent:(Event *)event;
+
 - (id)initWithFrame:(CGRect)frame withController:(LoginMasterViewController *)control;
 
 - (void) update;
 
+- (void) setSelectedRoom:(Room *)theSelectedRoom;
+- (Room *) getSelectedRoom;
 
 @property (nonatomic, retain) NSMutableArray *locList;
 
