@@ -92,11 +92,15 @@ class Meeting(YarnBaseType):
     """Store meeting-related information."""
 
     def __init__(self, roomUUID, title=None, meetingUUID=None,
-        startedAt=None):
+        startedAt=None, isNamed=False):
         self.uuid = meetingUUID
         YarnBaseType.__init__(self)
         self.room = state.get_obj(roomUUID, Room)
         self.title = title
+        if isNamed==False:
+            self.isNamed = False
+        else:
+            self.isNamed = True
         
         if startedAt==None:
             self.startedAt = time.time()
@@ -190,6 +194,7 @@ class Meeting(YarnBaseType):
         d["title"] = self.title
         d["endedAt"] = self.endedAt
         d["isLive"] = self.isLive
+        d["isNamed"] = self.isNamed
         d["room"] = self.room.uuid
         d["startedAt"] = self.startedAt
         

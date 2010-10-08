@@ -25,7 +25,7 @@ def _handleNewMeeting(event):
         d = event.results["meeting"]
         logging.debug(d)
         newMeeting = model.Meeting(event.params["room"], d["title"],
-            d["uuid"], d["startedAt"])
+            d["uuid"], d["startedAt"], d["isNamed"])
         
     else:
         newMeeting = model.Meeting(event.params["room"])
