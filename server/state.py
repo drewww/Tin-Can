@@ -153,6 +153,14 @@ def init_demo():
     tasks[0].assign(users[2],users[4], time.time()-4*60)
     users[2].status=("assigned task", tasks[0].assignedAt)
     users[4].status=("claimed task", tasks[0].assignedAt)
+    
+    #since join meeting events aren't being fired, we need to manually set the title
+    title = "Meeting with "
+    for location in meeting.locations:
+        if location.isLoggedIn:
+            title = title +location.name+", "
+    title = title[0:-2]
+    meeting.setTitle(title)
 
 def get_obj(key, type=None):
     """Returns the object of 'type' with that UUID from the object store.
