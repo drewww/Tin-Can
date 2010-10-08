@@ -82,6 +82,8 @@ class YarnApplication(tornado.web.Application):
             
             (r"/rooms/",ChooseRoomsHandler),
             (r"/meeting/",MeetingHandler),
+
+			(r"/demo",DemoHandler)
             ]
         
         settings = dict(
@@ -737,6 +739,9 @@ class MeetingHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("meeting.html")
 
+class DemoHandler(tornado.web.RequestHandler):
+	def get(self):
+		self.render("demo.html")
 
 
 # Set up the routing tables for the application.
