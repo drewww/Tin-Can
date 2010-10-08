@@ -127,15 +127,11 @@
 //		roomInstructions.backgroundColor = [UIColor blackColor];
 //		roomInstructions.font = [UIFont systemFontOfSize:30.0f];
 //		[roomInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-		
-		//self.wvTutorial = [[WebViewController alloc] initWithNibName:@"WebView" bundle:[NSBundle mainBundle]];
-		
+				
 		// Add Elements to View
 		//[self.view addSubview:wvTutorial];
 		[self.view addSubview:picView];
 		[self.view addSubview:loginButton];
-//		[self.view addSubview:arrowView];
-//		[self.view addSubview:arrowView2];
 		[self.view addSubview:roomInstructions];
 		[self.view addSubview:locationInstructions];
 		[self.view addSubview:logoSlide];
@@ -144,8 +140,7 @@
 		[self.view addSubview:headerLocation];
 		[self.view addSubview:headerRoom];
 		[self.view setNeedsDisplay];
-		
-		
+        
 	} else if (event.type==kADD_ACTOR_DEVICE) {
         NSLog(@"In ADD_ACTOR_DEVICE callback. Doing room joining now.");
         [[ConnectionManager sharedInstance] joinRoomWithUUID:chosenRoom.uuid];
@@ -199,7 +194,12 @@
 // Dictates what action to take when a User makes a selection
 -(void)loginButtonPressed:(id)sender{
     // Turn off the button immediately to avoid double presses.
-    //[self setLoginButtonEnabled:false];
+    [self setLoginButtonEnabled:false];
+    
+    
+    loggingInStatus.text = @"Connecting...";
+    [self.view addSubview:loggingInStatus];
+    
 	
 	NSLog(@"Login button pressed.");
     NSLog(@"location: %@; room: %@", chosenLocation, chosenRoom);
@@ -213,7 +213,8 @@
     // Now we need to join a room, but we need to block on getting
     // an acknowedgement from the server that we've logged in 
     // successfully. So move this up to the handleConnectionEvent
-    // method. 
+    // method. First, it's ADD_ACTOR_DEVICE, then
+    // LOCATION_JOINED_MEETING.
     
 }
 
