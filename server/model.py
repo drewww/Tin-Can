@@ -720,27 +720,28 @@ class Task(MeetingObject):
     def setText(self, text):
         self.text = text
     
-    def assign(self, assignedBy, assignedTo, time=None):        
+    # added a new time argument to allow for assigning things at past times.
+    def assign(self, assignedBy, assignedTo, assignTime):        
         self.assignedBy=assignedBy
         self.assignedTo=assignedTo
-        if time==None:
+        if assignTime==None:
             self.assignedAt=time.time()
         else:
-            self.assignedAt=time
+            self.assignedAt=assignTime
         
         # inform the user object of its assignment.
         assignedTo.assignTask(self)
-    
-    def deassign(self, deassignedBy, time=None):
+        
+    def deassign(self, deassignedBy):
         # do some quick assertion checking.
         if(self.assignedTo==None):
             logging.warning("Tried to deassign a task %s that was not\
  assigned yet."%self)
             return
-        
+
         self.assignedBy = deassignedBy
         self.assignedAt=time.time()
-        
+
         self.assignedTo.removeTask(self)
         self.assignedTo = None
         
@@ -807,24 +808,24 @@ class Topic(MeetingObject):
         # check and see if there's an easy way to convert those to something
         # that objC can use.
         self.color = color
-        
     
-    def setStatus(self, status, actor, time=None):
+    # added a new time argument to allow for assigning things at past times.
+    def setStatus(self, status, actor, setTime):
         if(status in [Topic.PAST, Topic.CURRENT, Topic.FUTURE]):
             
             # look for some specific transitions
             if(self.status==Topic.FUTURE and status==Topic.CURRENT):
                 self.startActor = actor
-                if time==None:
+                if setTime==None:
                     self.startTime = time.time()
                 else:
-                    self.startTime = time
+                    self.startTime = setTime
             elif(self.status==Topic.CURRENT and status==Topic.PAST):
                 self.stopActor = actor
-                if time==None:
+                if setTime==None:
                     self.stopTime = time.time()
                 else:
-                    self.stopTime = time
+                    self.stopTime = setTime
                 
             self.status = status
         else:
