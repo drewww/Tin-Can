@@ -360,6 +360,16 @@ class JoinRoomHandler(BaseHandler):
             locationJoinedMeetingEvent = Event("LOCATION_JOINED_MEETING",
             location.uuid, None, {"meeting":meeting.uuid})
             locationJoinedMeetingEvent.dispatch()
+            
+            if not meeting.isNamed:
+                title = "Meeting with "
+                for location in meeting.locations:
+                    if location.isLoggedIn:
+                        title = title +location.name+", "
+                title = title[0:-2]
+                editMeetingEvent = Event("EDIT_MEETING", None, None, 
+                {"meeting":meeting.uuid, "title": title})
+                editMeetingEvent.dispatch()
               
         else: 
             raise HTTPError(400, "Specified room UUID %s \
@@ -409,6 +419,16 @@ class LocationLeaveMeetingHandler(BaseHandler):
             locationLeftMeetingEvent = Event("LOCATION_LEFT_MEETING",
             location.uuid, None, {"meeting":meeting.uuid})
             locationLeftMeetingEvent.dispatch()
+            
+            if not meeting.isNamed:
+                title = "Meeting with "
+                for location in meeting.locations:
+                    if location.isLoggedIn:
+                        title = title +location.name+", "
+                title = title[0:-2]
+                editMeetingEvent = Event("EDIT_MEETING", None, None, 
+                {"meeting":meeting.uuid, "title": title})
+                editMeetingEvent.dispatch()
 
 class AddUserHandler(tornado.web.RequestHandler):
     
@@ -538,6 +558,13 @@ class LeaveLocationHandler(BaseHandler):
         leaveLocationEvent = Event("USER_LEFT_LOCATION", actor.uuid,
             params={"location":location.uuid})
         leaveLocationEvent.dispatch()
+        
+        # I think this should eventually change to location.isLoggedIn, but I'm not sure 
+        # whether ipads remain eternally logged on or not.
+        if len(location.getUsers())==0 and location.meeting!=None:
+            locationLeftMeetingEvent("LOCATION_LEFT_MEETING", None, None, 
+            {"meeting":location.meeting.uuid})
+            locationLeftMeetingEvent.dispatch()
 
 class EditMeetingHandler(BaseHandler):
     
