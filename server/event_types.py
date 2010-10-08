@@ -237,7 +237,7 @@ def _handleUpdateTopic(event):
     topic = state.get_obj(event.params["topicUUID"], model.Topic)
     status = event.params["status"]
     
-    topic.setStatus(status, event.actor)
+    topic.setStatus(status, event.actor, None)
     event.actor.status=("edited topic", time.time())
     #needed to keep track of statuses on client-side
     event.params["editedAt"] = event.actor.status[1]
@@ -308,7 +308,7 @@ def _handleAssignTask(event):
 
     if(not deassign):
         assignedTo = state.get_obj(event.params["assignedTo"], model.User)
-        task.assign(assignedBy,assignedTo)
+        task.assign(assignedBy,assignedTo, None)
         assignedBy.status=("assigned task", task.assignedAt)
         assignedTo.status=("claimed task", task.assignedAt)
         
