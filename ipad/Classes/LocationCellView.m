@@ -112,6 +112,11 @@
     CGRect meetingStatusRect = CGRectMake(5, 35, 200, 20);
     
     
+    // Fill in a white background on the present people badge so it looks
+    // better when it's selected.
+    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+    CGContextFillRect(ctx, presentCountRect);
+    
     if(status==IN_OTHER_MEETING) {
         CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.4 alpha:1.0].CGColor);
         CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.4 alpha:1.0].CGColor);        
