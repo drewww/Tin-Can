@@ -185,8 +185,10 @@ static DragManager *sharedInstance = nil;
     // Assign the Task.
     if(curTargetView != nil) {
         
-        // Do the actual task assignment.
-//        [(TaskView *)[task getView] startAssignToUser:[curTargetView getUser] byActor:[StateManager sharedInstance].location atTime:[NSDate date]];
+        // Get a reference to the current user view, so we can tell it to retract its
+        // drawer.
+        UserView *previousOwnerUserView = (UserView *)[task.assignedTo getView];
+        [previousOwnerUserView setDrawerExtended:false];
         
         // Send the message to the server that the task has been assigned.
         // We're doing this here and not in any of the other model-based methods beacuse those
