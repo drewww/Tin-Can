@@ -96,14 +96,14 @@
     if(newMeeting) {
         CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.4 alpha:1.0].CGColor);
     } else {
-        CGContextSetFillColorWithColor(ctx, [UIColor blueColor].CGColor);
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:0.37 green:.55 blue:.6 alpha:1].CGColor);
     }
     CGContextFillRect(ctx, roomNameRect);
     
     if(!newMeeting) {
         CGContextFillRect(ctx, peopleLabelRect);
         
-        CGContextSetStrokeColorWithColor(ctx, [UIColor blueColor].CGColor);
+        CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithRed:0.37 green:.55 blue:.6 alpha:1].CGColor);
         CGContextStrokeRect(ctx, totalRect);
     }
 

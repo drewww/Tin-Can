@@ -39,19 +39,12 @@
 	
 	if(event.type==kGET_STATE_COMPLETE) {
 		// Elements in the Login page (Our Logo, Our Location Table and Our Room Table)
-		LogoView *picView= [[[LogoView alloc] initWithImage:[UIImage imageNamed:@"tin_can_phone.jpg"] 
+		LogoView *picView= [[[LogoView alloc] initWithImage:[UIImage imageNamed:@"full_logo.png"] 
 												  withFrame: CGRectMake(self.view.frame.size.width/2.0-250, 100, 500, 500) ] retain];
 		
 		roomViewController = [[[RoomViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250, 400,500) withController:self] retain];
 		
 		locViewController = [[[LocationViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600, 400,500) withController:self] retain];
-		
-		
-		// Arrows
-		LogoView *arrowView= [[[LogoView alloc] initWithImage:[UIImage imageNamed:@"rightarrow.png"] 
-													withFrame: CGRectMake(self.view.frame.size.width/2.0-25,625, 50,100) ] retain];
-		LogoView *arrowView2= [[[LogoView alloc] initWithImage:[UIImage imageNamed:@"rightarrow.png"] 
-													 withFrame: CGRectMake(self.view.frame.size.width/2.0-25,625+600, 50,100) ] retain];
 		
 		
 		// Initializes Login Button
@@ -66,19 +59,14 @@
 		
 		// Disabled Settings for Login Button
 		
-        
-        // This must be what makes the disabled button look terrible. Clean this up!
-        // TODO
-//		[loginButton setBackgroundImage:[UIImage imageNamed:@"greyButton-1.png"] forState:UIControlStateDisabled];
-//		loginButton.adjustsImageWhenDisabled = YES;
 		if( loginButton.enabled==NO){
 			
 			// sets user intructions for login
 			loginInstructions = [[UILabel alloc]
-								 initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200-100,self.view.frame.size.height/2.0-250+600+250, 300,600)];
+								 initWithFrame:CGRectMake(self.view.frame.size.width/2.0-50-100,self.view.frame.size.height/2.0-250+600+250, 150,600)];
 			[loginInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 			loginInstructions.text = @" ";
-			loginInstructions.numberOfLines = 0;
+			loginInstructions.numberOfLines = 2;
 			loginInstructions.textAlignment = UITextAlignmentCenter;
 			loginInstructions.textColor = [UIColor whiteColor];
 			loginInstructions.backgroundColor = [UIColor clearColor];
@@ -94,47 +82,14 @@
 		HeaderView *headerRoom =[[[HeaderView alloc] 
 									  initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0-30, 400,60) withTitle:@"Meetings"] retain];
 		HeaderView *headerLocation =[[[HeaderView alloc] 
-								  initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0+600-30, 400,60) withTitle:@"Locations"] retain];
-		
-		
-		
-		// Instruction text
-		logoSlide = [[UILabel alloc] 
-					 initWithFrame:CGRectMake(-200 ,325, 500,100)];
-		logoSlide.text = @"Slide";
-		logoSlide.numberOfLines = 0;
-		logoSlide.textAlignment = UITextAlignmentCenter;
-		logoSlide.textColor = [UIColor whiteColor];
-		logoSlide.backgroundColor = [UIColor clearColor];
-		logoSlide.font = [UIFont systemFontOfSize:30.0f];
-		[logoSlide setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-		
-		//locationInstructions = [[UILabel alloc] 
-//								initWithFrame:CGRectMake(-200,self.view.frame.size.height/2.0-50,500,100)];
-//		locationInstructions.text = @"Choose your physical location \n Then Slide";
-//		locationInstructions.numberOfLines = 0;
-//		locationInstructions.textAlignment = UITextAlignmentCenter;
-//		locationInstructions.textColor = [UIColor whiteColor];
-//		locationInstructions.backgroundColor = [UIColor clearColor];
-//		locationInstructions.font = [UIFont systemFontOfSize:30.0f];
-//		[locationInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-//		
-//		roomInstructions = [[UILabel alloc] initWithFrame:CGRectMake(-200,self.view.frame.size.height/2.0-50 +600,500,100)];
-//		roomInstructions.numberOfLines = 0;
-//		roomInstructions.text = @"Choose a virtual room";
-//		roomInstructions.textAlignment = UITextAlignmentCenter;
-//		roomInstructions.textColor = [UIColor whiteColor];
-//		roomInstructions.backgroundColor = [UIColor blackColor];
-//		roomInstructions.font = [UIFont systemFontOfSize:30.0f];
-//		[roomInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-				
+								  initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0+600-30, 400,60) withTitle:@"Rooms"] retain];
+
 		// Add Elements to View
 		//[self.view addSubview:wvTutorial];
 		[self.view addSubview:picView];
 		[self.view addSubview:loginButton];
 		[self.view addSubview:roomInstructions];
 		[self.view addSubview:locationInstructions];
-		[self.view addSubview:logoSlide];
 		[self.view addSubview:locViewController.view];
 		[self.view addSubview:roomViewController.view];
 		[self.view addSubview:headerLocation];
@@ -253,12 +208,15 @@
     if(chosenRoom != nil && chosenLocation != nil) {
         [self setLoginButtonEnabled:true];
         loginInstructions.text = @"";
+
     } else if (chosenRoom != nil && chosenLocation==nil) {
         [self setLoginButtonEnabled:false];
         loginInstructions.text = @"Please select a room to join.";
+        loginInstructions.numberOfLines = 2;
     } else if (chosenLocation != nil && chosenRoom==nil) {
         [self setLoginButtonEnabled:false];
         loginInstructions.text = @"Please select a meeting to join.";
+        loginInstructions.numberOfLines = 2;
     }
 }
 

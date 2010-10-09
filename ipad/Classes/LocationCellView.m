@@ -85,12 +85,17 @@
         self.alpha = 0.5;
         
         // Need some way to disable clicks.
+        // This doesn't actually work.
+        // TODO
         self.userInteractionEnabled = FALSE;
+        
         
         self.backgroundColor = [UIColor colorWithWhite:0.7 alpha:1.0];
     } else if(status==UNUSED) {
+        self.alpha = 1.0;
         self.backgroundColor = [UIColor colorWithWhite:0.85 alpha:1.0];
     } else if(status==IN_THIS_MEETING) {
+        self.alpha = 1.0;
         self.backgroundColor = [UIColor whiteColor];
     }
     
@@ -108,8 +113,8 @@
     
     
     if(status==IN_OTHER_MEETING) {
-        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.7 alpha:1.0].CGColor);
-        CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.7 alpha:1.0].CGColor);        
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.4 alpha:1.0].CGColor);
+        CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.4 alpha:1.0].CGColor);        
     } else {
         CGContextSetFillColorWithColor(ctx, loc.color.CGColor);
         CGContextSetStrokeColorWithColor(ctx, loc.color.CGColor);
@@ -131,7 +136,13 @@
         CGContextFillRect(ctx, meetingStatusRect);
         CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
         
-        NSString *fullMeetingString = [NSString stringWithFormat:@"%@ in %@", loc.meeting.title, loc.meeting.room.name];
+        NSString *fullMeetingString;
+        if([loc.meeting.title length] > 20) {
+            fullMeetingString = [NSString stringWithFormat:@"%@... in %@", [loc.meeting.title substringToIndex:20], loc.meeting.room.name];
+        } else {
+            fullMeetingString = [NSString stringWithFormat:@"%@ in %@", loc.meeting.title, loc.meeting.room.name];            
+        }
+            
         [fullMeetingString drawInRect:CGRectInset(meetingStatusRect, 2, 2) withFont:[UIFont boldSystemFontOfSize:12]];
     }
     

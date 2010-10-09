@@ -25,7 +25,7 @@
 - (void)drawRect:(CGRect)rect {
 	
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
-	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:0 green:.3 blue:.8 alpha:1].CGColor);
+	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:0.37 green:.55 blue:.6 alpha:1].CGColor);
 	CGContextFillRect(ctx, CGRectMake(0,0, self.frame.size.width, self.frame.size.height));
 	CGFloat lineSize= self.frame.size.width/8.0;
 	CGContextSetLineWidth(ctx, lineSize);
