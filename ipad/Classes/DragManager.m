@@ -94,18 +94,26 @@ static DragManager *sharedInstance = nil;
     
     TaskView *taskView = (TaskView *)[task getView];
     
-        
-    CGPoint p = [draggedItemsContainer convertPoint:taskView.center fromView:taskView.lastParentView];
+     // NSLog(@"current center: (%f,%f), center in global coords: (%f, %f)", taskView.center.x, taskView.center.y, p.x, p.y);
+          
     
+    // Grab the UserView's transform.
+    CGAffineTransform transform = taskView.superview.superview.transform;
     
-    NSLog(@"current center: (%f,%f), center in global coords: (%f, %f)", taskView.center.x, taskView.center.y, p.x, p.y);
-    
-    
+    // Okay, this dance is a bit wacky. I had a really hard time getting
+    // TaskViews to not rotate back to the default rotation when they're
+    // picked up. This is a problem for users with non-default rotations.
+    // For some reason if I grabbed the UserView's rotation (which is
+    // .superview.superview), and applied it directly to the TaskView
+    // it didn't seem to do anything. Applying it to the parent view 
+    // (ie draggedItemsContainer) works fine, but you have to be careful
+    // about the order. Have to make suer to convert the point AFTER
+    // the transform is applied so it gets the right post-transform
+    // point.
     [draggedItemsContainer addSubview:[task getView]];
-    
+    [draggedItemsContainer setTransform:transform];
+    CGPoint p = [draggedItemsContainer convertPoint:taskView.center fromView:taskView.lastParentView];    
     taskView.center = p;
-    
-    
 }
 
 - (void) taskDragMovedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task {
@@ -158,17 +166,7 @@ static DragManager *sharedInstance = nil;
 		
 		// If they're both nil, do nothing.
 	}
-	
-
-	// Why was this code ever here? This seems totally naive and wrong.
-//	[lastDropTarget setHoverState:false];
-//	[lastDropTarget release];
-//	if(curDropTarget !=nil) {
-//		[curDropTarget setHoverState:true];
-//		lastDropTarget = curDropTarget;
-//		[lastDropTarget retain];
-//	}
-    
+	    
     // Now push the current last into the dictionary.
     [lastTaskDropTargets setValue:lastDropTarget forKey:task.uuid];
 }
