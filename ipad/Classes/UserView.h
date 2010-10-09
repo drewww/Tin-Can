@@ -50,6 +50,8 @@
 - (void) taskRemoved:(Task *)theTask;
 
 - (void) setHoverState:(bool)state;
+- (void) setDrawerExtended:(bool)extended;
+
 
 - (User *)getUser;
 

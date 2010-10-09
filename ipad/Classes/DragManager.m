@@ -100,6 +100,13 @@ static DragManager *sharedInstance = nil;
     // Grab the UserView's transform.
     CGAffineTransform transform = taskView.superview.superview.transform;
     
+    // (it occurs to me that this will likely cause problems when
+    // I start animating TaskViews into their final destinations.)
+    
+    // Also, this is going to have troubles with dragging multiple tasks at once. 
+    // Not going to stress about that for now, but might need to turn
+    // off multi-touch explicitely to avoid issues?
+    
     // Okay, this dance is a bit wacky. I had a really hard time getting
     // TaskViews to not rotate back to the default rotation when they're
     // picked up. This is a problem for users with non-default rotations.
