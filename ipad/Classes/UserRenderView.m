@@ -28,10 +28,6 @@
     self.bounds = CGRectMake(-BASE_WIDTH/2, -(BASE_HEIGHT + TAB_HEIGHT)/2, BASE_WIDTH, BASE_HEIGHT + TAB_HEIGHT);
     self.center = CGPointMake(0, 0);
     
-	//for LocationView in 
-	//if self.User.location
-    color = user.location.color;
-    
     [self setBackgroundColor:[UIColor clearColor]];
     
     showStatus = FALSE;
@@ -44,6 +40,7 @@
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect {
     NSLog(@"In drawRect for userRENDERview");
+    NSLog(@"color is now: %@", user.location.color);
 
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     
@@ -58,9 +55,9 @@
     CGContextFillPath(ctx);
     
 	if(hover)
-        CGContextSetFillColorWithColor(ctx, [color colorDarkenedByPercent:0.3].CGColor);
+        CGContextSetFillColorWithColor(ctx, [user.location.color colorDarkenedByPercent:0.3].CGColor);
 	else
-		CGContextSetFillColorWithColor(ctx, color.CGColor);
+		CGContextSetFillColorWithColor(ctx, user.location.color.CGColor);
     
     
     CGFloat topEdge;
@@ -105,7 +102,7 @@
     
     // Draw the tabs to show that this person has tasks assigned.
     // Hardcoding the number of tasks for now.
-    CGContextSetFillColorWithColor(ctx, [color colorByChangingAlphaTo:0.9].CGColor);
+    CGContextSetFillColorWithColor(ctx, [user.location.color colorByChangingAlphaTo:0.9].CGColor);
     CGFloat xPos = 15;
     NSLog(@"about to render a user, with %d tasks", [user.tasks count]);
     

@@ -33,13 +33,7 @@
     bool showStatus;
     bool taskDrawerExtended;
     
-    User *user;
-    
-    // This isn't going to last - color should come from locations, but
-    // for now for testing, we're just going to hardcode it.
-    UIColor *color;
-    
-    
+    User *user;    
 }
 
 - (id) initWithUser:(User *)theUser;
