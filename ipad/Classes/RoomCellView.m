@@ -102,6 +102,9 @@
     
     if(!newMeeting) {
         CGContextFillRect(ctx, peopleLabelRect);
+
+        CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+        CGContextFillRect(ctx, peopleCountRect);
         
         CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithRed:0.37 green:.55 blue:.6 alpha:1].CGColor);
         CGContextStrokeRect(ctx, totalRect);
