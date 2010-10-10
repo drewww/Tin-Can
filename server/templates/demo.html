@@ -32,7 +32,7 @@
 		font-family: "Century Gothic", Helvetica, sans-serif;
 	}
 	
-	header {
+	header, footer {
 		width: 100%;
 		height: 30px;
 		background-color: #444444;
@@ -62,6 +62,26 @@
 	}
 	
 	
+	#container {
+		padding: 5px;
+	}
+	
+	#add_task {
+		width: 100%;
+	}
+	
+	#new_task {
+		width: 260px;
+		margin-right: 5px;
+		float: left;
+	}
+	
+	#submit_new_task {
+		width: 40px;
+	}
+	
+	
+	
 </style>
 
 <body>
@@ -70,9 +90,23 @@
 	<div id="title">TIN CAN</div>
 	<div id="identity">logging in...</div>
 </header>
+<div id="container">
+
+<h1>Tasks</h1>
+<div id="add_task">
+<form action="" method="get" accept-charset="utf-8">
+	<input type="text" name="new_task" value="new task..." id="new_task"/>
+	<input type="submit" value="Add Task"/ id="submit_new_task">
+</form>
+</div>
+
+
+</div>
+<footer>an MIT Media Lab / Speech + Mobility project</footer>
+
+<h1>Topics</h1>
 
 
 
-<h1>Hello World</h1>
 </body>
 </html>
