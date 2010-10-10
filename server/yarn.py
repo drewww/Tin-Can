@@ -767,9 +767,36 @@ class MeetingHandler(tornado.web.RequestHandler):
         self.render("meeting.html")
 
 class DemoHandler(tornado.web.RequestHandler):
-	def get(self):
-		self.render("demo.html")
-
+    def get(self):
+        logging.debug("In demo handler.")
+        # logging.debug("Got request for demo handler")
+        # self.render("demo.html")
+        
+        # make sure the server is in demo mode,
+        # because otherwise all the hard-coding of
+        # meetings won't work.
+        if(not options.demoMode):
+            logging.warning("Tried to load the demo page without being in demo mode.")
+            self.write("Tried to load the demo UI without demo mode.")
+            return
+            
+        # otherwise, we can assume we're in demo mode and figure out
+        # which meeting to pull from without having any kind of selection
+        # trickiness.
+        
+        demoMeeting = None
+        for room in state.rooms:
+            if room.currentMeeting != None:
+                demoMeeting = room.currentMeeting
+                break
+                
+                logging.debug("Found the demo meeting: %s"%demoMeeting)
+        
+        
+        # grab tasks and topics so the page
+        # is pre-populated
+        
+        self.render("demo.html", tasks=demoMeeting.tasks, topics=demoMeeting.topics)
 
 # Set up the routing tables for the application.
 # For now, they're really simple - one for getting information about rooms,

@@ -38,6 +38,12 @@
 		color: black;
 	}
 	
+	h1 {
+		margin-top: 10px;
+		margin-bottom: 5px;
+		font-size: 1.25em;
+		
+	}
 	
 	/* Header / Footer setup. */
 	header, footer {
@@ -98,6 +104,18 @@
 		width: 40px;
 	}
 	
+	ul {
+		margin-left: 0px;
+		margin-top: 10px;
+		padding: 0px;
+	}
+	
+	li {
+		list-style: none;
+		margin-left: 10px;
+	}
+	
+	
 	
 	
 </style>
@@ -110,7 +128,7 @@
 </header>
 <div id="container">
 
-<h1>Tasks</h1>
+<h1>TASKS</h1>
 <div id="add_task">
 <form action="" method="get" accept-charset="utf-8">
 	<input type="text" name="new_task" value="new task..." id="new_task"/>
@@ -118,8 +136,21 @@
 </form>
 </div>
 
+<ul>
+{% for task in tasks %}
 
-<h1>Topics</h1>
+<li id="{{task.uuid}}">
+<img src="{{static_url('images/note.png')}}"/>
+{{task.text}}
+</li>
+
+{% end %}
+	
+</ul>
+
+
+
+<h1>TOPICS</h1>
 
 
 </div>
