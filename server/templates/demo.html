@@ -23,7 +23,7 @@
 </script>
 
 <style type="text/css" media="screen">
-	/* And our styles go here.*/
+	/* General styles */
 	
 	body {
 		padding: 0px;
@@ -32,13 +32,28 @@
 		font-family: "Century Gothic", Helvetica, sans-serif;
 	}
 	
+	a {
+		text-decoration: none;
+		font-weight: bold;
+		color: black;
+	}
+	
+	
+	/* Header / Footer setup. */
 	header, footer {
 		width: 100%;
 		height: 30px;
 		background-color: #444444;
 		color: #DDDDDD;
-		
 		padding: 5px;
+	}
+	
+	header, footer a {
+		color: white;
+	}
+	
+	footer {
+		font-size: 0.5em;
 	}
 	
 	#logo {
@@ -61,17 +76,20 @@
 		margin-right: 15px;
 	}
 	
-	
+
 	#container {
 		padding: 5px;
 	}
+
+
+	/* Task related styles. */
 	
 	#add_task {
 		width: 100%;
 	}
 	
 	#new_task {
-		width: 260px;
+		width: 240px;
 		margin-right: 5px;
 		float: left;
 	}
@@ -96,15 +114,17 @@
 <div id="add_task">
 <form action="" method="get" accept-charset="utf-8">
 	<input type="text" name="new_task" value="new task..." id="new_task"/>
-	<input type="submit" value="Add Task"/ id="submit_new_task">
+	<input type="submit" value="Add"/ id="submit_new_task">
 </form>
 </div>
 
 
-</div>
-<footer>an MIT Media Lab / Speech + Mobility project</footer>
-
 <h1>Topics</h1>
+
+
+</div>
+<footer>an <a href="http://media.mit.edu/">MIT Media Lab</a> / <a href="http://www.media.mit.edu/speech/">Speech + Mobility</a> project</footer>
+
 
 
 
