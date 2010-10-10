@@ -1,7 +1,78 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+	<meta http-equiv="Content-type" content="text/html" charset="utf-8">
+	<title>Tin Can Meeting System</title>
+	
+	<!-- iPhone specific viewport sizing instructions. -->
+	<meta name="viewport" content="width=320; initial-scale=1.0; minimum-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+	
+	<script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
+	<script type = "text/javascript" src = "../static/js/Timeline.js"></script>
+	<script type="text/javascript" src="{{static_url('js/util.js')}}"></script>
+	<script type="text/javascript" src="{{static_url('js/ConnectionManager.js')}}"></script>
+	<script type="text/javascript" src="{{static_url('js/StateManager.js')}}"></script>
+	<script type="text/javascript" src="{{static_url('js/model.js')}}"></script>
 </head>
-<body>	
+
+<script type="text/javascript" charset="utf-8">
+	// We'll put all our code here.
+	
+	
+	
+</script>
+
+<style type="text/css" media="screen">
+	/* And our styles go here.*/
+	
+	body {
+		padding: 0px;
+		margin: 0px;
+		
+		font-family: "Century Gothic", Helvetica, sans-serif;
+	}
+	
+	header {
+		width: 100%;
+		height: 30px;
+		background-color: #444444;
+		color: #DDDDDD;
+		
+		padding: 5px;
+	}
+	
+	#logo {
+		width: 30px;
+		height: 30px;
+		
+		float: left;
+		margin-right: 5px;
+	}
+	
+	#title {
+		font-size: 1.8em;
+		float: left;
+		font-weight: bold;
+	}
+	
+	#identity {
+		float: right;
+		margin-top: 5px;
+		margin-right: 15px;
+	}
+	
+	
+</style>
+
+<body>
+<header>
+	<img id="logo" src="{{static_url('img/logo_small.png')}}"/>
+	<div id="title">TIN CAN</div>
+	<div id="identity">logging in...</div>
+</header>
+
+
+
 <h1>Hello World</h1>
 </body>
 </html>
