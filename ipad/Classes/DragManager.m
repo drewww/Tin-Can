@@ -33,10 +33,9 @@ static DragManager *sharedInstance = nil;
     return self;
 }
 
-- (void) setRootView:(UIView *)view andUsersContainer:(UIView *)container andTaskContainer:(TaskContainerView *)theTaskContainer{
+- (void) setRootView:(UIView *)view andTaskContainer:(TaskContainerView *)theTaskContainer{
     
     self.rootView = view;
-    self.usersContainer = container;
     self.taskContainer = theTaskContainer;
     
     draggedItemsContainer = [[UIView alloc] initWithFrame:self.rootView.frame];
@@ -54,7 +53,28 @@ static DragManager *sharedInstance = nil;
     
     // TODO We'll need to hit-test the taskContainer separately here, which is annoying, unless
     // we add it to the UsersContainer. 
-    UIView *returnedView = [self.usersContainer hitTest:point withEvent:event];
+    
+    NSLog(@"-----------looking for drop targets---------");
+    
+    // Hit test against all users.
+    UIView *returnedView = nil;
+    NSLog(@"point for testing: (%d, %d)", point.x, point.y);
+    for (UserView *view in [UserView getAllUserViews]) {
+        
+        if(CGRectContainsPoint(view.frame, point)) {
+            NSLog(@"Found it!");
+            returnedView = view;
+            break;
+        }
+//        NSLog(@"testing user view: %@", view);
+//        returnedView = [view cont
+//        if(returnedView != nil) {
+//            NSLog(@"found a non-nil result from hit testing!");
+//            break;
+//        }
+    }
+    
+//    UIView *returnedView = [self.usersContainer hitTest:point withEvent:event];
     
     if([taskContainer pointInside:[taskContainer convertPoint:point fromView:self.rootView] withEvent:event]) {
         NSLog(@"point in task container, returning that!");
@@ -117,10 +137,19 @@ static DragManager *sharedInstance = nil;
     // about the order. Have to make suer to convert the point AFTER
     // the transform is applied so it gets the right post-transform
     // point.
-    [draggedItemsContainer addSubview:[task getView]];
-    [draggedItemsContainer setTransform:transform];
-    CGPoint p = [draggedItemsContainer convertPoint:taskView.center fromView:taskView.lastParentView];    
-    taskView.center = p;
+    
+    // (bonus twist - if it's a user owned task, we do this - if it's
+    // a task manager owned one, we don't)
+    if(task.assignedTo == nil) {
+        [draggedItemsContainer addSubview:[task getView]];
+        CGPoint p = [draggedItemsContainer convertPoint:taskView.center fromView:taskView.lastParentView];            
+        taskView.center = p;        
+    } else {            
+        [draggedItemsContainer addSubview:[task getView]];
+        [draggedItemsContainer setTransform:transform];
+        CGPoint p = [draggedItemsContainer convertPoint:taskView.center fromView:taskView.lastParentView];    
+        taskView.center = p;
+    }
 }
 
 - (void) taskDragMovedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task {

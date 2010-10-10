@@ -32,7 +32,6 @@
 			[self addSubview:newloc];
 		}
 		
-		
 		[self setNeedsLayout];
 		}
     }

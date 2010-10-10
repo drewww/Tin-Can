@@ -228,7 +228,6 @@ static StateManager *sharedInstance = nil;
             [allUsers addObject:actor];
         }
     }
-    NSLog(@"found %d users", [allUsers count]);
     
     return [NSSet setWithArray:allUsers];
 }

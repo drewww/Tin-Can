@@ -16,7 +16,6 @@
 #import "ConnectionManager.h"
 #import "Event.h"
 #import "Location.h"
-#import "UserContainer.h"
 #import "DragManager.h"
 
 #define INITIAL_REVISION_NUMBER 10000
@@ -35,8 +34,6 @@
     // Now, drop the MeetingTimer in the middle of the screen.
     // Add the timer first, so it's underneath everything.
 
-    
-    
     Meeting *meeting = [StateManager sharedInstance].meeting;
     NSLog(@" about to init the meeting timer view, meeting: %@; meeting.startedAt: %@", meeting, meeting.startedAt);
     
@@ -45,12 +42,6 @@
     [meetingTimerView retain];
     [self.view addSubview:meetingTimerView];
 	
-					 
-    // Create the participants view.
-    userContainer = [[UserContainer alloc] initWithFrame:self.view.frame];
-    [userContainer retain];
-    [self.view addSubview:userContainer];
-            
 	taskContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) withRot: M_PI/2];
 
 	topicContainer=[[TopicContainerView alloc] initWithFrame:CGRectMake(260, 490, 250, 600)];
@@ -61,12 +52,11 @@
 	[self.view addSubview:topicContainer];
 	[self.view addSubview:locContainer];
 
-    [[DragManager sharedInstance] setRootView:self.view andUsersContainer:userContainer andTaskContainer:taskContainer];
+    [[DragManager sharedInstance] setRootView:self.view andTaskContainer:taskContainer];
 
 	[self.view bringSubviewToFront:meetingTimerView];
     [self.view bringSubviewToFront:taskContainer];
 	[self.view bringSubviewToFront:topicContainer];
-    [self.view bringSubviewToFront:userContainer];
 
     queue = [[[NSOperationQueue alloc] init] retain];
 
@@ -147,7 +137,7 @@
             
             if([curMeeting.locations containsObject:location]) {
                 User *user = (User *)[state getObjWithUUID:event.actorUUID withType:[User class]];
-                [[user getView] removeFromSuperview];
+                [self removeUserViewForUser:user];
             }
             
             [[location getView] setNeedsDisplay];
@@ -166,7 +156,7 @@
             if([curMeeting.locations containsObject:location]) {
                 NSLog(@"User joined a location in this meeting!");
                 User *user = (User *)[state getObjWithUUID:event.actorUUID withType:[User class]];
-                [userContainer addSubview:[user getView]];
+                [self addUserViewForUser:user];
             }
             
             // Also, ask the user's location to redraw itself.
@@ -182,7 +172,7 @@
                 NSLog(@"Location in this meeting left it!");
 
                 for(User *user in location.users) {
-                    [[user getView] removeFromSuperview];
+                    [self removeUserViewForUser:user];
                 }
             }
             
@@ -197,7 +187,7 @@
             if([curMeeting.locations containsObject:location]) {
                 NSLog(@"another location joined this meeting! with users: %@", location.users);
                 for(User *user in location.users) {
-                    [userContainer addSubview:[user getView]];
+                    [self addUserViewForUser:user];
                 }
             }
             
@@ -261,7 +251,110 @@
     }
 }
 
+- (void) addUserViewForUser:(User *)newUser {
+    [self.view addSubview:[newUser getView]];
+    [self.view bringSubviewToFront:[newUser getView]];
+    
+    [self layoutUsers];
+}
 
+- (void) removeUserViewForUser:(User *)leavingUser {
+    [[leavingUser getView] removeFromSuperview];
+    [self layoutUsers];
+}
+
+- (void) layoutUsers {
+    NSLog(@"LAYING OUT USERS ++++++++++++++++++++++++");
+    
+    NSSet *allUserViews = [[UserView getAllUserViews] retain];
+    int numViews = [allUserViews count];
+    
+    int i = 0;
+    int arrayCounter=0;
+    int sideLimit= ceil(numViews/4.0);
+    int topLimit=trunc(numViews/4.0);
+    
+    //assigns number of participants to a side
+    NSMutableArray *sides=[[NSMutableArray arrayWithObjects:[NSNumber numberWithInt: 0],[NSNumber numberWithInt:0],
+                            [NSNumber numberWithInt:0],[NSNumber numberWithInt:0],nil]retain];
+    
+    while (i<numViews) {
+        if (arrayCounter==1 && ([[sides objectAtIndex:arrayCounter] intValue]>=topLimit)) {
+            arrayCounter++;
+        }
+        else if ((arrayCounter==0 || arrayCounter==2)&&([[sides objectAtIndex:arrayCounter] intValue] >=sideLimit)){
+            arrayCounter++;
+        }
+        else if(arrayCounter==3){
+            if ([[sides objectAtIndex:arrayCounter] intValue]>topLimit) {
+                break;
+            }
+            else {
+                [sides replaceObjectAtIndex: arrayCounter withObject:[NSNumber numberWithInt:[[sides objectAtIndex:arrayCounter] intValue] +1.0]];
+                arrayCounter=0;	
+                i++;
+            }
+        }
+        else {
+            [sides replaceObjectAtIndex: arrayCounter withObject:[NSNumber numberWithInt:[[sides objectAtIndex:arrayCounter] intValue] +1.0]];
+            i++;
+            arrayCounter++;
+        }	
+        
+    }
+    //Forms points from side assignments
+    NSMutableArray *points=[[NSMutableArray alloc] initWithCapacity:numViews];
+    NSMutableArray *rotations=[[NSMutableArray alloc] initWithCapacity:numViews];
+    for (i=0; i<4; i++) {
+        int c =1;
+        while (c<=[[sides objectAtIndex:i] intValue]) {
+            if (i==0|| i==2) {
+                float divisions=1024.0/[[sides objectAtIndex:i] intValue];
+                float yVal= (divisions*c) -(divisions/2.0);
+                if (i==0) {
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(0, yVal)]];
+                    [rotations addObject:[NSNumber numberWithFloat:M_PI/2]];
+                    
+                }	
+                else{
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(768, yVal)]];
+                    
+                    [rotations addObject:[NSNumber numberWithFloat:-M_PI/2]]; 
+                }
+            }
+            else if (i==1 || i==3) {
+                float divisions=768/[[sides objectAtIndex:i] intValue];
+                float xVal= (divisions*(c)) -(divisions/2.0);
+                if (i==1) {
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(xVal, 0)]]; 
+                    [rotations addObject:[NSNumber numberWithFloat:M_PI]];
+                }	
+                else{
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(xVal, 1024)]];
+                    [rotations addObject:[NSNumber numberWithFloat:0.0]];
+                }
+            }
+            c++;
+        }
+    }
+    NSLog(@"About to actually apply locations...");
+    
+    // Now that we've done all the layout math, put everything in its place.
+    int viewIndex = 0;
+    
+    for(UIView *view in allUserViews) {
+        NSLog(@"applying to %d", viewIndex);
+        view.center = [[points objectAtIndex:viewIndex] CGPointValue];
+        
+        NSLog(@"just set center to (%d, %d)", view.center.x, view.center.y);
+              
+        [view setTransform:CGAffineTransformMakeRotation([[rotations objectAtIndex:viewIndex] floatValue])];
+        
+        viewIndex++;
+    }   
+    
+    [allUserViews release];
+}
 
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -278,8 +371,6 @@
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
-    [userContainer release];
-    userContainer = nil;
     
     [meetingTimerView release];
     meetingTimerView = nil;
@@ -289,8 +380,6 @@
 - (void)dealloc {
     [super dealloc];
     [self.view release];
-    
-    [userContainer release];
     
     [users release];
     [tasks release];
@@ -322,11 +411,13 @@
         
         // The user knows how to construct its own view if it doesn't have one yet. 
         // This will avoid double-creating if for some reason someone else needs the User's view.
-        UserView *view = (UserView *)[user getView];//changed UIView to UserView to get rid of yellow error
+//        UserView *view = (UserView *)[user getView];//changed UIView to UserView to get rid of yellow error
         
-        [userContainer addSubview:view];
+        [self addUserViewForUser:user];
         
-        [view setNeedsDisplay];
+        
+//        [view setNeedsDisplay];
+        
         i++;
     }
 }

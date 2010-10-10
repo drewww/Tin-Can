@@ -42,7 +42,7 @@
     
     UIColor *backgroundColor;
     if(hover) {
-        backgroundColor = [UIColor darkGrayColor];
+        backgroundColor = [UIColor colorWithWhite:0.1 alpha:1.0];
     } else {
         backgroundColor = [UIColor blackColor];
     }

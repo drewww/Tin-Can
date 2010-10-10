@@ -52,6 +52,7 @@
 - (void) setHoverState:(bool)state;
 - (void) setDrawerExtended:(bool)extended;
 
++ (NSSet *) getAllUserViews;
 
 - (User *)getUser;
 

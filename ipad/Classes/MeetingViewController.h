@@ -12,11 +12,11 @@
 #import "TopicContainerView.h"
 #import "LocationContainerView.h"
 #import "Event.h"
+#import "User.h"
 
 @class Todo;
 
 @interface MeetingViewController : UIViewController {    
-    UIView *userContainer;
     
     TaskContainerView *taskContainer;
     TopicContainerView *topicContainer;
@@ -46,6 +46,10 @@
 - (void) initTopics;
 
 - (void) clk;
+
+- (void) addUserViewForUser:(User *)newUser;
+- (void) removeUserViewForUser:(User *)leavingUser;
+- (void) layoutUsers;
 
 - (void) handleConnectionEvent:(Event *)event;
 

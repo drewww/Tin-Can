@@ -118,7 +118,7 @@
         
         CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
         NSString *participantsCountString = [NSString stringWithFormat:@"%d", numParticipants];
-        [participantsCountString drawInRect:peopleCountRect withFont:[UIFont systemFontOfSize:30] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];       
+        [participantsCountString drawInRect:peopleCountRect withFont:[UIFont boldSystemFontOfSize:30] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];       
     }
 }
 

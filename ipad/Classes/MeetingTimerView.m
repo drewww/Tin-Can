@@ -217,7 +217,7 @@
         entry = [NSMutableArray array];
         
         if(topic.stopTime != nil) {
-            NSLog(@"Found topic with end time.");
+//            NSLog(@"Found topic with end time.");
             [entry addObject:[NSNumber numberWithFloat:[self getMinRotationWithDate:topic.stopTime]]];
             [entry addObject:topic.stopTime];
             [entry addObject:topic.color];
@@ -227,7 +227,7 @@
             topicOpen = false;        
         
             colorIndex = colorIndex + 1;
-            NSLog(@"colorIndex now: %d", colorIndex);
+//            NSLog(@"colorIndex now: %d", colorIndex);
             if(colorIndex==[colorWheel count]) {
                 NSLog(@"resetting color index");
                 colorIndex = 0;

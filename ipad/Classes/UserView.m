@@ -8,6 +8,7 @@
 
 #import "UserView.h"
 #import "UIColor+Util.h"
+#import "StateManager.h"
 
 @implementation UserView
 
@@ -166,6 +167,21 @@
     [taskContainerView release];
     [super dealloc];
     
+}
+
+
+// Convenience method that gets used in a few different places to work
+// around the event propegation problems we have when we put all the
+// user views in a single UIView.
+
++ (NSSet *) getAllUserViews {
+    // Get a list of users from the state manager.
+    NSMutableSet *allUserViews = [NSMutableSet set];
+    for (User *user in [StateManager sharedInstance].meeting.currentParticipants) {
+        [allUserViews addObject:[user getView]];
+    }
+    
+    return allUserViews;
 }
 
 

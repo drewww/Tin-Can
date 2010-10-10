@@ -26,10 +26,11 @@
 
 - (UIView *) userViewAtTouch:(UITouch *)touch withEvent:(UIEvent *)event;
 
-- (void) setRootView:(UIView *)view andUsersContainer:(UIView *)container andTaskContainer:(UIView *)theTaskContainer;
+- (void) setRootView:(UIView *)view andTaskContainer:(UIView *)theTaskContainer;
 
 - (void) taskDragMovedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task;
 - (bool) taskDragEndedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task;
+
 
 
 @property (nonatomic, retain) UIView *rootView;

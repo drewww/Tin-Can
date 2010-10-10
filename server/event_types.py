@@ -301,6 +301,7 @@ def _handleEditTask(event):
     
 def _handleAssignTask(event):
     task = state.get_obj(event.params["taskUUID"], model.Task)
+    task.assignedAt = time.time()
     
     assignedBy = state.get_obj(event.actor.uuid, model.Actor)
     
