@@ -54,27 +54,15 @@ static DragManager *sharedInstance = nil;
     // TODO We'll need to hit-test the taskContainer separately here, which is annoying, unless
     // we add it to the UsersContainer. 
     
-    NSLog(@"-----------looking for drop targets---------");
-    
     // Hit test against all users.
     UIView *returnedView = nil;
-    NSLog(@"point for testing: (%d, %d)", point.x, point.y);
     for (UserView *view in [UserView getAllUserViews]) {
         
         if(CGRectContainsPoint(view.frame, point)) {
-            NSLog(@"Found it!");
             returnedView = view;
             break;
         }
-//        NSLog(@"testing user view: %@", view);
-//        returnedView = [view cont
-//        if(returnedView != nil) {
-//            NSLog(@"found a non-nil result from hit testing!");
-//            break;
-//        }
     }
-    
-//    UIView *returnedView = [self.usersContainer hitTest:point withEvent:event];
     
     if([taskContainer pointInside:[taskContainer convertPoint:point fromView:self.rootView] withEvent:event]) {
         NSLog(@"point in task container, returning that!");

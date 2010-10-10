@@ -264,7 +264,6 @@
 }
 
 - (void) layoutUsers {
-    NSLog(@"LAYING OUT USERS ++++++++++++++++++++++++");
     
     NSSet *allUserViews = [[UserView getAllUserViews] retain];
     int numViews = [allUserViews count];
@@ -337,16 +336,11 @@
             c++;
         }
     }
-    NSLog(@"About to actually apply locations...");
-    
     // Now that we've done all the layout math, put everything in its place.
     int viewIndex = 0;
     
     for(UIView *view in allUserViews) {
-        NSLog(@"applying to %d", viewIndex);
         view.center = [[points objectAtIndex:viewIndex] CGPointValue];
-        
-        NSLog(@"just set center to (%d, %d)", view.center.x, view.center.y);
               
         [view setTransform:CGAffineTransformMakeRotation([[rotations objectAtIndex:viewIndex] floatValue])];
         
