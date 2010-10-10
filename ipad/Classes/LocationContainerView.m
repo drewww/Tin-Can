@@ -10,6 +10,8 @@
 #import "LocationView.h"
 #import "StateManager.h"
 
+#define COLOR [UIColor colorWithWhite:0.3 alpha:1]
+
 @implementation LocationContainerView
 
 
@@ -41,14 +43,14 @@
 - (void)drawRect:(CGRect)rect {
     CGContextRef ctx = UIGraphicsGetCurrentContext();
 	
-	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
+	CGContextSetFillColorWithColor(ctx, COLOR.CGColor);
 	CGContextFillRect(ctx, CGRectMake(0, 0, self.bounds.size.width, 22));
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 	[@"PARTICIPANTS" drawInRect:CGRectMake(0, 0, self.bounds.size.width, 22) 
 				 withFont:[UIFont boldSystemFontOfSize:18] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
 	
 	CGContextSetLineWidth(ctx,2);
-	CGContextSetStrokeColorWithColor(ctx,  [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
+	CGContextSetStrokeColorWithColor(ctx,  COLOR.CGColor);
 	CGContextStrokeRect(ctx, CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height));
 	
 	
