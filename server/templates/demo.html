@@ -90,17 +90,17 @@
 
 	/* Task related styles. */
 	
-	#add_task {
+	.add_form {
 		width: 100%;
 	}
 	
-	#new_task {
+	.item_text {
 		width: 240px;
 		margin-right: 5px;
 		float: left;
 	}
 	
-	#submit_new_task {
+	.submit_item {
 		width: 40px;
 	}
 	
@@ -129,10 +129,10 @@
 <div id="container">
 
 <h1>TASKS</h1>
-<div id="add_task">
+<div id="add_task" class="add_form">
 <form action="" method="get" accept-charset="utf-8">
-	<input type="text" name="new_task" value="new task..." id="new_task"/>
-	<input type="submit" value="Add"/ id="submit_new_task">
+	<input type="text" name="new_task" value="new task..." id="new_task" class="item_text"/>
+	<input type="submit" value="Add"/ id="submit_new_task" class="submit_item">
 </form>
 </div>
 
@@ -151,6 +151,25 @@
 
 
 <h1>TOPICS</h1>
+<div id="add_topic" class="add_form">
+<form action="" method="get" accept-charset="utf-8">
+	<input type="text" name="new_topic" value="new topic..." id="new_topic" class="item_text"/>
+	<input type="submit" value="Add"/ id="submit_new_topic" class="submit_item">
+</form>
+</div>
+
+<ul>
+{% for topic in topics %}
+
+<li id="{{topic.uuid}}">
+<img src="{{static_url('images/comments.png')}}"/>
+{{topic.text}}
+</li>
+
+{% end %}
+	
+</ul>
+
 
 
 </div>
