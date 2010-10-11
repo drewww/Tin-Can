@@ -40,11 +40,17 @@
 				// 
 				// case ""
 				case "NEW_TOPIC":
-					console.log("Got new topic!");
-					break;
+					var topicElement = $("#topics").children().first().clone();
+					topicElement.id = e["results"]["topic"]["uuid"];
+					topicElement.children().last().html(e["results"]["topic"]["text"]);
+					$("#topics").append(topicElement);
+				break;
 					
 				case "NEW_TASK":
-					console.log("Got new task!");
+					var taskElement = $("#tasks").children().first().clone();
+					taskElement.id = e["results"]["task"]["uuid"];
+					taskElement.children().last().html(e["results"]["task"]["text"]);
+					$("#tasks").append(taskElement);
 					break;
 				case "GET_STATE_COMPLETE":
 					var users = state.getUsers();
@@ -96,10 +102,7 @@
 		$("#login").show();
 		$("#logged_in").hide();
 		
-		
-		
-		
-	})
+	});
 	
 	
 </script>
@@ -222,12 +225,12 @@
 </form>
 </div>
 
-<ul>
+<ul id="tasks">
 {% for task in tasks %}
 
 <li id="{{task.uuid}}">
 <img src="{{static_url('images/note.png')}}"/>
-{{task.text}}
+<span>{{task.text}}</span>
 </li>
 
 {% end %}
@@ -244,12 +247,12 @@
 </form>
 </div>
 
-<ul>
+<ul id="topics">
 {% for topic in topics %}
 
 <li id="{{topic.uuid}}">
 <img src="{{static_url('images/comments.png')}}"/>
-{{topic.text}}
+<span>{{topic.text}}</span>
 </li>
 
 {% end %}
