@@ -66,6 +66,10 @@
 					localUser = selectedUser;
 					conn.setUser(selectedUser.uuid);
 					break;
+				case "LOGIN_COMPLETE":
+					$("#login").hide();
+					$("#logged_in").show();
+					break;
 			}
 			
 		}});
@@ -89,7 +93,8 @@
 			return false;
 		});
 		
-		
+		$("#login").show();
+		$("#logged_in").hide();
 		
 		
 		
@@ -191,7 +196,11 @@
 		list-style: none;
 		margin-left: 10px;
 	}
-
+	
+	#logged_in img {
+		margin-right: 5px;
+	}
+	
 </style>
 </head>
 
@@ -199,7 +208,9 @@
 <header>
 	<img id="logo" src="{{static_url('img/logo_small.png')}}"/>
 	<div id="title">TIN CAN</div>
-	<div id="identity"><input type="button" id="login" value="login"></div>
+	<div id="identity"><input type="button" id="login" value="login">
+	<div id="logged_in"><img src="{{static_url('images/user.png')}}">Drew</div>
+	</div>
 </header>
 <div id="container">
 
