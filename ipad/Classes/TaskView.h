@@ -48,8 +48,6 @@
 - (id)initWithFrame:(CGRect)frame withTask:(Task *)task;
 - (id)initWithTask:(Task *)theTask;
 
-
-
 - (void) startAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime;
 - (void) assignAnimationDone:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context;
 - (void) finishAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime;

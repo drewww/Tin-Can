@@ -95,49 +95,12 @@ static DragManager *sharedInstance = nil;
 - (void) taskDragStartedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task {
     // When we get the first touch, pull it out of its current superview and put it on the root view.
     // We'll push it back when it gets dropped again.
-    
-    [draggedItemsContainer.superview bringSubviewToFront:draggedItemsContainer];
-    NSLog(@"unhiding the items container");
-    [draggedItemsContainer setHidden:false];
-    
+        
     TaskView *taskView = (TaskView *)[task getView];
-    
      // NSLog(@"current center: (%f,%f), center in global coords: (%f, %f)", taskView.center.x, taskView.center.y, p.x, p.y);
           
     
-    // Grab the UserView's transform.
-    CGAffineTransform transform = taskView.superview.superview.transform;
-    
-    // (it occurs to me that this will likely cause problems when
-    // I start animating TaskViews into their final destinations.)
-    
-    // Also, this is going to have troubles with dragging multiple tasks at once. 
-    // Not going to stress about that for now, but might need to turn
-    // off multi-touch explicitely to avoid issues?
-    
-    // Okay, this dance is a bit wacky. I had a really hard time getting
-    // TaskViews to not rotate back to the default rotation when they're
-    // picked up. This is a problem for users with non-default rotations.
-    // For some reason if I grabbed the UserView's rotation (which is
-    // .superview.superview), and applied it directly to the TaskView
-    // it didn't seem to do anything. Applying it to the parent view 
-    // (ie draggedItemsContainer) works fine, but you have to be careful
-    // about the order. Have to make suer to convert the point AFTER
-    // the transform is applied so it gets the right post-transform
-    // point.
-    
-    // (bonus twist - if it's a user owned task, we do this - if it's
-    // a task manager owned one, we don't)
-    if(task.assignedTo == nil) {
-        [draggedItemsContainer addSubview:[task getView]];
-        CGPoint p = [draggedItemsContainer convertPoint:taskView.center fromView:taskView.lastParentView];            
-        taskView.center = p;        
-    } else {            
-        [draggedItemsContainer addSubview:[task getView]];
-        [draggedItemsContainer setTransform:transform];
-        CGPoint p = [draggedItemsContainer convertPoint:taskView.center fromView:taskView.lastParentView];    
-        taskView.center = p;
-    }
+    [self moveTaskViewToDragContainer:taskView];
 }
 
 - (void) taskDragMovedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task {
@@ -236,9 +199,64 @@ static DragManager *sharedInstance = nil;
         [taskView.lastParentView addSubview:taskView];
         
         NSLog(@"setting draggedItemsContainer to hidden");
+        [draggedItemsContainer setHidden:true];
     }
     
     return false;
+}
+
+- (bool) moveTaskViewToDragContainer:(TaskView *)view {
+    
+    NSLog(@"unhiding the items container");
+    [draggedItemsContainer setHidden:false];
+    [draggedItemsContainer.superview bringSubviewToFront:draggedItemsContainer];
+
+    
+    if([draggedItemsContainer.subviews containsObject:view]) {
+        NSLog(@"TaskView already in draggedItemsContainer.");
+        return false;
+    }
+    
+    // Grab the UserView's transform.
+    CGAffineTransform transform = view.superview.superview.transform;
+    
+    // (it occurs to me that this will likely cause problems when
+    // I start animating TaskViews into their final destinations.)
+    
+    // Also, this is going to have troubles with dragging multiple tasks at once. 
+    // Not going to stress about that for now, but might need to turn
+    // off multi-touch explicitely to avoid issues?
+    
+    // Okay, this dance is a bit wacky. I had a really hard time getting
+    // TaskViews to not rotate back to the default rotation when they're
+    // picked up. This is a problem for users with non-default rotations.
+    // For some reason if I grabbed the UserView's rotation (which is
+    // .superview.superview), and applied it directly to the TaskView
+    // it didn't seem to do anything. Applying it to the parent view 
+    // (ie draggedItemsContainer) works fine, but you have to be careful
+    // about the order. Have to make suer to convert the point AFTER
+    // the transform is applied so it gets the right post-transform
+    // point.
+    
+    // (bonus twist - if it's a user owned task, we do this - if it's
+    // a task manager owned one, we don't)
+    if(view.task.assignedTo == nil) {
+        [draggedItemsContainer addSubview:view];
+        [draggedItemsContainer setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+        CGPoint p = [draggedItemsContainer convertPoint:view.center fromView:view.lastParentView]; 
+        NSLog(@"Point in draggedItemsContainer perspective: (%f, %f)", p.x, p.y);
+        NSLog(@"current center: (%f, %f)", view.center.x, view.center.y);
+        view.center = p;        
+    } else {            
+        [draggedItemsContainer addSubview:view];
+        [draggedItemsContainer setTransform:transform];
+        CGPoint p = [draggedItemsContainer convertPoint:view.center fromView:view.lastParentView];    
+        view.center = p;
+    }
+    
+    // Return true if we did successfully move the view to the draggedItemsContainer view.
+    // If it was already there, we returned false up top.
+    return true;
 }
 
 - (void) taskDragAnimationComplete {

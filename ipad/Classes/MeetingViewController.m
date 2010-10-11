@@ -55,8 +55,8 @@
     [[DragManager sharedInstance] setRootView:self.view andTaskContainer:taskContainer];
 
 	[self.view bringSubviewToFront:meetingTimerView];
-    [self.view bringSubviewToFront:taskContainer];
 	[self.view bringSubviewToFront:topicContainer];
+    [self.view bringSubviewToFront:taskContainer];
 
     queue = [[[NSOperationQueue alloc] init] retain];
 
