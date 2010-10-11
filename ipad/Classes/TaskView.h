@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "Task.h"
 
-
 //@class TaskDragDelegate;
 
 @protocol TaskDragDelegate
@@ -32,6 +31,13 @@
     
     // A delegate (the drag manager) to be notified of drag operations.
     id <TaskDragDelegate> delegate;
+
+    
+    // Temporary container variables for tracking animation-related
+    // variables.
+    User *assignedToUser;
+    Actor *assignedByActor;
+    NSDate *assignedAt;
 }
 
 @property (nonatomic, readonly) Task *task;
@@ -45,6 +51,7 @@
 
 
 - (void) startAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime;
+- (void) assignAnimationDone:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context;
 - (void) finishAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime;
 
 

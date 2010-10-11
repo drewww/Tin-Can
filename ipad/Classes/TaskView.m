@@ -97,10 +97,75 @@
 
 
 - (void) startAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime {
+    NSLog(@">>>>>>>>>>>>>>>>>>>>>>>>>>>>START ASSIGN TO USER");
+    // Animate the task off the screen. 
+    
+//    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+//    [params setObject:toUser forKey:@"user"];
+//    [params setObject:byActor forKey:@"actor"];
+//    [params setObject:assignTime forKey:@"time"];
+
+    assignedToUser = [toUser retain];
+    assignedByActor = [byActor retain];
+    assignedAt = [assignTime retain];
+    
+    
+
+    // This is the fancy iOS 4.0+ way to do it, but ofc we don't have that API on the ipad yet.
+//    [UIView animateWithDuration:2.0
+//                     animations:^{
+//                         self.alpha = 0.4;
+//                         
+//                         // We want to move offscreen, but I'm not totally sure how to get the right point.
+//                         // First, lets just try to go to the user's center.
+//                         self.center = [toUser getView].center;
+//                         
+//                         // We also want to flip to be the right orientation as we fly off. 
+//                         [self setTransform:[toUser getView].transform];                         
+//                     }
+//                     completion: ^(BOOL finished) {
+//                         [self finishAssignToUser:toUser byActor:byActor atTime:assignTime];
+//                     }];
+    
+    
+    [UIView beginAnimations:@"assign_task_to_user" context:nil];
+    [UIView setAnimationDuration:3.0f];
+    
+     self.alpha = 1.0;
+    self.backgroundColor = [UIColor redColor];
+    self.center = CGPointMake(500, 500);
+     
+     // We want to move offscreen, but I'm not totally sure how to get the right point.
+     // First, lets just try to go to the user's center.
+//     self.center = [toUser getView].center;
+//     
+//     // We also want to flip to be the right orientation as we fly off. 
+//     [self setTransform:[toUser getView].transform];                         
+    
+    // Think about making this vary depending on whether it's been dropped or it's moving
+    // all the way across the screen. 
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(assignAnimationDone:finished:context:)];
+    
+    [UIView commitAnimations];
     
     
     // First, just say we're done immediately and do the assignment. 
-    [self finishAssignToUser:toUser byActor:byActor atTime:assignTime];
+    //[self finishAssignToUser:toUser byActor:byActor atTime:assignTime];
+}
+
+// should I just fold all of the other method into here? or is it good to keep them conceptually separate?
+- (void) assignAnimationDone:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+    NSLog(@"in animation callback, about to finish assignment: %@, finished: %@", animationID, finished);
+    [self finishAssignToUser:assignedToUser byActor:assignedByActor atTime:assignedAt];
+    
+    
+    [assignedToUser release];
+    assignedToUser = nil;
+    [assignedByActor release];
+    assignedByActor = nil;
+    [assignedAt release];
+    assignedAt = nil;
 }
 
 - (void) finishAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime {
