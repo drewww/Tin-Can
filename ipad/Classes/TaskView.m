@@ -97,7 +97,6 @@
 
 
 - (void) startAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime {
-    NSLog(@">>>>>>>>>>>>>>>>>>>>>>>>>>>>START ASSIGN TO USER");
     // Animate the task off the screen. 
     
     assignedToUser = [toUser retain];
@@ -135,11 +134,6 @@
     
     
     [UIView commitAnimations];
-    
-    // First, just say we're done immediately and do the assignment. 
-    //[self finishAssignToUser:toUser byActor:byActor atTime:assignTime];
-    NSLog(@"<<<<<<<<<<<<<<<<<<<<<<<<<< END ASSIGN TO USER");
-    
 }
 
 // should I just fold all of the other method into here? or is it good to keep them conceptually separate?
@@ -173,11 +167,35 @@
 
 
 - (void) startDeassignByActor:(Actor *)byActor atTime:(NSDate *)assignTime withTaskContainer:(UIView *)taskContainer {
-    [self finishDeassignByActor:byActor atTime:assignTime withTaskContainer:taskContainer];
+    
+    assignedByActor = [byActor retain];
+    assignedAt = [assignTime retain];
+    
+    [UIView beginAnimations:@"deassign_task_from_user" context:taskContainer];
+    [UIView setAnimationDuration:1.0f];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(deassignAnimatonDone:finished:context:)];
+    
+    self.alpha = 0.0;
+    
+    [self setTransform:CGAffineTransformScale(taskContainer.transform, 0.3, 0.3)];
+    
+    [UIView commitAnimations];
+}
+
+- (void) deassignAnimatonDone:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+    [self finishDeassignByActor:assignedByActor atTime:assignedAt withTaskContainer:context];    
+    
+    [assignedByActor release];
+    assignedByActor = nil;
+    [assignedAt release];
+    assignedAt = nil;    
 }
 
 - (void) finishDeassignByActor:(Actor *)byActor atTime:(NSDate *)assignTime withTaskContainer:(UIView *)taskContainer {
+    self.alpha = 1.0;
     [[task getView] removeFromSuperview];
+    [self setTransform: CGAffineTransformMakeRotation(0.0)];
     [taskContainer addSubview:[task getView]];
     
     [task.assignedTo removeTask:task];
