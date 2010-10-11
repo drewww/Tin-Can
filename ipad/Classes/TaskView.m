@@ -109,11 +109,11 @@
         // the view on top of the UserView before we 
         // do the spinning/fading transition of assignment.
         [UIView beginAnimations:@"move_task_to_user" context:nil];
-        [UIView setAnimationDuration:3.0f];
+        [UIView setAnimationDuration:1.0f];
         [UIView setAnimationDelegate:self];
         [UIView setAnimationDidStopSelector:@selector(moveTaskAnimationDone:finished:context:)];
         
-//        self.center = [toUser getView].center;
+        self.center = [self.superview convertPoint:[toUser getView].center fromView:[toUser getView].superview];
         
         [UIView commitAnimations];
         
