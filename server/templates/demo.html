@@ -79,7 +79,15 @@
 		
 		$("#login").click(function() {conn.connect();});
 		
+		$("#submit_new_task").click(function() {
+			conn.addTask($("#new_task").val());
+			return false;
+		});
 		
+		$("#submit_new_topic").click(function() {
+			conn.addTopic($("#new_topic").val());
+			return false;
+		});
 		
 		
 		
