@@ -13,11 +13,80 @@
 	<script type="text/javascript" src="{{static_url('js/ConnectionManager.js')}}"></script>
 	<script type="text/javascript" src="{{static_url('js/StateManager.js')}}"></script>
 	<script type="text/javascript" src="{{static_url('js/model.js')}}"></script>
-</head>
+
 
 <script type="text/javascript" charset="utf-8">
 	// We'll put all our code here.
 	
+	var localUser;
+	
+	$("document").ready(function () {
+		
+		// On load, grab data from the server so we can pick a user
+		// to connect as. 
+		conn = connection;
+
+		conn.addListener({connectionEvent: function(e) {
+			
+			switch(e.eventType) {
+				
+				// case "LOGIN_COMPLETE":
+				// 	// we should be able to back out the meeting from the
+				// 	// user object. 
+				// 	console.log("localUser: " + localUser);
+				// 	
+				// 	conn.joinRoom(localUser.loc.meeting.room.uuid);
+				// 	break;
+				// 
+				// case ""
+				case "NEW_TOPIC":
+					console.log("Got new topic!");
+					break;
+					
+				case "NEW_TASK":
+					console.log("Got new task!");
+					break;
+				case "GET_STATE_COMPLETE":
+					var users = state.getUsers();
+
+					// Figure out which user is 'Drew' and then log in as them.
+					var selectedUser = null;
+					for(var index in users) {
+						var user = users[index];
+						console.log(user.name);
+						if(user.name=="Drew") {
+							// Connect as that user.
+							selectedUser = user;
+							// Drop out of the loop.
+							break;
+						}
+					}
+
+					// Connect as the user.
+					localUser = selectedUser;
+					conn.setUser(selectedUser.uuid);
+					break;
+			}
+			
+		}});
+
+		// Tell the connection manager to load state so we can pick
+		// the uuid of the person we want. 
+		conn.getState();
+		
+		// Execution picks up in the connection manager event handler
+		// above, in GET_STATE_COMPLETE.
+		
+		$("#login").click(function() {conn.connect();});
+		
+		
+		
+		
+		
+		
+		
+		
+	})
 	
 	
 </script>
@@ -114,17 +183,15 @@
 		list-style: none;
 		margin-left: 10px;
 	}
-	
-	
-	
-	
+
 </style>
+</head>
 
 <body>
 <header>
 	<img id="logo" src="{{static_url('img/logo_small.png')}}"/>
 	<div id="title">TIN CAN</div>
-	<div id="identity">logging in...</div>
+	<div id="identity"><input type="button" id="login" value="login"></div>
 </header>
 <div id="container">
 
