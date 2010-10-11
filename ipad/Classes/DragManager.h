@@ -30,7 +30,7 @@
 
 - (void) taskDragMovedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task;
 - (bool) taskDragEndedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task;
-
+- (void) taskDragAnimationComplete;
 
 
 @property (nonatomic, retain) UIView *rootView;

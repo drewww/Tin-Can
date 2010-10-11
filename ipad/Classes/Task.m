@@ -47,6 +47,10 @@
     // sure how else to get it back, other than some kind of closure trick.
     [(TaskView *)view startAssignToUser:toUser byActor:byActor atTime:assignTime];
     
+//    [UIView beginAnimations:nil context:nil];
+//    
+//    view.alpha = 0.0;
+//    [UIView commitAnimations];
 }
 
 

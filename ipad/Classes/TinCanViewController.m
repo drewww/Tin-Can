@@ -59,7 +59,7 @@
 	c.view.alpha =0.0;
     [self.view addSubview:c.view];
 	
-	[UIView beginAnimations:@"move_to_assigned_participant" context:c];
+	[UIView beginAnimations:@"fade_to_new_view_controller" context:c];
     
     [UIView setAnimationDuration:0.5f];
     

@@ -222,8 +222,6 @@ static DragManager *sharedInstance = nil;
             [[ConnectionManager sharedInstance] deassignTask:task];
             [curTargetView setHoverState:false];
         }
-        
-        [draggedItemsContainer setHidden:true];
         return true;
     } else {
      // We need to add it back to its original home view. 
@@ -238,12 +236,13 @@ static DragManager *sharedInstance = nil;
         [taskView.lastParentView addSubview:taskView];
         
         NSLog(@"setting draggedItemsContainer to hidden");
-        [draggedItemsContainer setHidden:true];
-
-//        [draggedItemsContainer.superview sendSubviewToBack:draggedItemsContainer];
     }
     
     return false;
+}
+
+- (void) taskDragAnimationComplete {
+    [draggedItemsContainer setHidden:true];   
 }
 
 

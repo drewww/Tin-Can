@@ -23,7 +23,7 @@
 @end
 
 @interface TaskView : UIView {
-	CGPoint    initialOrigin;
+	CGPoint initialOrigin;
 	bool isTouched; 
     Task *task;
     
