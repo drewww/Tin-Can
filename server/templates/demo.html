@@ -91,12 +91,22 @@
 		
 		$("#submit_new_task").click(function() {
 			conn.addTask($("#new_task").val());
+			$("#new_task").val("new task...");
 			return false;
 		});
 		
 		$("#submit_new_topic").click(function() {
 			conn.addTopic($("#new_topic").val());
+			$("#new_topic").val("new topic...");
 			return false;
+		});
+		
+		$("#new_task").click(function () {
+			$("#new_task").val("");
+		});
+		
+		$("#new_topic").click(function () {
+			$("#new_topic").val("");
 		});
 		
 		$("#login").show();
