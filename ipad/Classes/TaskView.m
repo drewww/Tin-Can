@@ -123,7 +123,7 @@
     
     
     [UIView beginAnimations:@"assign_task_to_user" context:nil];
-    [UIView setAnimationDuration:1.0f];
+    [UIView setAnimationDuration:0.5f];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(assignAnimationDone:finished:context:)];
     
@@ -172,7 +172,7 @@
     assignedAt = [assignTime retain];
     
     [UIView beginAnimations:@"deassign_task_from_user" context:taskContainer];
-    [UIView setAnimationDuration:1.0f];
+    [UIView setAnimationDuration:0.5f];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(deassignAnimatonDone:finished:context:)];
     
