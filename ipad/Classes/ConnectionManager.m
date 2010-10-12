@@ -33,6 +33,11 @@ static ConnectionManager *sharedInstance = nil;
     self.serverReachability = [Reachability reachabilityWithHostName:SERVER];
     [self.serverReachability startNotifer];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                       selector:@selector(handleNotification:)
+                                           name:kReachabilityChangedNotification
+                                         object:nil];
+    
     @synchronized(self) {
         eventListeners = [[NSMutableSet set] retain];
     }
@@ -45,6 +50,14 @@ static ConnectionManager *sharedInstance = nil;
 
 #pragma mark -
 #pragma mark Connection Management
+
+- (void) handleNotification:(NSNotification *)notification {
+    if([notification name]==kReachabilityChangedNotification) {
+        NSLog(@"Connection state changed, dispatching a message to that effect.");
+        Event *e = [[Event alloc] initWithType:kCONNECTION_STATE_CHANGED withLocal:true withParams:nil withResults:nil];                    
+        [self publishEvent:e];
+    }
+}
 
 - (void) setLocation:(UUID *)newLocationUUID {
     if(locationUUID!=nil) [locationUUID release];

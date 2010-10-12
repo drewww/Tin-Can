@@ -115,6 +115,13 @@
         connectionInfoLabel.text = [NSString stringWithFormat:@"Could not connect to '%@'. The server is down.", SERVER];        
         
         [self.view addSubview:connectionInfoLabel];
+    } else if (event.type == kCONNECTION_STATE_CHANGED) {
+     
+        // Check and see if we're disconnected now.
+        if([[ConnectionManager sharedInstance].serverReachability currentReachabilityStatus]==NotReachable) {
+            connectionInfoLabel.text = [NSString stringWithFormat:@"Lost wireless connectivity.", SERVER];                    
+            [self.view addSubview:connectionInfoLabel];
+        }
     }
 
 	if(self.view != nil) {

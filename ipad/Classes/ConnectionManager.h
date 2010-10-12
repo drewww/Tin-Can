@@ -45,6 +45,8 @@
 #pragma mark -
 #pragma mark Connection Management
 
+- (void) handleNotification:(NSNotification *)notification;
+
 - (void) setLocation:(UUID *)newLocationUUID;
 - (void) connect;
 

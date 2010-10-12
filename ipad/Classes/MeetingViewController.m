@@ -258,12 +258,11 @@
         case kNEW_DEVICE:
             break;
             
-            
         case kCONNECTION_STATE_CHANGED:
-            
-            connectionInfoLabel.text = @"Lost wireless connectivity.";
-            [self.view addSubview:connectionInfoLabel];
-            
+            if([[ConnectionManager sharedInstance].serverReachability currentReachabilityStatus]==NotReachable) {
+                connectionInfoLabel.text = [NSString stringWithFormat:@"Lost wireless connectivity.", SERVER];                    
+                [self.view addSubview:connectionInfoLabel];
+            }            
             break;
             
         case kCONNECTION_REQUEST_FAILED:
