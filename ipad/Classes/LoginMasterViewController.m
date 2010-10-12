@@ -75,9 +75,6 @@
 			
 		}
 		
-		
-		
-		
 		// Headers
 		HeaderView *headerRoom =[[[HeaderView alloc] 
 									  initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0-30, 400,60) withTitle:@"Meetings"] retain];
@@ -113,6 +110,10 @@
         [[ConnectionManager sharedInstance] removeListener:self];
         
         [controller switchToViewController:[[[MeetingViewController alloc] init] retain]];        
+    } else if (event.type==kCONNECTION_REQUEST_FAILED) {
+        connectionInfoLabel.text = [NSString stringWithFormat:@"Could not connect to '%@'. The server is down.", SERVER];        
+        
+        [self.view addSubview:connectionInfoLabel];
     }
 
 	if(self.view != nil) {
@@ -131,23 +132,38 @@
 	// The currentPage variable tracks which part of the view the user is seeing
 	ConnectionManager *conMan = [ConnectionManager sharedInstance];
 	[conMan addListener:self];
-	[conMan getState];
-	
-	
-	
+
 	self.view= [[UIView alloc] initWithFrame:CGRectMake(0,0, 700.0, 2000.0) ];
 	self.view.center= CGPointMake(768/2.0, 1024/2.0+600);
 	[self.view setBackgroundColor:[UIColor blackColor]]; 
 	currentPage=0;
-	
-	
+		
 	// Tracks user selections
 	chosenRoom=NULL;
 	chosenLocation=NULL;
-}	
+    
+    connectionInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(384, 512, 300, 150)];
+    [connectionInfoLabel setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+    connectionInfoLabel.numberOfLines = 3;
+    connectionInfoLabel.textAlignment = UITextAlignmentCenter;
+    connectionInfoLabel.textColor = [UIColor redColor];
+    connectionInfoLabel.backgroundColor = [UIColor colorWithWhite:0.3 alpha:1.0];
+    connectionInfoLabel.font = [UIFont boldSystemFontOfSize:20.0f];
+
+    if([conMan.serverReachability currentReachabilityStatus]==NotReachable) {
+        // put up a UI notification that we can't start because the network
+        // connection is down.
+        connectionInfoLabel.text = [NSString stringWithFormat:@"Could not reach server '%@'. Wireless is not connected.", SERVER];        
+        [self.view addSubview:connectionInfoLabel];
+        
+    } else {
+        // we can see the server, so we're all good. 
+        [conMan getState];
+    }
+}
 
 // Dictates what action to take when a User makes a selection
--(void)loginButtonPressed:(id)sender{
+- (void) loginButtonPressed:(id)sender{
     // Turn off the button immediately to avoid double presses.
     [self setLoginButtonEnabled:false];
 	

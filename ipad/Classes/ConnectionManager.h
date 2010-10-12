@@ -13,7 +13,7 @@
 #import "Event.h"
 #import "Task.h"
 #import "Topic.h"
-
+#import "Reachability.h"
 
 @interface ConnectionManager : NSObject {
     UUID *locationUUID;
@@ -28,13 +28,19 @@
     NSMutableSet *eventListeners;
     
     BOOL isConnected;
-    
-//    ASINetworkQueue *queue;
-    
+        
     ASIHTTPRequest *currentPersistentConnection;
     
     SBJSON *parser;
+    
+    Reachability *serverReachability;
  }
+
+#pragma mark -
+#pragma mark Properties
+
+@property (nonatomic, retain) Reachability *serverReachability;
+
 
 #pragma mark -
 #pragma mark Connection Management
@@ -67,7 +73,7 @@
 #pragma mark State Manipulation Methods
 
 - (void) joinRoomWithUUID:(UUID *)roomUUID;
-- (void) leaveRoomWithUUID:(UUID *)roomUUID;
+//- (void) leaveRoomWithUUID:(UUID *)roomUUID;
 
 - (void) addLocationWithName:(NSString *)locationName;
 

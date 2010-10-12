@@ -40,7 +40,11 @@ typedef enum {
     kLEAVE_ROOM_COMPLETE,
     kJOIN_ROOM_COMPLETE,
     kLOGIN_COMPLETE,
-    kCONNECT_COMPLETE
+    kCONNECT_COMPLETE,
+    
+    // Connection status events
+    kCONNECTION_STATE_CHANGED,
+    kCONNECTION_REQUEST_FAILED
 } EventType;
 
 @interface Event : NSObject {

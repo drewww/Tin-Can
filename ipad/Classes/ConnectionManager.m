@@ -18,6 +18,8 @@ static ConnectionManager *sharedInstance = nil;
 
 @implementation ConnectionManager
 
+@synthesize serverReachability;
+
 #pragma mark --
 #pragma mark class Instance methods
 - (id) init {
@@ -27,10 +29,16 @@ static ConnectionManager *sharedInstance = nil;
     
     //queue = [[[ASINetworkQueue alloc] init] retain];
     currentPersistentConnection = nil;
-        
-   @synchronized(self) {
-    eventListeners = [[NSMutableSet set] retain];
-   }
+    
+    self.serverReachability = [Reachability reachabilityWithHostName:SERVER];
+    [self.serverReachability startNotifer];
+    
+    @synchronized(self) {
+        eventListeners = [[NSMutableSet set] retain];
+    }
+    
+    
+    
     return self;
 }
 
@@ -181,6 +189,16 @@ static ConnectionManager *sharedInstance = nil;
 - (void) requestFailed:(ASIHTTPRequest *)request {
     NSError *error = [request error];
     NSLog(@"Request failed: %@ with error %@", request.url, error);
+    
+    if([serverReachability currentReachabilityStatus]!=NotReachable) {
+        // This means the connection is alive, so the server must be down.
+        // Dispatch a message to that effect.
+        
+        // (I'm not sure I need to check reachability here - depends on whether or not we 
+        //  expect downstream clients of this to be checking reachability first or not.)
+        Event *e = [[Event alloc] initWithType:kCONNECTION_REQUEST_FAILED withLocal:true withParams:nil withResults:nil];                    
+        [self publishEvent:e];        
+    }
     
     // Make sure that if the login connect failed, we don't accidently block
     // all future attempts to connect.

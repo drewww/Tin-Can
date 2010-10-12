@@ -42,6 +42,8 @@
 	UILabel *logoSlide;
 	UIButton *loginButton;
     
+    UILabel *connectionInfoLabel;
+    
 	LocationViewController *locViewController;
 	RoomViewController *roomViewController;
 	TinCanViewController *controller;
