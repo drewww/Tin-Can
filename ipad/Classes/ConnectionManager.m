@@ -74,7 +74,7 @@ static ConnectionManager *sharedInstance = nil;
     isConnected = YES;
 
     NSLog(@"logging in...");
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/connect/login"]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", SERVER, PORT, @"/connect/login"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:locationUUID forKey:@"actorUUID"];    
     [request setDelegate:self];
@@ -83,7 +83,7 @@ static ConnectionManager *sharedInstance = nil;
 
 - (void) getState {
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/connect/state"]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", SERVER, PORT, @"/connect/state"]];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     [request setDelegate:self];
     [request startAsynchronous];   
@@ -105,7 +105,7 @@ static ConnectionManager *sharedInstance = nil;
     [self stopPersistentConnection];
     NSLog(@"/CONNECT/ING");
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@?actorUUID=%@", SERVER, PORT, @"/connect/", locationUUID]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@?actorUUID=%@", SERVER, PORT, @"/connect/", locationUUID]];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     
     // hour long timeout, since this is the long-running connection.
@@ -466,7 +466,7 @@ static ConnectionManager *sharedInstance = nil;
 
 - (void) joinRoomWithUUID:(UUID *)roomUUID {
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/rooms/join"]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", SERVER, PORT, @"/rooms/join"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:roomUUID forKey:@"roomUUID"];    
     [request setDelegate:self];
@@ -475,7 +475,7 @@ static ConnectionManager *sharedInstance = nil;
 
 - (void) leaveRoomWithUUID {
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/rooms/leave"]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", SERVER, PORT, @"/rooms/leave"]];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     [request setDelegate:self];
     [request startAsynchronous];     
@@ -486,7 +486,7 @@ static ConnectionManager *sharedInstance = nil;
 }
 
 - (void) assignTask:(Task *)theTask toUser:(User *)theUser {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/tasks/assign"]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", SERVER, PORT, @"/tasks/assign"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:theTask.uuid forKey:@"taskUUID"];    
     [request setPostValue:theUser.uuid forKey:@"assignedToUUID"];    
@@ -495,7 +495,7 @@ static ConnectionManager *sharedInstance = nil;
 }
 
 - (void) deassignTask:(Task *)theTask {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/tasks/assign"]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", SERVER, PORT, @"/tasks/assign"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:theTask.uuid forKey:@"taskUUID"];    
     [request setPostValue:@"1" forKey:@"deassign"];    
@@ -504,7 +504,7 @@ static ConnectionManager *sharedInstance = nil;
 }
 
 - (void) updateTopic:(Topic *)theTopic withStatus:(TopicStatus)theStatus {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@:%@%@", SERVER, PORT, @"/topics/update"]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", SERVER, PORT, @"/topics/update"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:theTopic.uuid forKey:@"topicUUID"];
     

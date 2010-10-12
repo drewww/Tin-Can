@@ -6,6 +6,7 @@
 //  Copyright 2010 MIT Media Lab. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "LoginMasterViewController.h"
 #import "LoginAppDelegate.h"
 #import "LogoView.h"
@@ -142,13 +143,14 @@
 	chosenRoom=NULL;
 	chosenLocation=NULL;
     
-    connectionInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(384, 512, 300, 150)];
+    connectionInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200, 325, 350, 200)];
     [connectionInfoLabel setTransform:CGAffineTransformMakeRotation(M_PI/2)];
     connectionInfoLabel.numberOfLines = 3;
     connectionInfoLabel.textAlignment = UITextAlignmentCenter;
-    connectionInfoLabel.textColor = [UIColor redColor];
-    connectionInfoLabel.backgroundColor = [UIColor colorWithWhite:0.3 alpha:1.0];
-    connectionInfoLabel.font = [UIFont boldSystemFontOfSize:20.0f];
+    connectionInfoLabel.textColor = [UIColor whiteColor];
+    connectionInfoLabel.backgroundColor = [UIColor colorWithRed:0.5 green:0.3 blue:0.3 alpha:1.0];
+    connectionInfoLabel.font = [UIFont boldSystemFontOfSize:30.0f];
+    connectionInfoLabel.layer.cornerRadius = 8;
 
     if([conMan.serverReachability currentReachabilityStatus]==NotReachable) {
         // put up a UI notification that we can't start because the network

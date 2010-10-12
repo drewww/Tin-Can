@@ -26,6 +26,7 @@
 		3A4941B8124D209B0068C6D6 /* DragManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4941B7124D209B0068C6D6 /* DragManager.m */; };
 		3A57217F11EB7515004C2687 /* MeetingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57217E11EB7515004C2687 /* MeetingViewController.m */; };
 		3A57237811EBDE0B004C2687 /* TinCanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57237711EBDE0B004C2687 /* TinCanViewController.m */; };
+		3A95E0631264B92700518580 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A95E0621264B92700518580 /* QuartzCore.framework */; };
 		3AA06D1411AAD1C500C3D279 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AA06D1311AAD1C500C3D279 /* Icon.png */; };
 		3AA2DDE31261178800235573 /* full_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AA2DDE21261178800235573 /* full_logo.png */; };
 		3AB0BC3811A5D73C003A91EB /* MeetingTimerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AB0BC3711A5D73C003A91EB /* MeetingTimerView.m */; };
@@ -111,6 +112,7 @@
 		3A57217E11EB7515004C2687 /* MeetingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeetingViewController.m; sourceTree = "<group>"; };
 		3A57237611EBDE0B004C2687 /* TinCanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TinCanViewController.h; sourceTree = "<group>"; };
 		3A57237711EBDE0B004C2687 /* TinCanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TinCanViewController.m; sourceTree = "<group>"; };
+		3A95E0621264B92700518580 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		3AA06D1311AAD1C500C3D279 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		3AA2DDE21261178800235573 /* full_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = full_logo.png; sourceTree = "<group>"; };
 		3AB0BC3611A5D73C003A91EB /* MeetingTimerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeetingTimerView.h; sourceTree = "<group>"; };
@@ -219,6 +221,7 @@
 				3AC2C22711A5B73D0071F912 /* MobileCoreServices.framework in Frameworks */,
 				3AC2C22B11A5B7520071F912 /* libz.1.2.3.dylib in Frameworks */,
 				3AC2C25A11A5BA500071F912 /* CFNetwork.framework in Frameworks */,
+				3A95E0631264B92700518580 /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -263,6 +266,7 @@
 				3AC2C22611A5B73D0071F912 /* MobileCoreServices.framework */,
 				3AC2C22A11A5B7520071F912 /* libz.1.2.3.dylib */,
 				3AC2C25911A5BA500071F912 /* CFNetwork.framework */,
+				3A95E0621264B92700518580 /* QuartzCore.framework */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
