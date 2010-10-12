@@ -16,6 +16,9 @@
 @synthesize delegate;
 @synthesize lastParentView;
 
+#define ASSIGN [NSNumber numberWithInt:0] 
+#define DEASSIGN [NSNumber numberWithInt:1]
+
 - (id)initWithFrame:(CGRect)frame withTask:(Task *)theTask{
     if ((self = [super initWithFrame:frame])) {
 		self.frame=frame;
@@ -108,7 +111,7 @@
         // We need to kick off a transition that moves
         // the view on top of the UserView before we 
         // do the spinning/fading transition of assignment.
-        [UIView beginAnimations:@"move_task_to_user" context:nil];
+        [UIView beginAnimations:@"move_task_to_user" context:ASSIGN];
         [UIView setAnimationDuration:1.0f];
         [UIView setAnimationDelegate:self];
         [UIView setAnimationDidStopSelector:@selector(moveTaskAnimationDone:finished:context:)];
@@ -149,16 +152,33 @@
 }
 
 - (void) moveTaskAnimationDone:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
-    [UIView beginAnimations:@"assign_task_to_user" context:nil];
-    [UIView setAnimationDuration:0.5f];
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(assignAnimationDone:finished:context:)];
     
-    self.alpha = 0.0;
+    NSNumber *type = (NSNumber *)context;
     
-    [self setTransform:CGAffineTransformScale([assignedToUser getView].transform, 0.3, 0.3)];
-    
-    [UIView commitAnimations];
+    if([type intValue]==[ASSIGN intValue]) {
+        [UIView beginAnimations:@"assign_task_to_user" context:nil];
+        [UIView setAnimationDuration:0.5f];
+        [UIView setAnimationDelegate:self];
+        [UIView setAnimationDidStopSelector:@selector(assignAnimationDone:finished:context:)];
+        
+        self.alpha = 0.0;
+        
+        [self setTransform:CGAffineTransformScale([assignedToUser getView].transform, 0.3, 0.3)];
+        
+        [UIView commitAnimations];
+    } else if ([type intValue]==[DEASSIGN intValue]) {
+        NSLog(@"***********IN DEASSIGN CALLBACK ROUTER");
+        [UIView beginAnimations:@"deassign_task_from_user" context:nil];
+        [UIView setAnimationDuration:0.5f];
+        [UIView setAnimationDelegate:self];
+        [UIView setAnimationDidStopSelector:@selector(deassignAnimationDone:finished:context:)];
+        
+        self.alpha = 0.0;
+        
+        [self setTransform:CGAffineTransformScale(tempTaskContainer.transform, 0.3, 0.3)];
+        
+        [UIView commitAnimations];        
+    }
 }
 
 
@@ -196,30 +216,50 @@
     
     assignedByActor = [byActor retain];
     assignedAt = [assignTime retain];
+    tempTaskContainer = [taskContainer retain];
     
-    [UIView beginAnimations:@"deassign_task_from_user" context:taskContainer];
-    [UIView setAnimationDuration:0.5f];
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(deassignAnimatonDone:finished:context:)];
     
-    self.alpha = 0.0;
-    
-    [self setTransform:CGAffineTransformScale(taskContainer.transform, 0.3, 0.3)];
-    
-    [UIView commitAnimations];
+    if([[DragManager sharedInstance] moveTaskViewToDragContainer:self]) {
+        // We need to kick off a transition that moves
+        // the view on top of the UserView before we 
+        // do the spinning/fading transition of assignment.
+        [UIView beginAnimations:@"move_task_to_container" context:DEASSIGN];
+        [UIView setAnimationDuration:1.0f];
+        [UIView setAnimationDelegate:self];
+        [UIView setAnimationDidStopSelector:@selector(moveTaskAnimationDone:finished:context:)];
+        
+        self.center = [self.superview convertPoint:taskContainer.center fromView:taskContainer.superview];
+        
+        [UIView commitAnimations];
+    } else {
+        
+        [UIView beginAnimations:@"deassign_task_from_user" context:nil];
+        [UIView setAnimationDuration:0.5f];
+        [UIView setAnimationDelegate:self];
+        [UIView setAnimationDidStopSelector:@selector(deassignAnimationDone:finished:context:)];
+        
+        self.alpha = 0.0;
+        
+        [self setTransform:CGAffineTransformScale(taskContainer.transform, 0.3, 0.3)];
+        
+        [UIView commitAnimations];
+    }
 }
 
-- (void) deassignAnimatonDone:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
-    [self finishDeassignByActor:assignedByActor atTime:assignedAt withTaskContainer:context];    
+- (void) deassignAnimationDone:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+    [self finishDeassignByActor:assignedByActor atTime:assignedAt withTaskContainer:tempTaskContainer];    
     
     [assignedByActor release];
     assignedByActor = nil;
     [assignedAt release];
-    assignedAt = nil;    
+    assignedAt = nil;
+    [tempTaskContainer release];
+    tempTaskContainer = nil;
 }
 
 - (void) finishDeassignByActor:(Actor *)byActor atTime:(NSDate *)assignTime withTaskContainer:(UIView *)taskContainer {
     self.alpha = 1.0;
+
     [[task getView] removeFromSuperview];
     [self setTransform: CGAffineTransformMakeRotation(0.0)];
     [taskContainer addSubview:[task getView]];

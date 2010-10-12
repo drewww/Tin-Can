@@ -578,7 +578,7 @@
 				GCC_PREFIX_HEADER = TinCan_Prefix.pch;
 				INFOPLIST_FILE = "TinCan-Info.plist";
 				PRODUCT_NAME = TinCan;
-				VALID_ARCHS = armv7;
+				VALID_ARCHS = "";
 			};
 			name = Debug;
 		};
@@ -592,6 +592,7 @@
 				INFOPLIST_FILE = "TinCan-Info.plist";
 				PRODUCT_NAME = TinCan;
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "";
 			};
 			name = Release;
 		};

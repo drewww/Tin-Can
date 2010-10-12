@@ -38,6 +38,8 @@
     User *assignedToUser;
     Actor *assignedByActor;
     NSDate *assignedAt;
+    
+    UIView *tempTaskContainer;
 }
 
 @property (nonatomic, readonly) Task *task;
@@ -54,6 +56,7 @@
 
 
 - (void) startDeassignByActor:(Actor *)byActor atTime:(NSDate *)assignTime withTaskContainer:(UIView *)taskContainer;
+- (void) deassignAnimationDone:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context;
 - (void) finishDeassignByActor:(Actor *)byActor atTime:(NSDate *)assignTime withTaskContainer:(UIView *)taskContainer;
 
 - (NSComparisonResult) compareByPointer:(TaskView *)view;
