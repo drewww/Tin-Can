@@ -22,7 +22,7 @@
     TopicContainerView *topicContainer;
 	LocationContainerView *locContainer;
 
-    
+    UILabel *connectionInfoLabel;
     
     NSMutableSet *taskViews;
 

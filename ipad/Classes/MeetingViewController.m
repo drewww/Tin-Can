@@ -6,6 +6,7 @@
 //  Copyright MIT Media Lab 2010. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "MeetingViewController.h"
 #import "TaskView.h"
 #import "Task.h"
@@ -72,6 +73,18 @@
     // Now register as an event listener on the ConnectionManager, so we can update
     // the view in response to changes.
     [[ConnectionManager sharedInstance] addListener:self];
+    
+    
+    // Set up a label for displaying information about connection issues.
+    connectionInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-350/2, self.view.frame.size.height/2.0-200/2, 350, 200)];
+    [connectionInfoLabel setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+    connectionInfoLabel.numberOfLines = 3;
+    connectionInfoLabel.textAlignment = UITextAlignmentCenter;
+    connectionInfoLabel.textColor = [UIColor whiteColor];
+    connectionInfoLabel.backgroundColor = [UIColor colorWithRed:0.5 green:0.3 blue:0.3 alpha:1.0];
+    connectionInfoLabel.font = [UIFont boldSystemFontOfSize:30.0f];
+    connectionInfoLabel.layer.cornerRadius = 8;    
+    connectionInfoLabel.alpha = 0.9;
     
 }
 
@@ -243,6 +256,21 @@
             break;
             
         case kNEW_DEVICE:
+            break;
+            
+            
+        case kCONNECTION_STATE_CHANGED:
+            
+            connectionInfoLabel.text = @"Lost wireless connectivity.";
+            [self.view addSubview:connectionInfoLabel];
+            
+            break;
+            
+        case kCONNECTION_REQUEST_FAILED:
+            
+            connectionInfoLabel.text = @"Lost connection to the server.";
+            [self.view addSubview:connectionInfoLabel];
+            
             break;
             
         default:
