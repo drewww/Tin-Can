@@ -34,16 +34,28 @@ def init():
 def init_test():
     """Initialize the internal state using test data."""
     
+    """Initialize the internal state for demos"""
     newUserEvent = Event("NEW_USER", params={"name":"Drew"})
     newUserEvent.dispatch()
-    newUserEvent = Event("NEW_USER", params={"name":"Paula"})
+    newUserEvent = Event("NEW_USER", params={"name":"Chris"})
     newUserEvent.dispatch()
     newUserEvent = Event("NEW_USER", params={"name":"Stephanie"})
     newUserEvent.dispatch()
-    newUserEvent = Event("NEW_USER", params={"name":"Ariel"})
+    newUserEvent = Event("NEW_USER", params={"name":"Matt"})
     newUserEvent.dispatch()
+    newUserEvent = Event("NEW_USER", params={"name":"Josh"})
+    newUserEvent.dispatch()
+    newUserEvent = Event("NEW_USER", params={"name":"Andrea"})
+    newUserEvent.dispatch()
+    newUserEvent = Event("NEW_USER", params={"name":"Charlie"})
+    newUserEvent.dispatch()
+    newUserEvent = Event("NEW_USER", params={"name":"Jaewoo"})
+    newUserEvent.dispatch()
+    newUserEvent = Event("NEW_USER", params={"name":"Wu-Hsi"})
+    newUserEvent.dispatch()
+
     
-    newLocationEvent = Event("NEW_LOCATION", params={"name":"Garden"})
+    newLocationEvent = Event("NEW_LOCATION", params={"name":"E15-363"})
     newLocationEvent.dispatch()
     newLocationEvent = Event("NEW_LOCATION", params={"name":"Orange+Green"})
     newLocationEvent.dispatch()
@@ -62,35 +74,7 @@ def init_test():
     newRoomEvent.dispatch()
     
 def init_demo():
-    """Initialize the internal state for demos"""
-    newUserEvent = Event("NEW_USER", params={"name":"Drew"})
-    newUserEvent.dispatch()
-    newUserEvent = Event("NEW_USER", params={"name":"Paula"})
-    newUserEvent.dispatch()
-    newUserEvent = Event("NEW_USER", params={"name":"Stephanie"})
-    newUserEvent.dispatch()
-    newUserEvent = Event("NEW_USER", params={"name":"Ariel"})
-    newUserEvent.dispatch()
-    newUserEvent = Event("NEW_USER", params={"name":"Josh"})
-    newUserEvent.dispatch()
-    
-    newLocationEvent = Event("NEW_LOCATION", params={"name":"Garden"})
-    newLocationEvent.dispatch()
-    newLocationEvent = Event("NEW_LOCATION", params={"name":"Orange+Green"})
-    newLocationEvent.dispatch()
-    newLocationEvent = Event("NEW_LOCATION", params={"name":"S+M Group Area"})
-    newLocationEvent.dispatch()
-    newLocationEvent = Event("NEW_LOCATION", params={"name":"E14-395"})
-    newLocationEvent.dispatch()
-    
-    newRoomEvent = Event("NEW_ROOM", params={"name":"Mars"})
-    newRoomEvent.dispatch()
-    newRoomEvent = Event("NEW_ROOM", params={"name":"Jupiter"})
-    newRoomEvent.dispatch()
-    newRoomEvent = Event("NEW_ROOM", params={"name":"Venus"})
-    newRoomEvent.dispatch()
-    newRoomEvent = Event("NEW_ROOM", params={"name":"Saturn"})
-    newRoomEvent.dispatch()
+    init_test()
     
     users = state.get_users()
     locations = state.get_locations()
@@ -105,6 +89,9 @@ def init_demo():
     locations[0].userJoined(users[1])
     locations[1].userJoined(users[2])
     locations[1].userJoined(users[3])
+    locations[1].userJoined(users[5])
+    locations[1].userJoined(users[6])
+    locations[1].userJoined(users[7])
     locations[2].userJoined(users[4])
     
     #new meeting. I've only created one, hope that's okay.
@@ -116,18 +103,28 @@ def init_demo():
     locations[2].joinedMeeting(meeting)
     
     #new topics
-    newTopic = model.Topic(meeting.uuid, users[0].uuid, "topic one",
+    newTopic = model.Topic(meeting.uuid, users[0].uuid, "Sponsor week planning",
         status=model.Topic.FUTURE, color="006600", createdAt=time.time()-14*60)
     meeting.addTopic(newTopic)
     users[0].status=("created new topic", newTopic.createdAt)
-    newTopic = model.Topic(meeting.uuid, users[3].uuid, "topic two",
+    newTopic = model.Topic(meeting.uuid, users[3].uuid, "Conference trip report (Andrea)",
         status=model.Topic.FUTURE, color="006600", createdAt=time.time()-14*60)
     meeting.addTopic(newTopic)
     users[3].status=("created new topic", newTopic.createdAt)
-    newTopic = model.Topic(meeting.uuid, users[2].uuid, "topic three",
+    newTopic = model.Topic(meeting.uuid, users[2].uuid, "Paper discussion",
         status=model.Topic.FUTURE, color="006600", createdAt=time.time()-13*60)
     meeting.addTopic(newTopic)
     users[2].status=("created new topic", newTopic.createdAt)
+    newTopic = model.Topic(meeting.uuid, users[2].uuid, "Tin Can design review",
+        status=model.Topic.FUTURE, color="006600", createdAt=time.time()-13*60)
+    meeting.addTopic(newTopic)
+    users[2].status=("created new topic", newTopic.createdAt)
+    newTopic = model.Topic(meeting.uuid, users[2].uuid, "purchase new oscilloscope?",
+        status=model.Topic.FUTURE, color="006600", createdAt=time.time()-13*60)
+    meeting.addTopic(newTopic)
+    users[2].status=("created new topic", newTopic.createdAt)
+
+
     
     topics = meeting.topics
     
@@ -138,14 +135,29 @@ def init_demo():
     users[3].status=("edited topic", time.time()-8*60)
     topics[1].setStatus(model.Topic.CURRENT, users[3], time.time()-8*60)
     users[3].status=("edited topic", time.time()-8*60)
+    topics[1].setStatus(model.Topic.PAST, users[3], time.time()-2*60)
+    users[2].status=("edited topic", time.time()-2*60)
+    topics[2].setStatus(model.Topic.CURRENT, users[3], time.time()-2*60)
+    users[2].status=("edited topic", time.time()-2*60)
+
     
     #new tasks
-    newTask = model.Task(meeting.uuid, users[1].uuid, "task one", createdAt=time.time()-10*60)
-    meeting.addTask(newTask)
+    newTask = model.Task(meeting.uuid, users[1].uuid, "email out the best papers from the conference", createdAt=time.time()-10*60)
+    meeting.addTask(newTask)                                 
     users[1].status=("created new task", newTask.createdAt)
-    newTask = model.Task(meeting.uuid, users[0].uuid, "task two", createdAt=time.time()-3*60)
+    newTask = model.Task(meeting.uuid, users[0].uuid, "find a place to store our unused furniture", createdAt=time.time()-3*60)
     meeting.addTask(newTask)
     users[0].status=("created new task", newTask.createdAt)
+    newTask = model.Task(meeting.uuid, users[0].uuid, "check our projectors to make sure they still work", createdAt=time.time()-3*60)
+    meeting.addTask(newTask)
+    users[0].status=("created new task", newTask.createdAt)
+    newTask = model.Task(meeting.uuid, users[0].uuid, "handle poster printing", createdAt=time.time()-3*60)
+    meeting.addTask(newTask)
+    users[0].status=("created new task", newTask.createdAt)
+    newTask = model.Task(meeting.uuid, users[0].uuid, "update the group website with the latest photo", createdAt=time.time()-3*60)
+    meeting.addTask(newTask)
+    users[0].status=("created new task", newTask.createdAt)
+
     
     tasks = meeting.tasks
     
