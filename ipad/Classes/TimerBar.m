@@ -22,7 +22,7 @@
 		curDate= [[NSDate date] retain];
 
 		indexForColorWheel=0;
-		colorWheel = [[NSMutableArray arrayWithObjects:[UIColor colorWithWhite:0.6 alpha:1.0], [UIColor colorWithWhite:0.4 alpha:1.0], nil] retain];
+		colorWheel = [[NSMutableArray arrayWithObjects:[UIColor colorWithWhite:0.6 alpha:1.0], [UIColor colorWithWhite:0.6 alpha:1.0], [UIColor colorWithWhite:0.4 alpha:1.0], [UIColor colorWithWhite:0.4 alpha:1.0], nil] retain];
         
         
 		clock = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(clk) userInfo:nil repeats:YES];
@@ -64,6 +64,8 @@
     // (although we're going to have to do that eventually, I suspect)
     
     
+    CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
+    
 	CGContextFillRect(ctx, CGRectMake(0, 0, self.frame.size.width, self.frame.size.height));
 	while (i< [boundariesList count]) {
         // NSLog(@"rendering boundry %d: %@", i, [boundariesList objectAtIndex:i]);
@@ -74,7 +76,7 @@
             tempEndTime=[boundariesList objectAtIndex:i];
             tempStartTime=meeting.startedAt;
             elapsedTime = abs([ tempStartTime  timeIntervalSinceDate:tempEndTime ]);
-            CGContextSetFillColorWithColor(ctx,  [UIColor colorWithWhite:0.3 alpha:1.0].CGColor);
+			CGContextSetFillColorWithColor(ctx, [self getNextColor].CGColor);
             CGContextFillRect(ctx, CGRectMake(0, 0, elapsedTime*pixelsPerSecond, self.frame.size.height));
             lastPoint =	elapsedTime*pixelsPerSecond;
 		} else {
@@ -83,14 +85,18 @@
 			tempEndTime=[boundariesList objectAtIndex:i];
             
 			elapsedTime = abs([tempStartTime  timeIntervalSinceDate:tempEndTime ]);
-            
             if(elapsedTime < 1) {
                 i++;
                 continue;
             }
             
-			CGContextSetFillColorWithColor(ctx, [self getNextColor].CGColor);
+            
+            UIColor *theColor = [self getNextColor];
+            NSLog(@"using color: %@", theColor);
+			CGContextSetFillColorWithColor(ctx, theColor.CGColor);
 			CGContextFillRect(ctx, CGRectMake(lastPoint, 0, (elapsedTime*pixelsPerSecond), self.frame.size.height));	
+			//CGContextStrokeRect(ctx, CGRectMake(lastPoint, 0, (elapsedTime*pixelsPerSecond), self.frame.size.height));	
+            
             lastPoint = elapsedTime*pixelsPerSecond;
 		}
 		i++;
