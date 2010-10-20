@@ -54,7 +54,7 @@
 
 - (NSComparisonResult) compareByLocation:(UserView *)view;
 
-+ (NSSet *) getAllUserViews;
++ (NSArray *) getAllUserViews;
 
 - (User *)getUser;
 

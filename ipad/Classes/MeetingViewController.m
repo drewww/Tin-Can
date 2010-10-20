@@ -285,7 +285,7 @@
 
 - (void) layoutUsers {
     // First, sort the users so they get grouped properly by location.
-    NSArray *sortedUserViews = [[[UserView getAllUserViews] allObjects] sortedArrayUsingSelector:@selector(compareByLocation:)];
+    NSArray *sortedUserViews = [UserView getAllUserViews];
     
 
     // Debugging to make sure sorting is working properly.

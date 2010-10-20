@@ -167,10 +167,8 @@
     // We want to group locations together and then within shared locations,
     // organize them alphabetically. When compareing locations, order those
     // alphabetically, too. 
-    NSLog(@"============================COMPARE BY LOC");
     User *userA = userRenderView.user;
     User *userB = [view getUser];
-
     
     Location *locA = userA.location;
     Location *locB = userB.location;
@@ -194,16 +192,16 @@
 
 // Convenience method that gets used in a few different places to work
 // around the event propegation problems we have when we put all the
-// user views in a single UIView.
+// user views in a single UIView. Returns them sorted by location.
 
-+ (NSSet *) getAllUserViews {
++ (NSArray *) getAllUserViews {
     // Get a list of users from the state manager.
     NSMutableSet *allUserViews = [NSMutableSet set];
     for (User *user in [StateManager sharedInstance].meeting.currentParticipants) {
         [allUserViews addObject:[user getView]];
     }
-    
-    return allUserViews;
+
+    return [[allUserViews allObjects] sortedArrayUsingSelector:@selector(compareByLocation:)];
 }
 
 
