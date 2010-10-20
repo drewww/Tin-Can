@@ -35,7 +35,10 @@
     for (Location *loc in locations) {
         CGContextSetStrokeColorWithColor(ctx, loc.color.CGColor);
         CGContextSetLineWidth(ctx, 4.0f);
-        NSArray *users = [loc.users allObjects];
+        
+        NSSortDescriptor *sortByName = [[NSSortDescriptor alloc] initWithKey:@"name" ascending: YES];
+        NSArray *users = [[loc.users allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortByName]];;
+        
         for(int i=0; i<[users count]-1; i++) {
             User *user = [users objectAtIndex:i];
             User *nextUser = [users objectAtIndex:i+1];
