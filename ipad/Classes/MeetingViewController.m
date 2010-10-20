@@ -44,12 +44,9 @@
 	taskContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) withRot: M_PI/2];
 
 	topicContainer=[[TopicContainerView alloc] initWithFrame:CGRectMake(260, 490, 250, 600)];
-	
-	locContainer=[[LocationContainerView alloc] initWithFrame:CGRectMake(20, 432, 290, 160)];
-	
+		
 	[self.view addSubview:taskContainer];	
 	[self.view addSubview:topicContainer];
-	[self.view addSubview:locContainer];
 
     [[DragManager sharedInstance] setRootView:self.view andTaskContainer:taskContainer];
 
