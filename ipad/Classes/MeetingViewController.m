@@ -331,7 +331,15 @@
         }	
         
     }
-    //Forms points from side assignments
+    
+    // Iterates through each of the side buckets and places the views along
+    // that side with appropriate spacing.
+    //
+    // On the first and last sides, we flip the direction (1024- or 768-) to ensure
+    // that the points come out in clockwise order starting from the bottom left
+    // on the screen in landscape mode. This ensures that if we order users in a
+    // particular way in the array of views, they'll be placed on the screen in 
+    // that order as well. 
     NSMutableArray *points=[[NSMutableArray alloc] initWithCapacity:numViews];
     NSMutableArray *rotations=[[NSMutableArray alloc] initWithCapacity:numViews];
     for (i=0; i<4; i++) {
@@ -341,13 +349,12 @@
                 float divisions=1024.0/[[sides objectAtIndex:i] intValue];
                 float yVal= (divisions*c) -(divisions/2.0);
                 if (i==0) {
-                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(0, yVal)]];
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(0, 1024-yVal)]];
                     [rotations addObject:[NSNumber numberWithFloat:M_PI/2]];
                     
                 }	
                 else{
                     [points addObject:[NSValue valueWithCGPoint:CGPointMake(768, yVal)]];
-                    
                     [rotations addObject:[NSNumber numberWithFloat:-M_PI/2]]; 
                 }
             }
@@ -359,7 +366,7 @@
                     [rotations addObject:[NSNumber numberWithFloat:M_PI]];
                 }	
                 else{
-                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(xVal, 1024)]];
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(768-xVal, 1024)]];
                     [rotations addObject:[NSNumber numberWithFloat:0.0]];
                 }
             }
