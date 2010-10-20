@@ -19,8 +19,6 @@
 #import "Location.h"
 #import "DragManager.h"
 
-#define INITIAL_REVISION_NUMBER 10000
-
 @implementation MeetingViewController
 
 #pragma mark Application Events
@@ -60,8 +58,6 @@
     [self.view bringSubviewToFront:taskContainer];
 
     queue = [[[NSOperationQueue alloc] init] retain];
-
-    lastRevision = INITIAL_REVISION_NUMBER;
     
     [self initUsers];
     [self initTasks];
@@ -291,9 +287,16 @@
 }
 
 - (void) layoutUsers {
+    // First, sort the users so they get grouped properly by location.
+    NSArray *sortedUserViews = [[[UserView getAllUserViews] allObjects] sortedArrayUsingSelector:@selector(compareByLocation:)];
     
-    NSSet *allUserViews = [[UserView getAllUserViews] retain];
-    int numViews = [allUserViews count];
+
+    // Debugging to make sure sorting is working properly.
+//    for(UserView *view in sortedUserViews) {
+//        NSLog(@"%@", [view getUser]);
+//    }
+    
+    int numViews = [sortedUserViews count];
     
     int i = 0;
     int arrayCounter=0;
@@ -366,15 +369,13 @@
     // Now that we've done all the layout math, put everything in its place.
     int viewIndex = 0;
     
-    for(UIView *view in allUserViews) {
+    for(UIView *view in sortedUserViews) {
         view.center = [[points objectAtIndex:viewIndex] CGPointValue];
               
         [view setTransform:CGAffineTransformMakeRotation([[rotations objectAtIndex:viewIndex] floatValue])];
         
         viewIndex++;
     }   
-    
-    [allUserViews release];
 }
 
 // Override to allow orientations other than the default portrait orientation.

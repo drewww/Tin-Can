@@ -52,6 +52,8 @@
 - (void) setHoverState:(bool)state;
 - (void) setDrawerExtended:(bool)extended;
 
+- (NSComparisonResult) compareByLocation:(UserView *)view;
+
 + (NSSet *) getAllUserViews;
 
 - (User *)getUser;

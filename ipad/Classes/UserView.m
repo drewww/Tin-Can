@@ -161,6 +161,28 @@
     }
 }
 
+
+
+- (NSComparisonResult) compareByLocation:(UserView *)view {
+    // We want to group locations together and then within shared locations,
+    // organize them alphabetically. When compareing locations, order those
+    // alphabetically, too. 
+    NSLog(@"============================COMPARE BY LOC");
+    User *userA = userRenderView.user;
+    User *userB = [view getUser];
+
+    
+    Location *locA = userA.location;
+    Location *locB = userB.location;
+    
+    if([locA isEqual:locB]) {
+        // If they're the same, then we sort based on user names.
+        return [userA.name compare:userB.name];
+    } else {
+        return [locA.name compare:locB.name];
+    }
+}
+
 - (void)dealloc {
     
     [userRenderView release];
