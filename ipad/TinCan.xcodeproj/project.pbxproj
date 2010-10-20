@@ -26,6 +26,7 @@
 		3A4941B8124D209B0068C6D6 /* DragManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4941B7124D209B0068C6D6 /* DragManager.m */; };
 		3A57217F11EB7515004C2687 /* MeetingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57217E11EB7515004C2687 /* MeetingViewController.m */; };
 		3A57237811EBDE0B004C2687 /* TinCanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57237711EBDE0B004C2687 /* TinCanViewController.m */; };
+		3A82D449126F9CD5007AFA3D /* LocationBorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A82D448126F9CD5007AFA3D /* LocationBorderView.m */; };
 		3A95E0631264B92700518580 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A95E0621264B92700518580 /* QuartzCore.framework */; };
 		3AA06D1411AAD1C500C3D279 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AA06D1311AAD1C500C3D279 /* Icon.png */; };
 		3AA2DDE31261178800235573 /* full_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AA2DDE21261178800235573 /* full_logo.png */; };
@@ -112,6 +113,8 @@
 		3A57217E11EB7515004C2687 /* MeetingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeetingViewController.m; sourceTree = "<group>"; };
 		3A57237611EBDE0B004C2687 /* TinCanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TinCanViewController.h; sourceTree = "<group>"; };
 		3A57237711EBDE0B004C2687 /* TinCanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TinCanViewController.m; sourceTree = "<group>"; };
+		3A82D447126F9CD5007AFA3D /* LocationBorderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationBorderView.h; sourceTree = "<group>"; };
+		3A82D448126F9CD5007AFA3D /* LocationBorderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationBorderView.m; sourceTree = "<group>"; };
 		3A95E0621264B92700518580 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		3AA06D1311AAD1C500C3D279 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		3AA2DDE21261178800235573 /* full_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = full_logo.png; sourceTree = "<group>"; };
@@ -405,6 +408,8 @@
 				3A4941B6124D209B0068C6D6 /* DragManager.h */,
 				3A4941B7124D209B0068C6D6 /* DragManager.m */,
 				3AE11A3D1253A49700A91BC8 /* TaskDropTarget.h */,
+				3A82D447126F9CD5007AFA3D /* LocationBorderView.h */,
+				3A82D448126F9CD5007AFA3D /* LocationBorderView.m */,
 			);
 			name = Meeting;
 			sourceTree = "<group>";
@@ -571,6 +576,7 @@
 				DA72601F1215A116008A0E0C /* LocationView.m in Sources */,
 				DA7260221215A15E008A0E0C /* LocationContainerView.m in Sources */,
 				3A4941B8124D209B0068C6D6 /* DragManager.m in Sources */,
+				3A82D449126F9CD5007AFA3D /* LocationBorderView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

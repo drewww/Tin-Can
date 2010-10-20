@@ -13,6 +13,7 @@
 #import "LocationContainerView.h"
 #import "Event.h"
 #import "User.h"
+#import "LocationBorderView.h"
 
 @class Todo;
 
@@ -20,8 +21,9 @@
     
     TaskContainerView *taskContainer;
     TopicContainerView *topicContainer;
-	LocationContainerView *locContainer;
-
+	LocationBorderView *locBorderView;
+    
+    
     UILabel *connectionInfoLabel;
     
     NSMutableSet *taskViews;

@@ -18,6 +18,7 @@
 #import "Event.h"
 #import "Location.h"
 #import "DragManager.h"
+#import "LocationBorderView.h"
 
 @implementation MeetingViewController
 
@@ -55,6 +56,10 @@
     [self.view bringSubviewToFront:taskContainer];
 
     queue = [[[NSOperationQueue alloc] init] retain];
+    
+    locBorderView = [[LocationBorderView alloc] initWithFrame:self.view.frame];
+    [self.view addSubview:locBorderView];
+    [self.view sendSubviewToBack:locBorderView];
     
     [self initUsers];
     [self initTasks];
@@ -198,7 +203,12 @@
             }
             
             // Add the new location to the location container.
-            [locContainer addSubview:[location getView]];
+            // Deprecated for now, because we're not using 
+            // a dedicated location container view for now.
+            // This might get turned back on later if we add
+            // a modal one.
+            
+            // [locContainer addSubview:[location getView]];
             
             break;
             
