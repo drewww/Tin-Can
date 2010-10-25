@@ -13,4 +13,7 @@
 
 }
 
+- (int) hasSharedEdgeBetweenView:(UIView *)view1 andView:(UIView *)view2;
+
+
 @end

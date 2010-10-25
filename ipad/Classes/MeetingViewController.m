@@ -152,6 +152,7 @@
             }
             
             [[location getView] setNeedsDisplay];
+            [locBorderView setNeedsDisplay];
             
         break;
            
@@ -172,6 +173,7 @@
             
             // Also, ask the user's location to redraw itself.
             [[location getView] setNeedsDisplay];
+            [locBorderView setNeedsDisplay];
                     
             break;
             
