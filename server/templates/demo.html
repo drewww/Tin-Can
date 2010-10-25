@@ -50,7 +50,7 @@
 				case "NEW_TASK":
 					var taskElement = $("#tasks").children().first().clone();
 					taskElement.id = e["results"]["task"]["uuid"];
-					taskElement.children().last().html(e["results"]["task"]["text"]);
+					taskElement.children().last().prev().html(e["results"]["task"]["text"]);
 					$("#tasks").append(taskElement);
 					break;
 				case "GET_STATE_COMPLETE":
@@ -240,8 +240,12 @@
 {% for task in tasks %}
 
 <li id="{{task.uuid}}">
-<img src="{{static_url('images/note.png')}}"/>
-<span>{{task.text}}</span>
+	<img src="{{static_url('images/note.png')}}"/>
+	<span>{{task.text}}</span>
+	<div>
+		<div>{{task.createdBy.name}}</div>
+		<div>{{task.getRelativeCreatedAt()}}</div>
+	</div>
 </li>
 
 {% end %}
