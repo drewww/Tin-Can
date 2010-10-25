@@ -49,8 +49,18 @@
 					
 				case "NEW_TASK":
 					var taskElement = $("#tasks").children().first().clone();
+					var task = e["results"]["task"];
 					taskElement.id = e["results"]["task"]["uuid"];
-					taskElement.children().last().prev().html(e["results"]["task"]["text"]);
+					taskElement.children().last().prev()
+						.html(task["text"]);
+					var createdBy = state.getObj(task["createdBy"],User);
+					taskElement.children().last().children().first()
+						.html("Created by "+createdBy.name);
+					taskElement.children().last().children().first().next()
+						.html(timesince(task['createdAt']));
+					//assuming that the new task is not assigned
+					taskElement.children().last().children().first().next().next()
+						.html("Not assigned");
 					$("#tasks").append(taskElement);
 					break;
 				case "GET_STATE_COMPLETE":
@@ -243,8 +253,13 @@
 	<img src="{{static_url('images/note.png')}}"/>
 	<span>{{task.text}}</span>
 	<div>
-		<div>{{task.createdBy.name}}</div>
+		<div>Created by {{task.createdBy.name}}</div>
 		<div>{{task.getRelativeCreatedAt()}}</div>
+		{% if task.assignedTo!=None %}
+		<div>Assigned to {{task.assignedTo.name}}</div>
+		{% else %}
+		<div>Not assigned</div>
+		{% end %}
 	</div>
 </li>
 
