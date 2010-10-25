@@ -76,23 +76,29 @@
                     NSLog(@"Got a generic CORNER case. This should never happen.");
                     break;
                 case CORNER_NE:
-//                    NSLog(@"CORNER NE, (%f, %f)", nextUserView.center.x, nextUserView.center.y);
-                    // We want two rectangles, from each view to its appropriate edge.
                     CGContextFillRect(ctx, CGRectMake(nextUserView.center.x,1024-BORDER_WIDTH, abs(768-nextUserView.center.x), BORDER_WIDTH));
                     CGContextFillRect(ctx, CGRectMake(768-BORDER_WIDTH,userView.center.y, BORDER_WIDTH, abs(1024-userView.center.y)));
                     break;
                 case CORNER_NW:
-                    NSLog(@"CORNER NW");
                     CGContextFillRect(ctx, CGRectMake(userView.center.x,0, abs(768-userView.center.x), BORDER_WIDTH));
                     CGContextFillRect(ctx, CGRectMake(768-BORDER_WIDTH,0, BORDER_WIDTH, nextUserView.center.y));
                     break;
 
                 case CORNER_SE:
-                    NSLog(@"CORNER SE");
+                    // THIS CODE IS NOT TESTED AND SHOULD NEVER BE HIT.
+                    // There is no way for a SE corner to happen because of the ordering of grouped
+                    // users. It starts in the SE corner and goes clockwise, so the only time
+                    // the SE corner can be filled is if EVERY PERSON is in the same group.
+                    // That's an edge case and we're not going to sweat it. It doesn't look that
+                    // bad even if it happens.
+                    NSLog(@"SE CORNER HIT. THIS SHOULDN'T HAPPEN.");
+                    CGContextFillRect(ctx, CGRectMake(0,userView.center.y, BORDER_WIDTH, abs(1024-userView.center.y)));
+                    CGContextFillRect(ctx, CGRectMake(0,1024-BORDER_WIDTH, BORDER_WIDTH, BORDER_WIDTH));
                     break;
 
                 case CORNER_SW:
-                    NSLog(@"CORNER SW");
+                    CGContextFillRect(ctx, CGRectMake(0,0, nextUserView.center.x, BORDER_WIDTH));
+                    CGContextFillRect(ctx, CGRectMake(0,0, BORDER_WIDTH, userView.center.y));
                     break;
 
                 case SHARED_X:
@@ -109,10 +115,9 @@
                         NSLog(@"On the bottom edge");
                         // we're on the bottom edge
                         edge = BORDER_WIDTH;
-                        edgeRect = CGRectMake(edge, nextUserView.center.y, BORDER_WIDTH, abs(userView.center.y - nextUserView.center.y));
+                        edgeRect = CGRectMake(0, nextUserView.center.y, BORDER_WIDTH, abs(userView.center.y - nextUserView.center.y));
                     }
                     
-                    edgeRect = CGRectMake(edge, userView.center.y, BORDER_WIDTH, abs(userView.center.y - nextUserView.center.y));
                     CGContextFillRect(ctx, edgeRect);
                     break;
                 case SHARED_Y:
@@ -127,7 +132,7 @@
                         NSLog(@"on the left edge");
                         // we're on the left edge
                         edge = BORDER_WIDTH;
-                        edgeRect = CGRectMake(userView.center.x, edge, abs(userView.center.x - nextUserView.center.x), BORDER_WIDTH);
+                        edgeRect = CGRectMake(userView.center.x, 0, abs(userView.center.x - nextUserView.center.x), BORDER_WIDTH);
                     }                    
                     CGContextFillRect(ctx, edgeRect);
                     break;                    
@@ -155,16 +160,16 @@
         // Figure out which corner it is. 
         // We have to do both combinations because we don't know in which order we're going to get
         // these views. 
-        if(view1.center.x < 100 && view2.center.y < 100 || view1.center.y < 100 && view2.center.x < 100) {
+        if(view1.center.x < 400 && view2.center.y < 400 || view1.center.y < 400 && view2.center.x < 400) {
             return CORNER_SW;
         }
-        else if(view1.center.x < 100 && view2.center.y > 100 || view1.center.y > 100 && view2.center.x < 100) {
+        else if(view1.center.x < 400 && view2.center.y > 400 || view1.center.y > 400 && view2.center.x < 400) {
             return CORNER_SE;
         }
-        else if(view1.center.x > 100 && view2.center.y < 100 || view1.center.y < 100 && view2.center.x > 100) {
+        else if(view1.center.x > 400 && view2.center.y < 400 || view1.center.y < 400 && view2.center.x > 400) {
             return CORNER_NW;
         }
-        else if(view1.center.x > 100 && view2.center.y > 100 || view1.center.y > 100 && view2.center.x > 100) {
+        else if(view1.center.x > 400 && view2.center.y > 400 || view1.center.y > 400 && view2.center.x > 400) {
             return CORNER_NE;
         }
         NSLog(@"Failed to hit any of the corner cases. Returning generic corner.");
