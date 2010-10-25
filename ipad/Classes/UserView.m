@@ -15,6 +15,14 @@
 // This class is a shell - most of the real heavy lifting happens in the UserRenderView. See
 // that class for a discussion about why there are two classes for user drawing.
 
+#define TOP 0
+#define RIGHT 1
+#define BOTTOM 2
+#define LEFT 3
+
+
+@synthesize side;
+
 - (id) initWithUser:(User *)theUser {
 
     self = [super initWithFrame:CGRectMake(0, 0, BASE_WIDTH, BASE_HEIGHT + HEIGHT_MARGIN)];

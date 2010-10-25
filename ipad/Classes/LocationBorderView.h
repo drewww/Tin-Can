@@ -7,13 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "UserView.h"
 
 @interface LocationBorderView : UIView {
 
 }
 
-- (int) hasSharedEdgeBetweenView:(UIView *)view1 andView:(UIView *)view2;
+- (int) hasSharedEdgeBetweenView:(UserView *)view1 andView:(UserView *)view2;
 
 
 @end

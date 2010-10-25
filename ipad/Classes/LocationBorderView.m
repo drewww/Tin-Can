@@ -21,7 +21,7 @@
 #define CORNER_SE 5
 #define CORNER_SW 6
 
-#define BORDER_WIDTH 15
+#define BORDER_WIDTH 8
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
@@ -144,16 +144,16 @@
     
 }
 
-- (int) hasSharedEdgeBetweenView:(UIView *)view1 andView:(UIView *)view2 {
+- (int) hasSharedEdgeBetweenView:(UserView *)view1 andView:(UserView *)view2 {
     
     // (there are some cases here we're not testing that we shouldn't see
     //  for instance, two people on opposite sides at the same y position
     //  might show up as being SHARED_Y even when they're not. We shouldn't
     //  see this case, though, because we check views in order, and this
     //  situation can't happen with consecutive views.)
-    if(view1.center.x == view2.center.x) {
+    if(view1.side == view2.side && ([view1.side intValue]==0 || [view1.side intValue]==2)) {
         return SHARED_X;
-    } else if(view1.center.y == view2.center.y) {
+    } else if(view1.side == view2.side && ([view1.side intValue]==1 || [view1.side intValue]==3)) {
         return SHARED_Y;
     } else {
         

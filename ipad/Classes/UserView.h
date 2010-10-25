@@ -37,6 +37,8 @@
     
     float lastHeightChange;
 	float initialHeight;
+    
+    NSNumber *side;
 }
 
 
@@ -57,5 +59,7 @@
 + (NSArray *) getAllUserViews;
 
 - (User *)getUser;
+
+@property (nonatomic, retain) NSNumber *side;
 
 @end
