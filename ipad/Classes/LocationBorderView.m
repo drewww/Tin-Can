@@ -76,7 +76,10 @@
                     NSLog(@"Got a generic CORNER case. This should never happen.");
                     break;
                 case CORNER_NE:
-                    NSLog(@"CORNER NE");
+//                    NSLog(@"CORNER NE, (%f, %f)", nextUserView.center.x, nextUserView.center.y);
+                    // We want two rectangles, from each view to its appropriate edge.
+                    CGContextFillRect(ctx, CGRectMake(nextUserView.center.x,1024-BORDER_WIDTH, abs(768-nextUserView.center.x), BORDER_WIDTH));
+                    CGContextFillRect(ctx, CGRectMake(768-BORDER_WIDTH,userView.center.y, BORDER_WIDTH, abs(1024-userView.center.y)));
                     break;
                 case CORNER_NW:
                     NSLog(@"CORNER NW");
@@ -156,13 +159,13 @@
         else if(view1.center.x < 100 && view2.center.y > 100 || view1.center.y > 100 && view2.center.x < 100) {
             return CORNER_NW;
         }
-        else if(view1.center.x > 100 && view2.center.y < 100 || view1.center.y > 100 && view2.center.x < 100) {
+        else if(view1.center.x > 100 && view2.center.y < 100 || view1.center.y < 100 && view2.center.x > 100) {
             return CORNER_SE;
         }
-        else if(view1.center.x > 100 && view2.center.y > 100 || view1.center.y > 100 && view2.center.x < 100) {
+        else if(view1.center.x > 100 && view2.center.y > 100 || view1.center.y > 100 && view2.center.x > 100) {
             return CORNER_NE;
         }
-        NSLog("Failed to hit any of the corner cases. Returning generic corner.");
+        NSLog(@"Failed to hit any of the corner cases. Returning generic corner.");
         return CORNER;
     }
 }
