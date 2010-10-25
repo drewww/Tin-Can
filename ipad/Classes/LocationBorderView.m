@@ -160,16 +160,16 @@
         // Figure out which corner it is. 
         // We have to do both combinations because we don't know in which order we're going to get
         // these views. 
-        if(view1.center.x < 400 && view2.center.y < 400 || view1.center.y < 400 && view2.center.x < 400) {
+        if(([view1.side intValue]==2 && [view2.side intValue]==3) || ([view1.side intValue]==3 && [view2.side intValue]==2)) {
             return CORNER_SW;
         }
-        else if(view1.center.x < 400 && view2.center.y > 400 || view1.center.y > 400 && view2.center.x < 400) {
+        else if(([view1.side intValue]==1 && [view2.side intValue]==2) || ([view1.side intValue]==2 && [view2.side intValue]==1)) {
             return CORNER_SE;
         }
-        else if(view1.center.x > 400 && view2.center.y < 400 || view1.center.y < 400 && view2.center.x > 400) {
+        else if(([view1.side intValue]==3 && [view2.side intValue]==0) || ([view1.side intValue]==0 && [view2.side intValue]==3)) {
             return CORNER_NW;
         }
-        else if(view1.center.x > 400 && view2.center.y > 400 || view1.center.y > 400 && view2.center.x > 400) {
+        else if(([view1.side intValue]==0 && [view2.side intValue]==1) || ([view1.side intValue]==1 && [view2.side intValue]==0)) {
             return CORNER_NE;
         }
         NSLog(@"Failed to hit any of the corner cases. Returning generic corner.");
