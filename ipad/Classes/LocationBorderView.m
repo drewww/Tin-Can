@@ -16,6 +16,10 @@
 #define CORNER 0
 #define SHARED_X 1
 #define SHARED_Y 2
+#define CORNER_NE 3
+#define CORNER_NW 4
+#define CORNER_SE 5
+#define CORNER_SW 6
 
 #define BORDER_WIDTH 15
 
@@ -65,10 +69,27 @@
             CGContextSaveGState(ctx);
             float edge;
             switch (connectionType) {
+                // We're going to have to handle each of the corners differently. They're not radically different, but
+                // there's a bit of difference in each one that's hard to manage programatically.
+                // We'll call these corners by their cardinal directions, assuming we're in landscape mode  
                 case CORNER:
-                    NSLog(@"Handling the corner case.");
-
+                    NSLog(@"Got a generic CORNER case. This should never happen.");
                     break;
+                case CORNER_NE:
+                    NSLog(@"CORNER NE");
+                    break;
+                case CORNER_NW:
+                    NSLog(@"CORNER NW");
+                    break;
+
+                case CORNER_SE:
+                    NSLog(@"CORNER SE");
+                    break;
+
+                case CORNER_SW:
+                    NSLog(@"CORNER SW");
+                    break;
+
                 case SHARED_X:
                     
                     // There are a bunch of minor transpositions that have to happen for each side independently. Splitting them out
@@ -125,6 +146,23 @@
     } else if(view1.center.y == view2.center.y) {
         return SHARED_Y;
     } else {
+        
+        // Figure out which corner it is. 
+        // We have to do both combinations because we don't know in which order we're going to get
+        // these views. 
+        if(view1.center.x < 100 && view2.center.y < 100 || view1.center.y < 100 && view2.center.x < 100) {
+            return CORNER_SW;
+        }
+        else if(view1.center.x < 100 && view2.center.y > 100 || view1.center.y > 100 && view2.center.x < 100) {
+            return CORNER_NW;
+        }
+        else if(view1.center.x > 100 && view2.center.y < 100 || view1.center.y > 100 && view2.center.x < 100) {
+            return CORNER_SE;
+        }
+        else if(view1.center.x > 100 && view2.center.y > 100 || view1.center.y > 100 && view2.center.x < 100) {
+            return CORNER_NE;
+        }
+        NSLog("Failed to hit any of the corner cases. Returning generic corner.");
         return CORNER;
     }
 }
