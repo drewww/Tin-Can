@@ -83,6 +83,8 @@
                     break;
                 case CORNER_NW:
                     NSLog(@"CORNER NW");
+                    CGContextFillRect(ctx, CGRectMake(userView.center.x,0, abs(768-userView.center.x), BORDER_WIDTH));
+                    CGContextFillRect(ctx, CGRectMake(768-BORDER_WIDTH,0, BORDER_WIDTH, nextUserView.center.y));
                     break;
 
                 case CORNER_SE:
@@ -157,10 +159,10 @@
             return CORNER_SW;
         }
         else if(view1.center.x < 100 && view2.center.y > 100 || view1.center.y > 100 && view2.center.x < 100) {
-            return CORNER_NW;
+            return CORNER_SE;
         }
         else if(view1.center.x > 100 && view2.center.y < 100 || view1.center.y < 100 && view2.center.x > 100) {
-            return CORNER_SE;
+            return CORNER_NW;
         }
         else if(view1.center.x > 100 && view2.center.y > 100 || view1.center.y > 100 && view2.center.x > 100) {
             return CORNER_NE;
