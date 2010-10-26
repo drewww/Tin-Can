@@ -19,6 +19,11 @@
 #define ASSIGN [NSNumber numberWithInt:0] 
 #define DEASSIGN [NSNumber numberWithInt:1]
 
+#define BAR_WIDTH 10
+#define INSET_HEIGHT 4
+#define INSET_BETWEEN_MARGIN 6
+#define INSET_OUTER_MARGIN 3
+
 - (id)initWithFrame:(CGRect)frame withTask:(Task *)theTask{
     if ((self = [super initWithFrame:frame])) {
 		self.frame=frame;
@@ -59,8 +64,31 @@
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	
 	
-	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
-	CGContextFillRect(ctx, CGRectMake(0, 0, 10, self.frame.size.height));
+	CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.5 alpha:1].CGColor);
+	CGContextFillRect(ctx, CGRectMake(0, 0, BAR_WIDTH, self.frame.size.height));
+    
+    // Now draw the draggability bars here. Just do a series of lighter rects at first.
+//    for(int i=0; i<floor(self.frame.size.height/(INSET_HEIGHT + INSET_BETWEEN_MARGIN)); i++) {
+//        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.7 alpha:1.0].CGColor);
+//        CGContextFillRect(ctx, CGRectMake(INSET_OUTER_MARGIN,
+//                                          INSET_OUTER_MARGIN + i*(INSET_HEIGHT + INSET_BETWEEN_MARGIN),
+//                                          BAR_WIDTH -2*INSET_OUTER_MARGIN, INSET_HEIGHT));
+//        
+//        // This is the bar at the top that makes it look inset.
+//        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.4 alpha:1.0].CGColor);        
+//        CGContextFillRect(ctx, CGRectMake(INSET_OUTER_MARGIN,
+//                                          INSET_OUTER_MARGIN + i*(INSET_HEIGHT + INSET_BETWEEN_MARGIN),
+//                                          BAR_WIDTH -2*INSET_OUTER_MARGIN, 1));
+//    }
+//    CGContextFillRect(ctx, CGRectMake(3, 3, BAR_WIDTH -6, 3));
+//    CGContextFillRect(ctx, CGRectMake(3, 8, BAR_WIDTH -6, 3));
+//    CGContextFillRect(ctx, CGRectMake(3, 13, BAR_WIDTH -6, 3));
+//    CGContextFillRect(ctx, CGRectMake(3, 18, BAR_WIDTH -6, 3));
+//
+    
+    CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
+
+    
 	if(isTouched==FALSE){
 	CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
 	}
@@ -68,9 +96,9 @@
 		CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1].CGColor );
 	}
 
-	CGContextFillRect(ctx, CGRectMake(10, 0, self.frame.size.width-12, self.frame.size.height));
-	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:.5].CGColor);
-	[task.text drawInRect:CGRectMake(15, 2, self.frame.size.width-16, self.frame.size.height) 
+	CGContextFillRect(ctx, CGRectMake(BAR_WIDTH, 0, self.frame.size.width-12, self.frame.size.height));
+	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:1].CGColor);
+	[task.text drawInRect:CGRectMake(BAR_WIDTH + 5, 2, self.frame.size.width-16, self.frame.size.height) 
 			withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
 	CGContextSetLineWidth(ctx,2);
