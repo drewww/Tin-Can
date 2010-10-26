@@ -25,6 +25,8 @@ import tornado.ioloop
 import state
 import event
 
+import util
+
 class YarnBaseType(object):
     """Identify object with a UUID and register it with the store."""
     
@@ -750,6 +752,10 @@ class Task(MeetingObject):
         self.assignedTo.removeTask(self)
         self.assignedTo = None
         
+    def getRelativeCreatedAt(self):
+        r = util.timesince(self.createdAt)
+        return r
+
     def __str__(self):
         if(self.assignedTo!=None):
             assignedToName = self.assignedTo.name
