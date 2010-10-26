@@ -13,10 +13,13 @@
 	Topic *topic;
 	bool isTouched; 
 	NSDateFormatter *timeFormat;
+    
+    CGFloat optionSliderX;
 }
 
 @property (nonatomic, retain) Topic *topic;
 
+- (int) getSelectedButton;
 - (id)initWithFrame:(CGRect)frame withTopic:(Topic *)theTopic;
 - (id)initWithTopic:(Topic*)theTopic;
 @end

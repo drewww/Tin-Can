@@ -14,10 +14,16 @@
 
 @synthesize topic;
 
+#define NO_BUTTON_SELECTED 0
+#define CANCEL_BUTTON_SELECTED 1
+#define START_BUTTON_SELECTED 2
+
 - (id)initWithFrame:(CGRect)frame withTopic:(Topic *)theTopic{
     if ((self = [super initWithFrame:frame])) {
 		self.frame=frame;
         topic=theTopic;
+        
+        optionSliderX = -1;
         
 		self.userInteractionEnabled = YES; 
 		isTouched= FALSE;
@@ -155,33 +161,141 @@
 	[topic.text drawInRect:CGRectMake(54, 10, self.frame.size.width-54, self.frame.size.height-10) 
 			withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
+    
+    if(optionSliderX!=-1) {
+        // First, draw a black rectangle over everything to dim out the background a bit.
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.0 alpha:0.6].CGColor);
+        CGContextFillRect(ctx, CGRectMake(0, 0, self.frame.size.width, self.frame.size.height));
+        
+        
+        // decide which button is selected, so we can draw it differently.
+        int buttonSelected = [self getSelectedButton];
+        // Draw the droppable options.
+        // They are:
+        //  - cancel
+        //  - reorder
+        //  - start
+        //  - restart
+        //  - delete?
+        CGContextSaveGState(ctx);
+        
+        CGContextTranslateCTM(ctx, 25, self.frame.size.height/2);
+        CGContextSetStrokeColorWithColor(ctx, [UIColor whiteColor].CGColor);
+        
+        if(buttonSelected == CANCEL_BUTTON_SELECTED) {
+            CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.5 alpha:0.6].CGColor);
+        } else {
+            CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.2 alpha:0.6].CGColor);   
+        }
+
+        
+        CGContextStrokeEllipseInRect(ctx, CGRectMake(-24, -24, 48, 48));
+        CGContextFillEllipseInRect(ctx, CGRectMake(-24, -24, 48, 48));
+        
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.8 alpha:1.0].CGColor);
+        [@"CANCEL" drawInRect:CGRectMake(-23, -6, 50, 12) withFont:[UIFont boldSystemFontOfSize:11]];
+ 
+        CGContextTranslateCTM(ctx, 185, 0);
+
+        CGContextSetStrokeColorWithColor(ctx, [UIColor whiteColor].CGColor);
+        if(buttonSelected == START_BUTTON_SELECTED) {
+            CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.5 alpha:0.6].CGColor);
+        } else {
+            CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.2 alpha:0.6].CGColor);   
+        }
+        
+        CGContextStrokeEllipseInRect(ctx, CGRectMake(-24, -24, 48, 48));
+        CGContextFillEllipseInRect(ctx, CGRectMake(-24, -24, 48, 48));
+        
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.8 alpha:1.0].CGColor);
+        if(topic.status == kFUTURE) {
+            [@"START" drawInRect:CGRectMake(-18, -6, 50, 12) withFont:[UIFont boldSystemFontOfSize:11]];
+        } else if(topic.status == kCURRENT) {
+            [@"STOP" drawInRect:CGRectMake(-15, -6, 50, 12) withFont:[UIFont boldSystemFontOfSize:11]];            
+        } else if(topic.status == kPAST) {
+            [@"RESTART" drawInRect:CGRectMake(-22, -6, 50, 12) withFont:[UIFont boldSystemFontOfSize:11]];                        
+        }
+        
+        
+        CGContextRestoreGState(ctx);
+        
+        // Now draw the selector; a circle that'll move with your touch.
+        CGContextSaveGState(ctx);
+        
+        CGContextTranslateCTM(ctx, optionSliderX, self.frame.size.height/2);
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:1.0 alpha:0.7].CGColor);
+        CGContextFillEllipseInRect(ctx, CGRectMake(-10, -10, 20, 20));
+    }
+    
+    
+    
 	[self setNeedsDisplay];
 	
 }
+
+- (int) getSelectedButton {
+    
+    int buttonSelected = NO_BUTTON_SELECTED;
+    
+    if(optionSliderX < 50) {
+        buttonSelected = CANCEL_BUTTON_SELECTED;
+    } else if(optionSliderX < 230 && optionSliderX > 176) {
+        buttonSelected = START_BUTTON_SELECTED;
+    }
+    
+    return buttonSelected;
+}
+
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	isTouched=TRUE;
-	if (topic.status == kFUTURE){
-
-        NSLog(@"Future item touched - end the current item and make this one current.");
-        [[ConnectionManager sharedInstance] updateTopic:topic withStatus:kCURRENT];
+    // In this new system, when we get a touch (in the right area) we want to pull
+    // up the option selection UI.
+    
+    // Accept any touch on the left side of the topic item.
+    UITouch *touch = [touches anyObject];
+    
+    CGPoint touchLoc = [touch locationInView:self];
+    
+    if(touchLoc.x < 40) {
+        NSLog(@"Got a touch in the right place.");
+        optionSliderX = touchLoc.x;
         
-	}
-	else if(topic.status == kCURRENT){
-        
-        NSLog(@"Current item touched - end it.");
-        [[ConnectionManager sharedInstance] updateTopic:topic withStatus:kPAST];
-	}	
-	[self setNeedsDisplay];
+        [self setNeedsDisplay];
+    }    
+}
 
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    if(optionSliderX != -1) {
+        // If we've already started moving from a valid position,
+        // update the location for the selector.
+        CGPoint touchLoc = [[touches anyObject] locationInView:self];
+        
+        optionSliderX = touchLoc.x;
+        [self setNeedsDisplay];
+    }
 }
 
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	NSLog(@"I have been touched but now I am not"); 
-	
-	isTouched=FALSE;	
-	[self.superview setNeedsDisplay];
-	[self.superview setNeedsLayout];
+
+
+    int buttonSelected = [self getSelectedButton];
+    
+    if(buttonSelected == START_BUTTON_SELECTED) {
+        if (topic.status == kFUTURE){
+            NSLog(@"Future item touched - end the current item and make this one current.");
+            [[ConnectionManager sharedInstance] updateTopic:topic withStatus:kCURRENT];
+            
+        }
+        else if(topic.status == kCURRENT){
+            NSLog(@"Current item touched - end it.");
+            [[ConnectionManager sharedInstance] updateTopic:topic withStatus:kPAST];
+        } else if (topic.status == kPAST) {
+            NSLog(@"Got request to restart a past item. Need to implement this.");
+        }
+    }
+    
+    optionSliderX = -1;
+    [self setNeedsDisplay];
 }
 
 - (NSComparisonResult) compareByState:(TopicView *)view {
