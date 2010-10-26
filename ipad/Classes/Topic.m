@@ -8,7 +8,7 @@
 
 #import "Topic.h"
 #import "TopicView.h"
-
+#import "UIColor+Util.h"
 
 
 @implementation Topic
@@ -153,8 +153,12 @@
 
 static int topicColorIndex = 0;
 + (UIColor *) getNextTopicColor {
-    NSArray *colors = [NSArray arrayWithObjects:[UIColor colorWithWhite:0.4 alpha:1.0], [UIColor colorWithWhite:0.6 alpha:1.0], nil];
-    
+//    NSArray *colors = [NSArray arrayWithObjects:[UIColor colorWithWhite:0.4 alpha:1.0], [UIColor colorWithWhite:0.6 alpha:1.0], nil];
+    NSArray *colors = [NSArray arrayWithObjects:[UIColor colorWithHexString:@"#387432"],
+                      [UIColor colorWithHexString:@"#2D7474"], [UIColor colorWithHexString:@"#2F3E74"],
+                      [UIColor colorWithHexString:@"#643374"], [UIColor colorWithHexString:@"#773333"],
+                      [UIColor colorWithHexString:@"#765732"], [UIColor colorWithHexString:@"#6D7432"], nil];
+                      
     topicColorIndex += 1;
 
     if(topicColorIndex == [colors count]) {

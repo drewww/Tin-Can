@@ -110,6 +110,7 @@
         float elapsedTime = abs([topic.startTime  timeIntervalSinceDate:endTime ]);
 
         
+        CGContextSetFillColorWithColor(ctx, topic.color.CGColor);
         CGFloat arcLength = elapsedTime/3600.0f * (2*M_PI);
         CGContextMoveToPoint(ctx, 25, 25);
                 
@@ -125,7 +126,7 @@
         CGContextFillPath(ctx);
         
         // Now draw the clock outline. A pair of 1px circles at the right radii should do it.
-        CGContextSetStrokeColorWithColor(ctx, [UIColor grayColor].CGColor);
+        CGContextSetStrokeColorWithColor(ctx, topic.color.CGColor);
         CGContextStrokeEllipseInRect(ctx, CGRectMake(4, 4, 42, 42));
         CGContextStrokeEllipseInRect(ctx, CGRectMake(13, 13, 24, 24));
     } else {
