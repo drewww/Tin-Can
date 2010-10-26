@@ -18,6 +18,8 @@
     UIView *draggedItemsContainer;
     
     NSMutableDictionary *lastTaskDropTargets;
+    
+    CGAffineTransform originalTransform;
 }
 
 
