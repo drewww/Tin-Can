@@ -9,6 +9,8 @@
 #import "TopicView.h"
 #import "Topic.h"
 #import "ConnectionManager.h"
+#import "UIColor+Util.h"
+
 
 @implementation TopicView
 
@@ -75,12 +77,15 @@
     // there instead.
     
     if(topic.status == kPAST || topic.status == kCURRENT) {        
-        UIColor *backgroundColor;
-        if(topic.status == kPAST) {
-            backgroundColor = [UIColor colorWithWhite:0.2 alpha:1.0];
+        
+        UIColor *background;
+        if(topic.status == kCURRENT) {            
+            background = [topic.color colorByChangingAlphaTo:0.3];
         } else {
-            backgroundColor = [UIColor colorWithHue:0.61 saturation:0.51 brightness:0.21 alpha:1.0];
+            background = [UIColor blackColor];
         }
+        
+        self.backgroundColor = background;
         
         // In this mode, we're basically going to steal the rendering code from the clock. We want to
         // make a little arc.  
@@ -95,7 +100,7 @@
         
         CGContextMoveToPoint(ctx, 0, 0);
         
-        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.7 alpha:1.0].CGColor);
+//        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.7 alpha:1.0].CGColor);
 
         
         //lets draw our TIME ARC!
@@ -110,6 +115,10 @@
         float elapsedTime = abs([topic.startTime  timeIntervalSinceDate:endTime ]);
 
         
+        // First, clear the circle so the background color doesn't show through.
+        CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+        CGContextStrokeEllipseInRect(ctx, CGRectMake(4, 4, 42, 42));
+                
         CGContextSetFillColorWithColor(ctx, topic.color.CGColor);
         CGFloat arcLength = elapsedTime/3600.0f * (2*M_PI);
         CGContextMoveToPoint(ctx, 25, 25);
@@ -119,16 +128,20 @@
         CGContextAddArc(ctx, 25, 25, 21, rotation- M_PI/2, rotation + arcLength - M_PI/2, 0);
         CGContextFillPath(ctx);
         
-        // now block out the middle chunk.         
-        CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
-        CGContextMoveToPoint(ctx, 25, 25);
-        CGContextAddEllipseInRect(ctx, CGRectMake(13, 13, 24, 24));
-        CGContextFillPath(ctx);
+        // Knock out the center area.
+        // We have to do two passes - one black + opaque to knock out everything, then
+        // one (potentially) transparent pass to make it look like the background
+        // is showing through in the center.
+//        CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
+//        CGContextAddEllipseInRect(ctx, CGRectMake(13, 13, 24, 24));
+//
+//        CGContextSetFillColorWithColor(ctx, background.CGColor);
+//        CGContextAddEllipseInRect(ctx, CGRectMake(13, 13, 24, 24));
         
         // Now draw the clock outline. A pair of 1px circles at the right radii should do it.
-        CGContextSetStrokeColorWithColor(ctx, topic.color.CGColor);
+        CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.6 alpha:1.0].CGColor);
         CGContextStrokeEllipseInRect(ctx, CGRectMake(4, 4, 42, 42));
-        CGContextStrokeEllipseInRect(ctx, CGRectMake(13, 13, 24, 24));
+//        CGContextStrokeEllipseInRect(ctx, CGRectMake(13, 13, 24, 24));
     } else {
         
         CGContextSaveGState(ctx);
@@ -154,17 +167,7 @@
 //        	 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
         
     }
-    
-    
-    if(topic.status==kCURRENT) {
-        
-        // Draw a border around the item.
-        CGContextSetStrokeColorWithColor(ctx, [UIColor grayColor].CGColor);
-        CGContextSetLineWidth(ctx, 2.0);
-        CGContextStrokeRect(ctx, CGRectMake(0,0, self.frame.size.width, self.frame.size.height));
-        
-    }
-    
+
     CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:1.0].CGColor);
 
 	[topic.text drawInRect:CGRectMake(54, 10, self.frame.size.width-54, self.frame.size.height-10) 
