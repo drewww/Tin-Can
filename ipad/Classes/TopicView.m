@@ -18,6 +18,8 @@
 #define CANCEL_BUTTON_SELECTED 1
 #define START_BUTTON_SELECTED 2
 
+#define DRAG_CIRCLE_RADIUS 8
+
 - (id)initWithFrame:(CGRect)frame withTopic:(Topic *)theTopic{
     if ((self = [super initWithFrame:frame])) {
 		self.frame=frame;
@@ -128,21 +130,27 @@
         CGContextStrokeEllipseInRect(ctx, CGRectMake(13, 13, 24, 24));
     } else {
         
-        if(isTouched==FALSE){
-            CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
-            CGContextFillEllipseInRect(ctx, CGRectMake(0, 0, 50, self.frame.size.height));
-            CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-            
-        }
-        else {
-            CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.4 green:.4 blue:.4 alpha:1].CGColor );
-            CGContextFillEllipseInRect(ctx, CGRectMake(0, 0, 50, self.frame.size.height));
-            CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1].CGColor );
-        }  
+        CGContextSaveGState(ctx);
+        CGContextTranslateCTM(ctx, 25, self.frame.size.height/2);
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:1.0 alpha:0.7].CGColor);
+        CGContextFillEllipseInRect(ctx, CGRectMake(-DRAG_CIRCLE_RADIUS, -DRAG_CIRCLE_RADIUS, DRAG_CIRCLE_RADIUS*2, DRAG_CIRCLE_RADIUS*2));
+        CGContextRestoreGState(ctx);
         
-        // Now draw the start button.
-        [@"START" drawInRect:CGRectMake(6, 18, 45, self.frame.size.height-12)
-        	 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+//        if(isTouched==FALSE){
+//            CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
+//            CGContextFillEllipseInRect(ctx, CGRectMake(0, 0, 50, self.frame.size.height));
+//            CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+//            
+//        }
+//        else {
+//            CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.4 green:.4 blue:.4 alpha:1].CGColor );
+//            CGContextFillEllipseInRect(ctx, CGRectMake(0, 0, 50, self.frame.size.height));
+//            CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1].CGColor );
+//        }  
+//        
+//        // Now draw the start button.
+//        [@"START" drawInRect:CGRectMake(6, 18, 45, self.frame.size.height-12)
+//        	 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
         
     }
     
@@ -180,20 +188,22 @@
         CGContextSaveGState(ctx);
         
         CGContextTranslateCTM(ctx, 25, self.frame.size.height/2);
-        CGContextSetStrokeColorWithColor(ctx, [UIColor whiteColor].CGColor);
         
-        if(buttonSelected == CANCEL_BUTTON_SELECTED) {
-            CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.5 alpha:0.6].CGColor);
-        } else {
-            CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.2 alpha:0.6].CGColor);   
-        }
-
-        
-        CGContextStrokeEllipseInRect(ctx, CGRectMake(-24, -24, 48, 48));
-        CGContextFillEllipseInRect(ctx, CGRectMake(-24, -24, 48, 48));
-        
-        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.8 alpha:1.0].CGColor);
-        [@"CANCEL" drawInRect:CGRectMake(-23, -6, 50, 12) withFont:[UIFont boldSystemFontOfSize:11]];
+        // Trying it without the cancel button, since it's a bit ambiguous.
+//        CGContextSetStrokeColorWithColor(ctx, [UIColor whiteColor].CGColor);
+//        
+//        if(buttonSelected == CANCEL_BUTTON_SELECTED) {
+//            CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.5 alpha:0.6].CGColor);
+//        } else {
+//            CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.2 alpha:0.6].CGColor);   
+//        }
+//
+//        
+//        CGContextStrokeEllipseInRect(ctx, CGRectMake(-24, -24, 48, 48));
+//        CGContextFillEllipseInRect(ctx, CGRectMake(-24, -24, 48, 48));
+//        
+//        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.8 alpha:1.0].CGColor);
+//        [@"CANCEL" drawInRect:CGRectMake(-23, -6, 50, 12) withFont:[UIFont boldSystemFontOfSize:11]];
  
         CGContextTranslateCTM(ctx, 185, 0);
 
@@ -224,7 +234,7 @@
         
         CGContextTranslateCTM(ctx, optionSliderX, self.frame.size.height/2);
         CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:1.0 alpha:0.7].CGColor);
-        CGContextFillEllipseInRect(ctx, CGRectMake(-10, -10, 20, 20));
+        CGContextFillEllipseInRect(ctx, CGRectMake(-DRAG_CIRCLE_RADIUS, -DRAG_CIRCLE_RADIUS, DRAG_CIRCLE_RADIUS*2, DRAG_CIRCLE_RADIUS*2));
     }
     
     
@@ -284,7 +294,6 @@
         if (topic.status == kFUTURE){
             NSLog(@"Future item touched - end the current item and make this one current.");
             [[ConnectionManager sharedInstance] updateTopic:topic withStatus:kCURRENT];
-            
         }
         else if(topic.status == kCURRENT){
             NSLog(@"Current item touched - end it.");
