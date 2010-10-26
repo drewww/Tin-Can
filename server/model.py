@@ -553,8 +553,8 @@ class Location(Actor):
     """
     
     colorIndex = 0
-    colors = ["6D7432", "765732", "387432", "2D7474", "2F3E74", "643374",
-        "773333"]
+    colors = ["526051", "506262", "505462", "5E5062", "655253", "655C52",
+        "606150"]
     
     def __init__(self, name=None, actorUUID=None):
         Actor.__init__(self, name, actorUUID)
