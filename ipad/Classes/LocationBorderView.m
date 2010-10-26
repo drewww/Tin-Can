@@ -146,17 +146,11 @@
 
 - (int) hasSharedEdgeBetweenView:(UserView *)view1 andView:(UserView *)view2 {
     
-    // (there are some cases here we're not testing that we shouldn't see
-    //  for instance, two people on opposite sides at the same y position
-    //  might show up as being SHARED_Y even when they're not. We shouldn't
-    //  see this case, though, because we check views in order, and this
-    //  situation can't happen with consecutive views.)
     if(view1.side == view2.side && ([view1.side intValue]==0 || [view1.side intValue]==2)) {
         return SHARED_X;
     } else if(view1.side == view2.side && ([view1.side intValue]==1 || [view1.side intValue]==3)) {
         return SHARED_Y;
-    } else {
-        
+    } else {        
         // Figure out which corner it is. 
         // We have to do both combinations because we don't know in which order we're going to get
         // these views. 
@@ -172,7 +166,7 @@
         else if(([view1.side intValue]==0 && [view2.side intValue]==1) || ([view1.side intValue]==1 && [view2.side intValue]==0)) {
             return CORNER_NE;
         }
-        NSLog(@"Failed to hit any of the corner cases. Returning generic corner.");
+        NSLog(@"Failed to hit any of the corner cases. Returning generic corner. This should never happen.");
         return CORNER;
     }
 }
