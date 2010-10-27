@@ -465,7 +465,7 @@
             
             
             // Set the color and fill the path. 
-            CGContextSetFillColorWithColor(ctx, [UIColor redColor].CGColor);
+            CGContextSetFillColorWithColor(ctx, topic.color.CGColor);
             CGContextFillPath(ctx);            
             
             // at the end, update the tempStartTime to be the beginning of the hour so when we draw
@@ -475,12 +475,13 @@
 
 //            [curHourStart retain];
 //            [curHourStop release];
-            curHour = curHour+1;
             
             // Fill in the circle to get a small black border between the bands.
             CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
             float radius = TOPIC_OUTER_RADIUS-HOUR_BAND_WIDTH*(curHour+1);
             CGContextFillEllipseInRect(ctx, CGRectMake(-radius, -radius, 2*radius, 2*radius));
+            
+            curHour = curHour+1;
         }
         
         
