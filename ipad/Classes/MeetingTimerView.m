@@ -18,6 +18,10 @@
 #define HOUR_INDEX 3
 #define TYPE_INDEX 4
 
+#define TOPIC_OUTER_RADIUS 130
+#define HOUR_BAND_WIDTH 15
+#define HOUR_MARGIN_WIDTH 3
+
 - (id)initWithFrame:(CGRect)frame withStartTime:(NSDate *)time{
     if ((self = [super initWithFrame:frame])) {
         
@@ -344,8 +348,8 @@
 
 - (void) clk {
     [curTime release];
-    curTime = [[NSDate date] retain];
-//    curTime = [[curTime addTimeInterval:60] retain];
+//    curTime = [[NSDate date] retain];
+    curTime = [[curTime addTimeInterval:100] retain];
     [self setNeedsDisplay];
 }
 
@@ -389,6 +393,13 @@
     
     //CGContextRotateCTM(ctx, [self getMinRotationWithDate:topic.startTime]);    
     // Loop through each topic.
+    
+    int curHour = 0;
+    NSDate *curHourStart = nil;
+    NSDate *tmpStartTime;
+    NSDate *tmpStopTime;
+    NSDate *curHourStop;
+
     for(Topic *topic in sortedTopics) {
         CGContextSaveGState(ctx);        
         if(topic.status==kFUTURE) {
@@ -396,26 +407,100 @@
             break;
         }
         
+        // Grab the start time of the first topic, and make that our current hour start.
+        if(curHourStart == nil) {
+            curHourStart = topic.startTime;
+            NSLog(@"setting cur hour start: %@", curHourStart);
+        }
+        
         // Rotate into position, so we can always draw straight up.
-        CGContextRotateCTM(ctx, [self getMinRotationWithDate:topic.startTime]-M_PI/2);
-        CGContextMoveToPoint(ctx, 0, 0);
         
-        //lets draw our TIME ARC!
+        
+        
+        
+        // Now, we need to check if this topic extends past the hour boundary.
+        
+        // This strategy will work if we just loop it. Since the stop time isn't moving,
+        // this loop will trigger twice if we just let it.
+        
+        // This tmp start time stores an updateable start time, so when we're drawing
+        // from hour boundaries it'll still work properly.
+        tmpStartTime = topic.startTime;
+        
+        if(topic.status==kPAST) {
+            tmpStopTime = topic.stopTime;
+        } else {
+            tmpStopTime = curTime;
+        }
+        
         float elapsedTime;
+
+//        NSLog(@"time since curHourStart for this topics stop time: %f", abs([curHourStart timeIntervalSinceDate:tmpStopTime]));
+        while(abs([curHourStart timeIntervalSinceDate:tmpStopTime]) > 3600) {
+            
+            NSLog(@"PAST THE HOUR BOUNDARY");
+            
+            
+            curHourStop = [[NSDate dateWithTimeIntervalSince1970:[curHourStart timeIntervalSince1970] + 3600] retain];
+            
+            // At this point, we want to make an arc that goes from startTime to now, and then
+            // fake the next drawing chunk into thinking its going from curHourTime to 
+            // stopTime.
+            
+            // draw the arc from the temporary time (which on the first pass will be the 
+            // start time, and on subsequent loops will be the previous hour's stop time)
+            // to the current hour's stop time.
+            
+            CGContextSaveGState(ctx);
+            CGContextRotateCTM(ctx, [self getMinRotationWithDate:tmpStartTime]-M_PI/2);
+            CGContextMoveToPoint(ctx, 0, 0);
+            
+            elapsedTime = abs([tmpStartTime  timeIntervalSinceDate:curHourStop]);
+            CGFloat arcLength = elapsedTime/3600.0f * (2*M_PI);
+            CGContextMoveToPoint(ctx, 0, 0);
+            
+            CGContextAddArc(ctx, 0, 0, TOPIC_OUTER_RADIUS-(HOUR_BAND_WIDTH + HOUR_MARGIN_WIDTH)*curHour, 0, arcLength, 0); 
+            
+            CGContextRestoreGState(ctx);
+            
+            
+            // Set the color and fill the path. 
+            CGContextSetFillColorWithColor(ctx, [UIColor redColor].CGColor);
+            CGContextFillPath(ctx);            
+            
+            // at the end, update the tempStartTime to be the beginning of the hour so when we draw
+            // in the next loop OR in the final drawing procedure
+            curHourStart = curHourStop;
+            tmpStartTime = curHourStart;
+
+//            [curHourStart retain];
+//            [curHourStop release];
+            curHour = curHour+1;
+            
+            // Fill in the circle to get a small black border between the bands.
+            CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
+            float radius = TOPIC_OUTER_RADIUS-HOUR_BAND_WIDTH*(curHour+1);
+            CGContextFillEllipseInRect(ctx, CGRectMake(-radius, -radius, 2*radius, 2*radius));
+        }
         
+        
+        CGContextRotateCTM(ctx, [self getMinRotationWithDate:tmpStartTime]-M_PI/2);
+        CGContextMoveToPoint(ctx, 0, 0);
+
         // If it's a past item, then we know it'll have a stop time. Otherwise, the stop time is
         // now. (this will be slightly different when we have a non-topic as the current topic
         // that needs to grow, but we'll handle that later. for now, non-topics just won't show
         // up at all, which is basically fine.)
-        if(topic.status==kPAST) {
-            elapsedTime = abs([topic.startTime  timeIntervalSinceDate:topic.stopTime]);
-        } else {
-            elapsedTime = abs([topic.startTime  timeIntervalSinceDate:[NSDate date]]);
-        }
+        elapsedTime = abs([tmpStartTime  timeIntervalSinceDate:tmpStopTime]);
+        
+        NSLog(@"elapsed time after: %f", elapsedTime);
+ 
+        
+        
         CGFloat arcLength = elapsedTime/3600.0f * (2*M_PI);
         CGContextMoveToPoint(ctx, 0, 0);
         
-        CGContextAddArc(ctx, 0, 0, 130, 0, arcLength, 0); 
+        CGContextAddArc(ctx, 0, 0, TOPIC_OUTER_RADIUS-(HOUR_BAND_WIDTH + HOUR_MARGIN_WIDTH)*curHour, 0, arcLength, 0); 
         
         
         // Set the color and fill the path. 
