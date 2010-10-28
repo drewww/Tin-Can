@@ -22,7 +22,7 @@
 #define TAB_HEIGHT 15
 #define TAB_MARGIN 5
 
-#define STATUS_HEIGHT 30
+#define LOCATION_HEIGHT 20
 
 #define NAME_BOTTOM_MARGIN 5
 

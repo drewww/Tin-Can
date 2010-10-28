@@ -20,7 +20,7 @@
 #define BOTTOM 2
 #define LEFT 3
 
-#define USER_EXTEND_HEIGHT 50
+#define USER_EXTEND_HEIGHT 20
 
 @synthesize side;
 

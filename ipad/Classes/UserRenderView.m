@@ -62,12 +62,15 @@
     
     CGFloat topEdge;
     
-    if(showStatus) {
-        topEdge = -BASE_HEIGHT/2 - STATUS_HEIGHT;
-        
-    } else {
-        topEdge = -BASE_HEIGHT/2;
-    }
+    //if(showStatus) {
+//        topEdge = -BASE_HEIGHT/2 - STATUS_HEIGHT;
+//        
+//    } else {
+//        topEdge = -BASE_HEIGHT/2;
+//    }
+//    
+    
+    topEdge = -BASE_HEIGHT/2;
     
     [self fillRoundedRect:CGRectMake(-BASE_WIDTH/2, topEdge, BASE_WIDTH, BASE_HEIGHT) withRadius:10 withRoundedBottom:true];        
     
@@ -82,21 +85,26 @@
     
     
     
+    // Now draw the location name. It'll only show when extended, but we just draw it
+    // all the time.
+    CGSize locationNameSize = [self.user.location.name sizeWithFont:f];
+    [self.user.location.name drawAtPoint:CGPointMake(-locationNameSize.width/2, 0) withFont:f];
+        
     // Handle status drawing.
-    if(showStatus) {
-        CGContextSetFillColorWithColor(ctx, [UIColor colorWithHue:0.65 saturation:0.5 brightness:1.0 alpha:1.0].CGColor);
-        CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
-        
-        [self fillRoundedRect:CGRectMake(-BASE_WIDTH/2, topEdge, BASE_WIDTH, STATUS_HEIGHT) withRadius:10 withRoundedBottom:false];        
-        
-        NSString *statusString = @"POSTED TASK";
-        
-        UIFont *statusFont = [UIFont boldSystemFontOfSize:12];
-        CGSize statusSize = [statusString sizeWithFont:statusFont];
-        
-        CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-        [statusString drawAtPoint:CGPointMake(-statusSize.width/2, topEdge + STATUS_HEIGHT/2 - statusSize.height/2) withFont:statusFont];
-    }
+    //if(showStatus) {
+//        CGContextSetFillColorWithColor(ctx, [UIColor colorWithHue:0.65 saturation:0.5 brightness:1.0 alpha:1.0].CGColor);
+//        CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
+//        
+//        [self fillRoundedRect:CGRectMake(-BASE_WIDTH/2, topEdge, BASE_WIDTH, STATUS_HEIGHT) withRadius:10 withRoundedBottom:false];        
+//        
+//        NSString *statusString = @"POSTED TASK";
+//        
+//        UIFont *statusFont = [UIFont boldSystemFontOfSize:12];
+//        CGSize statusSize = [statusString sizeWithFont:statusFont];
+//        
+//        CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+//        [statusString drawAtPoint:CGPointMake(-statusSize.width/2, topEdge + STATUS_HEIGHT/2 - statusSize.height/2) withFont:statusFont];
+    //}
     
     
     
