@@ -87,7 +87,7 @@
 
 - (void) clk {
     [curTime release];
-//    curTime = [[NSDate date] retain];
+    curTime = [[NSDate date] retain];
     curTime = [[curTime addTimeInterval:100] retain];
     [self setNeedsDisplay];
 }
