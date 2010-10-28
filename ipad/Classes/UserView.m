@@ -20,7 +20,7 @@
 #define BOTTOM 2
 #define LEFT 3
 
-#define USER_EXTEND_HEIGHT 20
+#define USER_EXTEND_HEIGHT 40
 
 @synthesize side;
 
@@ -38,7 +38,7 @@
     userExtended = FALSE;
     
 	//the + 11 was to hide the container view well under the user
-    taskContainerView = [[[TaskContainerView alloc] initWithFrame:CGRectMake(-BASE_WIDTH/2, -BASE_HEIGHT/2 +11, BASE_WIDTH, 300) withRot:0.0] retain];
+    taskContainerView = [[[TaskContainerView alloc] initWithFrame:CGRectMake(-BASE_WIDTH/2, -BASE_HEIGHT/2 +15, BASE_WIDTH, 300) withRot:0.0] retain];
     [self addSubview:taskContainerView];
     
 

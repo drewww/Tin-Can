@@ -12,7 +12,7 @@
 #import "UserRenderView.h"
 #import "TaskDropTarget.h"
 
-#define BASE_HEIGHT 70
+#define BASE_HEIGHT 90
 #define BASE_WIDTH 180
 
 // Messing with this also works for debugging. Set it huge to have max height visibility.
@@ -24,7 +24,9 @@
 
 #define LOCATION_HEIGHT 20
 
-#define NAME_BOTTOM_MARGIN 5
+#define NAME_BOTTOM_MARGIN 2
+
+#define STATUS_HEIGHT 20
 
 @class UserRenderView;
 

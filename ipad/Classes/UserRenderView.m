@@ -62,15 +62,7 @@
     
     CGFloat topEdge;
     
-    //if(showStatus) {
-//        topEdge = -BASE_HEIGHT/2 - STATUS_HEIGHT;
-//        
-//    } else {
-//        topEdge = -BASE_HEIGHT/2;
-//    }
-//    
-    
-    topEdge = -BASE_HEIGHT/2;
+    topEdge = -BASE_HEIGHT/2 +10;
     
     [self fillRoundedRect:CGRectMake(-BASE_WIDTH/2, topEdge, BASE_WIDTH, BASE_HEIGHT) withRadius:10 withRoundedBottom:true];        
     
@@ -83,39 +75,33 @@
     
     [[self.user.name uppercaseString] drawAtPoint:CGPointMake(-nameSize.width/2, -nameSize.height-NAME_BOTTOM_MARGIN) withFont:f];
     
+    // Draw the status block..
+    f = [UIFont boldSystemFontOfSize:16];
+    NSString *statusString = @"added a task";
+    CGSize statusSize = [statusString sizeWithFont:f];
+    [statusString drawAtPoint:CGPointMake(-statusSize.width/2, 2) withFont:f];
     
+    // Now draw a thin, lighter line to separate it from the name and line it up with the location border
+    // thickness.
+//    CGContextSetLineWidth(ctx, 0.5);
+//    CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
+//    CGContextMoveToPoint(ctx, -BASE_WIDTH/2, 2);
+//    CGContextAddLineToPoint(ctx, BASE_WIDTH/2, 2);
+//    CGContextStrokePath(ctx);
     
     // Now draw the location name. It'll only show when extended, but we just draw it
     // all the time.
     f = [UIFont boldSystemFontOfSize:12];
     CGSize locationNameSize = [self.user.location.name sizeWithFont:f];
-    [self.user.location.name drawAtPoint:CGPointMake(-locationNameSize.width/2, 5) withFont:f];
+    [self.user.location.name drawAtPoint:CGPointMake(-locationNameSize.width/2, 5+22) withFont:f];
     
     // Now draw a thin, lighter line to separate it from the name and line it up with the location border
     // thickness.
     CGContextSetLineWidth(ctx, 0.5);
     CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
-    CGContextMoveToPoint(ctx, -BASE_WIDTH/2, +5);
-    CGContextAddLineToPoint(ctx, BASE_WIDTH/2, +5);
+    CGContextMoveToPoint(ctx, -BASE_WIDTH/2, +5 + 22);
+    CGContextAddLineToPoint(ctx, BASE_WIDTH/2, +5 + 22);
     CGContextStrokePath(ctx);
-    
-        
-    // Handle status drawing.
-    //if(showStatus) {
-//        CGContextSetFillColorWithColor(ctx, [UIColor colorWithHue:0.65 saturation:0.5 brightness:1.0 alpha:1.0].CGColor);
-//        CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
-//        
-//        [self fillRoundedRect:CGRectMake(-BASE_WIDTH/2, topEdge, BASE_WIDTH, STATUS_HEIGHT) withRadius:10 withRoundedBottom:false];        
-//        
-//        NSString *statusString = @"POSTED TASK";
-//        
-//        UIFont *statusFont = [UIFont boldSystemFontOfSize:12];
-//        CGSize statusSize = [statusString sizeWithFont:statusFont];
-//        
-//        CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-//        [statusString drawAtPoint:CGPointMake(-statusSize.width/2, topEdge + STATUS_HEIGHT/2 - statusSize.height/2) withFont:statusFont];
-    //}
-    
     
     
     // Draw the tabs to show that this person has tasks assigned.
@@ -125,7 +111,7 @@
     NSLog(@"about to render a user, with %d tasks", [user.tasks count]);
     
     for (int i=0; i<[user.tasks count]; i++) {
-        CGContextFillRect(ctx, CGRectMake(xPos-BASE_WIDTH/2, topEdge-TAB_HEIGHT, TAB_WIDTH, TAB_HEIGHT));
+        CGContextFillRect(ctx, CGRectMake(xPos-BASE_WIDTH/2, topEdge-TAB_HEIGHT+8, TAB_WIDTH, TAB_HEIGHT-8));
         
         xPos += TAB_MARGIN + TAB_WIDTH;
     }
