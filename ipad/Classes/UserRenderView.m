@@ -87,8 +87,18 @@
     
     // Now draw the location name. It'll only show when extended, but we just draw it
     // all the time.
+    f = [UIFont boldSystemFontOfSize:12];
     CGSize locationNameSize = [self.user.location.name sizeWithFont:f];
-    [self.user.location.name drawAtPoint:CGPointMake(-locationNameSize.width/2, 0) withFont:f];
+    [self.user.location.name drawAtPoint:CGPointMake(-locationNameSize.width/2, 5) withFont:f];
+    
+    // Now draw a thin, lighter line to separate it from the name and line it up with the location border
+    // thickness.
+    CGContextSetLineWidth(ctx, 0.5);
+    CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
+    CGContextMoveToPoint(ctx, -BASE_WIDTH/2, +5);
+    CGContextAddLineToPoint(ctx, BASE_WIDTH/2, +5);
+    CGContextStrokePath(ctx);
+    
         
     // Handle status drawing.
     //if(showStatus) {

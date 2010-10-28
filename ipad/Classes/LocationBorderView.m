@@ -21,7 +21,7 @@
 #define CORNER_SE 5
 #define CORNER_SW 6
 
-#define BORDER_WIDTH 12
+#define BORDER_WIDTH 14
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
