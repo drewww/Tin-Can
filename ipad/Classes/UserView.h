@@ -34,9 +34,12 @@
     UserRenderView *userRenderView;
     
     bool taskDrawerExtended;
+    bool userExtended;
     
     float lastHeightChange;
 	float initialHeight;
+    
+    
     
     NSNumber *side;
 }
@@ -53,6 +56,7 @@
 
 - (void) setHoverState:(bool)state;
 - (void) setDrawerExtended:(bool)extended;
+- (void) setUserExtended:(bool)extended;
 
 - (NSComparisonResult) compareByLocation:(UserView *)view;
 
