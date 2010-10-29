@@ -42,13 +42,14 @@
     // Drawing code
     
     // For now, just print some random stuff to show that it's working.
-    NSString *displayString = [NSString stringWithFormat:@"%@ %@", self.event.timestamp, self.event.type];
-    
+    NSString *displayString = [NSString stringWithFormat:@"%@ %d", self.event.timestamp, self.event.type];    
     
     [displayString drawInRect:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height) withFont:[UIFont systemFontOfSize:12]];
 }
 
 - (NSComparisonResult) compareByTime:(EventView *)view {
+    
+    NSLog(@"comparing by time");
     
     // I think there might be a way to do that key compare thing, but it's not as simple
     // as getting a key, so I'm not sure. Doing it this way which I know works, for now

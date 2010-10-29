@@ -86,7 +86,6 @@
 - (void) userTouched {
     // toggle draw extended state.
     [self setDrawerExtended:!taskDrawerExtended];
-    [self setUserExtended:!userExtended];
 }
 
 - (void) taskAssigned:(Task *)theTask {
@@ -131,7 +130,6 @@
         if(taskDrawerExtended == false && extended==true) {
             [UIView beginAnimations:@"extend_drawer" context:nil];
             
-            
             // Extend by the current height of the task drawer.
             
             [UIView setAnimationDuration:0.4f];
@@ -169,6 +167,8 @@
             [UIView commitAnimations];        
             taskDrawerExtended = false;
         }
+        
+        [self setUserExtended:extended];
     }
 }
 

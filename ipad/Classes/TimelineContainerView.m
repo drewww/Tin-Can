@@ -47,6 +47,8 @@
 	int c=0;
 	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByTime:)];
     
+    NSLog(@"sorted subview array: %@", sortedArray);
+    
     // TODO
     // Since this is effectively a queue, when we draw, we'll want to look and see if
     // we have more EventViews that we're going to have space for. If we do, 
