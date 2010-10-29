@@ -7,7 +7,7 @@
 //
 
 #import "TimelineContainerView.h"
-
+#import "EventView.h"
 
 @implementation TimelineContainerView
 
@@ -16,7 +16,6 @@
     if ((self = [super initWithFrame:frame])) {
 		self.frame=frame;
 		
-        
 		[self setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 
         // Get the recent timeline history. (Going to have to think about
@@ -42,30 +41,35 @@
 }
 
 
-// Turn this on when we actually have subviews.
-//- (void)layoutSubviews{
-//	int i=0;
-//	int c=0;
-//	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByPointer:)];
-//	for(TimelineView *subview in sortedArray){
-//		if ( i < 3 ) {
-//			subview.frame=CGRectMake(5, 27 +(33.25*i), 137.5 , 28.25);
-//            
-//		}
-//		else{
-//			subview.frame=CGRectMake(147.5, 27 +(33.25*c), 137.5, 28.25);
-//			c++;
-//		}
-//        
-//		i++;
-//	}
-//    
-//}
-
+- (void)layoutSubviews{
+	int i=0;
+	int c=0;
+	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByTime:)];
+    
+    // TODO
+    // Since this is effectively a queue, when we draw, we'll want to look and see if
+    // we have more EventViews that we're going to have space for. If we do, 
+    // sort the and drop the ones farthest down the list (making sure to release them)
+    
+    // This is not the right layout, but we'll leave it that way for now until we 
+    // actually figure out what EventViews will look like.
+	for(EventView *subview in sortedArray){
+		if ( i < 3 ) {
+			subview.frame=CGRectMake(5, 27 +(33.25*i), 137.5 , 28.25);
+            
+		}
+		else{
+			subview.frame=CGRectMake(147.5, 27 +(33.25*c), 137.5, 28.25);
+			c++;
+		}
+        
+		i++;
+	}
+    
+}
 
 - (void)dealloc {
     [super dealloc];
 }
-
 
 @end
