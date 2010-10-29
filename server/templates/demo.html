@@ -55,9 +55,7 @@
 						.html(task["text"]);
 					var createdBy = state.getObj(task["createdBy"],User);
 					taskElement.children('.details').first().children().first()
-						.html("Created by "+createdBy.name);
-					taskElement.children('.details').first().children().first().next()
-						.html(timesince(task['createdAt']));
+						.html("Created by "+createdBy.name+" <span>"+timesince(task['createdAt'])+"</span>");
 					//assuming that the new task is not assigned
 					taskElement.children('.details').first().children().first().next().next()
 						.html("Not assigned");
@@ -68,7 +66,7 @@
 					$("#tasks").prepend(taskElement);
 					setTimeout(function() {
 						taskElement.children('.details').slideUp()
-					},1000);
+					},500);
 					break;
 				case "GET_STATE_COMPLETE":
 					var users = state.getUsers();
@@ -135,6 +133,13 @@
 			$(this).children('.main').click(function(){
 				$(this).parent().children('.details').first().slideToggle();
 			});
+		});
+		
+		$('#tasks input[type=submit]').click(function(){
+			var task = $(this).closest('li').attr('id');
+			var user = $(this).parent().children('.participants').first().val();
+			conn.assignTask(task,user);
+			return false;
 		});
 		
 	});
@@ -242,6 +247,13 @@
 	#tasks li:hover {
 		cursor: pointer;
 	}
+	#tasks .details {
+		padding-left: 20px;
+		font-size: 12px;
+	}
+	#tasks .details > div > span {
+		color: #888;
+	}
 	
 </style>
 </head>
@@ -260,7 +272,7 @@
 <div id="add_task" class="add_form">
 <form action="" method="get" accept-charset="utf-8">
 	<input type="text" name="new_task" value="new task..." id="new_task" class="item_text"/>
-	<input type="submit" value="Add"/ id="submit_new_task" class="submit_item">
+	<input type="submit" value="Add" id="submit_new_task" class="submit_item"/>
 </form>
 </div>
 
@@ -274,12 +286,20 @@
 		<span>{{task.text}}</span>
 	</div>
 	<div class="details">
-		<div>Created by {{task.createdBy.name}}</div>
-		<div>{{task.getRelativeCreatedAt()}}</div>
+		<div>Created by {{task.createdBy.name}} <span>{{task.getRelativeCreatedAt()}}</span></div>
 		{% if task.assignedTo!=None %}
 		<div>Assigned to {{task.assignedTo.name}}</div>
 		{% else %}
 		<div>Not assigned</div>
+		<div>
+			<form>
+				<input type="submit" value="Assign">&nbsp;to&nbsp;
+				<select class="participants">
+					{% for participant in participants %}
+					<option value="{{participant.uuid}}">{{participant.name}}</option>
+					{% end %}
+				</select>
+		</div>
 		{% end %}
 	</div>
 </li>
