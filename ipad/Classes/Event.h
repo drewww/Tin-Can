@@ -55,6 +55,8 @@ typedef enum {
     
     BOOL localEvent;
     
+    NSDate *timestamp;
+    
     NSDictionary *params;
     NSDictionary *results;
 }
@@ -62,8 +64,7 @@ typedef enum {
 - (id) initFromDictionary:(NSDictionary *)eventDictionary;
 - (id) initWithType:(EventType)myType withUUID:(UUID *)myUUID withLocal:(BOOL)isLocalEvent
          withParams:(NSDictionary *)myParams withResults:(NSDictionary *)myResults;
-- (id) initWithType:(EventType)myType withLocal:(BOOL)isLocalEvent withParams:(NSDictionary *)myParams
-             withResults:(NSDictionary *)results;
+- (id) initWithType:(EventType)myType withLocal:(BOOL)isLocalEvent withParams:(NSDictionary *)myParams withResults:(NSDictionary *)results;
 
 @property(nonatomic) EventType type;
 @property(nonatomic) BOOL localEvent;
@@ -75,5 +76,6 @@ typedef enum {
 @property(nonatomic, retain) NSDictionary *params;
 @property(nonatomic, retain) NSDictionary *results;
 
+@property(nonatomic, retain) NSDate *timestamp;
 
 @end

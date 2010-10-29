@@ -20,6 +20,7 @@
 @synthesize params;
 @synthesize results;
 @synthesize localEvent;
+@synthesize timestamp;
 
 - (id) initFromDictionary:(NSDictionary *)eventDictionary {
     self = [super init];
@@ -66,7 +67,8 @@
     
     self.params = [eventDictionary objectForKey:@"params"];
     self.results = [eventDictionary objectForKey:@"results"];
-    
+
+    self.timestamp = [NSDate dateWithTimeIntervalSince1970:[[eventDictionary objectForKey:@"timestamp"] doubleValue]]; 
     
     localEvent = false;
     
@@ -77,12 +79,15 @@
 
 // This one is just sugar for the main one. 
 - (id) initWithType:(EventType)myType withLocal:(BOOL)isLocalEvent withParams:(NSDictionary *)myParams
-        withResults:(NSDictionary *)myResults {
-    return [self initWithType:myType withUUID:nil withLocal:isLocalEvent withParams:myParams withResults:myResults];
+        withResults:(NSDictionary *)myResults withTimestamp:(NSDate *)date {
+    return [self initWithType:myType withUUID:nil withLocal:isLocalEvent withParams:myParams withResults:myResults withTimestamp:[NSDate date]];
 }
 
+// This one is only used locally for "local" events, basically. The timestamp option isn't included here
+// just for convenience; all these events are created here, so setting the timestamp to be "now" is sufficient
+// and makes things slightly easier. 
 - (id) initWithType:(EventType)myType withUUID:(UUID *)myUUID withLocal:(BOOL)isLocalEvent withParams:(NSDictionary *)myParams
-withResults:(NSDictionary *)myResults {
+        withResults:(NSDictionary *)myResults {
     
     self = [super init];
     
@@ -99,6 +104,8 @@ withResults:(NSDictionary *)myResults {
     
     self.params = myParams;
     self.results = myResults;
+    
+    self.timestamp = [NSDate date];
     
     return self;
 }
