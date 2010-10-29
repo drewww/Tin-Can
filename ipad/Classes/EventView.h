@@ -7,12 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Event.h"
 
 @interface EventView : UIView {
-
+    Event *event;
 }
 
 - (id)initWithFrame:(CGRect)frame withEvent:(Event *)theEvent;
+
+- (NSComparisonResult) compareByTime:(EventView *)view;
+
+@property (nonatomic, retain) Event *event;
 
 @end
