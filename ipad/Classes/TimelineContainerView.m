@@ -11,6 +11,7 @@
 
 @implementation TimelineContainerView
 
+#define COLOR [UIColor colorWithWhite:0.3 alpha:1]
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {

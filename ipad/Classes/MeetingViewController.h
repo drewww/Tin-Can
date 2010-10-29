@@ -14,6 +14,7 @@
 #import "Event.h"
 #import "User.h"
 #import "LocationBorderView.h"
+#import "TimelineContainerView.h"
 
 @class Todo;
 
@@ -22,6 +23,7 @@
     TaskContainerView *taskContainer;
     TopicContainerView *topicContainer;
 	LocationBorderView *locBorderView;
+    TimelineContainerView *timelineView;
     
     
     UILabel *connectionInfoLabel;

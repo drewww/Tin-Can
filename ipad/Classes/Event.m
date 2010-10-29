@@ -79,8 +79,8 @@
 
 // This one is just sugar for the main one. 
 - (id) initWithType:(EventType)myType withLocal:(BOOL)isLocalEvent withParams:(NSDictionary *)myParams
-        withResults:(NSDictionary *)myResults withTimestamp:(NSDate *)date {
-    return [self initWithType:myType withUUID:nil withLocal:isLocalEvent withParams:myParams withResults:myResults withTimestamp:[NSDate date]];
+        withResults:(NSDictionary *)myResults {
+    return [self initWithType:myType withUUID:nil withLocal:isLocalEvent withParams:myParams withResults:myResults];
 }
 
 // This one is only used locally for "local" events, basically. The timestamp option isn't included here
