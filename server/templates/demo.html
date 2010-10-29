@@ -51,17 +51,24 @@
 					var taskElement = $("#tasks").children().first().clone();
 					var task = e["results"]["task"];
 					taskElement.id = e["results"]["task"]["uuid"];
-					taskElement.children().last().prev()
+					taskElement.children('.main').first().children().last()
 						.html(task["text"]);
 					var createdBy = state.getObj(task["createdBy"],User);
-					taskElement.children().last().children().first()
+					taskElement.children('.details').first().children().first()
 						.html("Created by "+createdBy.name);
-					taskElement.children().last().children().first().next()
+					taskElement.children('.details').first().children().first().next()
 						.html(timesince(task['createdAt']));
 					//assuming that the new task is not assigned
-					taskElement.children().last().children().first().next().next()
+					taskElement.children('.details').first().children().first().next().next()
 						.html("Not assigned");
-					$("#tasks").append(taskElement);
+					taskElement.click(function(){
+						$(this).children('.details').slideToggle();
+					});
+					taskElement.children('.details').css('display','block');
+					$("#tasks").prepend(taskElement);
+					setTimeout(function() {
+						taskElement.children('.details').slideUp()
+					},1000);
 					break;
 				case "GET_STATE_COMPLETE":
 					var users = state.getUsers();
@@ -123,6 +130,13 @@
 		$("#login").show();
 		$("#logged_in").hide();
 		
+		$('#tasks li').each(function(){
+			$(this).children('.details').first().css('display','none');
+			$(this).children('.main').click(function(){
+				$(this).parent().children('.details').first().slideToggle();
+			});
+		});
+		
 	});
 	
 	
@@ -153,7 +167,7 @@
 	
 	/* Header / Footer setup. */
 	header, footer {
-		width: 100%;
+		/*width: 100%;*/
 		height: 30px;
 		background-color: #444444;
 		color: #DDDDDD;
@@ -225,6 +239,10 @@
 		margin-right: 5px;
 	}
 	
+	#tasks li:hover {
+		cursor: pointer;
+	}
+	
 </style>
 </head>
 
@@ -250,9 +268,12 @@
 {% for task in tasks %}
 
 <li id="{{task.uuid}}">
-	<img src="{{static_url('images/note.png')}}"/>
-	<span>{{task.text}}</span>
-	<div>
+	
+	<div class="main">
+		<img src="{{static_url('images/note.png')}}"/>
+		<span>{{task.text}}</span>
+	</div>
+	<div class="details">
 		<div>Created by {{task.createdBy.name}}</div>
 		<div>{{task.getRelativeCreatedAt()}}</div>
 		{% if task.assignedTo!=None %}
