@@ -9,8 +9,10 @@
 #import <UIKit/UIKit.h>
 
 
-@interface TimelineView : UIView {
+@interface EventView : UIView {
 
 }
+
+- (id)initWithFrame:(CGRect)frame withEvent:(Event *)theEvent;
 
 @end

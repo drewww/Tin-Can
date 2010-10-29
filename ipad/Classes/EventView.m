@@ -6,13 +6,13 @@
 //  Copyright 2010 MIT Media Lab. All rights reserved.
 //
 
-#import "TimelineView.h"
+#import "EventView.h"
 
 
-@implementation TimelineView
+@implementation EventView
 
 
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame withEvent:(Event *)theEvent {
     if ((self = [super initWithFrame:frame])) {
         
         // Adapting this from LocationView; this will be something else. Events, probably.

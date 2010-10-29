@@ -15,7 +15,7 @@
 		2899E5220DE3E06400AC0155 /* TinCanViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2899E5210DE3E06400AC0155 /* TinCanViewController.xib */; };
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
 		3A0B2C27127B5A69002C08A1 /* TimelineContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A0B2C26127B5A69002C08A1 /* TimelineContainerView.m */; };
-		3A0B2C2B127B5B6D002C08A1 /* TimelineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A0B2C2A127B5B6D002C08A1 /* TimelineView.m */; };
+		3A0B2C2E127B6AC7002C08A1 /* EventView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A0B2C2C127B6AC7002C08A1 /* EventView.m */; };
 		3A2A6A3C11EE5ED300FF373C /* SynchronizedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A3B11EE5ED300FF373C /* SynchronizedObject.m */; };
 		3A2A6A3F11EE696000FF373C /* StateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A3E11EE696000FF373C /* StateManager.m */; };
 		3A2A6A5A11EE73F800FF373C /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A5911EE73F800FF373C /* User.m */; };
@@ -92,8 +92,8 @@
 		32CA4F630368D1EE00C91783 /* TinCan_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TinCan_Prefix.pch; sourceTree = "<group>"; };
 		3A0B2C25127B5A69002C08A1 /* TimelineContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimelineContainerView.h; sourceTree = "<group>"; };
 		3A0B2C26127B5A69002C08A1 /* TimelineContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimelineContainerView.m; sourceTree = "<group>"; };
-		3A0B2C29127B5B6D002C08A1 /* TimelineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimelineView.h; sourceTree = "<group>"; };
-		3A0B2C2A127B5B6D002C08A1 /* TimelineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimelineView.m; sourceTree = "<group>"; };
+		3A0B2C2C127B6AC7002C08A1 /* EventView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventView.m; path = ../../../code/TinCan/ipad/Classes/EventView.m; sourceTree = SOURCE_ROOT; };
+		3A0B2C2D127B6AC7002C08A1 /* EventView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventView.h; path = ../../../code/TinCan/ipad/Classes/EventView.h; sourceTree = SOURCE_ROOT; };
 		3A2A6A3A11EE5ED300FF373C /* SynchronizedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SynchronizedObject.h; sourceTree = "<group>"; };
 		3A2A6A3B11EE5ED300FF373C /* SynchronizedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SynchronizedObject.m; sourceTree = "<group>"; };
 		3A2A6A3D11EE696000FF373C /* StateManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StateManager.h; sourceTree = "<group>"; };
@@ -418,8 +418,8 @@
 				3A82D448126F9CD5007AFA3D /* LocationBorderView.m */,
 				3A0B2C25127B5A69002C08A1 /* TimelineContainerView.h */,
 				3A0B2C26127B5A69002C08A1 /* TimelineContainerView.m */,
-				3A0B2C29127B5B6D002C08A1 /* TimelineView.h */,
-				3A0B2C2A127B5B6D002C08A1 /* TimelineView.m */,
+				3A0B2C2D127B6AC7002C08A1 /* EventView.h */,
+				3A0B2C2C127B6AC7002C08A1 /* EventView.m */,
 			);
 			name = Meeting;
 			sourceTree = "<group>";
@@ -588,7 +588,7 @@
 				3A4941B8124D209B0068C6D6 /* DragManager.m in Sources */,
 				3A82D449126F9CD5007AFA3D /* LocationBorderView.m in Sources */,
 				3A0B2C27127B5A69002C08A1 /* TimelineContainerView.m in Sources */,
-				3A0B2C2B127B5B6D002C08A1 /* TimelineView.m in Sources */,
+				3A0B2C2E127B6AC7002C08A1 /* EventView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
