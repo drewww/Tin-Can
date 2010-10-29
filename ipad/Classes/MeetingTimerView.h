@@ -36,8 +36,9 @@
 
 -(CGFloat)getMinRotationWithDate:(NSDate *)date;
 -(CGFloat)getHourRotationWithDate: (NSDate *)date; 
--(NSMutableArray *)storeNewTimeWithColor:(UIColor *)color withTime: (NSDate *)time withHour:(float) hour withType:(NSString *)type;
--(void)drawArcWithTimes:(NSMutableArray *)times withIndex:(int) index  withContext:(CGContextRef) context;
+
+//-(NSMutableArray *)storeNewTimeWithColor:(UIColor *)color withTime: (NSDate *)time withHour:(float) hour withType:(NSString *)type;
+//-(void)drawArcWithTimes:(NSMutableArray *)times withIndex:(int) index  withContext:(CGContextRef) context;
 
 - (void) clk;
 

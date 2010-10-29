@@ -152,6 +152,7 @@
             }
             
             [[location getView] setNeedsDisplay];
+            [locBorderView setNeedsDisplay];
             
         break;
            
@@ -172,6 +173,7 @@
             
             // Also, ask the user's location to redraw itself.
             [[location getView] setNeedsDisplay];
+            [locBorderView setNeedsDisplay];
                     
             break;
             
@@ -349,7 +351,32 @@
     // that order as well. 
     NSMutableArray *points=[[NSMutableArray alloc] initWithCapacity:numViews];
     NSMutableArray *rotations=[[NSMutableArray alloc] initWithCapacity:numViews];
+    NSMutableArray *sidesList=[[NSMutableArray alloc] initWithCapacity:numViews];
     for (i=0; i<4; i++) {
+        
+        // Set the side variable to help the border layout system later.
+        // This is a bit of a hassle because the mappings are different, but
+        // this method does bottom, left, top, right, while the normal
+        // numbering is top, right, bottom, left. Do the conversion here.
+        // (would like to be pulling this numbering from the UserView class
+        // but not sure how to make those constants available here. Extern 
+        // something?)
+        int side;
+        switch (i) {
+            case 0:
+                side=2;
+                break;
+            case 1:
+                side=3;
+                break;
+            case 2:
+                side=0;
+                break;
+            case 3:
+                side=1;
+                break;
+        }
+        
         int c =1;
         while (c<=[[sides objectAtIndex:i] intValue]) {
             if (i==0|| i==2) {
@@ -377,16 +404,20 @@
                     [rotations addObject:[NSNumber numberWithFloat:0.0]];
                 }
             }
+            
+            [sidesList addObject:[NSNumber numberWithInt:side]];
             c++;
         }
     }
     // Now that we've done all the layout math, put everything in its place.
     int viewIndex = 0;
     
-    for(UIView *view in sortedUserViews) {
+    for(UserView *view in sortedUserViews) {
         view.center = [[points objectAtIndex:viewIndex] CGPointValue];
               
         [view setTransform:CGAffineTransformMakeRotation([[rotations objectAtIndex:viewIndex] floatValue])];
+        
+        view.side = [sidesList objectAtIndex:viewIndex];
         
         viewIndex++;
     }   

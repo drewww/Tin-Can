@@ -97,8 +97,10 @@ static DragManager *sharedInstance = nil;
     // We'll push it back when it gets dropped again.
         
     TaskView *taskView = (TaskView *)[task getView];
-     // NSLog(@"current center: (%f,%f), center in global coords: (%f, %f)", taskView.center.x, taskView.center.y, p.x, p.y);
-          
+
+    // Try making the task subtly bigger to make it feel like you've picked it up.
+    taskView.frame = CGRectInset(taskView.frame, -5, -5);
+    [taskView setNeedsDisplay];
     
     [self moveTaskViewToDragContainer:taskView];
 }

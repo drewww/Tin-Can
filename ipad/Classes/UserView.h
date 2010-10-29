@@ -12,7 +12,7 @@
 #import "UserRenderView.h"
 #import "TaskDropTarget.h"
 
-#define BASE_HEIGHT 70
+#define BASE_HEIGHT 90
 #define BASE_WIDTH 180
 
 // Messing with this also works for debugging. Set it huge to have max height visibility.
@@ -22,9 +22,11 @@
 #define TAB_HEIGHT 15
 #define TAB_MARGIN 5
 
-#define STATUS_HEIGHT 30
+#define LOCATION_HEIGHT 20
 
-#define NAME_BOTTOM_MARGIN 5
+#define NAME_BOTTOM_MARGIN 2
+
+#define STATUS_HEIGHT 20
 
 @class UserRenderView;
 
@@ -34,9 +36,14 @@
     UserRenderView *userRenderView;
     
     bool taskDrawerExtended;
+    bool userExtended;
     
     float lastHeightChange;
 	float initialHeight;
+    
+    
+    
+    NSNumber *side;
 }
 
 
@@ -51,11 +58,14 @@
 
 - (void) setHoverState:(bool)state;
 - (void) setDrawerExtended:(bool)extended;
+- (void) setUserExtended:(bool)extended;
 
 - (NSComparisonResult) compareByLocation:(UserView *)view;
 
 + (NSArray *) getAllUserViews;
 
 - (User *)getUser;
+
+@property (nonatomic, retain) NSNumber *side;
 
 @end

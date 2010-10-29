@@ -15,6 +15,15 @@
 // This class is a shell - most of the real heavy lifting happens in the UserRenderView. See
 // that class for a discussion about why there are two classes for user drawing.
 
+#define TOP 0
+#define RIGHT 1
+#define BOTTOM 2
+#define LEFT 3
+
+#define USER_EXTEND_HEIGHT 40
+
+@synthesize side;
+
 - (id) initWithUser:(User *)theUser {
 
     self = [super initWithFrame:CGRectMake(0, 0, BASE_WIDTH, BASE_HEIGHT + HEIGHT_MARGIN)];
@@ -26,9 +35,10 @@
     //    self.center = CGPointMake(500, 500);
     
     taskDrawerExtended = FALSE;
+    userExtended = FALSE;
     
 	//the + 11 was to hide the container view well under the user
-    taskContainerView = [[[TaskContainerView alloc] initWithFrame:CGRectMake(-BASE_WIDTH/2, -BASE_HEIGHT/2 +11, BASE_WIDTH, 300) withRot:0.0] retain];
+    taskContainerView = [[[TaskContainerView alloc] initWithFrame:CGRectMake(-BASE_WIDTH/2, -BASE_HEIGHT/2 +15, BASE_WIDTH, 300) withRot:0.0] retain];
     [self addSubview:taskContainerView];
     
 
@@ -76,6 +86,7 @@
 - (void) userTouched {
     // toggle draw extended state.
     [self setDrawerExtended:!taskDrawerExtended];
+    [self setUserExtended:!userExtended];
 }
 
 - (void) taskAssigned:(Task *)theTask {
@@ -128,17 +139,17 @@
             //float initialHeight = taskContainerView.bounds.size.height;
             
             // TODO make this an absolute position, not an adjustment.
-            taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y - initialHeight);
+            taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y - initialHeight - USER_EXTEND_HEIGHT);
             
             CGRect curFrame = self.bounds;
-            curFrame.origin.y = curFrame.origin.y - (initialHeight);
-            curFrame.size.height = curFrame.size.height + (initialHeight)*2;
+            curFrame.origin.y = curFrame.origin.y - (initialHeight+USER_EXTEND_HEIGHT);
+            curFrame.size.height = curFrame.size.height + (initialHeight + USER_EXTEND_HEIGHT)*2;
             self.bounds = curFrame;
             
             // Save the amount we changed the dimensions by so the retract can make
             // sure to move the same amount back. This is going to be most important
             // in situations where the container changes sizes (ie a task was removed)
-            lastHeightChange = initialHeight;
+            lastHeightChange = initialHeight + USER_EXTEND_HEIGHT;
             
             [UIView commitAnimations];
             taskDrawerExtended = true;
@@ -159,6 +170,35 @@
             taskDrawerExtended = false;
         }
     }
+}
+
+- (void) setUserExtended:(bool)extended {
+    if(extended != userExtended) {
+        // If this is different than the current state, then trigger a change.
+        // The cehange is going to be different depending on which direction
+        // we're going, so check.
+        if(userExtended == false && extended == true) {
+            // Do an extension.
+            [UIView beginAnimations:@"extend_user" context:nil];
+            [UIView setAnimationDuration:0.4f];
+            
+            userRenderView.center = CGPointMake(userRenderView.center.x, userRenderView.center.y-USER_EXTEND_HEIGHT);
+            
+            [UIView commitAnimations];
+            userExtended = true;
+        } else {
+            // Do a retraction.
+            [UIView beginAnimations:@"retract_user" context:nil];
+
+            [UIView setAnimationDuration:0.4f];
+            
+            userRenderView.center = CGPointMake(userRenderView.center.x, userRenderView.center.y+USER_EXTEND_HEIGHT);
+            
+            [UIView commitAnimations];
+            userExtended = false;
+        }
+    }
+    
 }
 
 
