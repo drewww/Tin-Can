@@ -19,6 +19,7 @@
 #import "Location.h"
 #import "DragManager.h"
 #import "LocationBorderView.h"
+#import "EventView.h"
 
 @implementation MeetingViewController
 
@@ -60,6 +61,9 @@
     locBorderView = [[LocationBorderView alloc] initWithFrame:self.view.frame];
     [self.view addSubview:locBorderView];
     [self.view sendSubviewToBack:locBorderView];
+    
+    timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(20, 432, 290, 160)];
+    [self.view addSubview:timelineView];
     
     [self initUsers];
     [self initTasks];
@@ -281,6 +285,19 @@
             NSLog(@"Received an unknown event type: %d", event.type);
             break;
     }
+    
+    NSLog(@"done with event dispatch, gonna add it to the timeline now");
+    
+    // Okay, now for every event, we want to add an entry to the timeline view.
+    // This frame is arbitrary - the layout system will take it over when added.
+    EventView *eventView = [[EventView alloc] initWithFrame:CGRectMake(0, 0, 100, 100) withEvent:event];
+    
+    NSLog(@"made the event view");
+    [timelineView addSubview:eventView];
+    NSLog(@"added it to the timeline view");
+    [timelineView setNeedsLayout];
+    [timelineView setNeedsDisplay];
+    
 }
 
 - (void) addUserViewForUser:(User *)newUser {
