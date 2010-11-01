@@ -50,14 +50,14 @@
 				case "NEW_TASK":
 					var taskElement = $("#tasks").children().first().clone();
 					var task = e["results"]["task"];
-					taskElement.id = e["results"]["task"]["uuid"];
+					taskElement.attr('id',e["results"]["task"]["uuid"]);
 					taskElement.children('.main').first().children().last()
 						.html(task["text"]);
 					var createdBy = state.getObj(task["createdBy"],User);
 					taskElement.children('.details').first().children().first()
-						.html("Created by "+createdBy.name+" <span>"+timesince(task['createdAt'])+"</span>");
+						.html("Created by <strong>"+createdBy.name+"</strong> <span>"+timesince(task['createdAt'])+"</span>");
 					//assuming that the new task is not assigned
-					taskElement.children('.details').first().children().first().next().next()
+					taskElement.children('.details').first().children().last()
 						.html("Not assigned");
 					taskElement.click(function(){
 						$(this).children('.details').slideToggle();
@@ -91,6 +91,13 @@
 				case "LOGIN_COMPLETE":
 					$("#login").hide();
 					$("#logged_in").show();
+					break;
+				case "ASSIGN_TASK":
+					var taskUUID = e['params']['taskUUID'];
+					var assignedTo = state.getObj(e['params']['assignedTo'],User);
+					$('#'+taskUUID).children('.details').first().children('.assignedto').first()
+						.html('Assigned to <strong>'+assignedTo.name+'</strong>');
+					$('#'+taskUUID).children('.details').first().slideDown();
 					break;
 			}
 			
@@ -244,15 +251,15 @@
 		margin-right: 5px;
 	}
 	
-	#tasks li:hover {
-		cursor: pointer;
-	}
 	#tasks .details {
 		padding-left: 20px;
 		font-size: 12px;
 	}
 	#tasks .details > div > span {
 		color: #888;
+	}
+	#tasks p {
+		margin: 0;
 	}
 	
 </style>
@@ -286,12 +293,12 @@
 		<span>{{task.text}}</span>
 	</div>
 	<div class="details">
-		<div>Created by {{task.createdBy.name}} <span>{{task.getRelativeCreatedAt()}}</span></div>
+		<div class="createdby">Created by <strong>{{task.createdBy.name}}</strong> <span>{{task.getRelativeCreatedAt()}}</span></div>
 		{% if task.assignedTo!=None %}
-		<div>Assigned to {{task.assignedTo.name}}</div>
+		<div class="assignedto">Assigned to <strong>{{task.assignedTo.name}}</strong></span></div>
 		{% else %}
-		<div>Not assigned</div>
-		<div>
+		<div class="assignedto">
+			<p>Not assigned</p>
 			<form>
 				<input type="submit" value="Assign">&nbsp;to&nbsp;
 				<select class="participants">
@@ -299,13 +306,14 @@
 					<option value="{{participant.uuid}}">{{participant.name}}</option>
 					{% end %}
 				</select>
+			</form>
 		</div>
 		{% end %}
 	</div>
 </li>
 
 {% end %}
-	
+
 </ul>
 
 
