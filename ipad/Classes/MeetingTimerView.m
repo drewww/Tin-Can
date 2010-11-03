@@ -128,14 +128,14 @@
     for(Topic *topic in sortedTopics) {
         CGContextSaveGState(ctx);        
         if(topic.status==kFUTURE) {
-            NSLog(@"Hit a future item, stopping. (these should be sorted to the end)");
+//            NSLog(@"Hit a future item, stopping. (these should be sorted to the end)");
             break;
         }
         
         // Grab the start time of the first topic, and make that our current hour start.
         if(curHourStart == nil) {
             curHourStart = topic.startTime;
-            NSLog(@"setting cur hour start: %@", curHourStart);
+//            NSLog(@"setting cur hour start: %@", curHourStart);
         }
         
         // Rotate into position, so we can always draw straight up.
