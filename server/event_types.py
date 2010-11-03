@@ -355,13 +355,13 @@ def _handleAssignTask(event):
     if(not deassign):
         assignedTo = state.get_obj(event.params["assignedTo"], model.User)
         task.assign(assignedBy,assignedTo, None)
-        event.queue(e.Event("UPDATE_STATUS", assignedBy.uuid, None, {"status": "assigned task", "time": assignedAt}))
-        event.queue(e.Event("UPDATE_STATUS", assignedTo.uuid, None, {"status": "claimed task", "time": assignedAt}))
+        event.queue(e.Event("UPDATE_STATUS", assignedBy.uuid, None, {"status": "assigned task", "time": task.assignedAt}))
+        event.queue(e.Event("UPDATE_STATUS", assignedTo.uuid, None, {"status": "claimed task", "time": task.assignedAt}))
         
         event.meeting.eventHistoryReadable.append(assignedBy.name + " assigned task ("+task.text+") to "+assignedTo.name)
     else:
         task.deassign(assignedBy)
-        event.queue(e.Event("UPDATE_STATUS", assignedBy.uuid, None, {"status": "deassigned task", "time": assignedAt}))
+        event.queue(e.Event("UPDATE_STATUS", assignedBy.uuid, None, {"status": "deassigned task", "time": task.assignedAt}))
         
         event.meeting.eventHistoryReadable.append(assignedBy.name + " deassigned task ("+task.text+")")
 
