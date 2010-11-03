@@ -121,7 +121,7 @@ def _handleDeviceLeft(event):
 def _handleJoinedLocation(event):
     location = state.get_obj(event.params["location"], model.Location)
     location.userJoined(event.actor)
-    event.actor.status = ("joined location", time.time())
+    event.queue(Event("UPDATE_STATUS", event.actor, None, {"status": "joined location", "time": time.time()}))
     event.params["joinedAt"] = event.actor.status[1]
     if location.isInMeeting():
         event.meeting = location.meeting
@@ -151,6 +151,11 @@ def _handleJoinedLocation(event):
 def _handleLeftLocation(event):
     location = state.get_obj(event.params["location"], model.Location)
     location.userLeft(event.actor)
+    
+    if (len(location.getUsers()==0 and location.isInMeeting()):
+        locationLeftMeetingEvent = Event("LOCATION_LEFT_MEETING",
+        location.uuid, None, {"meeting":location.meeting.uuid})
+        event.queue(locationLeftMeetingEvent)
 
     # Turning this off for now - I think we can live without it.
     # The USER_JOINED_LOCATION event will fire, and clients should be able
@@ -176,6 +181,16 @@ def _handleLocationJoinedMeeting(event):
     
     location.joinedMeeting(meeting)
     
+    if not meeting.isNamed:
+        title = "Meeting with "
+        for location in meeting.locations:
+            if location.isLoggedIn:
+                title = title +location.name+", "
+        title = title[0:-2]
+        editMeetingEvent = Event("EDIT_MEETING", None, None, 
+        {"meeting":meeting.uuid, "title": title})
+        event.queue(editMeetingEvent)
+    
     meeting.eventHistoryReadable.append(location.name + " joined the meeting")
     
     return event
@@ -183,9 +198,32 @@ def _handleLocationJoinedMeeting(event):
 def _handleLocationLeftMeeting(event):
     location = event.actor
     meeting = state.get_obj(event.params["meeting"], model.Meeting)
-
+    
+    if (len(meeting.locations)==0):
+        endMeetingEvent = Event("END_MEETING", event.actor, None, 
+        {"meeting": meeting.uuid})
+        event.queue(endMeetingEvent)
+    else:
+        if not meeting.isNamed:
+            title = "Meeting with "
+            for location in meeting.locations:
+                if location.isLoggedIn:
+                    title = title +location.name+", "
+            title = title[0:-2]
+            editMeetingEvent = Event("EDIT_MEETING", None, None, 
+            {"meeting":meeting.uuid, "title": title})
+            event.queue(editMeetingEvent)
+    
     meeting.locationLeft(location)
     meeting.eventHistoryReadable.append(location.name + " left the meeting")
+    
+    return event
+    
+def _handleEndMeeting(event):
+    meeting = state.get_obj(event.params["meeting"], model.Meeting)
+    
+    meeting.room.currentMeeting = None
+    meeting.room = None
     
     return event
     
@@ -214,7 +252,7 @@ def _handleNewTopic(event):
             createdAt=d["createdAt"])
         
     event.meeting.addTopic(newTopic)
-    event.actor.status=("created new topic", newTopic.createdAt)
+    event.queue(Event("UPDATE_STATUS", event.actor, None, {"status": "created new topic", "time": newTopic.createdAt}))
     
     event.meeting.eventHistoryReadable.append(event.actor.name+" created new topic ("+text+")")
     
@@ -223,11 +261,12 @@ def _handleNewTopic(event):
 def _handleDeleteTopic(event):
 
     topic = state.get_obj(event.params["topicUUID"], model.Topic)
+    deletedAt = time.time()
     
     event.meeting.removeTopic(topic)
-    event.actor.status=("deleted topic", time.time())
+    event.queue(Event("UPDATE_STATUS", event.actor, None, {"status": "deleted topic", "time": deletedAt}))
     #needed to keep track of statuses on client-side
-    event.params["deletedAt"] = event.actor.status[1]
+    event.params["deletedAt"] = deletedAt
     
     event.meeting.eventHistoryReadable.append(event.actor.name+" deleted topic ("+topic.text+")")
     
@@ -236,11 +275,12 @@ def _handleDeleteTopic(event):
 def _handleUpdateTopic(event):
     topic = state.get_obj(event.params["topicUUID"], model.Topic)
     status = event.params["status"]
+    editedAt = time.time()
     
     topic.setStatus(status, event.actor, None)
-    event.actor.status=("edited topic", time.time())
+    event.queue(Event("UPDATE_STATUS", event.actor, None, {"status": "editted topic", "time": editedAt}))
     #needed to keep track of statuses on client-side
-    event.params["editedAt"] = event.actor.status[1]
+    event.params["editedAt"] = editedAt
     
     event.meeting.eventHistoryReadable.append(event.actor.name+" changed the status of topic ("+
         topic.text+") to "+status)
@@ -264,7 +304,7 @@ def _handleNewTask(event):
             taskUUID=d["uuid"], createdAt=d["createdAt"])
 
     event.meeting.addTask(newTask)
-    event.actor.status=("created new task", newTask.createdAt)
+    event.queue(Event("UPDATE_STATUS", event.actor, None, {"status": "created new task", "time": newTask.createdAt}))
     
     event.meeting.eventHistoryReadable.append(event.actor.name+" created a new task ("+text+")")
     
@@ -274,11 +314,12 @@ def _handleDeleteTask(event):
     logging.debug(event.params["taskUUID"])
     task = state.get_obj(event.params["taskUUID"], model.Task)
     logging.debug(task)
+    deletedAt = time.time()
     
     event.meeting.removeTask(task)
-    event.actor.status=("deleted task", time.time())
+    event.queue(Event("UPDATE_STATUS", event.actor, None, {"status": "deleted task", "time": deletedAt}))
     #needed to keep track of statuses on client-side
-    event.params["deletedAt"] = event.actor.status[1]
+    event.params["deletedAt"] = deletedAt
     
     event.meeting.eventHistoryReadable.append(event.actor.name+" deleted task ("+task.text+")")
     
@@ -287,13 +328,14 @@ def _handleDeleteTask(event):
 def _handleEditTask(event):
     text = event.params["text"]
     task = state.get_obj(event.params["taskUUID"], model.Task)
+    editedAt = time.time()
     
     event.meeting.eventHistoryReadable.append(event.actor.name+" changed task ("+task.text+") to task ("+text+")")
     
     task.setText(text)
-    event.actor.status=("edited task", time.time())
+    event.queue(Event("UPDATE_STATUS", event.actor, None, {"status": "editted task", "time": editedAt}))
     #needed to keep track of statuses on client-side
-    event.params["editedAt"] = event.actor.status[1]
+    event.params["editedAt"] = editedAt
     
     
     
@@ -310,13 +352,13 @@ def _handleAssignTask(event):
     if(not deassign):
         assignedTo = state.get_obj(event.params["assignedTo"], model.User)
         task.assign(assignedBy,assignedTo, None)
-        assignedBy.status=("assigned task", task.assignedAt)
-        assignedTo.status=("claimed task", task.assignedAt)
+        event.queue(Event("UPDATE_STATUS", assignedBy, None, {"status": "assigned task", "time": assignedAt}))
+        event.queue(Event("UPDATE_STATUS", assignedTo, None, {"status": "claimed task", "time": assignedAt}))
         
         event.meeting.eventHistoryReadable.append(assignedBy.name + " assigned task ("+task.text+") to "+assignedTo.name)
     else:
         task.deassign(assignedBy)
-        assignedBy.status=("deassigned task", task.assignedAt)
+        event.queue(Event("UPDATE_STATUS", assignedBy, None, {"status": "deassigned task", "time": assignedAt}))
         
         event.meeting.eventHistoryReadable.append(assignedBy.name + " deassigned task ("+task.text+")")
 
@@ -325,6 +367,11 @@ def _handleAssignTask(event):
     
 def _handleHandRaise(event):
     event.actor.handRaised =  not event.actor.handRaised
+    
+    return event
+    
+def _handleUpdateStatus(event):
+    event.actor.status=(event.params["status"], event.params["time"])
     
     return event
 
@@ -379,6 +426,7 @@ EventType("LOCATION_LEFT_MEETING",  ["meeting"], _handleLocationLeftMeeting,
     True, True)
     
 EventType("EDIT_MEETING", ["meeting", "title"], _handleEditMeeting, True, False)
+EventType("END_MEETING", ["meeting"], _handleEndMeeting, True, True)
 
 EventType("NEW_TOPIC",      ["text"],               _handleNewTopic, True,
     True)
@@ -399,4 +447,5 @@ EventType("ASSIGN_TASK", ["taskUUID"],_handleAssignTask, True,
     True)
     
 EventType("HAND_RAISE", [], _handleHandRaise, True, True)
+EventType("UPDATE_STATUS", ["status", "time"], _handleUpdateStatus, True, True)
 

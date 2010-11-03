@@ -280,7 +280,13 @@ failed" + str(self.params[paramKey]))
         f1.flush()
         f2.flush()
         logging.info("Done dispatching event: " + str(self.getDict()))
+        
+        while (len(self.events)!=0):
+            self.events.pop(0).dispatch()
         return event
+
+    def queue(self, event):
+        self.events.append(event)
 
 def sendEventsToDevices(devices, events):
     
