@@ -290,13 +290,25 @@
     
     // Okay, now for every event, we want to add an entry to the timeline view.
     // This frame is arbitrary - the layout system will take it over when added.
-    EventView *eventView = [[EventView alloc] initWithFrame:CGRectMake(0, 0, 100, 100) withEvent:event];
+    switch(event.type) {
+        case kUSER_JOINED_LOCATION:
+        case kUSER_LEFT_LOCATION:
+        case kUPDATE_TOPIC:
+        case kNEW_TASK:
+        case kASSIGN_TASK:
+        case kNEW_TOPIC:
+            NSLog(@"...");
+            EventView *eventView = [[EventView alloc] initWithFrame:CGRectMake(0, 0, 100, 100) withEvent:event];
+            NSLog(@"made the event view");
+            [timelineView addSubview:eventView];
+            NSLog(@"added it to the timeline view");
+            [timelineView setNeedsLayout];
+            [timelineView setNeedsDisplay];
+            
+            break;
+    }
     
-    NSLog(@"made the event view");
-    [timelineView addSubview:eventView];
-    NSLog(@"added it to the timeline view");
-    [timelineView setNeedsLayout];
-    [timelineView setNeedsDisplay];
+    
     
 }
 
