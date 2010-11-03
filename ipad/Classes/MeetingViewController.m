@@ -248,7 +248,6 @@
             Actor *assignedBy = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
             NSDate *assignedAt = [NSDate dateWithTimeIntervalSince1970:[[event.params objectForKey:@"assignedAt"] doubleValue]];
             
-            // TODO Check this execution path! I don't have a way to do deassignment quite yet. 
             if([((NSNumber *)[event.params objectForKey:@"deassign"]) intValue] == 1) {
                 // Do deassign logic.   
                 [task startDeassignByActor:assignedBy atTime:assignedAt withTaskContainer:taskContainer];

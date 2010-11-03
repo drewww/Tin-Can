@@ -7,7 +7,7 @@
 //
 
 #import "EventView.h"
-
+#import "StateManager.h"
 
 @implementation EventView
 
@@ -42,9 +42,50 @@
     // Drawing code
     
     // For now, just print some random stuff to show that it's working.
-    NSString *displayString = [NSString stringWithFormat:@"%@ %d", self.event.timestamp, self.event.type];    
+    // NSString *displayString = [NSString stringWithFormat:@"%@ %d", self.event.timestamp, self.event.type];    
     
-    [displayString drawInRect:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height) withFont:[UIFont systemFontOfSize:12]];
+    // Basic structure (in my disease addled state, at least) will be an icon specific to each 
+    // event type. That'll be a 16x16 icon, 4.5 in from the edge. For now, we'll just draw a box
+    // there. To the right of that we'll have a nice string format saying what happened.
+    
+    StateManager *state = [StateManager sharedInstance];
+    
+    NSString *displayString;
+    switch (event.type) {
+        case kUSER_JOINED_LOCATION:
+        case kUSER_LEFT_LOCATION:
+        case kUPDATE_TOPIC:
+        case kNEW_TASK:
+        case kASSIGN_TASK:
+
+            if([((NSNumber *)[event.params objectForKey:@"deassign"]) intValue] == 1) {
+                Actor *assignedBy = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
+                displayString = [NSString stringWithFormat:@"%@ deassigned task.", assignedBy.name];
+            } else {
+                Actor *assignedBy = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
+                User *assignedTo = (User *)[state getObjWithUUID:[event.params objectForKey:@"assignedTo"] withType:[User class]];
+                displayString = [NSString stringWithFormat:@"%@ assigned task to %@.", assignedBy.name, assignedTo.name];
+            }
+            break;
+            
+        case kNEW_TOPIC:
+            // This is another one of those cases where I can't create new object variables on the first line
+            // of a case statement. So bizarre. Adding an NSLog fixes things.
+            NSLog(@"new topic event");
+            Actor *createdBy = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
+            displayString = [NSString stringWithFormat:@"%@ created new task.", createdBy.name];
+            break;
+    }
+    
+    
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+    
+    // icon placeholder.
+    CGContextFillRect(ctx, CGRectMake(4.5, 4.5, 16, 16));
+    
+    
+    [displayString drawInRect:CGRectMake(23, 2.5, self.frame.size.width, self.frame.size.height) withFont:[UIFont systemFontOfSize:12]];
 }
 
 - (NSComparisonResult) compareByTime:(EventView *)view {
