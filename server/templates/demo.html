@@ -8,8 +8,8 @@
 	<meta name="viewport" content="width=320; initial-scale=1.0; minimum-scale=1.0; maximum-scale=1.0; user-scalable=0;">
 	<link rel="apple-touch-icon-precomposed" href="{{static_url('images/demoIcon.png')}}" />
 	
-	<script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
-	<script type = "text/javascript" src = "../static/js/Timeline.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
+	<script type="text/javascript" src="{{static_url('js/Timeline.js')}}"></script>
 	<script type="text/javascript" src="{{static_url('js/util.js')}}"></script>
 	<script type="text/javascript" src="{{static_url('js/ConnectionManager.js')}}"></script>
 	<script type="text/javascript" src="{{static_url('js/StateManager.js')}}"></script>
@@ -19,13 +19,66 @@
 <script type="text/javascript" charset="utf-8">
 	// We'll put all our code here.
 	
+	//for the disclosure arrow
+	function arrowToggle(el) {
+		if ($(el).html().charCodeAt(0)=='9654') {
+			$(el).html('&#9660;');
+		} else {
+			$(el).html('&#9654;');
+		}
+	}
+	function arrowDown(el) {
+		$(el).html('&#9660;');
+	}
+	function arrowRight(el) {
+		$(el).html('&#9654;');
+	}
+	
 	var localUser;
 	
-	$("document").ready(function () {
+	$("document").ready(function() {
 		
 		// On load, grab data from the server so we can pick a user
 		// to connect as. 
 		conn = connection;
+		
+		//tasks functions defined here so that newly created tasks can have proper
+		//callbacks on form submit as well
+
+		function taskToggle(e) {
+			return (function() {
+				$(e).children('.details').first().css('display','none');
+				$(e).children('.main').children('.text').click(function(){
+					$(this).parent().parent().children('.details').first().slideToggle();
+					arrowToggle($(this).prev());
+				});
+			});
+		}
+		
+		function assignTaskAction(e) {
+			return (function() {
+				var task = $(e).closest('li').attr('id');
+				var user = $(e).parent().children('.participants').first().val();
+				conn.assignTask(task,user);
+			});
+		}
+
+		$('#tasks li').each(function(){
+			taskToggle($(this))();
+		});
+
+		$('#tasks input[type=submit].assign').click(function(){
+			var taskUUID = $(this).closest('li').attr('id');
+			var userUUID = $(this).parent().children('.participants').first().val();
+			conn.assignTask(taskUUID,userUUID);
+			return false;
+		});
+		
+		$('#tasks input[type=submit].deassign').click(function(){
+			var taskUUID = $(this).closest('li').attr('id');
+			conn.deassignTask(taskUUID);
+			return false;
+		});
 
 		conn.addListener({connectionEvent: function(e) {
 			
@@ -50,19 +103,67 @@
 				case "NEW_TASK":
 					var taskElement = $("#tasks").children().first().clone();
 					var task = e["results"]["task"];
-					taskElement.id = e["results"]["task"]["uuid"];
-					taskElement.children().last().prev()
+					//set task id
+					taskElement.attr('id',e["results"]["task"]["uuid"]);
+					//set .text div
+					taskElement.children('.main').first().children('.text').first()
 						.html(task["text"]);
+					//set created by and created at
 					var createdBy = state.getObj(task["createdBy"],User);
-					taskElement.children().last().children().first()
-						.html("Created by "+createdBy.name);
-					taskElement.children().last().children().first().next()
-						.html(timesince(task['createdAt']));
+					taskElement.children('.details').first().children().first()
+						.html("Created by <strong>"+createdBy.name+"</strong> <span>"+timesince(task['createdAt'])+"</span>");
 					//assuming that the new task is not assigned
-					taskElement.children().last().children().first().next().next()
+					taskElement.children('.details').first().children('.assignedto').first()
 						.html("Not assigned");
-					$("#tasks").append(taskElement);
+					//add onclick behavior
+					taskToggle(taskElement)();
+					//add assign form
+					//
+					// NOT DONE HERE
+					//
+					taskElement.children('input[type=submit]').first().click(function(){
+						assignTaskAction($(this))();	
+					});
+					taskElement.children('.details').css('display','block');
+					$("#tasks").prepend(taskElement);
+					setTimeout(function() {
+						taskElement.children('.details').slideUp()
+					},500);
 					break;
+				case "ASSIGN_TASK":
+					var taskUUID = e['params']['taskUUID'];
+					if (e['params']['deassign'] == false) {
+						var assignedTo = state.getObj(e['params']['assignedTo'],User);
+						$('#'+taskUUID+' .assignedto').first().html('Assigned to <strong>'+assignedTo.name+'</strong>');
+						$('#'+taskUUID+' .assignform').first().html('<form><input type="submit" value="Deassign" class="deassign"/></form>');
+						$('#'+taskUUID+' input[type=submit].deassign').click(function(){
+							conn.deassignTask(taskUUID);
+							return false;
+						});
+					} else {
+						$('#'+taskUUID).children('.details').first().children('.assignedto').first()
+							.html('Not assigned');
+						var html = '<form>';
+						html += '<input type="submit" value="Assign" class="assign">&nbsp;to&nbsp;';
+						html += '<select class="participants">';
+						var participants = conn.meeting.getCurrentParticipants();
+						var participant;
+						for (participant in participants) {
+							html += '<option value="'+participant.uuid+'">'+participant.name+'</option>';
+						}
+						html += '</select>';
+						html += '</form>';
+						$('#'+taskUUID).children('.details').first().children('.assignform').first()
+							.html(html);
+						$('#'+taskUUID+' input[type=submit].assign').click(function(){
+							assignTaskAction(taskUUID)();
+							return false;
+						});	
+					}
+					$('#'+taskUUID).children('.details').first().slideDown();
+					arrowDown($('#'+taskUUID).children('.main').children('.arrow').first());
+					break;
+					
 				case "GET_STATE_COMPLETE":
 					var users = state.getUsers();
 
@@ -112,11 +213,11 @@
 			return false;
 		});
 		
-		$("#new_task").click(function () {
+		$("#new_task").click(function() {
 			$("#new_task").val("");
 		});
 		
-		$("#new_topic").click(function () {
+		$("#new_topic").click(function() {
 			$("#new_topic").val("");
 		});
 		
@@ -145,15 +246,16 @@
 	}
 	
 	h1 {
-		margin-top: 10px;
+		padding-top: 10px;
+		margin-top: 0;
 		margin-bottom: 5px;
 		font-size: 1.25em;
-		
+		clear: left;
 	}
 	
 	/* Header / Footer setup. */
 	header, footer {
-		width: 100%;
+		/*width: 100%;*/
 		height: 30px;
 		background-color: #444444;
 		color: #DDDDDD;
@@ -225,6 +327,31 @@
 		margin-right: 5px;
 	}
 	
+	#tasks .arrow {
+		float: left;
+		width: 20px;
+		text-align: center;
+		font-size: 15px;
+		color: #AAA;
+		clear: left;
+	}
+	#tasks .text {
+		float: left;
+		width: 250px;
+	}
+	#tasks .details {
+		padding-left: 20px;
+		padding-bottom: 5px;
+		font-size: 12px;
+		clear: both;
+	}
+	#tasks .details > div > span {
+		color: #888;
+	}
+	#tasks p {
+		margin: 0;
+	}
+	
 </style>
 </head>
 
@@ -238,11 +365,11 @@
 </header>
 <div id="container">
 
-<h1>TASKS</h1>
+<h1><img src="{{static_url('images/note.png')}}"/>TASKS</h1>
 <div id="add_task" class="add_form">
 <form action="" method="get" accept-charset="utf-8">
 	<input type="text" name="new_task" value="new task..." id="new_task" class="item_text"/>
-	<input type="submit" value="Add"/ id="submit_new_task" class="submit_item">
+	<input type="submit" value="Add" id="submit_new_task" class="submit_item"/>
 </form>
 </div>
 
@@ -250,21 +377,38 @@
 {% for task in tasks %}
 
 <li id="{{task.uuid}}">
-	<img src="{{static_url('images/note.png')}}"/>
-	<span>{{task.text}}</span>
-	<div>
-		<div>Created by {{task.createdBy.name}}</div>
-		<div>{{task.getRelativeCreatedAt()}}</div>
+	
+	<div class="main">
+		<div class="arrow">&#9654</div>
+		<div class="text">{{task.text}}</div>
+	</div>
+	<div class="details">
+		<div class="createdby">Created by <strong>{{task.createdBy.name}}</strong> <span>{{task.getRelativeCreatedAt()}}</span></div>
 		{% if task.assignedTo!=None %}
-		<div>Assigned to {{task.assignedTo.name}}</div>
+		<div class="assignedto">Assigned to <strong>{{task.assignedTo.name}}</strong></span></div>
+		<div class="assignform">
+			<form>
+				<input type="submit" value="Deassign" class="deassign">
+			</form>
+		</div>	
 		{% else %}
-		<div>Not assigned</div>
+		<div class="assignedto">Not assigned</div>
+		<div class="assignform">
+			<form>
+				<input type="submit" value="Assign" class="assign">&nbsp;to&nbsp;
+				<select class="participants">
+					{% for participant in participants %}
+					<option value="{{participant.uuid}}">{{participant.name}}</option>
+					{% end %}
+				</select>
+			</form>
+		</div>
 		{% end %}
 	</div>
 </li>
 
 {% end %}
-	
+
 </ul>
 
 

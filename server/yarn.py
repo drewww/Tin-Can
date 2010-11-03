@@ -767,10 +767,13 @@ class DemoHandler(tornado.web.RequestHandler):
                 logging.debug("Found the demo meeting: %s"%demoMeeting)
         
         
-        # grab tasks and topics so the page
+        # grab tasks, topics, and participants so the page
         # is pre-populated
         
-        self.render("demo.html", tasks=demoMeeting.tasks, topics=demoMeeting.topics)
+        #sort tasks in reverse chronological order
+        sortedTasks = sorted(demoMeeting.tasks, key=lambda t: t.createdAt, reverse=True)
+        
+        self.render("demo.html", tasks=sortedTasks, topics=demoMeeting.topics, participants=demoMeeting.getCurrentParticipants())
 
 # Set up the routing tables for the application.
 # For now, they're really simple - one for getting information about rooms,
