@@ -12,6 +12,9 @@
 @implementation TimelineContainerView
 
 #define COLOR [UIColor colorWithWhite:0.3 alpha:1]
+#define PADDING 5
+#define HEIGHT 25
+#define HEADER_HEIGHT 22
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
@@ -31,9 +34,9 @@
     CGContextRef ctx = UIGraphicsGetCurrentContext();
 	
 	CGContextSetFillColorWithColor(ctx, COLOR.CGColor);
-	CGContextFillRect(ctx, CGRectMake(0, 0, self.bounds.size.width, 22));
+	CGContextFillRect(ctx, CGRectMake(0, 0, self.bounds.size.width, HEADER_HEIGHT));
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-	[@"TIMELINE" drawInRect:CGRectMake(0, 0, self.bounds.size.width, 22) 
+	[@"TIMELINE" drawInRect:CGRectMake(0, 0, self.bounds.size.width, HEADER_HEIGHT) 
                        withFont:[UIFont boldSystemFontOfSize:18] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
 	
 	CGContextSetLineWidth(ctx,2);
@@ -44,7 +47,7 @@
 
 - (void)layoutSubviews{
 	int i=0;
-	int c=0;
+
 	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByTime:)];
     
     NSLog(@"sorted subview array: %@", sortedArray);
@@ -57,16 +60,10 @@
     // This is not the right layout, but we'll leave it that way for now until we 
     // actually figure out what EventViews will look like.
 	for(EventView *subview in sortedArray){
-		if ( i < 3 ) {
-			subview.frame=CGRectMake(5, 27 +(33.25*i), 137.5 , 28.25);
-            
-		}
-		else{
-			subview.frame=CGRectMake(147.5, 27 +(33.25*c), 137.5, 28.25);
-			c++;
-		}
+//        subview.frame=CGRectMake(PADDING, HEADER_HEIGHT + PADDING+(HEIGHT*i) + (PADDING*(i)), self.frame.size.width-(PADDING*2), HEIGHT);
+        subview.frame=CGRectMake(PADDING, HEADER_HEIGHT + PADDING+(HEIGHT*i) + (PADDING*(i)), self.frame.size.height-(PADDING*2), HEIGHT);
         
-		i++;
+        i++;
 	}
     
 }
