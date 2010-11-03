@@ -41,7 +41,7 @@ class Event:
         
         # look up the appropriate event type object from the event type list
         self.eventType = EventType.types[eventType]
-        
+        self.events = []
         
         # For a discussion of what this is for, check self.addResult
         if results!=None:
