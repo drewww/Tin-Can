@@ -770,8 +770,9 @@ class DemoHandler(tornado.web.RequestHandler):
         # grab tasks, topics, and participants so the page
         # is pre-populated
         
-        #sort tasks in reverse chronological order
+        #sort tasks and topics in reverse chronological order
         sortedTasks = sorted(demoMeeting.tasks, key=lambda t: t.createdAt, reverse=True)
+        sortedTopics = sorted(demoMeeting.topics, key=lambda t: t.startTime, reverse=True)
         
         self.render("demo.html", tasks=sortedTasks, topics=demoMeeting.topics, participants=demoMeeting.getCurrentParticipants())
 

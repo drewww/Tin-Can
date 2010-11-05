@@ -339,16 +339,16 @@
 		float: left;
 		width: 250px;
 	}
-	#tasks .details {
+	.details {
 		padding-left: 20px;
 		padding-bottom: 5px;
 		font-size: 12px;
 		clear: both;
 	}
-	#tasks .details > div > span {
+	.details > div > span {
 		color: #888;
 	}
-	#tasks p {
+	#tasks p, #topics p {
 		margin: 0;
 	}
 	
@@ -388,7 +388,8 @@
 		<div class="text">{{task.text}}</div>
 	</div>
 	<div class="details">
-		<div class="createdby">Created by <strong>{{task.createdBy.name}}</strong> <span>{{task.getRelativeCreatedAt()}}</span></div>
+		{% import util %}
+		<div class="createdby">Created by <strong>{{task.createdBy.name}}</strong> <span>{{util.timesince(task.createdAt)}}</span></div>
 		{% if task.assignedTo!=None %}
 		<div class="assignedto">Assigned to <strong>{{task.assignedTo.name}}</strong></span></div>
 		<div class="assignform">
@@ -434,7 +435,13 @@
 		<div class="text">{{topic.text}}</div>	
 	</div>
 	<div class="details">
-		<div class="createdby">Created by <strong>{{topic.createdBy}}</strong></div>
+		<div class="createdby">Created by <strong>{{topic.createdBy.name}}</strong></div>
+		{% if topic.startTime!=None %}
+		{% import util %}
+		<div class="startTime">Started {{util.timesince(topic.startTime)}}</div>
+		{% else %}
+		<div class="startTime">Not started</div>
+		{% end %}
 	</div>
 </li>
 
