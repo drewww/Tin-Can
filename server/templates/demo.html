@@ -45,7 +45,7 @@
 		//tasks functions defined here so that newly created tasks can have proper
 		//callbacks on form submit as well
 
-		function taskToggle(e) {
+		function meetingObjectToggle(e) {
 			return (function() {
 				$(e).children('.details').first().css('display','none');
 				$(e).children('.main').children('.text').click(function(){
@@ -64,7 +64,7 @@
 		}
 
 		$('#tasks li, #topics li').each(function(){
-			taskToggle($(this))();
+			meetingObjectToggle($(this))();
 		});
 
 		$('#tasks input[type=submit].assign').click(function(){
@@ -78,6 +78,11 @@
 			var taskUUID = $(this).closest('li').attr('id');
 			conn.deassignTask(taskUUID);
 			return false;
+		});
+		
+		$('#topics input[type=submit].start').click(function(){
+			var topicUUID = $(this).closest('li').attr('id');
+			//NOT DONE HERE
 		});
 
 		conn.addListener({connectionEvent: function(e) {
@@ -95,28 +100,47 @@
 				// case ""
 				case "NEW_TOPIC":
 					var topicElement = $("#topics").children().first().clone();
-					topicElement.id = e["results"]["topic"]["uuid"];
-					topicElement.children().last().html(e["results"]["topic"]["text"]);
+					var topic = e["results"]["topic"];
+					console.log(topic);
+					//set topic id
+					topicElement.attr('id',topic["uuid"]);
+					//set .text div
+					topicElement.children('.main').first().children('.text').first()
+						.html(topic["text"]);
+					//set created by and started at (assuming startTime is null)
+					var createdBy = state.getObj(topic["createdBy"],User);
+					topicElement.children('.details').first().children('.createdby').first()
+						.html("Created by <strong>"+createdBy.name+"</strong>");
+					topicElement.children('.details').first().children('.startTime').first()
+						.html("Not started");
+					//add onclick behavior
+					meetingObjectToggle(topicElement)();
+					arrowDown(topicElement.children('.main').children('.arrow').first());
+					topicElement.children('.details').css('display','block');
 					$("#topics").append(topicElement);
+					setTimeout(function() {
+						topicElement.children('.details').slideUp();
+						arrowRight(topicElement.children('.main').children('.arrow').first());
+					},500);
 				break;
 					
 				case "NEW_TASK":
 					var taskElement = $("#tasks").children().first().clone();
 					var task = e["results"]["task"];
 					//set task id
-					taskElement.attr('id',e["results"]["task"]["uuid"]);
+					taskElement.attr('id',task["uuid"]);
 					//set .text div
 					taskElement.children('.main').first().children('.text').first()
 						.html(task["text"]);
 					//set created by and created at
 					var createdBy = state.getObj(task["createdBy"],User);
-					taskElement.children('.details').first().children().first()
+					taskElement.children('.details').first().children('.createdby').first()
 						.html("Created by <strong>"+createdBy.name+"</strong> <span>"+timesince(task['createdAt'])+"</span>");
 					//assuming that the new task is not assigned
 					taskElement.children('.details').first().children('.assignedto').first()
 						.html("Not assigned");
 					//add onclick behavior
-					taskToggle(taskElement)();
+					meetingObjectToggle(taskElement)();
 					//add assign form
 					var html = '<form>';
 					html += '<input type="submit" value="Assign" class="assign">&nbsp;to&nbsp;';
@@ -136,6 +160,7 @@
 						assignTaskAction($(this))();
 						return false;	
 					});
+					arrowDown(taskElement.children('.main').children('.arrow').first());
 					taskElement.children('.details').css('display','block');
 					$("#tasks").prepend(taskElement);
 					setTimeout(function() {
@@ -452,8 +477,18 @@
 		{% if topic.startTime!=None %}
 		{% import util %}
 		<div class="startTime">Started {{util.timesince(topic.startTime)}}</div>
+		<div class="controlForm">
+			<form>
+				<input type="submit" value="Stop" class="stop">
+			</form>
+		</div>
 		{% else %}
 		<div class="startTime">Not started</div>
+		<div class="controlForm">
+			<form>
+				<input type="submit" value="Start" class="start">
+			</form>
+		</div>
 		{% end %}
 	</div>
 </li>
