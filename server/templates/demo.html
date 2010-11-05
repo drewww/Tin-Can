@@ -118,16 +118,29 @@
 					//add onclick behavior
 					taskToggle(taskElement)();
 					//add assign form
-					//
-					// NOT DONE HERE
-					//
-					taskElement.children('input[type=submit]').first().click(function(){
-						assignTaskAction($(this))();	
+					var html = '<form>';
+					html += '<input type="submit" value="Assign" class="assign">&nbsp;to&nbsp;';
+					html += '<select class="participants">';
+					var participants = conn.meeting.getCurrentParticipants();
+					var x;
+					for (x in participants) {
+						html += '<option value="'+participants[x].uuid+'">'+participants[x].name+'</option>';
+					}
+					html += '</select>';
+					html += '</form>';
+					taskElement.children('.details').first().children('.assignform').first()
+						.html(html);
+						
+					taskElement.children('.details').first().children('.assignform').first().children('form').first()
+						.children('input[type=submit].assign').first().click(function(){
+						assignTaskAction($(this))();
+						return false;	
 					});
 					taskElement.children('.details').css('display','block');
 					$("#tasks").prepend(taskElement);
 					setTimeout(function() {
-						taskElement.children('.details').slideUp()
+						taskElement.children('.details').slideUp();
+						arrowRight(taskElement.children('.main').children('.arrow').first());
 					},500);
 					break;
 				case "ASSIGN_TASK":
