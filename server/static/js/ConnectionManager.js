@@ -178,6 +178,24 @@ ConnectionManager.prototype = {
                 actor.devices=actor.devices+1;
                 actor.loggedIn = true;
                 
+                // We need to plug in the meeting detection stuff here
+                // beacuse this is the only event we can guarantee firing
+                // if a user logs in and the user is already in a location
+                // and that location is already in a meeting. So plug in
+                // the currentMeeting capture stuff here. This is in addition
+                // to subsequent checks of the same thing.
+                if(actor.uuid == this.userUUID){
+                     this.user = user;
+                     this.loc = user.loc;
+                     
+                     if(this.loc.meeting != null) {
+                         this.meeting = this.loc.meeting;
+                     }
+ 
+                     console.log("LOCAL location and user set: " +
+                         this.loc + " / " + this.user);
+                 }
+                
                 break;
             
             case "DEVICE_LEFT":
