@@ -63,7 +63,7 @@
 			});
 		}
 
-		$('#tasks li').each(function(){
+		$('#tasks li, #topics li').each(function(){
 			taskToggle($(this))();
 		});
 
@@ -147,16 +147,16 @@
 						html += '<input type="submit" value="Assign" class="assign">&nbsp;to&nbsp;';
 						html += '<select class="participants">';
 						var participants = conn.meeting.getCurrentParticipants();
-						var participant;
-						for (participant in participants) {
-							html += '<option value="'+participant.uuid+'">'+participant.name+'</option>';
+						var x;
+						for (x in participants) {
+							html += '<option value="'+participants[x].uuid+'">'+participants[x].name+'</option>';
 						}
 						html += '</select>';
 						html += '</form>';
 						$('#'+taskUUID).children('.details').first().children('.assignform').first()
 							.html(html);
 						$('#'+taskUUID+' input[type=submit].assign').click(function(){
-							assignTaskAction(taskUUID)();
+							assignTaskAction($(this))();
 							return false;
 						});	
 					}
@@ -327,15 +327,15 @@
 		margin-right: 5px;
 	}
 	
-	#tasks .arrow {
+	.arrow {
 		float: left;
 		width: 20px;
 		text-align: center;
-		font-size: 15px;
+		font-size: 11px;
 		color: #AAA;
 		clear: left;
 	}
-	#tasks .text {
+	.text {
 		float: left;
 		width: 250px;
 	}
@@ -350,6 +350,11 @@
 	}
 	#tasks p {
 		margin: 0;
+	}
+	
+	footer {
+		margin-top: 10px;
+		clear: both;
 	}
 	
 </style>
@@ -413,7 +418,7 @@
 
 
 
-<h1>TOPICS</h1>
+<h1><img src="{{static_url('images/comments.png')}}"/>TOPICS</h1>
 <div id="add_topic" class="add_form">
 <form action="" method="get" accept-charset="utf-8">
 	<input type="text" name="new_topic" value="new topic..." id="new_topic" class="item_text"/>
@@ -423,10 +428,14 @@
 
 <ul id="topics">
 {% for topic in topics %}
-
 <li id="{{topic.uuid}}">
-<img src="{{static_url('images/comments.png')}}"/>
-<span>{{topic.text}}</span>
+	<div class="main">
+		<div class="arrow">&#9654</div>
+		<div class="text">{{topic.text}}</div>	
+	</div>
+	<div class="details">
+		<div class="createdby">Created by <strong>{{topic.createdBy}}</strong></div>
+	</div>
 </li>
 
 {% end %}
@@ -436,6 +445,7 @@
 
 
 </div>
+<div style="clear:both"></div>
 <footer>an <a href="http://media.mit.edu/">MIT Media Lab</a> / <a href="http://www.media.mit.edu/speech/">Speech + Mobility</a> project</footer>
 
 
