@@ -207,6 +207,10 @@
 						conn.addTopic($('#topic_input')[0].value);
 					});
 					
+					$('#restart_topic_button').click(function() {
+						conn.restartTopic($('#topics')[0].value);
+					});
+					
 					$('#add_task_button').click(function() {
 						conn.addTask($('#task_input')[0].value);
 					});
@@ -331,6 +335,7 @@
 
 <input type="text" name="topic" value="topic" id="topic_input">
 <button id="add_topic_button">Add Topic</button>
+<button id="restart_topic_button">Restart Topic</button>
 
 <br/>
 <select name="topics" id="topics" size="1">
