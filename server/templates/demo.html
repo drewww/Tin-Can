@@ -82,8 +82,23 @@
 		
 		$('#topics input[type=submit].start').click(function(){
 			var topicUUID = $(this).closest('li').attr('id');
-			//NOT DONE HERE
+			conn.updateTopic(topicUUID,"CURRENT");
+			return false;
 		});
+		
+		$('#topics input[type=submit].stop').click(function(){
+			var topicUUID = $(this).closest('li').attr('id');
+			console.log(topicUUID);
+			conn.updateTopic(topicUUID,"PAST");
+			return false;
+		});
+		
+		$('#topics input[type=submit].restart').click(function(){
+			var topicUUID = $(this).closest('li').attr('id');
+			conn.restartTopic(topicUUID);
+			return false;
+		});
+		
 
 		conn.addListener({connectionEvent: function(e) {
 			
@@ -101,7 +116,6 @@
 				case "NEW_TOPIC":
 					var topicElement = $("#topics").children().first().clone();
 					var topic = e["results"]["topic"];
-					console.log(topic);
 					//set topic id
 					topicElement.attr('id',topic["uuid"]);
 					//set .text div
@@ -111,7 +125,7 @@
 					var createdBy = state.getObj(topic["createdBy"],User);
 					topicElement.children('.details').first().children('.createdby').first()
 						.html("Created by <strong>"+createdBy.name+"</strong>");
-					topicElement.children('.details').first().children('.startTime').first()
+					topicElement.children('.details').first().children('.time').first()
 						.html("Not started");
 					//add onclick behavior
 					meetingObjectToggle(topicElement)();
@@ -122,8 +136,20 @@
 						topicElement.children('.details').slideUp();
 						arrowRight(topicElement.children('.main').children('.arrow').first());
 					},500);
-				break;
-					
+					break;
+				case "UPDATE_TOPIC":
+					var topicUUID = e["params"]["topicUUID"];
+					topic = state.getObj(topicUUID,Topic);
+					if (topic.status == "PAST") {
+						$('#'+topicUUID+' .time').first().html('Ended '+timesince(topic.stopTime));
+						var html = '<form>';
+						html += '<input type="submit" value="Restart" class="restart">';
+						html += '</form>';
+						$('#'+topicUUID+' .controlForm').html(html);
+						//NOT FINISHED HERE
+					}
+					console.log(e);
+					break;
 				case "NEW_TASK":
 					var taskElement = $("#tasks").children().first().clone();
 					var task = e["results"]["task"];
@@ -474,16 +500,23 @@
 	</div>
 	<div class="details">
 		<div class="createdby">Created by <strong>{{topic.createdBy.name}}</strong></div>
-		{% if topic.startTime!=None %}
 		{% import util %}
-		<div class="startTime">Started {{util.timesince(topic.startTime)}}</div>
+		{% if topic.status=="PAST" %}
+		<div class="time">Ended {{util.timesince(topic.stopTime)}}</div>
+		<div class="controlForm">
+			<form>
+				<input type="submit" value="Restart" class="restart">
+			</form>
+		</div>
+		{% elif topic.status=="CURRENT" %}
+		<div class="time">Started {{util.timesince(topic.startTime)}}</div>
 		<div class="controlForm">
 			<form>
 				<input type="submit" value="Stop" class="stop">
 			</form>
 		</div>
 		{% else %}
-		<div class="startTime">Not started</div>
+		<div class="time">Not started</div>
 		<div class="controlForm">
 			<form>
 				<input type="submit" value="Start" class="start">
