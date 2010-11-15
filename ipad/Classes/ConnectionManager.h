@@ -83,6 +83,7 @@
 - (void) deassignTask:(Task *)theTask;
 
 - (void) updateTopic:(Topic *)theTopic withStatus:(TopicStatus)theStatus;
+- (void) restartTopic:(Topic *)theTopic;
 
 
 + (ConnectionManager*)sharedInstance;

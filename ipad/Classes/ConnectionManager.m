@@ -531,6 +531,14 @@ static ConnectionManager *sharedInstance = nil;
     [enumMapping release];
 }
 
+- (void) restartTopic:(Topic *)theTopic {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", SERVER, PORT, @"/topics/restart"]];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request setPostValue:theTopic.uuid forKey:@"topicUUID"];    
+    [request setDelegate:self];
+    [request startAsynchronous];
+}
+
 
 
 #pragma mark -
