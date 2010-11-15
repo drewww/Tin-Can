@@ -223,11 +223,11 @@
         
         CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.8 alpha:1.0].CGColor);
         if(topic.status == kFUTURE) {
-            [@"START" drawInRect:CGRectMake(-18, -6, 50, 12) withFont:[UIFont boldSystemFontOfSize:11]];
+            [@"START" drawInRect:CGRectMake(-18, -6, 50, 12) withFont:[UIFont boldSystemFontOfSize:10]];
         } else if(topic.status == kCURRENT) {
-            [@"STOP" drawInRect:CGRectMake(-15, -6, 50, 12) withFont:[UIFont boldSystemFontOfSize:11]];            
+            [@"STOP" drawInRect:CGRectMake(-15, -6, 50, 12) withFont:[UIFont boldSystemFontOfSize:10]];            
         } else if(topic.status == kPAST) {
-            [@"RESTART" drawInRect:CGRectMake(-22, -6, 50, 12) withFont:[UIFont boldSystemFontOfSize:11]];                        
+            [@"RESTART" drawInRect:CGRectMake(-22, -6, 50, 12) withFont:[UIFont boldSystemFontOfSize:10]];                        
         }
         
         
@@ -303,7 +303,8 @@
             NSLog(@"Current item touched - end it.");
             [[ConnectionManager sharedInstance] updateTopic:topic withStatus:kPAST];
         } else if (topic.status == kPAST) {
-            NSLog(@"Got request to restart a past item. Need to implement this.");
+            NSLog(@"Restarting item.");
+            [[ConnectionManager sharedInstance] restartTopic:topic];
         }
     }
     

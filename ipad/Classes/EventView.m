@@ -50,13 +50,16 @@
     
     StateManager *state = [StateManager sharedInstance];
     
-    NSString *displayString;
+    NSString *displayString = @"Placeholder display string.";
     switch (event.type) {
         case kUSER_JOINED_LOCATION:
             break;
         case kUSER_LEFT_LOCATION:
             break;
         case kUPDATE_TOPIC:
+            // This one is going to be a bit tricky - gotta sense what kind of update it was to have
+            // a proper event string.
+            displayString = @"Placeholder topic update.";
             break;
         case kNEW_TASK:
             break;
