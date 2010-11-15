@@ -47,7 +47,11 @@
 
 		function meetingObjectToggle(e) {
 			return (function() {
-				$(e).children('.details').first().css('display','none');
+				if (! $(e).children('.details').first().hasClass('current')) {
+					$(e).children('.details').first().css('display','none');
+				} else {
+					arrowToggle($(e).children('.main').children('.text').prev());
+				}
 				$(e).children('.main').children('.text').click(function(){
 					$(this).parent().parent().children('.details').first().slideToggle();
 					arrowToggle($(this).prev());
@@ -88,7 +92,6 @@
 		
 		$('#topics input[type=submit].stop').click(function(){
 			var topicUUID = $(this).closest('li').attr('id');
-			console.log(topicUUID);
 			conn.updateTopic(topicUUID,"PAST");
 			return false;
 		});
@@ -99,6 +102,11 @@
 			return false;
 		});
 		
+		funcion revealDetails(e) {
+			//e is target li
+			$(e).children('.details').first().slideDown();
+			arrowDown($(e).children('.main').children('.arrow').first());
+		}
 
 		conn.addListener({connectionEvent: function(e) {
 			
@@ -141,14 +149,29 @@
 					var topicUUID = e["params"]["topicUUID"];
 					topic = state.getObj(topicUUID,Topic);
 					if (topic.status == "PAST") {
-						$('#'+topicUUID+' .time').first().html('Ended '+timesince(topic.stopTime));
+						stopTime = topic.stopTime.getTime()/1000;
+						$('#'+topicUUID+' .time').first().html('Ended '+timesince(stopTime));
 						var html = '<form>';
 						html += '<input type="submit" value="Restart" class="restart">';
 						html += '</form>';
 						$('#'+topicUUID+' .controlForm').html(html);
-						//NOT FINISHED HERE
+						$('#'+topicUUID+' .restart').click(function(){
+							conn.restartTopic(topicUUID);
+							return false;
+						});
+						revealDetails($('#'+topicUUID));
+					} else if (topic.status == "CURRENT") {
+						$('#'+topicUUID+' .time').first().html('Started just now');
+						var html = '<form>';
+						html += '<input type="submit" value="Stop" class="stop">';
+						html += '</form>';
+						$('#'+topicUUID+' .controlForm').html(html);
+						$('#'+topicUUID+' .stop').click(function(){
+							conn.updateTopic(topicUUID,"PAST");
+							return false;
+						});
+						revealDetails($('#'+topicUUID));
 					}
-					console.log(e);
 					break;
 				case "NEW_TASK":
 					var taskElement = $("#tasks").children().first().clone();
@@ -183,7 +206,9 @@
 						
 					taskElement.children('.details').first().children('.assignform').first().children('form').first()
 						.children('input[type=submit].assign').first().click(function(){
-						assignTaskAction($(this))();
+						var task = $(this).closest('li').attr('id');
+						var user = $(this).parent().children('.participants').first().val();
+						conn.assignTask(task,user);
 						return false;	
 					});
 					arrowDown(taskElement.children('.main').children('.arrow').first());
@@ -498,7 +523,7 @@
 		<div class="arrow">&#9654</div>
 		<div class="text">{{topic.text}}</div>	
 	</div>
-	<div class="details">
+	<div class="details{% if topic.status=="CURRENT" %} current{% end %}">
 		<div class="createdby">Created by <strong>{{topic.createdBy.name}}</strong></div>
 		{% import util %}
 		{% if topic.status=="PAST" %}
