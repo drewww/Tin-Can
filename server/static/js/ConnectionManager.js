@@ -188,6 +188,11 @@ ConnectionManager.prototype = {
                      this.user = user;
                      this.loc = user.loc;
                      
+                     
+                     // Think about the larger issues with this format
+                     // sometime. Is it really a good idea to keep
+                     // this.meeting separate? Maybe just refactor everything
+                     // to look at this.loc.meeting instead?
                      if(this.loc.meeting != null) {
                          this.meeting = this.loc.meeting;
                      }
