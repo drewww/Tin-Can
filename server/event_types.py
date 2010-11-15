@@ -276,17 +276,47 @@ def _handleDeleteTopic(event):
     return event
     
 def _handleUpdateTopic(event):
+    
+    # in this handler, we need to manage some higher level logic.
+    # We need to make sure that we keep the overall state proper.
+    # IF there's a current topic open, AND the request is to
+    # start a new topic, we want to close out the old topic
+    # before starting the new one.
+
     topic = state.get_obj(event.params["topicUUID"], model.Topic)
     status = event.params["status"]
     editedAt = time.time()
+    actor = event.actor
+
+    # check and see if we're trying to start a topic.
+    if(status=="CURRENT"):
+        # now go looking for the current item
+        currentTopic = [topic for topic in
+            actor.getMeeting().topics if topic.status=="CURRENT"]
+        if len(currentTopic) > 1:
+            logging.warning("Found multiple current topics. Badness.")
+        elif len(currentTopic) == 1:
+            currentTopic = currentTopic[0]
+            
+            logging.debug("Found current topic, setting its status to"
+                +" PAST")
+            updateCurrentTopicEvent = e.Event("UPDATE_TOPIC", actor.uuid,
+                actor.getMeeting().uuid,
+                params={"topicUUID":currentTopic.uuid,
+                "status":"PAST"})
+            updateCurrentTopicEvent.dispatch()
+        else:
+            logging.debug("No current topic found, continuing.")
     
+    # now we can set the target topic to its target status.)
     topic.setStatus(status, event.actor, None)
-    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "editted topic", "time": editedAt}))
+    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None,
+        {"status": "updated topic", "time": editedAt}))
     #needed to keep track of statuses on client-side
     event.params["editedAt"] = editedAt
     
-    event.meeting.eventHistoryReadable.append(event.actor.name+" changed the status of topic ("+
-        topic.text+") to "+status)
+    event.meeting.eventHistoryReadable.append(event.actor.name+
+        " changed the status of topic ("+ topic.text+") to "+status)
     
     return event
     
@@ -298,12 +328,15 @@ def _handleRestartTopic(event):
     # if it's a future topic, just make it current
     # if it's a current topic, do nothing
     if topic.status == model.Topic.PAST:
+        
         newTopicEvent = e.Event("NEW_TOPIC", event.actor.uuid, event.meeting.uuid, {"text": topic.text})
         newTopicEvent = newTopicEvent.dispatch()
         topic = newTopicEvent.results["topic"]
         event.queue(e.Event("UPDATE_TOPIC", event.actor.uuid, event.meeting.uuid, {"topicUUID": topic.uuid, "status": model.Topic.CURRENT}))
     elif topic.status == model.Topic.FUTURE:
-        event.queue(e.Event("UPDATE_TOPIC", event.actor.uuid, event.meeting.uuid, {"topicUUID": topic.uuid, "status": model.Topic.CURRENT}))
+        # if it's a future topic, we shouldn't be getting a restart request at
+        # all. filter these out before they get this far.
+        pass
     
     return event
     

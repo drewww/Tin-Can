@@ -586,31 +586,6 @@ class UpdateTopicHandler(BaseHandler):
         
         actor = self.get_current_actor()
         
-        # Do a bit of logic here to check for a special situation.
-        # IF there's a current topic open, AND the request is to
-        # start a new topic, we want to close out the old topic
-        # before starting the new one.
-        
-        if(self.get_argument("status")=="CURRENT"):
-            # now go looking for the current, current item
-            currentTopic = [topic for topic in
-                actor.getMeeting().topics if topic.status=="CURRENT"]
-            if len(currentTopic) > 1:
-                logging.warning("Found multiple current topics. Badness.")
-            elif len(currentTopic) == 1:
-                currentTopic = currentTopic[0]
-                
-                logging.debug("Found current topic, setting its status to"
-                    +" PAST")
-                updateCurrentTopicEvent = Event("UPDATE_TOPIC", actor.uuid,
-                    actor.getMeeting().uuid,
-                    params={"topicUUID":currentTopic.uuid,
-                    "status":"PAST"})
-                updateCurrentTopicEvent.dispatch()
-            else:
-                logging.debug("No current topic found, continuing.")
-        
-        logging.debug("About to update the actual topic.")
         updateTopicEvent = Event("UPDATE_TOPIC", actor.uuid,
             actor.getMeeting().uuid, 
             params={"topicUUID":self.get_argument("topicUUID"),
@@ -627,10 +602,18 @@ class RestartTopicHandler(BaseHandler):
     def post(self):
         actor = self.get_current_actor()
 
-        newTopicEvent = Event("RESTART_TOPIC", actor.uuid ,
-            actor.getMeeting().uuid,
-            params={"topicUUID": self.get_argument("topicUUID")})
-        newTopicEvent.dispatch()
+        # do some quick validation - we should only a restart operation if 
+        # it's a past topic. ignore the for current and future items.
+        topic = state.get_obj(self.get_argument("topicUUID"), Topic)
+
+        if(topic.status==Topic.PAST):
+            newTopicEvent = Event("RESTART_TOPIC", actor.uuid ,
+                actor.getMeeting().uuid,
+                params={"topicUUID": self.get_argument("topicUUID")})
+            newTopicEvent.dispatch()
+        else:
+            logger.warning("Received request to restart a non-PAST topic. \
+Ignoring it.")
         return
 
 class ListTopicHandler(BaseHandler):
