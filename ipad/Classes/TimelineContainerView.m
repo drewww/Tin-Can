@@ -59,9 +59,15 @@
     
     // This is not the right layout, but we'll leave it that way for now until we 
     // actually figure out what EventViews will look like.
-	for(EventView *subview in sortedArray){
+	for(EventView *subview in [sortedArray reverseObjectEnumerator]){
 //        subview.frame=CGRectMake(PADDING, HEADER_HEIGHT + PADDING+(HEIGHT*i) + (PADDING*(i)), self.frame.size.width-(PADDING*2), HEIGHT);
         subview.frame=CGRectMake(PADDING, HEADER_HEIGHT + PADDING+(HEIGHT*i) + (PADDING*(i)), self.frame.size.height-(PADDING*2), HEIGHT);
+        
+        if(i > 4) {
+            // Remove the view from the list. 
+            [subview removeFromSuperview];
+        }
+        
         
         i++;
 	}
