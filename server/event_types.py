@@ -289,6 +289,24 @@ def _handleUpdateTopic(event):
         topic.text+") to "+status)
     
     return event
+    
+def _handleRestartTopic(event):
+    topic = state.get_obj(event.params["topicUUID"], model.Topic)
+    logging.debug("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    
+    # if it's a past topic, create a new one and make it current.
+    # if it's a future topic, just make it current
+    # if it's a current topic, do nothing
+    if topic.status == model.Topic.PAST:
+        newTopicEvent = e.Event("NEW_TOPIC", event.actor.uuid, event.meeting.uuid, {"text": topic.text})
+        newTopicEvent = newTopicEvent.dispatch()
+        topic = newTopicEvent.results["topic"]
+        event.queue(e.Event("UPDATE_TOPIC", event.actor.uuid, event.meeting.uuid, {"topicUUID": topic.uuid, "status": model.Topic.CURRENT}))
+    elif topic.status == model.Topic.FUTURE:
+        event.queue(e.Event("UPDATE_TOPIC", event.actor.uuid, event.meeting.uuid, {"topicUUID": topic.uuid, "status": model.Topic.CURRENT}))
+    
+    return event
+    
 
 def _handleTopicList(event):
     logger.warning("Topic list not implemented.")
@@ -437,6 +455,8 @@ EventType("NEW_TOPIC",      ["text"],               _handleNewTopic, True,
 EventType("DELETE_TOPIC",   ["topicUUID"],          _handleDeleteTopic, True,
     True)
 EventType("UPDATE_TOPIC",   ["topicUUID", "status"],_handleUpdateTopic, True,
+    True)
+EventType("RESTART_TOPIC",   ["topicUUID"]       ,_handleRestartTopic, True,
     True)
 EventType("SET_TOPIC_LIST", ["text"],               _handleTopicList, True,
     True)

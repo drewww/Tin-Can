@@ -56,6 +56,7 @@ class YarnApplication(tornado.web.Application):
             (r"/topics/add", AddTopicHandler),
             (r"/topics/delete", DeleteTopicHandler),
             (r"/topics/update", UpdateTopicHandler),
+            (r"/topics/restart", RestartTopicHandler),
             (r"/topics/list", ListTopicHandler),
             
             (r"/tasks/add", AddTaskHandler),
@@ -619,6 +620,18 @@ class UpdateTopicHandler(BaseHandler):
         logging.debug("After updating, topic states: " + str(actor.getMeeting().topics))
         
         return
+        
+class RestartTopicHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    def post(self):
+        actor = self.get_current_actor()
+
+        newTopicEvent = Event("RESTART_TOPIC", actor.uuid ,
+            actor.getMeeting().uuid,
+            params={"topicUUID": self.get_argument("topicUUID")})
+        newTopicEvent.dispatch()
+        return
 
 class ListTopicHandler(BaseHandler):
     def post(self):
@@ -770,8 +783,9 @@ class DemoHandler(tornado.web.RequestHandler):
         # grab tasks, topics, and participants so the page
         # is pre-populated
         
-        #sort tasks in reverse chronological order
+        #sort tasks and topics in reverse chronological order
         sortedTasks = sorted(demoMeeting.tasks, key=lambda t: t.createdAt, reverse=True)
+        sortedTopics = sorted(demoMeeting.topics, key=lambda t: t.startTime, reverse=True)
         
         self.render("demo.html", tasks=sortedTasks, topics=demoMeeting.topics, participants=demoMeeting.getCurrentParticipants())
 

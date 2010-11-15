@@ -14,12 +14,15 @@ function array_remove(array, obj) {
 }
 
 function timesince(d, now) {
+ 
     //Takes two timestamps (in seconds) && returns time between d && now
     //as a formatted string, e.g. "10h ago", but only goes up to hours
     //so an output like "74h and 3m ago" is possible.
     now = (typeof now == 'undefined') ? new Date().getTime()/1000 : now;
-    
+    console.log(now);
+    console.log(d);
     var diff = Math.round(now - d);
+    console.log(diff);
     var hours = Math.floor(diff/3600);
     var minutes = Math.floor((diff-hours*3600)/60);
     var seconds = Math.floor(diff-hours*3600-minutes*60);

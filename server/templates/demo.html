@@ -45,9 +45,13 @@
 		//tasks functions defined here so that newly created tasks can have proper
 		//callbacks on form submit as well
 
-		function taskToggle(e) {
+		function meetingObjectToggle(e) {
 			return (function() {
-				$(e).children('.details').first().css('display','none');
+				if (! $(e).children('.details').first().hasClass('current')) {
+					$(e).children('.details').first().css('display','none');
+				} else {
+					arrowToggle($(e).children('.main').children('.text').prev());
+				}
 				$(e).children('.main').children('.text').click(function(){
 					$(this).parent().parent().children('.details').first().slideToggle();
 					arrowToggle($(this).prev());
@@ -63,8 +67,8 @@
 			});
 		}
 
-		$('#tasks li').each(function(){
-			taskToggle($(this))();
+		$('#tasks li, #topics li').each(function(){
+			meetingObjectToggle($(this))();
 		});
 
 		$('#tasks input[type=submit].assign').click(function(){
@@ -79,6 +83,30 @@
 			conn.deassignTask(taskUUID);
 			return false;
 		});
+		
+		$('#topics input[type=submit].start').click(function(){
+			var topicUUID = $(this).closest('li').attr('id');
+			conn.updateTopic(topicUUID,"CURRENT");
+			return false;
+		});
+		
+		$('#topics input[type=submit].stop').click(function(){
+			var topicUUID = $(this).closest('li').attr('id');
+			conn.updateTopic(topicUUID,"PAST");
+			return false;
+		});
+		
+		$('#topics input[type=submit].restart').click(function(){
+			var topicUUID = $(this).closest('li').attr('id');
+			conn.restartTopic(topicUUID);
+			return false;
+		});
+		
+		funcion revealDetails(e) {
+			//e is target li
+			$(e).children('.details').first().slideDown();
+			arrowDown($(e).children('.main').children('.arrow').first());
+		}
 
 		conn.addListener({connectionEvent: function(e) {
 			
@@ -95,39 +123,100 @@
 				// case ""
 				case "NEW_TOPIC":
 					var topicElement = $("#topics").children().first().clone();
-					topicElement.id = e["results"]["topic"]["uuid"];
-					topicElement.children().last().html(e["results"]["topic"]["text"]);
+					var topic = e["results"]["topic"];
+					//set topic id
+					topicElement.attr('id',topic["uuid"]);
+					//set .text div
+					topicElement.children('.main').first().children('.text').first()
+						.html(topic["text"]);
+					//set created by and started at (assuming startTime is null)
+					var createdBy = state.getObj(topic["createdBy"],User);
+					topicElement.children('.details').first().children('.createdby').first()
+						.html("Created by <strong>"+createdBy.name+"</strong>");
+					topicElement.children('.details').first().children('.time').first()
+						.html("Not started");
+					//add onclick behavior
+					meetingObjectToggle(topicElement)();
+					arrowDown(topicElement.children('.main').children('.arrow').first());
+					topicElement.children('.details').css('display','block');
 					$("#topics").append(topicElement);
-				break;
-					
+					setTimeout(function() {
+						topicElement.children('.details').slideUp();
+						arrowRight(topicElement.children('.main').children('.arrow').first());
+					},500);
+					break;
+				case "UPDATE_TOPIC":
+					var topicUUID = e["params"]["topicUUID"];
+					topic = state.getObj(topicUUID,Topic);
+					if (topic.status == "PAST") {
+						stopTime = topic.stopTime.getTime()/1000;
+						$('#'+topicUUID+' .time').first().html('Ended '+timesince(stopTime));
+						var html = '<form>';
+						html += '<input type="submit" value="Restart" class="restart">';
+						html += '</form>';
+						$('#'+topicUUID+' .controlForm').html(html);
+						$('#'+topicUUID+' .restart').click(function(){
+							conn.restartTopic(topicUUID);
+							return false;
+						});
+						revealDetails($('#'+topicUUID));
+					} else if (topic.status == "CURRENT") {
+						$('#'+topicUUID+' .time').first().html('Started just now');
+						var html = '<form>';
+						html += '<input type="submit" value="Stop" class="stop">';
+						html += '</form>';
+						$('#'+topicUUID+' .controlForm').html(html);
+						$('#'+topicUUID+' .stop').click(function(){
+							conn.updateTopic(topicUUID,"PAST");
+							return false;
+						});
+						revealDetails($('#'+topicUUID));
+					}
+					break;
 				case "NEW_TASK":
 					var taskElement = $("#tasks").children().first().clone();
 					var task = e["results"]["task"];
 					//set task id
-					taskElement.attr('id',e["results"]["task"]["uuid"]);
+					taskElement.attr('id',task["uuid"]);
 					//set .text div
 					taskElement.children('.main').first().children('.text').first()
 						.html(task["text"]);
 					//set created by and created at
 					var createdBy = state.getObj(task["createdBy"],User);
-					taskElement.children('.details').first().children().first()
+					taskElement.children('.details').first().children('.createdby').first()
 						.html("Created by <strong>"+createdBy.name+"</strong> <span>"+timesince(task['createdAt'])+"</span>");
 					//assuming that the new task is not assigned
 					taskElement.children('.details').first().children('.assignedto').first()
 						.html("Not assigned");
 					//add onclick behavior
-					taskToggle(taskElement)();
+					meetingObjectToggle(taskElement)();
 					//add assign form
-					//
-					// NOT DONE HERE
-					//
-					taskElement.children('input[type=submit]').first().click(function(){
-						assignTaskAction($(this))();	
+					var html = '<form>';
+					html += '<input type="submit" value="Assign" class="assign">&nbsp;to&nbsp;';
+					html += '<select class="participants">';
+					var participants = conn.meeting.getCurrentParticipants();
+					var x;
+					for (x in participants) {
+						html += '<option value="'+participants[x].uuid+'">'+participants[x].name+'</option>';
+					}
+					html += '</select>';
+					html += '</form>';
+					taskElement.children('.details').first().children('.assignform').first()
+						.html(html);
+						
+					taskElement.children('.details').first().children('.assignform').first().children('form').first()
+						.children('input[type=submit].assign').first().click(function(){
+						var task = $(this).closest('li').attr('id');
+						var user = $(this).parent().children('.participants').first().val();
+						conn.assignTask(task,user);
+						return false;	
 					});
+					arrowDown(taskElement.children('.main').children('.arrow').first());
 					taskElement.children('.details').css('display','block');
 					$("#tasks").prepend(taskElement);
 					setTimeout(function() {
-						taskElement.children('.details').slideUp()
+						taskElement.children('.details').slideUp();
+						arrowRight(taskElement.children('.main').children('.arrow').first());
 					},500);
 					break;
 				case "ASSIGN_TASK":
@@ -147,16 +236,16 @@
 						html += '<input type="submit" value="Assign" class="assign">&nbsp;to&nbsp;';
 						html += '<select class="participants">';
 						var participants = conn.meeting.getCurrentParticipants();
-						var participant;
-						for (participant in participants) {
-							html += '<option value="'+participant.uuid+'">'+participant.name+'</option>';
+						var x;
+						for (x in participants) {
+							html += '<option value="'+participants[x].uuid+'">'+participants[x].name+'</option>';
 						}
 						html += '</select>';
 						html += '</form>';
 						$('#'+taskUUID).children('.details').first().children('.assignform').first()
 							.html(html);
 						$('#'+taskUUID+' input[type=submit].assign').click(function(){
-							assignTaskAction(taskUUID)();
+							assignTaskAction($(this))();
 							return false;
 						});	
 					}
@@ -327,29 +416,34 @@
 		margin-right: 5px;
 	}
 	
-	#tasks .arrow {
+	.arrow {
 		float: left;
 		width: 20px;
 		text-align: center;
-		font-size: 15px;
+		font-size: 11px;
 		color: #AAA;
 		clear: left;
 	}
-	#tasks .text {
+	.text {
 		float: left;
 		width: 250px;
 	}
-	#tasks .details {
+	.details {
 		padding-left: 20px;
 		padding-bottom: 5px;
 		font-size: 12px;
 		clear: both;
 	}
-	#tasks .details > div > span {
+	.details > div > span {
 		color: #888;
 	}
-	#tasks p {
+	#tasks p, #topics p {
 		margin: 0;
+	}
+	
+	footer {
+		margin-top: 10px;
+		clear: both;
 	}
 	
 </style>
@@ -383,7 +477,8 @@
 		<div class="text">{{task.text}}</div>
 	</div>
 	<div class="details">
-		<div class="createdby">Created by <strong>{{task.createdBy.name}}</strong> <span>{{task.getRelativeCreatedAt()}}</span></div>
+		{% import util %}
+		<div class="createdby">Created by <strong>{{task.createdBy.name}}</strong> <span>{{util.timesince(task.createdAt)}}</span></div>
 		{% if task.assignedTo!=None %}
 		<div class="assignedto">Assigned to <strong>{{task.assignedTo.name}}</strong></span></div>
 		<div class="assignform">
@@ -413,7 +508,7 @@
 
 
 
-<h1>TOPICS</h1>
+<h1><img src="{{static_url('images/comments.png')}}"/>TOPICS</h1>
 <div id="add_topic" class="add_form">
 <form action="" method="get" accept-charset="utf-8">
 	<input type="text" name="new_topic" value="new topic..." id="new_topic" class="item_text"/>
@@ -423,10 +518,37 @@
 
 <ul id="topics">
 {% for topic in topics %}
-
 <li id="{{topic.uuid}}">
-<img src="{{static_url('images/comments.png')}}"/>
-<span>{{topic.text}}</span>
+	<div class="main">
+		<div class="arrow">&#9654</div>
+		<div class="text">{{topic.text}}</div>	
+	</div>
+	<div class="details{% if topic.status=="CURRENT" %} current{% end %}">
+		<div class="createdby">Created by <strong>{{topic.createdBy.name}}</strong></div>
+		{% import util %}
+		{% if topic.status=="PAST" %}
+		<div class="time">Ended {{util.timesince(topic.stopTime)}}</div>
+		<div class="controlForm">
+			<form>
+				<input type="submit" value="Restart" class="restart">
+			</form>
+		</div>
+		{% elif topic.status=="CURRENT" %}
+		<div class="time">Started {{util.timesince(topic.startTime)}}</div>
+		<div class="controlForm">
+			<form>
+				<input type="submit" value="Stop" class="stop">
+			</form>
+		</div>
+		{% else %}
+		<div class="time">Not started</div>
+		<div class="controlForm">
+			<form>
+				<input type="submit" value="Start" class="start">
+			</form>
+		</div>
+		{% end %}
+	</div>
 </li>
 
 {% end %}
@@ -436,6 +558,7 @@
 
 
 </div>
+<div style="clear:both"></div>
 <footer>an <a href="http://media.mit.edu/">MIT Media Lab</a> / <a href="http://www.media.mit.edu/speech/">Speech + Mobility</a> project</footer>
 
 

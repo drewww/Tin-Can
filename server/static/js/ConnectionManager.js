@@ -787,6 +787,23 @@ ConnectionManager.prototype = {
         });
     },
     
+    restartTopic: function(topicUUID) {
+        $.ajax({
+            url: '/topics/restart',
+            type: "POST",
+            context: this,
+            data: {"topicUUID":topicUUID},
+            success: function () {
+                this.publishEvent(this.generateEvent("RESTART_TOPIC_COMPLETE",
+                    {}));
+            },
+            error: function() {
+                this.publishEvent(this.generateEvent("RESTART_TOPIC_COMPLETE",
+                    {}, false));
+            }
+        });
+    },
+    
     addTask: function(text) {
         $.ajax({
             url: '/tasks/add',

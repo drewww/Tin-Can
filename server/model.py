@@ -751,10 +751,6 @@ class Task(MeetingObject):
 
         self.assignedTo.removeTask(self)
         self.assignedTo = None
-        
-    def getRelativeCreatedAt(self):
-        r = util.timesince(self.createdAt)
-        return r
 
     def __str__(self):
         if(self.assignedTo!=None):
@@ -784,7 +780,6 @@ class Topic(MeetingObject):
     PAST="PAST"
     CURRENT="CURRENT"
     FUTURE="FUTURE"
-    
 
     def __init__(self, meetingUUID, creatorUUID, text, startTime=None,
         stopTime=None, status=None, startActorUUID=None, stopActorUUID=None,
@@ -870,9 +865,6 @@ status: " + str(status))
             d["stopActor"] = None
             
         return d
-
-    
-
 
 
 class YarnModelJSONEncoder(json.JSONEncoder):
