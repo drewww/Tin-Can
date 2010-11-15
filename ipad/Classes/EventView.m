@@ -53,9 +53,13 @@
     NSString *displayString;
     switch (event.type) {
         case kUSER_JOINED_LOCATION:
+            break;
         case kUSER_LEFT_LOCATION:
+            break;
         case kUPDATE_TOPIC:
+            break;
         case kNEW_TASK:
+            break;
         case kASSIGN_TASK:
 
             if([((NSNumber *)[event.params objectForKey:@"deassign"]) intValue] == 1) {

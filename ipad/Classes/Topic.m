@@ -153,7 +153,7 @@
 
 static int topicColorIndex = 0;
 + (UIColor *) getNextTopicColor {
-//    NSArray *colors = [NSArray arrayWithObjects:[UIColor colorWithWhite:0.4 alpha:1.0], [UIColor colorWithWhite:0.6 alpha:1.0], nil];
+//    NSArray *colors = [NSArray arrayWithObjects:[UIColor colorWithWhite:0.4 alpha:1.0], [UIColor colorWithWhite0.6 alpha:1.0], nil];
 //    NSArray *colors = [NSArray arrayWithObjects:[UIColor colorWithHexString:@"#387432"],
 //                      [UIColor colorWithHexString:@"#2D7474"], [UIColor colorWithHexString:@"#2F3E74"],
 //                      [UIColor colorWithHexString:@"#643374"], [UIColor colorWithHexString:@"#773333"],
