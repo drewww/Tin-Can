@@ -440,18 +440,33 @@ class Actor(YarnBaseType):
         self._devices = set()
         self.name = name
         
+        self.status = None
+        self.statusTime = None
+        
         
     def getDict(self):
         d = YarnBaseType.getDict(self)
         
         # devices are NOT serialized and sent to clients because they're
         # server-only representations for packaging connections. 
-        #
-        # Leaving this whole structure in here for now because we might need
-        # to plug into it later. But for now it's just a passthrough.
+
         d["name"] = self.name
+
+        if self.status!=None:
+            d["status"] = self.status
+            d["statusTime"] = self.statusTime
+        else:
+            d["status"] = None
         
         return d
+
+    def setStatus(self, message, theTime=None):
+        self.status = message
+        if(time==None):
+            self.statusTime = time.time()
+        else:
+            self.statusTime = theTime
+
         
     def isLoggedIn(self):
         return len(self.getDevices()) > 0
@@ -459,7 +474,7 @@ class Actor(YarnBaseType):
     def addDevice(self, device):
         self._devices.add(device)
         device.actor = self
-    
+
     def removeDevice(self, device):
         self._devices.remove(device)
         device.actor = None
@@ -488,7 +503,6 @@ class User(Actor):
         Actor.__init__(self, name, userUUID)
         
         self.handRaised = False
-        self.status = None
         self.location = None
         self.tasks = set()
         
@@ -503,10 +517,6 @@ class User(Actor):
     def getDict(self):
         d = Actor.getDict(self)
         d["handRaised"] = self.handRaised
-        if self.status!=None:
-            d["status"] = {"type":self.status[0], "time":self.status[1]}
-        else:
-            d["status"] = None
         
         if(self.location != None):
             d["location"] = self.location.uuid

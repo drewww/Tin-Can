@@ -12,13 +12,25 @@
 @implementation Actor
 
 @synthesize name;
+@synthesize status;
+@synthesize statusDate;
 
-- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName {
+- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withStatus:(NSString *)theStatus atDate:(NSDate *)theDate {
+    
     self = [super initWithUUID:myUuid];
     
     self.name = myName;
     
+    self.status = theStatus;
+    self.statusDate = theDate;
+    
     return self;
+}
+
+- (void) setStatus:(NSString *)theStatus atDate:(NSDate *)theDate {
+    
+    self.status = theStatus;
+    self.statusDate = theDate;
 }
 
 @end

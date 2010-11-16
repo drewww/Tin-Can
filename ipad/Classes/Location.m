@@ -19,7 +19,7 @@
 @synthesize color;
 
 - (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withMeeting:(UUID *)myMeetingUUID withUsers:(NSArray *)myUsers withColor:(UIColor *)theColor {
-    self = [super initWithUUID:myUuid withName:myName];
+    self = [super initWithUUID:myUuid withName:myName withStatus:nil atDate:nil];
     
     meetingUUID = [myMeetingUUID retain];
 

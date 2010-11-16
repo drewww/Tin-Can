@@ -443,7 +443,6 @@ ConnectionManager.prototype = {
                     task.assign(assignedBy, assignedTo);
                     assignedBy.status = {type: "assigned task", time: task.assignedAt}
                     assignedTo.status = {type: "claimed task", time: task.assignedAt}
-                    
                 }
                 
                 break;

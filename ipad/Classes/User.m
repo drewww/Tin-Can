@@ -18,7 +18,7 @@
 @synthesize tasks;
 
 - (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withLocationUUID:(UUID *)myLocationUUID {
-    self = [super initWithUUID:myUuid withName:myName];
+    self = [super initWithUUID:myUuid withName:myName withStatus:nil atDate:nil];
     
     // Why is this included at all? Can we get rid of it?
     locationUUID = myLocationUUID;

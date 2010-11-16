@@ -425,8 +425,8 @@ def _handleHandRaise(event):
     return event
     
 def _handleUpdateStatus(event):
-    event.actor.status=(event.params["status"], event.params["time"])
-    logging.debug(event.actor.status)
+    event.actor.setStatus(event.params["status"], event.params["time"])
+    logging.debug("status now: " + str(event.actor.status))
     
     return event
 

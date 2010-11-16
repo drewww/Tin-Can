@@ -437,7 +437,20 @@ static ConnectionManager *sharedInstance = nil;
             
             meeting.title = title;
             break;
-        
+        case kUPDATE_STATUS:
+            NSLog(@"handling status update!");
+            actor = (Actor *)[state getObjWithUUID:e.actorUUID withType:[Actor class]];
+            
+            if([[e.params objectForKey:@"time"] isKindOfClass:[NSNull class]]) {
+                date = nil; 
+            } else {
+                date = [NSDate dateWithTimeIntervalSince1970:[[e.params objectForKey:@"time"] doubleValue]];
+            }
+            
+            [actor setStatus:[e.params objectForKey:@"status"] atDate:date];
+            
+            NSLog(@"actor status after update: %@ at time %@", actor.status, actor.statusDate);
+            break;
         case kNEW_DEVICE:
             NSLog(@"received known event type, but am not doing anything about it");
             break;

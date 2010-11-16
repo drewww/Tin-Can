@@ -21,6 +21,7 @@ typedef enum {
     kNEW_DEVICE,
     kADD_ACTOR_DEVICE,
     kNEW_LOCATION,
+    kUPDATE_STATUS,
     
     kNEW_TOPIC,
     kDELETE_TOPIC,

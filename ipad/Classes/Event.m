@@ -44,6 +44,7 @@
                                                      @"NEW_DEVICE",
                                                      @"ADD_ACTOR_DEVICE",
                                                      @"NEW_LOCATION",
+                                                     @"UPDATE_STATUS",
                              
                                                      @"NEW_TOPIC",
                                                      @"DELETE_TOPIC",
