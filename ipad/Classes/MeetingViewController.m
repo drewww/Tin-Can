@@ -62,7 +62,7 @@
     [self.view addSubview:locBorderView];
     [self.view sendSubviewToBack:locBorderView];
     
-    timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(35, 418, 290, 190)];
+    timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(45, 409, 290, 208)];
     
     
 //    timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(54, 405, 290, 215)];
