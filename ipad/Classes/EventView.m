@@ -9,6 +9,12 @@
 #import "EventView.h"
 #import "StateManager.h"
 
+#import "Topic.h"
+#import "User.h"
+#import "Actor.h"
+#import "Location.h"
+#import "Task.h"
+
 @implementation EventView
 
 @synthesize event;
@@ -51,17 +57,47 @@
     StateManager *state = [StateManager sharedInstance];
     
     NSString *displayString = @"Placeholder display string.";
+    
+    Location *location;
+    User *user;
+    Task *task;
+    Topic *topic;
+    Actor *actor;
+    
     switch (event.type) {
         case kUSER_JOINED_LOCATION:
+            
+            location = (Location *)[state getObjWithUUID:[event.params objectForKey:@"location"]
+                                                withType:[Location class]];
+            
+            user = (User *)[state getObjWithUUID:event.actorUUID withType:[User class]];
+            displayString = [NSString stringWithFormat:@"%@ joined %@.", user.name, location.name];
             break;
         case kUSER_LEFT_LOCATION:
+            location = (Location *)[state getObjWithUUID:[event.params objectForKey:@"location"]
+                                                withType:[Location class]];
+            
+            user = (User *)[state getObjWithUUID:event.actorUUID withType:[User class]];
+            displayString = [NSString stringWithFormat:@"%@ left %@.", user.name, location.name];
+            
             break;
         case kUPDATE_TOPIC:
-            // This one is going to be a bit tricky - gotta sense what kind of update it was to have
-            // a proper event string.
-            displayString = @"Placeholder topic update.";
+            actor = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
+            topic = (Topic *)[state getObjWithUUID:[event.params objectForKey:@"topicUUID"] withType:[Topic class]];
+
+            NSString *status = [event.params objectForKey:@"status"];
+
+            if ([status isEqualToString:@"CURRENT"]) {
+                displayString = [NSString stringWithFormat:@"%@ started topic: \"%@...\"", actor.name, [topic.text substringToIndex:15]];
+            } else if ([status isEqualToString:@"PAST"]) {
+                displayString = [NSString stringWithFormat:@"%@ stopped topic: \"%@...\"", actor.name, [topic.text substringToIndex:15]];                
+            } 
+            
             break;
         case kNEW_TASK:
+            actor = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
+            task = [event.results objectForKey:@"task"];
+            displayString = [NSString stringWithFormat:@"%@ added task \"%@...\"", actor.name, [task.text substringToIndex:15]];
             break;
         case kASSIGN_TASK:
 
@@ -78,9 +114,10 @@
         case kNEW_TOPIC:
             // This is another one of those cases where I can't create new object variables on the first line
             // of a case statement. So bizarre. Adding an NSLog fixes things.
-            NSLog(@"new topic event");
-            Actor *createdBy = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
-            displayString = [NSString stringWithFormat:@"%@ created new task.", createdBy.name];
+            topic = [event.results objectForKey:@"topic"];
+            
+            actor = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
+            displayString = [NSString stringWithFormat:@"%@ created new topic: \"%@...\"", actor.name, [topic.text substringToIndex:15]];
             break;
     }
     
