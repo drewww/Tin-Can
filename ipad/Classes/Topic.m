@@ -159,9 +159,9 @@ static int topicColorIndex = 0;
 //                      [UIColor colorWithHexString:@"#643374"], [UIColor colorWithHexString:@"#773333"],
 //                      [UIColor colorWithHexString:@"#765732"], [UIColor colorWithHexString:@"#6D7432"], nil];
     NSArray *colors = [NSArray arrayWithObjects:[UIColor colorWithHexString:@"#339A33"],
-                      [UIColor colorWithHexString:@"#2A9D9E"], [UIColor colorWithHexString:@"#2E4F9E"],
                       [UIColor colorWithHexString:@"#933CB2"], [UIColor colorWithHexString:@"#B63B3B"],
-                      [UIColor colorWithHexString:@"#B57839"], [UIColor colorWithHexString:@"#9DA234"], nil];
+                      [UIColor colorWithHexString:@"#B57839"], [UIColor colorWithHexString:@"#9DA234"],
+                      [UIColor colorWithHexString:@"#2A9D9E"], [UIColor colorWithHexString:@"#2E4F9E"], nil];
     
     topicColorIndex += 1;
 
