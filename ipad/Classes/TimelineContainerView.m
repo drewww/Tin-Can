@@ -63,7 +63,7 @@
 //        subview.frame=CGRectMake(PADDING, HEADER_HEIGHT + PADDING+(HEIGHT*i) + (PADDING*(i)), self.frame.size.width-(PADDING*2), HEIGHT);
         subview.frame=CGRectMake(PADDING, HEADER_HEIGHT + PADDING+(HEIGHT*i) + (PADDING*(i)), self.frame.size.height-(PADDING*2), HEIGHT);
         
-        if(i > 4) {
+        if(i > 5) {
             // Remove the view from the list. 
             [subview removeFromSuperview];
         }

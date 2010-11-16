@@ -18,16 +18,20 @@
 #define HOUR_INDEX 3
 #define TYPE_INDEX 4
 
-#define TOPIC_OUTER_RADIUS 130
+#define TOPIC_OUTER_RADIUS 155
 #define HOUR_BAND_WIDTH 15
 #define HOUR_MARGIN_WIDTH 3
+
+#define CLOCK_OUTER_DIAMETER 360
+#define CLOCK_OUTER_BOUNDS 400
 
 - (id)initWithFrame:(CGRect)frame withStartTime:(NSDate *)time{
     if ((self = [super initWithFrame:frame])) {
         
         // Set up the locations of the clock.
-        self.bounds = CGRectMake(-165, -165, 326, 326);
-        self.center = CGPointMake(384, 512);
+        self.bounds = CGRectMake(-CLOCK_OUTER_BOUNDS/2, -CLOCK_OUTER_BOUNDS/2,
+                                  CLOCK_OUTER_BOUNDS, CLOCK_OUTER_BOUNDS);
+        self.center = CGPointMake(440, 512);
         self.clearsContextBeforeDrawing = YES;
         
         
@@ -102,7 +106,7 @@
 	
     //Wipe the layer manually because clearsContext doesn't work.
     CGContextSetRGBFillColor(ctx, 0, 0, 0, 1.0);
-    CGContextFillRect(ctx, CGRectMake(-200, -200, 500, 500));
+    CGContextFillRect(ctx, CGRectMake(-CLOCK_OUTER_BOUNDS/2, -CLOCK_OUTER_BOUNDS/2, CLOCK_OUTER_BOUNDS, CLOCK_OUTER_BOUNDS));
 	
     // Puts it in landscape mode, basically - so the top of the clock is to the right in portrait mode
     CGContextRotateCTM(ctx, 0);
@@ -111,7 +115,7 @@
     CGContextSetRGBStrokeColor(ctx, 1, 1, 1, 1.0);
     CGContextSetLineWidth(ctx, 2.0);
     CGContextSaveGState(ctx);
-    CGContextStrokeEllipseInRect(ctx, CGRectMake(-160, -155, 315, 315));
+    CGContextStrokeEllipseInRect(ctx, CGRectMake(-CLOCK_OUTER_DIAMETER/2, -CLOCK_OUTER_DIAMETER/2, CLOCK_OUTER_DIAMETER, CLOCK_OUTER_DIAMETER));
 	
     // Here is where we draw the topics.
     // First, we want to loop through all the topics.
@@ -274,10 +278,10 @@
     NSString *nine = @"9";
     
     CGContextSetRGBFillColor(ctx, 1, 1, 1, 1.0);
-    [twelve drawAtPoint:CGPointMake(-10, -153) withFont:[UIFont boldSystemFontOfSize:18]];
-    [six drawAtPoint:CGPointMake(-10, 133) withFont:[UIFont boldSystemFontOfSize:18]];
-    [three drawAtPoint:CGPointMake(135, -10) withFont:[UIFont boldSystemFontOfSize:18]];
-    [nine drawAtPoint:CGPointMake(-145, -10) withFont:[UIFont boldSystemFontOfSize:18]];
+    [twelve drawAtPoint:CGPointMake(-10, -175) withFont:[UIFont boldSystemFontOfSize:18]];
+    [six drawAtPoint:CGPointMake(-10, 155) withFont:[UIFont boldSystemFontOfSize:18]];
+    [three drawAtPoint:CGPointMake(162, -5) withFont:[UIFont boldSystemFontOfSize:18]];
+    [nine drawAtPoint:CGPointMake(-170, -5) withFont:[UIFont boldSystemFontOfSize:18]];
 	
 	
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
