@@ -18,7 +18,7 @@
 #define HOUR_INDEX 3
 #define TYPE_INDEX 4
 
-#define TOPIC_OUTER_RADIUS 155
+#define TOPIC_OUTER_RADIUS 150
 #define HOUR_BAND_WIDTH 15
 #define HOUR_MARGIN_WIDTH 3
 
@@ -132,21 +132,15 @@
     for(Topic *topic in sortedTopics) {
         CGContextSaveGState(ctx);        
         if(topic.status==kFUTURE) {
-//            NSLog(@"Hit a future item, stopping. (these should be sorted to the end)");
+            // Hitting a future item, so stopping. 
             break;
         }
         
         // Grab the start time of the first topic, and make that our current hour start.
         if(curHourStart == nil) {
             curHourStart = topic.startTime;
-//            NSLog(@"setting cur hour start: %@", curHourStart);
         }
-        
-        // Rotate into position, so we can always draw straight up.
-        
-        
-        
-        
+                
         // This tmp start time stores an updateable start time, so when we're drawing
         // from hour boundaries it'll still work properly.
         tmpStartTime = topic.startTime;
@@ -165,9 +159,6 @@
 
         // Look for cases in which the current topic extends beyond the hour boundary.
         while(abs([curHourStart timeIntervalSinceDate:tmpStopTime]) > 3600) {
-            
-            NSLog(@"PAST THE HOUR BOUNDARY");
-            
             
             curHourStop = [[NSDate dateWithTimeIntervalSince1970:[curHourStart timeIntervalSince1970] + 3600] retain];
             
@@ -250,9 +241,9 @@
 	CGContextSetLineWidth(ctx, 1.0);
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 	CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
-	CGContextAddRect (ctx, CGRectMake(-2.5, 0, 5, -90));
+	CGContextAddRect (ctx, CGRectMake(-2.5, 0, 5, -TOPIC_OUTER_RADIUS+40));
 	CGContextFillPath(ctx);
-	CGContextAddRect (ctx, CGRectMake(-2.5, 0, 5, -90));
+	CGContextAddRect (ctx, CGRectMake(-2.5, 0, 5, -TOPIC_OUTER_RADIUS+40));
 	CGContextStrokePath(ctx);
 	
 	CGContextRestoreGState(ctx);
@@ -263,9 +254,9 @@
 	CGContextSetLineWidth(ctx, 1.0);
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 	CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
-	CGContextAddRect (ctx, CGRectMake(-2.5, 0, 5, -130));
+	CGContextAddRect (ctx, CGRectMake(-2.5, 0, 5, -TOPIC_OUTER_RADIUS));
 	CGContextFillPath(ctx);
-	CGContextAddRect (ctx, CGRectMake(-2.5, 0, 5, -130));
+	CGContextAddRect (ctx, CGRectMake(-2.5, 0, 5, -TOPIC_OUTER_RADIUS));
 	CGContextStrokePath(ctx);
 	
 	
@@ -278,10 +269,10 @@
     NSString *nine = @"9";
     
     CGContextSetRGBFillColor(ctx, 1, 1, 1, 1.0);
-    [twelve drawAtPoint:CGPointMake(-10, -175) withFont:[UIFont boldSystemFontOfSize:18]];
-    [six drawAtPoint:CGPointMake(-10, 155) withFont:[UIFont boldSystemFontOfSize:18]];
-    [three drawAtPoint:CGPointMake(162, -5) withFont:[UIFont boldSystemFontOfSize:18]];
-    [nine drawAtPoint:CGPointMake(-170, -5) withFont:[UIFont boldSystemFontOfSize:18]];
+    [twelve drawAtPoint:CGPointMake(-10, -175) withFont:[UIFont boldSystemFontOfSize:24]];
+    [six drawAtPoint:CGPointMake(-10, 152) withFont:[UIFont boldSystemFontOfSize:24]];
+    [three drawAtPoint:CGPointMake(162, -5) withFont:[UIFont boldSystemFontOfSize:24]];
+    [nine drawAtPoint:CGPointMake(-170, -5) withFont:[UIFont boldSystemFontOfSize:24]];
 	
 	
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
