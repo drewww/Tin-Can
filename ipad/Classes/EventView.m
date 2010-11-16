@@ -41,6 +41,95 @@
             Location *location = (Location *)actor;
             self.backgroundColor = location.color;
         }
+     
+        // Basic structure (in my disease addled state, at least) will be an icon specific to each 
+        // event type. That'll be a 16x16 icon, 4.5 in from the edge. For now, we'll just draw a box
+        // there. To the right of that we'll have a nice string format saying what happened.
+        
+        StateManager *state = [StateManager sharedInstance];
+        
+        displayString = @"Placeholder display string.";
+        displayImage = [UIImage imageNamed:@"error.png"];
+
+        Location *location;
+        User *user;
+        Task *task;
+        Topic *topic;
+
+        switch (event.type) {
+            case kUSER_JOINED_LOCATION:
+                
+                location = (Location *)[state getObjWithUUID:[event.params objectForKey:@"location"]
+                                                    withType:[Location class]];
+                
+                user = (User *)[state getObjWithUUID:event.actorUUID withType:[User class]];
+                displayString = [NSString stringWithFormat:@"%@ joined %@.", user.name, location.name];
+                displayImage = [UIImage imageNamed:@"user_add.png"];
+                break;
+            case kUSER_LEFT_LOCATION:
+                location = (Location *)[state getObjWithUUID:[event.params objectForKey:@"location"]
+                                                    withType:[Location class]];
+                
+                user = (User *)[state getObjWithUUID:event.actorUUID withType:[User class]];
+                displayString = [NSString stringWithFormat:@"%@ left %@.", user.name, location.name];
+                displayImage = [UIImage imageNamed:@"user_delete.png"];
+                break;
+            case kUPDATE_TOPIC:
+                actor = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
+                topic = (Topic *)[state getObjWithUUID:[event.params objectForKey:@"topicUUID"] withType:[Topic class]];
+                
+                NSString *status = [event.params objectForKey:@"status"];
+                
+                if ([status isEqualToString:@"CURRENT"]) {
+                    displayString = [NSString stringWithFormat:@"%@ started topic: \"%@...\"", actor.name, [topic.text substringToIndex:15]];
+                } else if ([status isEqualToString:@"PAST"]) {
+                    displayString = [NSString stringWithFormat:@"%@ stopped topic: \"%@...\"", actor.name, [topic.text substringToIndex:15]];                
+                } 
+
+                displayImage = [UIImage imageNamed:@"time_go.png"];
+                
+                break;
+            case kNEW_TASK:
+                actor = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
+                task = [event.results objectForKey:@"task"];
+                displayString = [NSString stringWithFormat:@"%@ added task \"%@...\"", actor.name, [task.text substringToIndex:15]];
+                displayImage = [UIImage imageNamed:@"note_add.png"];
+                break;
+            case kASSIGN_TASK:
+                
+                if([((NSNumber *)[event.params objectForKey:@"deassign"]) intValue] == 1) {
+                    Actor *assignedBy = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
+                    displayString = [NSString stringWithFormat:@"%@ deassigned task.", assignedBy.name];
+                } else {
+                    Actor *assignedBy = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
+                    User *assignedTo = (User *)[state getObjWithUUID:[event.params objectForKey:@"assignedTo"] withType:[User class]];
+                    displayString = [NSString stringWithFormat:@"%@ assigned task to %@.", assignedBy.name, assignedTo.name];
+                }
+                
+                displayImage = [UIImage imageNamed:@"note_go.png"];
+
+                
+                break;
+                
+            case kNEW_TOPIC:
+                // This is another one of those cases where I can't create new object variables on the first line
+                // of a case statement. So bizarre. Adding an NSLog fixes things.
+                topic = [event.results objectForKey:@"topic"];
+                
+                actor = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
+                displayString = [NSString stringWithFormat:@"%@ created new topic: \"%@...\"", actor.name, [topic.text substringToIndex:15]];
+                displayImage = [UIImage imageNamed:@"time_add.png"];
+                break;
+            default:
+                displayString = @"Drawing un-handled event type.";
+                displayImage = [UIImage imageNamed:@"error.png"];
+                break;
+        }
+       
+        // Now add the display image as a subview.
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:displayImage];
+        imageView.frame = CGRectMake(4.5, 4.5, 16, 16);
+        [self addSubview:imageView];
         
 		[UIView beginAnimations:@"fade_in" context:self];
 		
@@ -48,97 +137,21 @@
 		
 		self.alpha = 1.0;
 		
-		
 		[UIView commitAnimations];
 		
     }
     return self;
 }
 
-- (void)drawRect:(CGRect)rect {
+- (void) drawRect:(CGRect)rect {
     // Drawing code
     
-    // For now, just print some random stuff to show that it's working.
-    // NSString *displayString = [NSString stringWithFormat:@"%@ %d", self.event.timestamp, self.event.type];    
-    
-    // Basic structure (in my disease addled state, at least) will be an icon specific to each 
-    // event type. That'll be a 16x16 icon, 4.5 in from the edge. For now, we'll just draw a box
-    // there. To the right of that we'll have a nice string format saying what happened.
-    
-    StateManager *state = [StateManager sharedInstance];
-    
-    NSString *displayString = @"Placeholder display string.";
-    
-    Location *location;
-    User *user;
-    Task *task;
-    Topic *topic;
-    Actor *actor;
-    
-    switch (event.type) {
-        case kUSER_JOINED_LOCATION:
-            
-            location = (Location *)[state getObjWithUUID:[event.params objectForKey:@"location"]
-                                                withType:[Location class]];
-            
-            user = (User *)[state getObjWithUUID:event.actorUUID withType:[User class]];
-            displayString = [NSString stringWithFormat:@"%@ joined %@.", user.name, location.name];
-            break;
-        case kUSER_LEFT_LOCATION:
-            location = (Location *)[state getObjWithUUID:[event.params objectForKey:@"location"]
-                                                withType:[Location class]];
-            
-            user = (User *)[state getObjWithUUID:event.actorUUID withType:[User class]];
-            displayString = [NSString stringWithFormat:@"%@ left %@.", user.name, location.name];
-            
-            break;
-        case kUPDATE_TOPIC:
-            actor = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
-            topic = (Topic *)[state getObjWithUUID:[event.params objectForKey:@"topicUUID"] withType:[Topic class]];
-
-            NSString *status = [event.params objectForKey:@"status"];
-
-            if ([status isEqualToString:@"CURRENT"]) {
-                displayString = [NSString stringWithFormat:@"%@ started topic: \"%@...\"", actor.name, [topic.text substringToIndex:15]];
-            } else if ([status isEqualToString:@"PAST"]) {
-                displayString = [NSString stringWithFormat:@"%@ stopped topic: \"%@...\"", actor.name, [topic.text substringToIndex:15]];                
-            } 
-            
-            break;
-        case kNEW_TASK:
-            actor = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
-            task = [event.results objectForKey:@"task"];
-            displayString = [NSString stringWithFormat:@"%@ added task \"%@...\"", actor.name, [task.text substringToIndex:15]];
-            break;
-        case kASSIGN_TASK:
-
-            if([((NSNumber *)[event.params objectForKey:@"deassign"]) intValue] == 1) {
-                Actor *assignedBy = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
-                displayString = [NSString stringWithFormat:@"%@ deassigned task.", assignedBy.name];
-            } else {
-                Actor *assignedBy = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
-                User *assignedTo = (User *)[state getObjWithUUID:[event.params objectForKey:@"assignedTo"] withType:[User class]];
-                displayString = [NSString stringWithFormat:@"%@ assigned task to %@.", assignedBy.name, assignedTo.name];
-            }
-            break;
-            
-        case kNEW_TOPIC:
-            // This is another one of those cases where I can't create new object variables on the first line
-            // of a case statement. So bizarre. Adding an NSLog fixes things.
-            topic = [event.results objectForKey:@"topic"];
-            
-            actor = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
-            displayString = [NSString stringWithFormat:@"%@ created new topic: \"%@...\"", actor.name, [topic.text substringToIndex:15]];
-            break;
-    }
-    
-    
     CGContextRef ctx = UIGraphicsGetCurrentContext();
-    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
     
     // icon placeholder.
-    CGContextFillRect(ctx, CGRectMake(4.5, 4.5, 16, 16));
+//    CGContextFillRect(ctx, CGRectMake(4.5, 4.5, 16, 16));
     
+    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
     
     [displayString drawInRect:CGRectMake(23, 2.5, self.frame.size.width, self.frame.size.height) withFont:[UIFont systemFontOfSize:12]];
 }

@@ -11,6 +11,9 @@
 
 @interface EventView : UIView {
     Event *event;
+    
+    NSString *displayString;
+    UIImage *displayImage;
 }
 
 - (id)initWithFrame:(CGRect)frame withEvent:(Event *)theEvent;
