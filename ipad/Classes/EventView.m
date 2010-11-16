@@ -29,7 +29,18 @@
 		self.frame=frame;
 		self.alpha = 0;
         
-        self.backgroundColor = [UIColor colorWithWhite:0.2 alpha:1.0];
+        
+        // Set the background color to the color of the location of the actor.
+        Actor *actor = (Actor *)[[StateManager sharedInstance] getObjWithUUID:self.event.actorUUID withType:[Actor class]];
+        
+        // If it's a user, we need to get the location. If it's a location, we can ask it directly.
+        if([actor isKindOfClass:[User class]]) {
+            User *user = (User *)actor;
+            self.backgroundColor = user.location.color;
+        } else {
+            Location *location = (Location *)actor;
+            self.backgroundColor = location.color;
+        }
         
 		[UIView beginAnimations:@"fade_in" context:self];
 		
@@ -133,8 +144,6 @@
 }
 
 - (NSComparisonResult) compareByTime:(EventView *)view {
-    
-    NSLog(@"comparing by time");
     
     // I think there might be a way to do that key compare thing, but it's not as simple
     // as getting a key, so I'm not sure. Doing it this way which I know works, for now
