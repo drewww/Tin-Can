@@ -21,6 +21,13 @@ def timesince(d, now=None):
     if not now:
         now = time.time()
     
+    # I somehow ended up here with a None d, so just adding a check for it
+    # to help identify when these issues happen. Not sure what triggered it,
+    # though. There is probably something up-stream that needs fixing (my 
+    # stuff, not yours) to stop handing in an empty time to timesince.
+    if not d:
+        return "bad time"
+    
     diff = int(now - d);
     hours = diff/3600
     minutes = (diff-hours*3600)/60
@@ -30,9 +37,6 @@ def timesince(d, now=None):
         o = str(hours)+"h"
     elif (hours==1):
         o = "1h"
-        
-    if (o!="" and minutes>0):
-        o += " and "
         
     if (minutes>1):
         o += str(minutes)+"m"
