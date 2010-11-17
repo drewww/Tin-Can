@@ -13,5 +13,7 @@
     Topic *topic;
 }
 
+- (void)setTopic:(Topic *)newTopic;
+
 
 @end

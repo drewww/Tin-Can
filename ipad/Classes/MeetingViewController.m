@@ -50,7 +50,11 @@
     
     
     currentTopicView = [[CurrentTopicView alloc] initWithFrame:CGRectMake(490, 462, 290, 100)];
+    
+    [currentTopicView setTopic:[[StateManager sharedInstance].meeting getCurrentTopic]];
+    
     [self.view addSubview:currentTopicView];
+    
     
 	[self.view addSubview:taskContainer];	
 	[self.view addSubview:topicContainer];
@@ -240,6 +244,9 @@
             
         case kUPDATE_TOPIC:
             [topicContainer setNeedsLayout];
+            
+            [currentTopicView setTopic:[state.meeting getCurrentTopic]];
+            
             break;
             
         case kNEW_TASK:

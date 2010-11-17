@@ -53,6 +53,8 @@
 
 - (NSSet *) getUnassignedTasks;
 
+- (Topic *) getCurrentTopic;
+
 
 - (void) unswizzle;
 

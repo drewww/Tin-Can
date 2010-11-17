@@ -11,7 +11,7 @@
 #import "StateManager.h"
 #import "Room.h"
 #import "Task.h"
-
+#import "Topic.h"
 
 @implementation Meeting
 
@@ -95,6 +95,17 @@
         }
     }
     return unassignedTasks;
+}
+
+- (Topic *) getCurrentTopic {
+    // Just gonna iterate through all the topics and look for one with "CURRENT" as its status.
+    for (Topic *t in self.topics) {
+        if(t.status == kCURRENT) {
+            return t;
+        }
+    }
+    
+    return nil;
 }
 
 - (void) unswizzle {
