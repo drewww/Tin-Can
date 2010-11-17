@@ -81,21 +81,43 @@
     NSString *statusString = user.status;
     
     if(statusString != nil) {
-        CGSize statusSize = [statusString sizeWithFont:f];
-        [statusString drawAtPoint:CGPointMake(-statusSize.width/2, 2) withFont:f];
+        // We're also going to look at when it happened. If it was too long ago, don't show it
+        // at all. If it's within a certain range, just dim the color of the text proportionally.
+        
+        // The -1 is to make these values positive, just for convenience. Otherwise, "timeIntervalSinceNow" 
+        // is always negative for past times.
+        NSTimeInterval timeSinceStatus = [user.statusDate timeIntervalSinceNow]*-1;
+        NSLog(@"timeSinceStatus: %f", timeSinceStatus);
+        // if it's more than 10 minutes old, don't show it at all
+        if(timeSinceStatus < 10*60) {
+            
+            // Now, if it's in the last 2 minutes, do full color. Otherwise, fade it.
+            float colorFraction = 1.0;
+            if(timeSinceStatus > 2 * 60) {
+                colorFraction = ((timeSinceStatus-(2*60))/(8*60))*0.8 + 0.2;
+            }
+            
+            // Now set the color to be white, plus the colorFraction's alpha.
+            CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:1.0 alpha:colorFraction].CGColor);            
+        }  else {
+            CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:1.0 alpha:0.5].CGColor);
+            
+            statusString = @"no recent activity";        
+        }
+    } else {
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:1.0 alpha:0.5].CGColor);
+        
+        statusString = @"no recent activity";        
     }
     
-    // Now draw a thin, lighter line to separate it from the name and line it up with the location border
-    // thickness.
-//    CGContextSetLineWidth(ctx, 0.5);
-//    CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
-//    CGContextMoveToPoint(ctx, -BASE_WIDTH/2, 2);
-//    CGContextAddLineToPoint(ctx, BASE_WIDTH/2, 2);
-//    CGContextStrokePath(ctx);
+    CGSize statusSize = [statusString sizeWithFont:f];    
+    [statusString drawAtPoint:CGPointMake(-statusSize.width/2, 2) withFont:f];
     
+
     // Now draw the location name. It'll only show when extended, but we just draw it
     // all the time.
     f = [UIFont boldSystemFontOfSize:12];
+    CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:1.0 alpha:1.0].CGColor);
     CGSize locationNameSize = [self.user.location.name sizeWithFont:f];
     [self.user.location.name drawAtPoint:CGPointMake(-locationNameSize.width/2, 5+22) withFont:f];
     

@@ -178,6 +178,8 @@
         // The cehange is going to be different depending on which direction
         // we're going, so check.
         
+        [self setNeedsDisplay];
+        
         doAutorevert = false;
                 
         if(userExtended == false && extended == true) {
