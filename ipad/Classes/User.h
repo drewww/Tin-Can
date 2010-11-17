@@ -23,7 +23,7 @@
     UIView *view;
 }
 
-- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withLocationUUID:(UUID *)myLocation;
+- (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withLocationUUID:(UUID *)myLocationUUID withStatus:(NSString *)theStatus atDate:(NSDate *)theDate;
 - (BOOL) isInLocation;
 - (BOOL) isinMeeting;
 

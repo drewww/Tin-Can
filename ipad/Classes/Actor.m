@@ -21,8 +21,13 @@
     
     self.name = myName;
     
-    self.status = theStatus;
-    self.statusDate = theDate;
+    if([theStatus isKindOfClass:[NSNull class]]) {
+        self.status = nil;
+        self.statusDate = nil;
+    } else {
+        self.status = theStatus;
+        self.statusDate = theDate;
+    }
     
     return self;
 }

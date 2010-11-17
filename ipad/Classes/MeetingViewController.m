@@ -276,7 +276,18 @@
                 [self.view addSubview:connectionInfoLabel];
             }            
             break;
+        case kUPDATE_STATUS:
+            // All we need to do here is force a redraw on the user with the updated status.
+            NSLog(@"Forcing redraw in users whose status have been updated.");
             
+            Actor *actor = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
+            
+            if([actor isKindOfClass:[User class]]) {
+                User *user = (User *)actor;
+                [[user getView] setNeedsDisplay];
+            }
+            
+            break;
         case kCONNECTION_REQUEST_FAILED:
             
             connectionInfoLabel.text = @"Lost connection to the server.";

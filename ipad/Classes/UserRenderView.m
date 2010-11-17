@@ -77,9 +77,13 @@
     
     // Draw the status block..
     f = [UIFont boldSystemFontOfSize:16];
-    NSString *statusString = @"added a task";
-    CGSize statusSize = [statusString sizeWithFont:f];
-    [statusString drawAtPoint:CGPointMake(-statusSize.width/2, 2) withFont:f];
+
+    NSString *statusString = user.status;
+    
+    if(statusString != nil) {
+        CGSize statusSize = [statusString sizeWithFont:f];
+        [statusString drawAtPoint:CGPointMake(-statusSize.width/2, 2) withFont:f];
+    }
     
     // Now draw a thin, lighter line to separate it from the name and line it up with the location border
     // thickness.

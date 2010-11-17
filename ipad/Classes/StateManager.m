@@ -71,10 +71,23 @@ static StateManager *sharedInstance = nil;
     
     // Do this in two passes. Make the objects first, then
     // unswizzle them to convert UUIDs into actual objects.
+    NSDate *date;
     for(NSDictionary *user in newUsers) {
+
+        
+        if([[user objectForKey:@"statusTime"] isKindOfClass:[NSNull class]]) {
+            date = nil;
+        } else {
+            date = [NSDate dateWithTimeIntervalSince1970:[[user objectForKey:@"statusTime"] doubleValue]];
+        }
+        
+        
         User *newUser = [[User alloc] initWithUUID:[user objectForKey:@"uuid"]
                                           withName:[user objectForKey:@"name"]
-                                  withLocationUUID:[user objectForKey:@"location"]];
+                                  withLocationUUID:[user objectForKey:@"location"]
+                                        withStatus:[user objectForKey:@"status"]
+                                            atDate:date];
+
         
         [actors addObject:newUser];
     }
@@ -117,7 +130,6 @@ static StateManager *sharedInstance = nil;
         for(NSDictionary *results in [m objectForKey:@"tasks"]) {
             NSLog(@"unpacking task: %@", results);
             
-            NSDate *date;
             if([[results objectForKey:@"assignedAt"] isKindOfClass:[NSNull class]]) {
                 date = nil;
             } else {
