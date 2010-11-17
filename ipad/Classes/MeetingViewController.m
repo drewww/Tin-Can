@@ -229,6 +229,7 @@
             break;
             
         case kUPDATE_TOPIC:
+            [topicContainer setNeedsLayout];
             break;
             
         case kNEW_TASK:
