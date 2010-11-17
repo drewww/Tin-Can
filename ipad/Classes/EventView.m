@@ -14,6 +14,7 @@
 #import "Actor.h"
 #import "Location.h"
 #import "Task.h"
+#import "NSString+Util.h"
 
 @implementation EventView
 
@@ -81,9 +82,9 @@
                 NSString *status = [event.params objectForKey:@"status"];
                 
                 if ([status isEqualToString:@"CURRENT"]) {
-                    displayString = [NSString stringWithFormat:@"%@ started topic: \"%@...\"", actor.name, [topic.text substringToIndex:15]];
+                    displayString = [NSString stringWithFormat:@"%@ started topic: \"%@\"", actor.name, [topic.text excerptBeyondLength:15]];
                 } else if ([status isEqualToString:@"PAST"]) {
-                    displayString = [NSString stringWithFormat:@"%@ stopped topic: \"%@...\"", actor.name, [topic.text substringToIndex:15]];                
+                    displayString = [NSString stringWithFormat:@"%@ stopped topic: \"%@\"", actor.name, [topic.text excerptBeyondLength:15]];                
                 } 
 
                 displayImage = [UIImage imageNamed:@"time_go.png"];
@@ -92,7 +93,7 @@
             case kNEW_TASK:
                 actor = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
                 task = [event.results objectForKey:@"task"];
-                displayString = [NSString stringWithFormat:@"%@ added task \"%@...\"", actor.name, [task.text substringToIndex:15]];
+                displayString = [NSString stringWithFormat:@"%@ added task \"%@\"", actor.name, [task.text excerptBeyondLength:15]];
                 displayImage = [UIImage imageNamed:@"note_add.png"];
                 break;
             case kASSIGN_TASK:
@@ -117,7 +118,7 @@
                 topic = [event.results objectForKey:@"topic"];
                 
                 actor = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
-                displayString = [NSString stringWithFormat:@"%@ created new topic: \"%@...\"", actor.name, [topic.text substringToIndex:15]];
+                displayString = [NSString stringWithFormat:@"%@ created new topic: \"%@\"", actor.name, [topic.text excerptBeyondLength:15]];
                 displayImage = [UIImage imageNamed:@"time_add.png"];
                 break;
             default:

@@ -61,6 +61,7 @@
 		3AD2CFB81293198400C31515 /* user_add.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AD2CFB21293198400C31515 /* user_add.png */; };
 		3AD2CFB91293198400C31515 /* user_delete.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AD2CFB31293198400C31515 /* user_delete.png */; };
 		3AD2CFCA12931B0000C31515 /* error.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AD2CFC912931B0000C31515 /* error.png */; };
+		3AD2D0991294798700C31515 /* NSString+Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD2D0981294798700C31515 /* NSString+Util.m */; };
 		3AD66C4D120B0CBE00F974DA /* UserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD66C4C120B0CBE00F974DA /* UserView.m */; };
 		3AD66E5B120B80C000F974DA /* UserRenderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD66E5A120B80C000F974DA /* UserRenderView.m */; };
 		DA707CCD1212F9C40057B509 /* TopicView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA707CCC1212F9C40057B509 /* TopicView.m */; };
@@ -133,8 +134,8 @@
 		3AA2DDE21261178800235573 /* full_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = full_logo.png; sourceTree = "<group>"; };
 		3AB0BC3611A5D73C003A91EB /* MeetingTimerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeetingTimerView.h; sourceTree = "<group>"; };
 		3AB0BC3711A5D73C003A91EB /* MeetingTimerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeetingTimerView.m; sourceTree = "<group>"; };
-		3AC2B9D21198BB120071F912 /* UIColor+Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Util.h"; sourceTree = "<group>"; };
-		3AC2B9D31198BB120071F912 /* UIColor+Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Util.m"; sourceTree = "<group>"; };
+		3AC2B9D21198BB120071F912 /* UIColor+Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+Util.h"; path = "Classes/UIColor+Util.h"; sourceTree = "<group>"; };
+		3AC2B9D31198BB120071F912 /* UIColor+Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+Util.m"; path = "Classes/UIColor+Util.m"; sourceTree = "<group>"; };
 		3AC2BD7C11A33DDE0071F912 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
 		3AC2BD7D11A33DDE0071F912 /* NSObject+SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJSON.h"; sourceTree = "<group>"; };
 		3AC2BD7E11A33DDE0071F912 /* NSObject+SBJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJSON.m"; sourceTree = "<group>"; };
@@ -182,6 +183,8 @@
 		3AD2CFB21293198400C31515 /* user_add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = user_add.png; path = ../../../code/TinCan/ipad/user_add.png; sourceTree = SOURCE_ROOT; };
 		3AD2CFB31293198400C31515 /* user_delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = user_delete.png; path = ../../../code/TinCan/ipad/user_delete.png; sourceTree = SOURCE_ROOT; };
 		3AD2CFC912931B0000C31515 /* error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = error.png; path = ../../../code/TinCan/ipad/error.png; sourceTree = SOURCE_ROOT; };
+		3AD2D0971294798700C31515 /* NSString+Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Util.h"; sourceTree = "<group>"; };
+		3AD2D0981294798700C31515 /* NSString+Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Util.m"; sourceTree = "<group>"; };
 		3AD66C4B120B0CBE00F974DA /* UserView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserView.h; sourceTree = "<group>"; };
 		3AD66C4C120B0CBE00F974DA /* UserView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserView.m; sourceTree = "<group>"; };
 		3AD66E59120B80C000F974DA /* UserRenderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserRenderView.h; sourceTree = "<group>"; };
@@ -297,8 +300,12 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				3AC2B9D21198BB120071F912 /* UIColor+Util.h */,
+				3AC2B9D31198BB120071F912 /* UIColor+Util.m */,
 				32CA4F630368D1EE00C91783 /* TinCan_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
+				3AD2D0971294798700C31515 /* NSString+Util.h */,
+				3AD2D0981294798700C31515 /* NSString+Util.m */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -420,8 +427,6 @@
 				DA707CCF1212F9EB0057B509 /* TopicContainerView.m */,
 				DA7FD3DF1209E424007A9217 /* TaskContainerView.h */,
 				DA7FD3E01209E424007A9217 /* TaskContainerView.m */,
-				3AC2B9D21198BB120071F912 /* UIColor+Util.h */,
-				3AC2B9D31198BB120071F912 /* UIColor+Util.m */,
 				3AB0BC3611A5D73C003A91EB /* MeetingTimerView.h */,
 				3AB0BC3711A5D73C003A91EB /* MeetingTimerView.m */,
 				DA72601D1215A116008A0E0C /* LocationView.h */,
@@ -617,6 +622,7 @@
 				3A82D449126F9CD5007AFA3D /* LocationBorderView.m in Sources */,
 				3A0B2C27127B5A69002C08A1 /* TimelineContainerView.m in Sources */,
 				3A0B2C2E127B6AC7002C08A1 /* EventView.m in Sources */,
+				3AD2D0991294798700C31515 /* NSString+Util.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
