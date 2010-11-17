@@ -20,6 +20,7 @@
 #import "DragManager.h"
 #import "LocationBorderView.h"
 #import "EventView.h"
+#import "CurrentTopicView.h"
 
 @implementation MeetingViewController
 
@@ -46,7 +47,11 @@
 	taskContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) withRot: M_PI/2];
 
 	topicContainer=[[TopicContainerView alloc] initWithFrame:CGRectMake(260, 490, 250, 600)];
-		
+    
+    
+    currentTopicView = [[CurrentTopicView alloc] initWithFrame:CGRectMake(490, 462, 290, 100)];
+    [self.view addSubview:currentTopicView];
+    
 	[self.view addSubview:taskContainer];	
 	[self.view addSubview:topicContainer];
 
@@ -62,12 +67,17 @@
     [self.view addSubview:locBorderView];
     [self.view sendSubviewToBack:locBorderView];
     
-    timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(45, 409, 290, 208)];
+    timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(45, 410, 290, 208)];
     
     
 //    timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(54, 405, 290, 215)];
 
     [self.view addSubview:timelineView];
+    
+    
+    
+    
+    [self.view bringSubviewToFront:currentTopicView];
     
     [self initUsers];
     [self initTasks];
