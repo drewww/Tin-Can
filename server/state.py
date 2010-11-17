@@ -106,23 +106,23 @@ def init_demo():
     newTopic = model.Topic(meeting.uuid, users[0].uuid, "Sponsor week planning",
         status=model.Topic.FUTURE, color="006600", createdAt=time.time()-14*60)
     meeting.addTopic(newTopic)
-    users[0].status=("created new topic", newTopic.createdAt)
+    users[0].setStatus("created new topic", newTopic.createdAt)
     newTopic = model.Topic(meeting.uuid, users[3].uuid, "Conference trip report (Andrea)",
         status=model.Topic.FUTURE, color="006600", createdAt=time.time()-14*60)
     meeting.addTopic(newTopic)
-    users[3].status=("created new topic", newTopic.createdAt)
+    users[3].setStatus("created new topic", newTopic.createdAt)
     newTopic = model.Topic(meeting.uuid, users[2].uuid, "Paper discussion",
         status=model.Topic.FUTURE, color="006600", createdAt=time.time()-13*60)
     meeting.addTopic(newTopic)
-    users[2].status=("created new topic", newTopic.createdAt)
+    users[2].setStatus("created new topic", newTopic.createdAt)
     newTopic = model.Topic(meeting.uuid, users[2].uuid, "Tin Can design review",
         status=model.Topic.FUTURE, color="006600", createdAt=time.time()-13*60)
     meeting.addTopic(newTopic)
-    users[2].status=("created new topic", newTopic.createdAt)
+    users[2].setStatus("created new topic", newTopic.createdAt)
     newTopic = model.Topic(meeting.uuid, users[2].uuid, "purchase new oscilloscope?",
         status=model.Topic.FUTURE, color="006600", createdAt=time.time()-13*60)
     meeting.addTopic(newTopic)
-    users[2].status=("created new topic", newTopic.createdAt)
+    users[2].setStatus("created new topic", newTopic.createdAt)
 
 
     
@@ -130,41 +130,41 @@ def init_demo():
     
     #changing topic status
     topics[0].setStatus(model.Topic.CURRENT, users[4], time.time()-14*60)
-    users[4].status=("edited topic", time.time()-14*60)
+    users[4].setStatus("edited topic", time.time()-14*60)
     topics[0].setStatus(model.Topic.PAST, users[3], time.time()-8*60)
-    users[3].status=("edited topic", time.time()-8*60)
+    users[3].setStatus("edited topic", time.time()-8*60)
     topics[1].setStatus(model.Topic.CURRENT, users[3], time.time()-8*60)
-    users[3].status=("edited topic", time.time()-8*60)
+    users[3].setStatus("edited topic", time.time()-8*60)
     topics[1].setStatus(model.Topic.PAST, users[3], time.time()-2*60)
-    users[2].status=("edited topic", time.time()-2*60)
+    users[2].setStatus("edited topic", time.time()-2*60)
     topics[2].setStatus(model.Topic.CURRENT, users[3], time.time()-2*60)
-    users[2].status=("edited topic", time.time()-2*60)
+    users[2].setStatus("edited topic", time.time()-2*60)
 
     
     #new tasks
     newTask = model.Task(meeting.uuid, users[1].uuid, "email out the best papers from the conference", createdAt=time.time()-10*60)
     meeting.addTask(newTask)                                 
-    users[1].status=("created new task", newTask.createdAt)
+    users[1].setStatus("created new task", newTask.createdAt)
     newTask = model.Task(meeting.uuid, users[0].uuid, "find a place to store our unused furniture", createdAt=time.time()-3*60)
     meeting.addTask(newTask)
-    users[0].status=("created new task", newTask.createdAt)
+    users[0].setStatus("created new task", newTask.createdAt)
     newTask = model.Task(meeting.uuid, users[0].uuid, "check our projectors to make sure they still work", createdAt=time.time()-3*60)
     meeting.addTask(newTask)
-    users[0].status=("created new task", newTask.createdAt)
+    users[0].setStatus("created new task", newTask.createdAt)
     newTask = model.Task(meeting.uuid, users[0].uuid, "handle poster printing", createdAt=time.time()-3*60)
     meeting.addTask(newTask)
-    users[0].status=("created new task", newTask.createdAt)
+    users[0].setStatus("created new task", newTask.createdAt)
     newTask = model.Task(meeting.uuid, users[0].uuid, "update the group website with the latest photo", createdAt=time.time()-3*60)
     meeting.addTask(newTask)
-    users[0].status=("created new task", newTask.createdAt)
+    users[0].setStatus("created new task", newTask.createdAt)
 
     
     tasks = meeting.tasks
     
     #assigning tasks
     tasks[0].assign(users[2],users[4], time.time()-4*60)
-    users[2].status=("assigned task", tasks[0].assignedAt)
-    users[4].status=("claimed task", tasks[0].assignedAt)
+    users[2].setStatus("assigned task", tasks[0].assignedAt)
+    users[4].setStatus("claimed task", tasks[0].assignedAt)
     
     #since join meeting events aren't being fired, we need to manually set the title
     title = "Meeting with "
