@@ -285,6 +285,8 @@
             if([actor isKindOfClass:[User class]]) {
                 User *user = (User *)actor;
                 [[user getView] setNeedsDisplay];
+                UserView *userView = (UserView *)[user getView];
+                [userView setUserExtended:true withAutorevert:true];
             }
             
             break;

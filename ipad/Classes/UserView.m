@@ -168,15 +168,18 @@
             taskDrawerExtended = false;
         }
         
-        [self setUserExtended:extended];
+        [self setUserExtended:extended withAutorevert:false];
     }
 }
 
-- (void) setUserExtended:(bool)extended {
+- (void) setUserExtended:(bool)extended withAutorevert:(bool)autorevert {
     if(extended != userExtended) {
         // If this is different than the current state, then trigger a change.
         // The cehange is going to be different depending on which direction
         // we're going, so check.
+        
+        doAutorevert = false;
+                
         if(userExtended == false && extended == true) {
             // Do an extension.
             [UIView beginAnimations:@"extend_user" context:nil];
@@ -197,9 +200,27 @@
             [UIView commitAnimations];
             userExtended = false;
         }
+        
+        if(autorevert) {
+            doAutorevert = true;
+            [self performSelector:@selector(revertUserExtended) withObject:nil afterDelay:4];
+        }
     }
     
 }
+
+ - (void) revertUserExtended {
+     // If we get this call, check to see if we still need to do the reverting.
+     // This is important so we don't flip states after someone has already
+     // touched the user.
+     if(!doAutorevert) {
+         return;
+     }
+     
+     [self setUserExtended:!userExtended withAutorevert:false];
+     
+     doAutorevert = false;
+ }
 
 
 

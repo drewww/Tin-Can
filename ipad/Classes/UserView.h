@@ -41,7 +41,7 @@
     float lastHeightChange;
 	float initialHeight;
     
-    
+    bool doAutorevert;
     
     NSNumber *side;
 }
@@ -58,7 +58,9 @@
 
 - (void) setHoverState:(bool)state;
 - (void) setDrawerExtended:(bool)extended;
-- (void) setUserExtended:(bool)extended;
+
+- (void) setUserExtended:(bool)extended withAutorevert:(bool)autorevert;
+- (void) revertUserExtended;
 
 - (NSComparisonResult) compareByLocation:(UserView *)view;
 
