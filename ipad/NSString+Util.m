@@ -19,7 +19,7 @@
 - (NSString *) excerptBeyondLength:(int)length {
     
     if([self length] > length) {
-        return [NSString stringWithFormat:"%@%@", [self substringToIndex:length-3], @"..."];
+        return [NSString stringWithFormat:@"%@%@", [self substringToIndex:length-3], @"..."];
     } else {
         return self;
     }
