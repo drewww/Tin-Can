@@ -22,6 +22,8 @@
 
 #define DRAG_CIRCLE_RADIUS 8
 
+#define HEIGHT 60
+
 - (id)initWithFrame:(CGRect)frame withTopic:(Topic *)theTopic{
     if ((self = [super initWithFrame:frame])) {
 		self.frame=frame;
@@ -54,7 +56,7 @@
     // version and initWithTopic will be the only option. Leaving the old one for compatibility
     // reasons, because making tasks by hand on the client is a bit tedious for testing.
     
-    return [self initWithFrame:CGRectMake(0, 0, 230, 50) withTopic:theTopic];
+    return [self initWithFrame:CGRectMake(0, 0, 230, HEIGHT) withTopic:theTopic];
 }
 
 
@@ -127,21 +129,10 @@
         CGContextMoveToPoint(ctx, 25, 25);
         CGContextAddArc(ctx, 25, 25, 21, rotation- M_PI/2, rotation + arcLength - M_PI/2, 0);
         CGContextFillPath(ctx);
-        
-        // Knock out the center area.
-        // We have to do two passes - one black + opaque to knock out everything, then
-        // one (potentially) transparent pass to make it look like the background
-        // is showing through in the center.
-//        CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
-//        CGContextAddEllipseInRect(ctx, CGRectMake(13, 13, 24, 24));
-//
-//        CGContextSetFillColorWithColor(ctx, background.CGColor);
-//        CGContextAddEllipseInRect(ctx, CGRectMake(13, 13, 24, 24));
-        
+                
         // Now draw the clock outline. A pair of 1px circles at the right radii should do it.
         CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.6 alpha:1.0].CGColor);
         CGContextStrokeEllipseInRect(ctx, CGRectMake(4, 4, 42, 42));
-//        CGContextStrokeEllipseInRect(ctx, CGRectMake(13, 13, 24, 24));
     } else {
         
         CGContextSaveGState(ctx);
@@ -149,29 +140,13 @@
         CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:1.0 alpha:0.7].CGColor);
         CGContextFillEllipseInRect(ctx, CGRectMake(-DRAG_CIRCLE_RADIUS, -DRAG_CIRCLE_RADIUS, DRAG_CIRCLE_RADIUS*2, DRAG_CIRCLE_RADIUS*2));
         CGContextRestoreGState(ctx);
-        
-//        if(isTouched==FALSE){
-//            CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
-//            CGContextFillEllipseInRect(ctx, CGRectMake(0, 0, 50, self.frame.size.height));
-//            CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-//            
-//        }
-//        else {
-//            CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.4 green:.4 blue:.4 alpha:1].CGColor );
-//            CGContextFillEllipseInRect(ctx, CGRectMake(0, 0, 50, self.frame.size.height));
-//            CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1].CGColor );
-//        }  
-//        
-//        // Now draw the start button.
-//        [@"START" drawInRect:CGRectMake(6, 18, 45, self.frame.size.height-12)
-//        	 withFont:[UIFont boldSystemFontOfSize:11] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
-        
+                
     }
 
     CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:1.0].CGColor);
-
-	[topic.text drawInRect:CGRectMake(54, 10, self.frame.size.width-54, self.frame.size.height-10) 
-			withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
+    
+	[topic.text drawInRect:CGRectMake(54, 2, self.frame.size.width-54, self.frame.size.height-10) 
+			withFont:[UIFont systemFontOfSize:20] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
     
     if(optionSliderX!=-1) {

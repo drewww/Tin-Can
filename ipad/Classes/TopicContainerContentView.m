@@ -27,7 +27,7 @@
     
 	for(TopicView *subview in sortedArray){
 		
-		subview.frame=CGRectMake(7, 6.5 +(56.5*i), (self.bounds.size.width)-14, 50);
+		subview.frame=CGRectMake(7, 6.5 +(66.5*i), (self.bounds.size.width)-14, 60);
         
 		i++;
 	}

@@ -72,10 +72,6 @@
     [self.view sendSubviewToBack:locBorderView];
     
     timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(45, 410, 290, 208)];
-    
-    
-//    timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(54, 405, 290, 215)];
-
     [self.view addSubview:timelineView];
     
     
@@ -334,7 +330,7 @@
             NSLog(@"...");
             EventView *eventView = [[EventView alloc] initWithFrame:CGRectMake(0, 0, 100, 100) withEvent:event];
             NSLog(@"made the event view");
-            [timelineView addSubview:eventView];
+            [timelineView addEventView:eventView];
             NSLog(@"added it to the timeline view");
             [timelineView setNeedsLayout];
             [timelineView setNeedsDisplay];

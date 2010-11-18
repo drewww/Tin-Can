@@ -25,6 +25,13 @@
         // Get the recent timeline history. (Going to have to think about
         // how to get this at all.)
         
+        eventContentView = [[EventContainerContentView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height)];
+        
+        scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, HEADER_HEIGHT, self.bounds.size.width, self.bounds.size.height-HEADER_HEIGHT)];
+        scrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
+        
+        [scrollView addSubview:eventContentView];
+        [self addSubview:scrollView];
     }
     return self;
 }
@@ -45,33 +52,18 @@
 }
 
 
-- (void)layoutSubviews{
-	int i=0;
+- (void) addEventView:(UIView *)eventView {
+ 
+    [eventContentView addSubview:eventView];
+    [eventContentView setNeedsLayout];
+    
+    [scrollView scrollRectToVisible:CGRectMake(0, 0, self.bounds.size.width, 50) animated:YES];
+}
 
-	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByTime:)];
+- (void) setNeedsLayout {
+    [super setNeedsLayout];
     
-    NSLog(@"sorted subview array: %@", sortedArray);
-    
-    // TODO
-    // Since this is effectively a queue, when we draw, we'll want to look and see if
-    // we have more EventViews that we're going to have space for. If we do, 
-    // sort the and drop the ones farthest down the list (making sure to release them)
-    
-    // This is not the right layout, but we'll leave it that way for now until we 
-    // actually figure out what EventViews will look like.
-	for(EventView *subview in [sortedArray reverseObjectEnumerator]){
-//        subview.frame=CGRectMake(PADDING, HEADER_HEIGHT + PADDING+(HEIGHT*i) + (PADDING*(i)), self.frame.size.width-(PADDING*2), HEIGHT);
-        subview.frame=CGRectMake(PADDING, HEADER_HEIGHT + PADDING+(HEIGHT*i) + (PADDING*(i)), self.frame.size.height-(PADDING*2), HEIGHT);
-        
-        if(i > 5) {
-            // Remove the view from the list. 
-            [subview removeFromSuperview];
-        }
-        
-        
-        i++;
-	}
-    
+    [eventContentView setNeedsLayout];
 }
 
 - (void)dealloc {

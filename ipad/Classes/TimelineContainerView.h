@@ -7,10 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "EventContainerContentView.h"
 
 @interface TimelineContainerView : UIView {
 
+    UIScrollView *scrollView;
+    EventContainerContentView *eventContentView;
+    
 }
+
+
+- (void) addEventView:(UIView *)eventView;
 
 @end
