@@ -44,11 +44,22 @@
         f = [UIFont boldSystemFontOfSize:26];
         size = [displayString sizeWithFont:f];
         CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.7 alpha:1.0].CGColor);
+//        [displayString drawInRect:CGRectMake(3, 3, self.bounds.size.width, self.bounds.size.height-25) withFont:f];
         [displayString drawAtPoint:CGPointMake(self.frame.size.height/2 - size.width/2, 30) withFont:f];
     } else {
         f = [UIFont boldSystemFontOfSize:18];
         CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:1.0 alpha:1.0].CGColor);
-        [topic.text drawInRect:CGRectMake(5, 5, self.bounds.size.width-10, self.bounds.size.height-10) withFont:f];
+        [topic.text drawInRect:CGRectMake(3, 3, self.bounds.size.width, self.bounds.size.height-25) withFont:f];
+        
+        // Now add some extra metadata.
+        NSString *topicAgeString = [NSString stringWithFormat:@"topic started %.0fm ago", floor([topic.startTime timeIntervalSinceNow]*-1/60.0)];
+        [topicAgeString drawInRect:CGRectMake(3, self.bounds.size.height-25, self.bounds.size.width, 25) withFont:[UIFont systemFontOfSize:14]];
+        
+        NSString *createdByString = [NSString stringWithFormat:@"created by %@  ", topic.creator.name];
+        [createdByString drawInRect:CGRectMake(3, self.bounds.size.height-25, self.bounds.size.width, 25) withFont:[UIFont systemFontOfSize:14]
+                     lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentRight];
+        
+        
     }
 }
 
