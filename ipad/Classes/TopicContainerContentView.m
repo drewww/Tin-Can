@@ -32,7 +32,7 @@
 		i++;
 	}
     
-   self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, 6.5+56.5*i);
+   self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, 6.5+66.5*i);
     
     // This is cheating, but we know this will be contained by a UI scroll view.
     
