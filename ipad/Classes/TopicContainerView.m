@@ -9,9 +9,13 @@
 #import "TopicContainerView.h"
 #import "TopicView.h"
 
+#import "TopicContainerContentView.h"
+
 @implementation TopicContainerView
 
 #define COLOR [UIColor colorWithWhite:0.3 alpha:1]
+
+#define HEADER_HEIGHT 26
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
@@ -20,8 +24,15 @@
         rot = M_PI/2;
 		[self setTransform:CGAffineTransformMakeRotation(rot)];	
 		
+        
+        contentView = [[TopicContainerContentView alloc] initWithFrame:CGRectMake(0, HEADER_HEIGHT, self.bounds.size.width, self.bounds.size.height-HEADER_HEIGHT)];
+        
+        NSLog(@"contentView: %@", NSStringFromCGRect(contentView.frame));
+        
+        [self addSubview:contentView];        
+        
+        
 		[self setNeedsLayout];
-		
     }
     
     return self;
@@ -32,10 +43,10 @@
     CGContextRef ctx = UIGraphicsGetCurrentContext();
 	
 	CGContextSetFillColorWithColor(ctx, COLOR.CGColor);
-	CGContextFillRect(ctx, CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height/22.0));
+	CGContextFillRect(ctx, CGRectMake(0, 0, self.bounds.size.width, HEADER_HEIGHT));
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-	[@"TOPICS" drawInRect:CGRectMake(0, self.bounds.size.height/150.0, self.bounds.size.width, self.bounds.size.height/25.0 - self.bounds.size.height/100.0) 
-                withFont:[UIFont boldSystemFontOfSize:self.bounds.size.height/33.3] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
+	[@"TOPICS" drawInRect:CGRectMake(0, 1, self.bounds.size.width, HEADER_HEIGHT - 2) 
+                withFont:[UIFont boldSystemFontOfSize:22] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
 	
 	CGContextSetLineWidth(ctx,2);
 	CGContextSetStrokeColorWithColor(ctx,  COLOR.CGColor);
@@ -48,27 +59,21 @@
     rot = newRot;
 }
 
-
-- (void)layoutSubviews{
-	int i =0;
-	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByState:)];
-	for(TopicView *subview in sortedArray){
-		
-		subview.frame=CGRectMake(7, (self.bounds.size.height/22.0)+6.5 +(56.5*i), (self.bounds.size.width)-14, 50);
-		//NSLog(@"Frame: %f",self.bounds.size.width);
-//		
-//		NSLog(@"Subview frame: %f",subview.bounds.size.width);
-		i++;
-	}
-    
-}
-
 - (void) setNeedsDisplay {
     [super setNeedsDisplay];
     
-    for(UIView *v in self.subviews) {
-        [v setNeedsDisplay];
-    }
+    [contentView setNeedsDisplay];
+}
+
+- (void) setNeedsLayout {
+    [super setNeedsLayout];
+    
+    [contentView setNeedsLayout];
+    
+}
+
+- (void) addTopicView:(TopicView *)newTopicView {
+    [contentView addSubview:newTopicView];
 }
 
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -81,6 +86,7 @@
 
 - (void)dealloc {
     [super dealloc];
+    [contentView dealloc];
 }
 
 

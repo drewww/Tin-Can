@@ -7,9 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TopicContainerContentView.h"
 
 @interface TopicContainerView : UIView {
 	float rot;    
+    
+    TopicContainerContentView *contentView;
 }
+
+- (void) addTopicView:(UIView *)newTopicView;
 
 @end

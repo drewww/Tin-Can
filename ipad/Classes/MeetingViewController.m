@@ -239,7 +239,7 @@
         case kNEW_TOPIC:
             NSLog(@"adding new topic");
             // Add the topic to the topic list.
-            [topicContainer addSubview:[[event.results objectForKey:@"topic"] getView]];
+            [topicContainer addTopicView:[[event.results objectForKey:@"topic"] getView]];
             break;
             
         case kUPDATE_TOPIC:
@@ -574,7 +574,7 @@
     NSLog(@"%d topics", [topics count]);
     
     for (Topic *topic in topics) {
-        [topicContainer addSubview:[topic getView]];
+        [topicContainer addTopicView:[topic getView]];
     }
     
     [topicContainer setNeedsLayout];

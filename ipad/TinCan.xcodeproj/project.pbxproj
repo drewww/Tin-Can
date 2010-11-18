@@ -63,6 +63,7 @@
 		3AD2CFCA12931B0000C31515 /* error.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AD2CFC912931B0000C31515 /* error.png */; };
 		3AD2D0991294798700C31515 /* NSString+Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD2D0981294798700C31515 /* NSString+Util.m */; };
 		3AD2D0BC1294830A00C31515 /* CurrentTopicView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD2D0BB1294830A00C31515 /* CurrentTopicView.m */; };
+		3AD2D16A1295B09200C31515 /* TopicContainerContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD2D1691295B09200C31515 /* TopicContainerContentView.m */; };
 		3AD66C4D120B0CBE00F974DA /* UserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD66C4C120B0CBE00F974DA /* UserView.m */; };
 		3AD66E5B120B80C000F974DA /* UserRenderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD66E5A120B80C000F974DA /* UserRenderView.m */; };
 		DA707CCD1212F9C40057B509 /* TopicView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA707CCC1212F9C40057B509 /* TopicView.m */; };
@@ -188,6 +189,8 @@
 		3AD2D0981294798700C31515 /* NSString+Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Util.m"; sourceTree = "<group>"; };
 		3AD2D0BA1294830A00C31515 /* CurrentTopicView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurrentTopicView.h; sourceTree = "<group>"; };
 		3AD2D0BB1294830A00C31515 /* CurrentTopicView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CurrentTopicView.m; sourceTree = "<group>"; };
+		3AD2D1681295B09200C31515 /* TopicContainerContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicContainerContentView.h; sourceTree = "<group>"; };
+		3AD2D1691295B09200C31515 /* TopicContainerContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicContainerContentView.m; sourceTree = "<group>"; };
 		3AD66C4B120B0CBE00F974DA /* UserView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserView.h; sourceTree = "<group>"; };
 		3AD66C4C120B0CBE00F974DA /* UserView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserView.m; sourceTree = "<group>"; };
 		3AD66E59120B80C000F974DA /* UserRenderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserRenderView.h; sourceTree = "<group>"; };
@@ -451,6 +454,8 @@
 				3A0B2C2C127B6AC7002C08A1 /* EventView.m */,
 				3AD2D0BA1294830A00C31515 /* CurrentTopicView.h */,
 				3AD2D0BB1294830A00C31515 /* CurrentTopicView.m */,
+				3AD2D1681295B09200C31515 /* TopicContainerContentView.h */,
+				3AD2D1691295B09200C31515 /* TopicContainerContentView.m */,
 			);
 			name = Meeting;
 			sourceTree = "<group>";
@@ -629,6 +634,7 @@
 				3A0B2C2E127B6AC7002C08A1 /* EventView.m in Sources */,
 				3AD2D0991294798700C31515 /* NSString+Util.m in Sources */,
 				3AD2D0BC1294830A00C31515 /* CurrentTopicView.m in Sources */,
+				3AD2D16A1295B09200C31515 /* TopicContainerContentView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
