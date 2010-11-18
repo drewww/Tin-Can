@@ -15,7 +15,7 @@
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
-        self.backgroundColor = [UIColor redColor];
+
     }
     return self;
 }
@@ -34,6 +34,15 @@
     
    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, 6.5+56.5*i);
     
+    // This is cheating, but we know this will be contained by a UI scroll view.
+    
+    UIScrollView *parentScrollView;
+    
+    if([self.superview isKindOfClass:[UIScrollView class]]) {
+        parentScrollView = (UIScrollView *)self.superview;
+        parentScrollView.contentSize = self.bounds.size;
+        
+    }
 }
 
 - (void) setNeedsDisplay {

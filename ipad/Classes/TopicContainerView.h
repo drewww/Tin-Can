@@ -13,6 +13,7 @@
 	float rot;    
     
     TopicContainerContentView *contentView;
+    UIScrollView *topicScrollView;
 }
 
 - (void) addTopicView:(UIView *)newTopicView;

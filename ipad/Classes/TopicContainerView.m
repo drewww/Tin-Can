@@ -25,11 +25,26 @@
 		[self setTransform:CGAffineTransformMakeRotation(rot)];	
 		
         
-        contentView = [[TopicContainerContentView alloc] initWithFrame:CGRectMake(0, HEADER_HEIGHT, self.bounds.size.width, self.bounds.size.height-HEADER_HEIGHT)];
         
+        topicScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, HEADER_HEIGHT, self.bounds.size.width, self.bounds.size.height-HEADER_HEIGHT)];
+        
+        // The height on this one is just a placeholder - when it's layed out, it will calculate its own size.
+        contentView = [[TopicContainerContentView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, 50)];
+        [contentView setNeedsLayout];
+        
+        //topicScrollView.contentSize = contentView.bounds.size;
+//        topicScrollView.contentSize = CGSizeMake(self.bounds.size.width, 1000);
+        
+//        [topicScrollView setBackgroundColor:[UIColor blackColor]];
+        [topicScrollView setCanCancelContentTouches:NO];
+        topicScrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
+//        topicScrollView.clipsToBounds = YES;		// default is NO, we want to restrict drawing within our scrollview
+//        topicScrollView.scrollEnabled = YES;
+//        
         NSLog(@"contentView: %@", NSStringFromCGRect(contentView.frame));
         
-        [self addSubview:contentView];        
+        [topicScrollView addSubview:contentView];
+        [self addSubview:topicScrollView];        
         
         
 		[self setNeedsLayout];
@@ -74,14 +89,6 @@
 
 - (void) addTopicView:(TopicView *)newTopicView {
     [contentView addSubview:newTopicView];
-}
-
-- (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    NSLog(@"touch ended on task container view");
-   
-    [self setNeedsLayout];
-    [self setNeedsDisplay];
-
 }
 
 - (void)dealloc {
