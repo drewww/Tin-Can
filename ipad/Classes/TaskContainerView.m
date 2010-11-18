@@ -53,16 +53,14 @@
 
     
 	CGContextSetFillColorWithColor(ctx, COLOR.CGColor);
-	CGContextFillRect(ctx, CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height/22.0));
+	CGContextFillRect(ctx, CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height/24.0));
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-	[@"TASKS" drawInRect:CGRectMake(0, self.bounds.size.height/150.0, self.bounds.size.width, self.bounds.size.height/25.0 - self.bounds.size.height/100.0) 
-                withFont:[UIFont boldSystemFontOfSize:self.bounds.size.height/33.3] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
+	[@"TASKS" drawInRect:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height/25.0 - self.bounds.size.height/100.0) 
+                withFont:[UIFont boldSystemFontOfSize:self.bounds.size.height/28.0] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
 
 	CGContextSetLineWidth(ctx,2);
 	CGContextSetStrokeColorWithColor(ctx,  COLOR.CGColor);
 	CGContextStrokeRect(ctx, CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height));
-    
-		
 	
 }
 
