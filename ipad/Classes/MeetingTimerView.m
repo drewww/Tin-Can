@@ -241,9 +241,9 @@
 	CGContextSetLineWidth(ctx, 1.0);
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 	CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
-	CGContextAddRect (ctx, CGRectMake(-2.5, 0, 5, -TOPIC_OUTER_RADIUS+40));
+	CGContextAddRect (ctx, CGRectMake(-3, 0, 6, -TOPIC_OUTER_RADIUS+40));
 	CGContextFillPath(ctx);
-	CGContextAddRect (ctx, CGRectMake(-2.5, 0, 5, -TOPIC_OUTER_RADIUS+40));
+	CGContextAddRect (ctx, CGRectMake(-3, 0, 6, -TOPIC_OUTER_RADIUS+40));
 	CGContextStrokePath(ctx);
 	
 	CGContextRestoreGState(ctx);
@@ -254,9 +254,9 @@
 	CGContextSetLineWidth(ctx, 1.0);
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 	CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
-	CGContextAddRect (ctx, CGRectMake(-2.5, 0, 5, -TOPIC_OUTER_RADIUS));
+	CGContextAddRect (ctx, CGRectMake(-3, 0, 6, -TOPIC_OUTER_RADIUS));
 	CGContextFillPath(ctx);
-	CGContextAddRect (ctx, CGRectMake(-2.5, 0, 5, -TOPIC_OUTER_RADIUS));
+	CGContextAddRect (ctx, CGRectMake(-3, 0, 6, -TOPIC_OUTER_RADIUS));
 	CGContextStrokePath(ctx);
 	
 	
