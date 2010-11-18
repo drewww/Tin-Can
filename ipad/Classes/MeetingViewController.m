@@ -525,6 +525,7 @@
 - (void)clk {
     [meetingTimerView clk];
     [topicContainer setNeedsDisplay];
+    [currentTopicView setNeedsDisplay];
 }   
 
 

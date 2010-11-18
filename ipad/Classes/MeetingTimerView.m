@@ -236,18 +236,7 @@
 	CGContextFillPath(ctx);
 	
 	//Drawing Hour and Minute hand! (Drawn here so that the hands aren't colored over)
-	CGContextRotateCTM(ctx, hourRotation);
-	CGContextMoveToPoint(ctx, 0, 0);
-	CGContextSetLineWidth(ctx, 1.0);
-	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-	CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
-	CGContextAddRect (ctx, CGRectMake(-3, 0, 6, -TOPIC_OUTER_RADIUS+40));
-	CGContextFillPath(ctx);
-	CGContextAddRect (ctx, CGRectMake(-3, 0, 6, -TOPIC_OUTER_RADIUS+40));
-	CGContextStrokePath(ctx);
-	
-	CGContextRestoreGState(ctx);
-	CGContextSaveGState(ctx);	
+    CGContextSaveGState(ctx);	
 	
 	CGContextRotateCTM(ctx, minRotation);
 	CGContextMoveToPoint(ctx, 0, 0);
@@ -262,6 +251,19 @@
 	
 	CGContextRestoreGState(ctx);
     
+    
+	CGContextRotateCTM(ctx, hourRotation);
+	CGContextMoveToPoint(ctx, 0, 0);
+	CGContextSetLineWidth(ctx, 1.0);
+	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+	CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
+	CGContextAddRect (ctx, CGRectMake(-3, 0, 6, -TOPIC_OUTER_RADIUS+40));
+	CGContextFillPath(ctx);
+	CGContextAddRect (ctx, CGRectMake(-3, 0, 6, -TOPIC_OUTER_RADIUS+40));
+	CGContextStrokePath(ctx);
+	
+	CGContextRestoreGState(ctx);
+	    
     // Now put numbers on the face of the clock
     NSString *twelve = @"12";
     NSString *six = @"6";
