@@ -612,7 +612,7 @@ class RestartTopicHandler(BaseHandler):
                 params={"topicUUID": self.get_argument("topicUUID")})
             newTopicEvent.dispatch()
         else:
-            logger.warning("Received request to restart a non-PAST topic. \
+            logging.warning("Received request to restart a non-PAST topic. \
 Ignoring it.")
         return
 
