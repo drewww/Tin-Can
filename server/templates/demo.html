@@ -253,10 +253,13 @@
 					}
 					$('#'+taskUUID).find('.details').slideDown();
 					arrowDown($('#'+taskUUID).find('.arrow'));
-					$('#'+taskUUID).find('.assignedto').css('background-color','#ffff99');
-					$('#'+taskUUID).find('.assignedto').animate({
+					$('#'+taskUUID).find('.assignedto').css('background-color','#ffff99').animate({
 						'background-color': '#DDD'
-					},3000);
+					},{
+						'duration': 3000,
+						'queue': false
+					});
+					console.log('ddd');
 					break;
 					
 				case "GET_STATE_COMPLETE":
@@ -284,6 +287,24 @@
 					$("#logged_in").show();
 					break;
 			}
+			
+			//tabs
+			$('#navbar h1').each(function(i,j){
+				$(this).click(function(){
+					$('.current').removeClass('current');
+					$(this).addClass('current');
+					$('#maindivs > div').each(function(k,l) {
+						if (k==i) $(this).show();
+						else $(this).hide();
+					});
+				});
+				if ($(this).hasClass('current')) {
+					$('#maindivs > div').each(function(k,l) {
+						if (k==i) $(this).show();
+						else $(this).hide();
+					});
+				}
+			});
 			
 		}});
 
@@ -340,12 +361,31 @@
 		color: black;
 	}
 	
+	#navbar {
+		text-align: center;
+		background-color: #EEE;
+	}
+	
+	#navbar h1 {
+		margin: 10px 5px 0;
+		border-top-right-radius: 3px;
+		border-top-left-radius: 3px;
+		padding-bottom: 3px;
+	}
+	
+	#navbar h1.current {
+		background-color: #FFF;
+	}
+	
 	h1 {
 		padding-top: 10px;
 		margin-top: 0;
 		margin-bottom: 5px;
 		font-size: 1.25em;
+		display: inline-block;
 		clear: left;
+		width: 40%;
+		text-align: center;
 	}
 	
 	/* Header / Footer setup. */
@@ -384,12 +424,10 @@
 		margin-top: 5px;
 		margin-right: 15px;
 	}
-	
 
-	#container {
+	#taskdiv, #topicdiv {
 		padding: 5px;
 	}
-
 
 	/* Task related styles. */
 	
@@ -479,10 +517,14 @@
 	</div>
 </header>
 <div id="container">
+<div id="navbar">
+	<h1 class="current"><img src="{{static_url('images/note.png')}}"/>&nbsp;TASKS</h1>
+	<h1><img src="{{static_url('images/comments.png')}}"/>&nbsp;TOPICS</h1>
+</div>
 
-<h1><img src="{{static_url('images/note.png')}}"/>TASKS</h1>
+<div id="maindivs">
 
-<div id-"taskdiv">
+<div id="taskdiv">
 
 	<div id="add_task" class="add_form">
 	<form action="" method="get" accept-charset="utf-8">
@@ -530,9 +572,6 @@
 	</ul>
 	
 </div><!--end #taskdiv-->
-
-
-<h1><img src="{{static_url('images/comments.png')}}"/>TOPICS</h1>
 
 <div id="topicdiv">
 
@@ -590,6 +629,7 @@
 	</ul>
 </div><!--end #topicdiv-->
 
+</div><!--end #maindivs-->
 
 </div>
 <div style="clear:both"></div>
