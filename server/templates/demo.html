@@ -14,6 +14,8 @@
 	<script type="text/javascript" src="{{static_url('js/ConnectionManager.js')}}"></script>
 	<script type="text/javascript" src="{{static_url('js/StateManager.js')}}"></script>
 	<script type="text/javascript" src="{{static_url('js/model.js')}}"></script>
+	<!--jqueryui only has Effects Core, Effect "Highlight", and Effect "Slide"-->
+	<script type="text/javascript" src="{{static_url('js/jquery-ui-1.8.6.custom.min.js')}}"></script>
 
 
 <script type="text/javascript" charset="utf-8">
@@ -47,13 +49,13 @@
 
 		function meetingObjectToggle(e) {
 			return (function() {
-				if (! $(e).children('.details').first().hasClass('current')) {
-					$(e).children('.details').first().css('display','none');
+				if (! $(e).find('.details').hasClass('current')) {
+					$(e).find('.details').css('display','none');
 				} else {
-					arrowToggle($(e).children('.main').children('.text').prev());
+					arrowToggle($(e).find('.text').prev());
 				}
-				$(e).children('.main').children('.text').click(function(){
-					$(this).parent().parent().children('.details').first().slideToggle();
+				$(e).find('.text').click(function(){
+					$(this).parent().parent().find('.details').slideToggle();
 					arrowToggle($(this).prev());
 				});
 			});
@@ -62,7 +64,7 @@
 		function assignTaskAction(e) {
 			return (function() {
 				var task = $(e).closest('li').attr('id');
-				var user = $(e).parent().children('.participants').first().val();
+				var user = $(e).parent().find('.participants').val();
 				conn.assignTask(task,user);
 			});
 		}
@@ -73,7 +75,7 @@
 
 		$('#tasks input[type=submit].assign').click(function(){
 			var taskUUID = $(this).closest('li').attr('id');
-			var userUUID = $(this).parent().children('.participants').first().val();
+			var userUUID = $(this).parent().find('.participants').val();
 			conn.assignTask(taskUUID,userUUID);
 			return false;
 		});
@@ -104,8 +106,8 @@
 		
 		function revealDetails(e) {
 			//e is target li
-			$(e).children('.details').first().slideDown();
-			arrowDown($(e).children('.main').children('.arrow').first());
+			$(e).find('.details').slideDown();
+			arrowDown($(e).find('.arrow'));
 		}
 
 		conn.addListener({connectionEvent: function(e) {
@@ -127,30 +129,31 @@
 					//set topic id
 					topicElement.attr('id',topic["uuid"]);
 					//set .text div
-					topicElement.children('.main').first().children('.text').first()
-						.html(topic["text"]);
+					topicElement.find('.text').html(topic["text"]);
 					//set created by and started at (assuming startTime is null)
 					var createdBy = state.getObj(topic["createdBy"],User);
-					topicElement.children('.details').first().children('.createdby').first()
-						.html("Created by <strong>"+createdBy.name+"</strong>");
-					topicElement.children('.details').first().children('.time').first()
-						.html("Not started");
+					topicElement.find('.createdby').html("Created by <strong>"+createdBy.name+"</strong> <span>Not started</apn>");
+					//add start form
+					var html = '<form>';
+					html += '<input type="submit" value="Start" class="start">';
+					html += '</form>';
+					topicElement.find('.controlForm').html(html);
+					topicElement.find('.start').click(function(){
+						conn.updateTopic(topic["uuid"],"CURRENT");
+						return false;
+					});
 					//add onclick behavior
 					meetingObjectToggle(topicElement)();
-					arrowDown(topicElement.children('.main').children('.arrow').first());
-					topicElement.children('.details').css('display','block');
+					arrowDown(topicElement.find('.arrow'));
+					topicElement.find('.details').css('display','block');
 					$("#topics").append(topicElement);
-					setTimeout(function() {
-						topicElement.children('.details').slideUp();
-						arrowRight(topicElement.children('.main').children('.arrow').first());
-					},500);
 					break;
 				case "UPDATE_TOPIC":
 					var topicUUID = e["params"]["topicUUID"];
 					topic = state.getObj(topicUUID,Topic);
 					if (topic.status == "PAST") {
 						stopTime = topic.stopTime.getTime()/1000;
-						$('#'+topicUUID+' .time').first().html('Ended '+timesince(stopTime));
+						$('#'+topicUUID+' .createdby span').first().html('Ended '+timesince(stopTime));
 						var html = '<form>';
 						html += '<input type="submit" value="Restart" class="restart">';
 						html += '</form>';
@@ -161,7 +164,7 @@
 						});
 						revealDetails($('#'+topicUUID));
 					} else if (topic.status == "CURRENT") {
-						$('#'+topicUUID+' .time').first().html('Started just now');
+						$('#'+topicUUID+' .createdby span').first().html('Started just now');
 						var html = '<form>';
 						html += '<input type="submit" value="Stop" class="stop">';
 						html += '</form>';
@@ -172,6 +175,12 @@
 						});
 						revealDetails($('#'+topicUUID));
 					}
+					$('#'+topicUUID).find('.details').slideDown();
+					arrowDown($('#'+topicUUID).find('.arrow'));
+					$('#'+topicUUID+' .createdby span').css('background-color','#ffff99');
+					$('#'+topicUUID+' .createdby span').animate({
+						'background-color': '#FFF'
+					},3000);
 					break;
 				case "NEW_TASK":
 					var taskElement = $("#tasks").children().first().clone();
@@ -179,15 +188,12 @@
 					//set task id
 					taskElement.attr('id',task["uuid"]);
 					//set .text div
-					taskElement.children('.main').first().children('.text').first()
-						.html(task["text"]);
+					taskElement.find('.text').html(task["text"]);
 					//set created by and created at
 					var createdBy = state.getObj(task["createdBy"],User);
-					taskElement.children('.details').first().children('.createdby').first()
-						.html("Created by <strong>"+createdBy.name+"</strong> <span>"+timesince(task['createdAt'])+"</span>");
+					taskElement.find('.createdby').html("Created by <strong>"+createdBy.name+"</strong> <span>"+timesince(task['createdAt'])+"</span>");
 					//assuming that the new task is not assigned
-					taskElement.children('.details').first().children('.assignedto').first()
-						.html("Not assigned");
+					taskElement.find('.assignedto').html("Not assigned");
 					//add onclick behavior
 					meetingObjectToggle(taskElement)();
 					//add assign form
@@ -201,22 +207,20 @@
 					}
 					html += '</select>';
 					html += '</form>';
-					taskElement.children('.details').first().children('.assignform').first()
-						.html(html);
+					taskElement.find('.assignform').html(html);
 						
-					taskElement.children('.details').first().children('.assignform').first().children('form').first()
-						.children('input[type=submit].assign').first().click(function(){
+					taskElement.find('input[type=submit].assign').click(function(){
 						var task = $(this).closest('li').attr('id');
-						var user = $(this).parent().children('.participants').first().val();
+						var user = $(this).parent().find('.participants').val();
 						conn.assignTask(task,user);
 						return false;	
 					});
-					arrowDown(taskElement.children('.main').children('.arrow').first());
-					taskElement.children('.details').css('display','block');
+					arrowDown(taskElement.find('.arrow'));
+					taskElement.find('.details').css('display','block');
 					$("#tasks").prepend(taskElement);
 					setTimeout(function() {
-						taskElement.children('.details').slideUp();
-						arrowRight(taskElement.children('.main').children('.arrow').first());
+						taskElement.find('.details').slideUp();
+						arrowRight(taskElement.find('.arrow').first());
 					},500);
 					break;
 				case "ASSIGN_TASK":
@@ -230,8 +234,7 @@
 							return false;
 						});
 					} else {
-						$('#'+taskUUID).children('.details').first().children('.assignedto').first()
-							.html('Not assigned');
+						$('#'+taskUUID).find('.assignedto').html('Not assigned');
 						var html = '<form>';
 						html += '<input type="submit" value="Assign" class="assign">&nbsp;to&nbsp;';
 						html += '<select class="participants">';
@@ -242,15 +245,21 @@
 						}
 						html += '</select>';
 						html += '</form>';
-						$('#'+taskUUID).children('.details').first().children('.assignform').first()
-							.html(html);
+						$('#'+taskUUID).find('.assignform').html(html);
 						$('#'+taskUUID+' input[type=submit].assign').click(function(){
 							assignTaskAction($(this))();
 							return false;
-						});	
+						});
 					}
-					$('#'+taskUUID).children('.details').first().slideDown();
-					arrowDown($('#'+taskUUID).children('.main').children('.arrow').first());
+					$('#'+taskUUID).find('.details').slideDown();
+					arrowDown($('#'+taskUUID).find('.arrow'));
+					$('#'+taskUUID).find('.assignedto').css('background-color','#ffff99').animate({
+						'background-color': '#DDD'
+					},{
+						'duration': 3000,
+						'queue': false
+					});
+					console.log('ddd');
 					break;
 					
 				case "GET_STATE_COMPLETE":
@@ -278,6 +287,24 @@
 					$("#logged_in").show();
 					break;
 			}
+			
+			//tabs
+			$('#navbar h1').each(function(i,j){
+				$(this).click(function(){
+					$('.current').removeClass('current');
+					$(this).addClass('current');
+					$('#maindivs > div').each(function(k,l) {
+						if (k==i) $(this).show();
+						else $(this).hide();
+					});
+				});
+				if ($(this).hasClass('current')) {
+					$('#maindivs > div').each(function(k,l) {
+						if (k==i) $(this).show();
+						else $(this).hide();
+					});
+				}
+			});
 			
 		}});
 
@@ -334,12 +361,31 @@
 		color: black;
 	}
 	
+	#navbar {
+		text-align: center;
+		background-color: #EEE;
+	}
+	
+	#navbar h1 {
+		margin: 10px 5px 0;
+		border-top-right-radius: 3px;
+		border-top-left-radius: 3px;
+		padding-bottom: 3px;
+	}
+	
+	#navbar h1.current {
+		background-color: #FFF;
+	}
+	
 	h1 {
 		padding-top: 10px;
 		margin-top: 0;
 		margin-bottom: 5px;
 		font-size: 1.25em;
+		display: inline-block;
 		clear: left;
+		width: 40%;
+		text-align: center;
 	}
 	
 	/* Header / Footer setup. */
@@ -378,12 +424,10 @@
 		margin-top: 5px;
 		margin-right: 15px;
 	}
-	
 
-	#container {
+	#taskdiv, #topicdiv {
 		padding: 5px;
 	}
-
 
 	/* Task related styles. */
 	
@@ -409,7 +453,10 @@
 	
 	li {
 		list-style: none;
-		margin-left: 10px;
+		margin: 0 10px 10px;
+		background-color: #EEE;
+		padding: 5px;
+		border-radius: 3px;
 	}
 	
 	#logged_in img {
@@ -423,6 +470,8 @@
 		font-size: 11px;
 		color: #AAA;
 		clear: left;
+		position: relative;
+		top: 2px;
 	}
 	.text {
 		float: left;
@@ -434,8 +483,18 @@
 		font-size: 12px;
 		clear: both;
 	}
+	.clearfix {
+		clear: both;
+	}
 	.details > div > span {
 		color: #888;
+		background-color: #FFF;
+	}
+	.assignedto {
+		background-color: #DDD;
+		display: inline-block;
+		padding: 2px;
+		margin: 2px 0;
 	}
 	#tasks p, #topics p {
 		margin: 0;
@@ -458,104 +517,119 @@
 	</div>
 </header>
 <div id="container">
-
-<h1><img src="{{static_url('images/note.png')}}"/>TASKS</h1>
-<div id="add_task" class="add_form">
-<form action="" method="get" accept-charset="utf-8">
-	<input type="text" name="new_task" value="new task..." id="new_task" class="item_text"/>
-	<input type="submit" value="Add" id="submit_new_task" class="submit_item"/>
-</form>
+<div id="navbar">
+	<h1 class="current"><img src="{{static_url('images/note.png')}}"/>&nbsp;TASKS</h1>
+	<h1><img src="{{static_url('images/comments.png')}}"/>&nbsp;TOPICS</h1>
 </div>
 
-<ul id="tasks">
-{% for task in tasks %}
+<div id="maindivs">
 
-<li id="{{task.uuid}}">
+<div id="taskdiv">
+
+	<div id="add_task" class="add_form">
+	<form action="" method="get" accept-charset="utf-8">
+		<input type="text" name="new_task" value="new task..." id="new_task" class="item_text"/>
+		<input type="submit" value="Add" id="submit_new_task" class="submit_item"/>
+	</form>
+	</div>
+
+	<ul id="tasks">
+	{% for task in tasks %}
+
+	<li id="{{task.uuid}}">
 	
-	<div class="main">
-		<div class="arrow">&#9654</div>
-		<div class="text">{{task.text}}</div>
-	</div>
-	<div class="details">
-		{% import util %}
-		<div class="createdby">Created by <strong>{{task.createdBy.name}}</strong> <span>{{util.timesince(task.createdAt)}}</span></div>
-		{% if task.assignedTo!=None %}
-		<div class="assignedto">Assigned to <strong>{{task.assignedTo.name}}</strong></span></div>
-		<div class="assignform">
-			<form>
-				<input type="submit" value="Deassign" class="deassign">
-			</form>
-		</div>	
-		{% else %}
-		<div class="assignedto">Not assigned</div>
-		<div class="assignform">
-			<form>
-				<input type="submit" value="Assign" class="assign">&nbsp;to&nbsp;
-				<select class="participants">
-					{% for participant in participants %}
-					<option value="{{participant.uuid}}">{{participant.name}}</option>
-					{% end %}
-				</select>
-			</form>
+		<div class="main">
+			<div class="arrow">&#9654;</div>
+			<div class="text">{{task.text}}</div>
 		</div>
-		{% end %}
-	</div>
-</li>
-
-{% end %}
-
-</ul>
-
-
-
-<h1><img src="{{static_url('images/comments.png')}}"/>TOPICS</h1>
-<div id="add_topic" class="add_form">
-<form action="" method="get" accept-charset="utf-8">
-	<input type="text" name="new_topic" value="new topic..." id="new_topic" class="item_text"/>
-	<input type="submit" value="Add"/ id="submit_new_topic" class="submit_item">
-</form>
-</div>
-
-<ul id="topics">
-{% for topic in topics %}
-<li id="{{topic.uuid}}">
-	<div class="main">
-		<div class="arrow">&#9654</div>
-		<div class="text">{{topic.text}}</div>	
-	</div>
-	<div class="details{% if topic.status=="CURRENT" %} current{% end %}">
-		<div class="createdby">Created by <strong>{{topic.createdBy.name}}</strong></div>
-		{% import util %}
-		{% if topic.status=="PAST" %}
-		<div class="time">Ended {{util.timesince(topic.stopTime)}}</div>
-		<div class="controlForm">
-			<form>
-				<input type="submit" value="Restart" class="restart">
-			</form>
+		<div class="details">
+			{% import util %}
+			<div class="createdby">Created by <strong>{{task.createdBy.name}}</strong> <span>{{util.timesince(task.createdAt)}}</span></div>
+			{% if task.assignedTo!=None %}
+			<div class="assignedto">Assigned to <strong>{{task.assignedTo.name}}</strong></span></div>
+			<div class="assignform">
+				<form>
+					<input type="submit" value="Deassign" class="deassign">
+				</form>
+			</div>	
+			{% else %}
+			<div class="assignedto">Not assigned</div>
+			<div class="assignform">
+				<form>
+					<input type="submit" value="Assign" class="assign">&nbsp;to&nbsp;
+					<select class="participants">
+						{% for participant in participants %}
+						<option value="{{participant.uuid}}">{{participant.name}}</option>
+						{% end %}
+					</select>
+				</form>
+			</div>
+			{% end %}
 		</div>
-		{% elif topic.status=="CURRENT" %}
-		<div class="time">Started {{util.timesince(topic.startTime)}}</div>
-		<div class="controlForm">
-			<form>
-				<input type="submit" value="Stop" class="stop">
-			</form>
-		</div>
-		{% else %}
-		<div class="time">Not started</div>
-		<div class="controlForm">
-			<form>
-				<input type="submit" value="Start" class="start">
-			</form>
-		</div>
-		{% end %}
-	</div>
-</li>
-
-{% end %}
+		<div class="clearfix"></div>
+	</li>
+	{% end %}
+	</ul>
 	
-</ul>
+</div><!--end #taskdiv-->
 
+<div id="topicdiv">
 
+	<div id="add_topic" class="add_form">
+	<form action="" method="get" accept-charset="utf-8">
+		<input type="text" name="new_topic" value="new topic..." id="new_topic" class="item_text"/>
+		<input type="submit" value="Add"/ id="submit_new_topic" class="submit_item">
+	</form>
+	</div>
+
+	<ul id="topics">
+	{% for topic in topics %}
+	<li id="{{topic.uuid}}">
+		<div class="main">
+			<div class="arrow">&#9654;</div>
+			<div class="text">{{topic.text}}</div>	
+		</div>
+		<div class="details{% if topic.status=="CURRENT" %} current{% end %}">
+			{% import util %}
+			{% if topic.status=="PAST" %}
+			<div class="createdby">
+				Created by <strong>{{topic.createdBy.name}}</strong>
+				<span>Ended {{util.timesince(topic.stopTime)}}</span>
+			</div>
+			<div class="controlForm">
+				<form>
+					<input type="submit" value="Restart" class="restart">
+				</form>
+			</div>
+			{% elif topic.status=="CURRENT" %}
+			<div class="createdby">
+				Created by <strong>{{topic.createdBy.name}}</strong>
+				<span>Started {{util.timesince(topic.startTime)}}</span>
+			</div>
+			<div class="controlForm">
+				<form>
+					<input type="submit" value="Stop" class="stop">
+				</form>
+			</div>
+			{% else %}
+			<div class="createdby">
+				Created by <strong>{{topic.createdBy.name}}</strong>
+				<span>Not Started</span>
+			</div>
+			<div class="controlForm">
+				<form>
+					<input type="submit" value="Start" class="start">
+				</form>
+			</div>
+			{% end %}
+		</div>
+		<div class="clearfix"></div>
+	</li>
+	{% end %}
+	</ul>
+</div><!--end #topicdiv-->
+
+</div><!--end #maindivs-->
 
 </div>
 <div style="clear:both"></div>
