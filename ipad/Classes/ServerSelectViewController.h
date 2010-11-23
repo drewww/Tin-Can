@@ -9,12 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "TinCanViewController.h"
 
-@interface ServerSelectViewController : UIViewController <UIPickerViewDelegate, UIPickerViewDataSource> {
+@interface ServerSelectViewController : UIViewController <UITextFieldDelegate> {
     TinCanViewController *controller;
-    
-    
-    UIPickerView *picker;
-    UIButton *selectServerButton;
+        
     
     NSArray *servers;
     
