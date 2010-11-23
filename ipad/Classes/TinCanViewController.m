@@ -23,11 +23,8 @@
     self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 768, 1024)];
     
     if(currentViewController == nil) {
-        // Make the initial one and load it. For now, that's just the MeetingView.
-//        currentViewController = [[[LoginMasterViewController alloc] initWithController:self] retain];
-        
-        currentViewController = [[[ServerSelectViewController alloc] initWithController:self] retain];
-        
+        // Make the initial one and load it. For now, that's just the MeetingView.        
+        currentViewController = [[[ServerSelectViewController alloc] initWithController:self] retain];        
     }
 
     [self.view addSubview:currentViewController.view];
@@ -62,8 +59,10 @@
     [UIView setAnimationDidStopSelector:@selector(animateNewViewDidStop:finished:context:)];
     
     [UIView commitAnimations];
-	
+}
 
+- (void) setServer: (NSString *)theServer {
+    server = theServer;
 }
 
 - (void) animateNewViewDidStop:(NSString *)animationId finished:(NSNumber *)finished context:(void *)context{

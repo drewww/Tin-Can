@@ -7,7 +7,8 @@
 //
 
 #import "ServerSelectViewController.h"
-
+#import "ConnectionManager.h"
+#import "LoginMasterViewController.h"
 
 @implementation ServerSelectViewController
 
@@ -44,26 +45,26 @@
     [connectButton addTarget:self action:@selector(connectButtonPressed:)forControlEvents:UIControlEventTouchUpInside];
     [connectButton setEnabled: YES];
     
-    UITextField *ipField = [[UITextField alloc] initWithFrame:CGRectMake(300, 300, 400, 50)];
-    ipField.center = CGPointMake(512, 330);
-    ipField.borderStyle = UITextBorderStyleRoundedRect;
-    ipField.textColor = [UIColor blackColor]; //text color
-    ipField.font = [UIFont systemFontOfSize:30.0];  //font size
-    ipField.placeholder = @"server address";  //place holder
-    ipField.backgroundColor = [UIColor whiteColor]; //background color
-    ipField.autocorrectionType = UITextAutocorrectionTypeNo;	// no auto correction support
+    serverField = [[UITextField alloc] initWithFrame:CGRectMake(300, 300, 400, 50)];
+    serverField.center = CGPointMake(512, 330);
+    serverField.borderStyle = UITextBorderStyleRoundedRect;
+    serverField.textColor = [UIColor blackColor]; //text color
+    serverField.font = [UIFont systemFontOfSize:30.0];  //font size
+    serverField.placeholder = @"server address";  //place holder
+    serverField.backgroundColor = [UIColor whiteColor]; //background color
+    serverField.autocorrectionType = UITextAutocorrectionTypeNo;	// no auto correction support
     
-    ipField.keyboardType = UIKeyboardTypeNumbersAndPunctuation;  // type of the keyboard
-    ipField.returnKeyType = UIReturnKeyDone;  // type of the return key
+    serverField.keyboardType = UIKeyboardTypeNumbersAndPunctuation;  // type of the keyboard
+    serverField.returnKeyType = UIReturnKeyDone;  // type of the return key
     
-    ipField.clearButtonMode = UITextFieldViewModeWhileEditing;	// has a clear 'x' button to the right
+    serverField.clearButtonMode = UITextFieldViewModeWhileEditing;	// has a clear 'x' button to the right
     
-    ipField.delegate = self;	// let us be the delegate so we know when the keyboard's "Done" button is pressed    
+    serverField.delegate = self;	// let us be the delegate so we know when the keyboard's "Done" button is pressed    
     
     [self.view addSubview:connectButton];
     [self.view bringSubviewToFront:connectButton];
     
-    [self.view addSubview:ipField];
+    [self.view addSubview:serverField];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -72,8 +73,13 @@
 
 
 - (void) connectButtonPressed:(id) sender {
- 
-    NSLog(@"CONNECT BUTTON PRESSED!");
+    [ConnectionManager setServer:serverField.text];
+    NSLog(@"Setting the server to %@", serverField.text);
+    
+    // Now transition to a new view.
+   UIViewController *nextViewController = [[[LoginMasterViewController alloc] initWithController:controller] retain];
+   
+   [controller switchToViewController:nextViewController];
 }
 
 - (void) viewDidLoad {

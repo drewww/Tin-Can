@@ -15,6 +15,7 @@
     
     NSArray *servers;
     
+    UITextField *serverField;
 }
 
 

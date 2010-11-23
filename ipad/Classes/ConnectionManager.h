@@ -34,13 +34,18 @@
     SBJSON *parser;
     
     Reachability *serverReachability;
+    
+    NSString *server;
  }
+
+
+- (id) initWithServer:(NSString *)theServer;
 
 #pragma mark -
 #pragma mark Properties
 
 @property (nonatomic, retain) Reachability *serverReachability;
-
+@property (nonatomic, readonly) NSString *server;
 
 #pragma mark -
 #pragma mark Connection Management
@@ -86,6 +91,10 @@
 - (void) restartTopic:(Topic *)theTopic;
 
 
+#pragma mark -
+#pragma mark Static Fields
+
 + (ConnectionManager*)sharedInstance;
++ (void) setServer:(NSString *)server;
 
 @end
