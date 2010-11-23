@@ -61,6 +61,18 @@
     
     serverField.delegate = self;	// let us be the delegate so we know when the keyboard's "Done" button is pressed    
     
+    
+    // Try to read in the last value used from the preferences system.
+    CFStringRef lastServerRef = (CFStringRef)CFPreferencesCopyAppValue(CFSTR("SERVER"), kCFPreferencesCurrentApplication);
+    if(lastServerRef) {
+        serverField.text = (NSString *)lastServerRef;
+        CFRelease(lastServerRef);
+    } else {
+        // Default to what's in tincan.h if there's nothing in the prefs yet.
+        serverField.text = SERVER;
+    }
+    
+    
     [self.view addSubview:connectButton];
     [self.view bringSubviewToFront:connectButton];
     
@@ -79,6 +91,9 @@
 
     [ConnectionManager setServer:serverField.text];
     NSLog(@"Setting the server to %@", serverField.text);
+    
+    CFPreferencesSetAppValue(CFSTR("SERVER"), serverField.text, kCFPreferencesCurrentApplication);
+    CFPreferencesAppSynchronize(kCFPreferencesCurrentApplication);
     
     // Now transition to a new view.
    UIViewController *nextViewController = [[[LoginMasterViewController alloc] initWithController:controller] retain];
