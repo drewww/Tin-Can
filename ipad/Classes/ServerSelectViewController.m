@@ -73,6 +73,10 @@
 
 
 - (void) connectButtonPressed:(id) sender {
+        
+    // Put the keyboard away just in case.
+    [serverField resignFirstResponder];
+
     [ConnectionManager setServer:serverField.text];
     NSLog(@"Setting the server to %@", serverField.text);
     
