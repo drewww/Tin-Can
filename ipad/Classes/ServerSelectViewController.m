@@ -34,25 +34,21 @@
     
     self.view.transform = CGAffineTransformMakeRotation(M_PI/2);
     
-    
-    UIView *testView = [[UIView alloc] initWithFrame:CGRectMake(100, 100, 200, 30)];
-    testView.backgroundColor = [UIColor blueColor];
-    [self.view addSubview:testView];
-    
-    
     UIButton *connectButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
     //[connectButton setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-    connectButton.frame = CGRectMake(100, 100, 200, 30);
+    connectButton.frame = CGRectMake(300, 300, 200, 40);
+    connectButton.center = CGPointMake(512, 380);
     connectButton.backgroundColor = [UIColor clearColor];
     [connectButton setTitle:@"Connect" forState: UIControlStateNormal];
     [connectButton setFont:[UIFont boldSystemFontOfSize:30.0f]];
     [connectButton addTarget:self action:@selector(connectButtonPressed:)forControlEvents:UIControlEventTouchUpInside];
-    [connectButton setEnabled: NO];
+    [connectButton setEnabled: YES];
     
-    UITextField *ipField = [[UITextField alloc] initWithFrame:CGRectMake(300, 300, 300, 50)];
+    UITextField *ipField = [[UITextField alloc] initWithFrame:CGRectMake(300, 300, 400, 50)];
+    ipField.center = CGPointMake(512, 330);
     ipField.borderStyle = UITextBorderStyleRoundedRect;
     ipField.textColor = [UIColor blackColor]; //text color
-    ipField.font = [UIFont systemFontOfSize:24.0];  //font size
+    ipField.font = [UIFont systemFontOfSize:30.0];  //font size
     ipField.placeholder = @"server address";  //place holder
     ipField.backgroundColor = [UIColor whiteColor]; //background color
     ipField.autocorrectionType = UITextAutocorrectionTypeNo;	// no auto correction support
@@ -90,6 +86,14 @@
 
 - (void) textFieldDidEndEditing:(UITextField *)textField {
     NSLog(@"Editing completed!");
+}
+
+
+- (BOOL) textFieldShouldReturn:(UITextField *)textField {
+    NSLog(@"Should return");
+    
+    [textField resignFirstResponder];
+    return true;
 }
 
 @end
