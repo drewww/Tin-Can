@@ -30,7 +30,7 @@
     NSLog(@"loading view!");
     
     self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 1024, 768)];
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = [UIColor blackColor];
     self.view.center = CGPointMake(384, 512);
     
     self.view.transform = CGAffineTransformMakeRotation(M_PI/2);
