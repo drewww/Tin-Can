@@ -284,6 +284,7 @@ def _handleUpdateTopic(event):
     # before starting the new one.
 
     topic = state.get_obj(event.params["topicUUID"], model.Topic)
+    logging.info("Updating topic %s to have status %s", topic, event.params["status"])
     status = event.params["status"]
     editedAt = time.time()
     actor = event.actor

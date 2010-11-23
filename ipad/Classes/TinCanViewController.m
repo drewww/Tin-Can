@@ -12,6 +12,7 @@
 #import "ConnectionManager.h"
 #import "Location.h"
 #import "StateManager.h"
+#import "ServerSelectViewController.h"
 
 @class MeetingViewController;
 @class LoginMasterViewController;
@@ -23,34 +24,19 @@
     
     if(currentViewController == nil) {
         // Make the initial one and load it. For now, that's just the MeetingView.
-        currentViewController = [[[LoginMasterViewController alloc] initWithController:self] retain];
+//        currentViewController = [[[LoginMasterViewController alloc] initWithController:self] retain];
         
-        // Make sure the viewcontroller has a reference back here, so it can send us 
-        // messages if we need it.
-        //currentViewController.parentViewController = self;
+        currentViewController = [[[ServerSelectViewController alloc] initWithController:self] retain];
+        
     }
 
     [self.view addSubview:currentViewController.view];
-//    self.view = currentViewController.view;
 
-    
-    
-    // Gonna do some StateManager testing here. This is NOT WHERE IT WILL GO LATER,
-    // I just need a place to execute some code. I won't check this code in without
-    // commenting it out first, so if you're looking at this and it's uncommented and
-    // causing problems, just comment it out.
-    
-    ConnectionManager *conMan = [ConnectionManager sharedInstance];
-    //Should Check and see if getstate is done. ******
-    
-    // pick a random location
-    
     
 }
 
 // Per advice here: http://stackoverflow.com/questions/2270835/best-practices-for-displaying-new-view-controllers-iphone
 // This isn't beautiful, but since we have such a simple system I think it'll work.
-// TODO figure out how to animate these transitions.
 
 -(void) switchToViewController:(UIViewController *)c {
     NSLog(@"in switch to view controller, switching to controller: %@", c);
