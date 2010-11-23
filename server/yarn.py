@@ -592,7 +592,7 @@ class UpdateTopicHandler(BaseHandler):
             "status":self.get_argument("status")})
         updateTopicEvent.dispatch()
         
-        logging.debug("After updating, topic states: " + str(actor.getMeeting().topics))
+        logging.debug("After updating, topic states: " + str([str(x) for x in actor.getMeeting().topics]))
         
         return
         

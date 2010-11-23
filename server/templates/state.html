@@ -71,7 +71,7 @@
 <span class="name">{{user.name}}</span>
 {% end %}
 {% if user.status != None %}
-<div>status: {{user.status[0]}} at {{time.strftime("%I:%M %p", time.localtime(user.status[1]))}}</div>
+<div>status: {{user.status}} at {{time.strftime("%I:%M %p", time.localtime(user.statusTime))}}</div>
 {% else %}
 <div>status: None</div>
 {% end %}
