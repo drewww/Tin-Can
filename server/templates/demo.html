@@ -55,7 +55,7 @@
 		function revealDetails(e) {
 			//e is target li
 			if($(e).parent().attr('id')=='tasks') {
-				hideDetails($('#tasks li'));
+				hideDetails($('#tasks li').not(e));
 			}
 			$(e).find('.details').slideDown();
 			arrowDown($(e).find('.arrow'));
@@ -149,6 +149,7 @@
 					var topic = e["results"]["topic"];
 					//set topic id
 					topicElement.attr('id',topic["uuid"]);
+					topicElement.attr('class','liFuture');
 					//set .text div
 					topicElement.find('.text').html(topic["text"]);
 					//set created by and started at (assuming startTime is null)
@@ -173,6 +174,7 @@
 					var topicUUID = e["params"]["topicUUID"];
 					topic = state.getObj(topicUUID,Topic);
 					if (topic.status == "PAST") {
+						
 						stopTime = topic.stopTime.getTime()/1000;
 						$('#'+topicUUID+' .createdby span').first().html('Ended '+timesince(stopTime));
 						var html = '<form>';
@@ -183,6 +185,9 @@
 							conn.restartTopic(topicUUID);
 							return false;
 						});
+						
+						$('#'+topicUUID).insertAfter($('#topics .liPast').last());
+						$('#'+topicUUID).attr('class','liPast');
 						revealDetails($('#'+topicUUID));
 					} else if (topic.status == "CURRENT") {
 						$('#'+topicUUID+' .createdby span').first().html('Started just now');
@@ -194,6 +199,9 @@
 							conn.updateTopic(topicUUID,"PAST");
 							return false;
 						});
+						
+						$('#'+topicUUID).insertAfter($('#topics .liPast').last());
+						$('#'+topicUUID).attr('class','liCurrent');
 						revealDetails($('#'+topicUUID));
 					}
 					revealDetails($('#'+topicUUID));
@@ -473,9 +481,22 @@
 	li {
 		list-style: none;
 		margin: 0 10px 10px;
-		background-color: #EEE;
 		padding: 5px;
 		border-radius: 3px;
+	}
+	
+	#tasks li {
+		background-color: #EEE;
+	}
+	
+	#topics li.liPast {
+		background-color: #EEE;
+	}
+	#topics li.liCurrent {
+		background-color: #00FF80;
+	}
+	#topics li.liFuture {
+		background-color: #E3F6FF;
 	}
 	
 	#logged_in img {
@@ -602,48 +623,52 @@
 	</div>
 
 	<ul id="topics">
-	{% for topic in topics %}
-	<li id="{{topic.uuid}}">
-		<div class="main">
-			<div class="arrow">&#9654;</div>
-			<div class="text">{{topic.text}}</div>	
-		</div>
-		<div class="details{% if topic.status=="CURRENT" %} current{% end %}">
-			{% import util %}
-			{% if topic.status=="PAST" %}
-			<div class="createdby">
-				Created by <strong>{{topic.createdBy.name}}</strong>
-				<span>Ended {{util.timesince(topic.stopTime)}}</span>
+	{% for groupStatus in ["PAST","CURRENT","FUTURE"] %}
+		{% for topic in topics %}
+		{% if topic.status==groupStatus %}
+		<li id="{{topic.uuid}}" class="li{{ topic.status.capitalize() }}">
+			<div class="main">
+				<div class="arrow">&#9654;</div>
+				<div class="text">{{topic.text}}</div>	
 			</div>
-			<div class="controlForm">
-				<form>
-					<input type="submit" value="Restart" class="restart">
-				</form>
+			<div class="details{% if topic.status=="CURRENT" %} current{% end %}">
+				{% import util %}
+				{% if topic.status=="PAST" %}
+				<div class="createdby">
+					Created by <strong>{{topic.createdBy.name}}</strong>
+					<span>Ended {{util.timesince(topic.stopTime)}}</span>
+				</div>
+				<div class="controlForm">
+					<form>
+						<input type="submit" value="Restart" class="restart">
+					</form>
+				</div>
+				{% elif topic.status=="CURRENT" %}
+				<div class="createdby">
+					Created by <strong>{{topic.createdBy.name}}</strong>
+					<span>Started {{util.timesince(topic.startTime)}}</span>
+				</div>
+				<div class="controlForm">
+					<form>
+						<input type="submit" value="Stop" class="stop">
+					</form>
+				</div>
+				{% else %}
+				<div class="createdby">
+					Created by <strong>{{topic.createdBy.name}}</strong>
+					<span>Not Started</span>
+				</div>
+				<div class="controlForm">
+					<form>
+						<input type="submit" value="Start" class="start">
+					</form>
+				</div>
+				{% end %}
 			</div>
-			{% elif topic.status=="CURRENT" %}
-			<div class="createdby">
-				Created by <strong>{{topic.createdBy.name}}</strong>
-				<span>Started {{util.timesince(topic.startTime)}}</span>
-			</div>
-			<div class="controlForm">
-				<form>
-					<input type="submit" value="Stop" class="stop">
-				</form>
-			</div>
-			{% else %}
-			<div class="createdby">
-				Created by <strong>{{topic.createdBy.name}}</strong>
-				<span>Not Started</span>
-			</div>
-			<div class="controlForm">
-				<form>
-					<input type="submit" value="Start" class="start">
-				</form>
-			</div>
-			{% end %}
-		</div>
-		<div class="clearfix"></div>
-	</li>
+			<div class="clearfix"></div>
+		</li>
+		{% end %}
+		{% end %}
 	{% end %}
 	</ul>
 </div><!--end #topicdiv-->
