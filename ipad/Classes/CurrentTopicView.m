@@ -52,11 +52,18 @@
         [topic.text drawInRect:CGRectMake(3, 3, self.bounds.size.width, self.bounds.size.height-25) withFont:f];
         
         // Now add some extra metadata.
+        // We need to do a bit more work here to lay this out right - for long actor names for the creator,
+        // we may need to use multiple lines.
+
+
         NSString *topicAgeString = [NSString stringWithFormat:@"topic started %.0fm ago", floor([topic.startTime timeIntervalSinceNow]*-1/60.0)];
-        [topicAgeString drawInRect:CGRectMake(3, self.bounds.size.height-25, self.bounds.size.width, 25) withFont:[UIFont systemFontOfSize:14]];
+        CGSize topicAgeSize = [topicAgeString sizeWithFont:[UIFont systemFontOfSize:14] constrainedToSize:CGSizeMake(self.bounds.size.width/2, MAXFLOAT)];        
+        [topicAgeString drawInRect:CGRectMake(3, self.bounds.size.height-topicAgeSize.height, self.bounds.size.width/2, topicAgeSize.height) withFont:[UIFont systemFontOfSize:14]];
+
         
         NSString *createdByString = [NSString stringWithFormat:@"created by %@  ", topic.creator.name];
-        [createdByString drawInRect:CGRectMake(3, self.bounds.size.height-25, self.bounds.size.width, 25) withFont:[UIFont systemFontOfSize:14]
+        CGSize createdBySize = [createdByString sizeWithFont:[UIFont systemFontOfSize:14] constrainedToSize:CGSizeMake(self.bounds.size.width/2, MAXFLOAT)];
+        [createdByString drawInRect:CGRectMake(self.bounds.size.width/2, self.bounds.size.height-createdBySize.height, self.bounds.size.width/2, createdBySize.height) withFont:[UIFont systemFontOfSize:14]
                      lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentRight];
         
         
