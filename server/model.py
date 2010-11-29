@@ -844,6 +844,7 @@ class Topic(MeetingObject):
                     self.stopTime = setTime
                 
             self.status = status
+            
         else:
            logging.warning("Tried to set a topic with an unknown\
 status: " + str(status))
@@ -854,6 +855,11 @@ status: " + str(status))
     
     def setText(self, text):
         self.text = text
+        
+    def __str__(self):
+        return "[topic.%s %s %s]"%(self.uuid[0:6], 
+            self.status, self.text)
+
 
     def getDict(self):
         d = MeetingObject.getDict(self)

@@ -112,14 +112,14 @@
         
         [controller switchToViewController:[[[MeetingViewController alloc] init] retain]];        
     } else if (event.type==kCONNECTION_REQUEST_FAILED) {
-        connectionInfoLabel.text = [NSString stringWithFormat:@"Could not connect to '%@'. The server is down.", SERVER];        
+        connectionInfoLabel.text = [NSString stringWithFormat:@"Could not connect to '%@'. The server is down.", [ConnectionManager sharedInstance].server];        
         
         [self.view addSubview:connectionInfoLabel];
     } else if (event.type == kCONNECTION_STATE_CHANGED) {
      
         // Check and see if we're disconnected now.
         if([[ConnectionManager sharedInstance].serverReachability currentReachabilityStatus]==NotReachable) {
-            connectionInfoLabel.text = [NSString stringWithFormat:@"Lost wireless connectivity.", SERVER];                    
+            connectionInfoLabel.text = [NSString stringWithFormat:@"Lost wireless connectivity.", [ConnectionManager sharedInstance].server];                    
             [self.view addSubview:connectionInfoLabel];
         }
     }

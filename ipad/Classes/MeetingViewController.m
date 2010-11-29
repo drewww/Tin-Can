@@ -286,7 +286,7 @@
             
         case kCONNECTION_STATE_CHANGED:
             if([[ConnectionManager sharedInstance].serverReachability currentReachabilityStatus]==NotReachable) {
-                connectionInfoLabel.text = [NSString stringWithFormat:@"Lost wireless connectivity.", SERVER];                    
+                connectionInfoLabel.text = [NSString stringWithFormat:@"Lost wireless connectivity."];                    
                 [self.view addSubview:connectionInfoLabel];
             }            
             break;

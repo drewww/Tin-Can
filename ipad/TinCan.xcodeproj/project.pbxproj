@@ -65,6 +65,7 @@
 		3AD2D0BC1294830A00C31515 /* CurrentTopicView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD2D0BB1294830A00C31515 /* CurrentTopicView.m */; };
 		3AD2D16A1295B09200C31515 /* TopicContainerContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD2D1691295B09200C31515 /* TopicContainerContentView.m */; };
 		3AD2D2621295D21500C31515 /* EventContainerContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD2D2611295D21500C31515 /* EventContainerContentView.m */; };
+		3AD2D2FC1296F9AF00C31515 /* ServerSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD2D2FB1296F9AF00C31515 /* ServerSelectViewController.m */; };
 		3AD66C4D120B0CBE00F974DA /* UserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD66C4C120B0CBE00F974DA /* UserView.m */; };
 		3AD66E5B120B80C000F974DA /* UserRenderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD66E5A120B80C000F974DA /* UserRenderView.m */; };
 		DA707CCD1212F9C40057B509 /* TopicView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA707CCC1212F9C40057B509 /* TopicView.m */; };
@@ -194,6 +195,8 @@
 		3AD2D1691295B09200C31515 /* TopicContainerContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicContainerContentView.m; sourceTree = "<group>"; };
 		3AD2D2601295D21500C31515 /* EventContainerContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventContainerContentView.h; sourceTree = "<group>"; };
 		3AD2D2611295D21500C31515 /* EventContainerContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventContainerContentView.m; sourceTree = "<group>"; };
+		3AD2D2FA1296F9AF00C31515 /* ServerSelectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerSelectViewController.h; sourceTree = "<group>"; };
+		3AD2D2FB1296F9AF00C31515 /* ServerSelectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerSelectViewController.m; sourceTree = "<group>"; };
 		3AD66C4B120B0CBE00F974DA /* UserView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserView.h; sourceTree = "<group>"; };
 		3AD66C4C120B0CBE00F974DA /* UserView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserView.m; sourceTree = "<group>"; };
 		3AD66E59120B80C000F974DA /* UserRenderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserRenderView.h; sourceTree = "<group>"; };
@@ -273,6 +276,7 @@
 				1D3623250D0F684500981E51 /* TinCanAppDelegate.m */,
 				3A57237611EBDE0B004C2687 /* TinCanViewController.h */,
 				3A57237711EBDE0B004C2687 /* TinCanViewController.m */,
+				3AD2D2F91296F99200C31515 /* Server Select */,
 				DA96F10311EE526D00B64D3D /* Login */,
 				DA96F10411EE528900B64D3D /* Settings */,
 				DA96EFF811EE51E500B64D3D /* Meeting */,
@@ -421,6 +425,15 @@
 				3AC2C21311A5B62C0071F912 /* ASIProgressDelegate.h */,
 			);
 			path = ASIHTTPRequest;
+			sourceTree = "<group>";
+		};
+		3AD2D2F91296F99200C31515 /* Server Select */ = {
+			isa = PBXGroup;
+			children = (
+				3AD2D2FA1296F9AF00C31515 /* ServerSelectViewController.h */,
+				3AD2D2FB1296F9AF00C31515 /* ServerSelectViewController.m */,
+			);
+			name = "Server Select";
 			sourceTree = "<group>";
 		};
 		DA96EFF811EE51E500B64D3D /* Meeting */ = {
@@ -641,6 +654,7 @@
 				3AD2D0BC1294830A00C31515 /* CurrentTopicView.m in Sources */,
 				3AD2D16A1295B09200C31515 /* TopicContainerContentView.m in Sources */,
 				3AD2D2621295D21500C31515 /* EventContainerContentView.m in Sources */,
+				3AD2D2FC1296F9AF00C31515 /* ServerSelectViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

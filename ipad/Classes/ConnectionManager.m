@@ -15,14 +15,16 @@
 #import "Task.h"
 
 static ConnectionManager *sharedInstance = nil;
+static NSString *selectedServer = nil;
 
 @implementation ConnectionManager
 
 @synthesize serverReachability;
+@synthesize server;
 
 #pragma mark --
 #pragma mark class Instance methods
-- (id) init {
+- (id) initWithServer:(NSString *)theServer {
     self = [super init];
     
     parser = [[[SBJSON alloc] init] retain];
@@ -30,7 +32,9 @@ static ConnectionManager *sharedInstance = nil;
     //queue = [[[ASINetworkQueue alloc] init] retain];
     currentPersistentConnection = nil;
     
-    self.serverReachability = [Reachability reachabilityWithHostName:SERVER];
+    server = theServer;
+
+    self.serverReachability = [Reachability reachabilityWithHostName:server];
     [self.serverReachability startNotifer];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -87,7 +91,7 @@ static ConnectionManager *sharedInstance = nil;
     isConnected = YES;
 
     NSLog(@"logging in...");
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", SERVER, PORT, @"/connect/login"]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/connect/login"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:locationUUID forKey:@"actorUUID"];    
     [request setDelegate:self];
@@ -96,7 +100,7 @@ static ConnectionManager *sharedInstance = nil;
 
 - (void) getState {
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", SERVER, PORT, @"/connect/state"]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/connect/state"]];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     [request setDelegate:self];
     [request startAsynchronous];   
@@ -118,7 +122,7 @@ static ConnectionManager *sharedInstance = nil;
     [self stopPersistentConnection];
     NSLog(@"/CONNECT/ING");
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@?actorUUID=%@", SERVER, PORT, @"/connect/", locationUUID]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@?actorUUID=%@", server, PORT, @"/connect/", locationUUID]];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     
     // hour long timeout, since this is the long-running connection.
@@ -492,7 +496,7 @@ static ConnectionManager *sharedInstance = nil;
 
 - (void) joinRoomWithUUID:(UUID *)roomUUID {
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", SERVER, PORT, @"/rooms/join"]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/rooms/join"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:roomUUID forKey:@"roomUUID"];    
     [request setDelegate:self];
@@ -501,7 +505,7 @@ static ConnectionManager *sharedInstance = nil;
 
 - (void) leaveRoomWithUUID {
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", SERVER, PORT, @"/rooms/leave"]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/rooms/leave"]];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     [request setDelegate:self];
     [request startAsynchronous];     
@@ -512,7 +516,7 @@ static ConnectionManager *sharedInstance = nil;
 }
 
 - (void) assignTask:(Task *)theTask toUser:(User *)theUser {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", SERVER, PORT, @"/tasks/assign"]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/tasks/assign"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:theTask.uuid forKey:@"taskUUID"];    
     [request setPostValue:theUser.uuid forKey:@"assignedToUUID"];    
@@ -521,7 +525,7 @@ static ConnectionManager *sharedInstance = nil;
 }
 
 - (void) deassignTask:(Task *)theTask {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", SERVER, PORT, @"/tasks/assign"]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/tasks/assign"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:theTask.uuid forKey:@"taskUUID"];    
     [request setPostValue:@"1" forKey:@"deassign"];    
@@ -530,7 +534,7 @@ static ConnectionManager *sharedInstance = nil;
 }
 
 - (void) updateTopic:(Topic *)theTopic withStatus:(TopicStatus)theStatus {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", SERVER, PORT, @"/topics/update"]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/topics/update"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:theTopic.uuid forKey:@"topicUUID"];
     
@@ -545,7 +549,7 @@ static ConnectionManager *sharedInstance = nil;
 }
 
 - (void) restartTopic:(Topic *)theTopic {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", SERVER, PORT, @"/topics/restart"]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/topics/restart"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:theTopic.uuid forKey:@"topicUUID"];    
     [request setDelegate:self];
@@ -561,10 +565,19 @@ static ConnectionManager *sharedInstance = nil;
 {
     @synchronized(self)
     {
-        if (sharedInstance == nil)
-            sharedInstance = [[ConnectionManager alloc] init];
+        if (sharedInstance == nil) {
+            if(selectedServer == nil) {
+                sharedInstance = [[ConnectionManager alloc] initWithServer:SERVER];
+            } else {
+                sharedInstance = [[ConnectionManager alloc] initWithServer:selectedServer];
+            }
+        }
     }
     return sharedInstance;
+}
+
++ (void) setServer:(NSString *)server {
+    selectedServer = server;
 }
 
 + (id)allocWithZone:(NSZone *)zone {

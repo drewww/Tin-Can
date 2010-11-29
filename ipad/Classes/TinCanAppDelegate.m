@@ -20,7 +20,8 @@
 	
    
 	viewController = [TinCanViewController alloc];
-    	
+    
+    [application setStatusBarOrientation:UIInterfaceOrientationLandscapeRight];
 
 	[window setBackgroundColor:[UIColor clearColor]];
 	

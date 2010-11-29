@@ -236,7 +236,7 @@
 	CGContextFillPath(ctx);
 	
 	//Drawing Hour and Minute hand! (Drawn here so that the hands aren't colored over)
-    CGContextSaveGState(ctx);	
+    CGContextSaveGState(ctx);
 	
 	CGContextRotateCTM(ctx, minRotation);
 	CGContextMoveToPoint(ctx, 0, 0);

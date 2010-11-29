@@ -11,7 +11,14 @@
 
 @interface TinCanViewController : UIViewController {
     UIViewController *currentViewController;
+    
+    
+    NSString *server;
 }
+
 -(void) switchToViewController:(UIViewController *)c;
 -(void) animateNewViewDidStop:(NSString *)animationId finished:(NSNumber *)finished context:(void *)context;
+
+- (void) setServer: (NSString *)theServer;
+
 @end

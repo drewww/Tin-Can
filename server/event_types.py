@@ -284,6 +284,7 @@ def _handleUpdateTopic(event):
     # before starting the new one.
 
     topic = state.get_obj(event.params["topicUUID"], model.Topic)
+    logging.info("Updating topic %s to have status %s", topic, event.params["status"])
     status = event.params["status"]
     editedAt = time.time()
     actor = event.actor
@@ -291,7 +292,7 @@ def _handleUpdateTopic(event):
     # check and see if we're trying to start a topic.
     if(status=="CURRENT"):
         # now go looking for the current item
-        currentTopic = [topic for topic in
+        currentTopic = [t for t in
             actor.getMeeting().topics if topic.status=="CURRENT"]
         if len(currentTopic) > 1:
             logging.warning("Found multiple current topics. Badness.")
