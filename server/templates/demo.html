@@ -21,21 +21,6 @@
 <script type="text/javascript" charset="utf-8">
 	// We'll put all our code here.
 	
-	//for the disclosure arrow
-	function arrowToggle(el) {
-		if ($(el).html().charCodeAt(0)=='9654') {
-			$(el).html('&#9660;');
-		} else {
-			$(el).html('&#9654;');
-		}
-	}
-	function arrowDown(el) {
-		$(el).html('&#9660;');
-	}
-	function arrowRight(el) {
-		$(el).html('&#9654;');
-	}
-	
 	var localUser;
 	
 	$("document").ready(function() {
@@ -44,8 +29,37 @@
 		// to connect as. 
 		conn = connection;
 		
-		//tasks functions defined here so that newly created tasks can have proper
-		//callbacks on form submit as well
+		
+		
+		//for the disclosure arrow
+		function arrowToggle(el) {
+			if ($(el).html().charCodeAt(0)=='9654') {
+				$(el).html('&#9660;');
+			} else {
+				$(el).html('&#9654;');
+			}
+		}
+		function arrowDown(el) {
+			$(el).html('&#9660;');
+		}
+		function arrowRight(el) {
+			$(el).html('&#9654;');
+		}
+		
+		function hideDetails(e) {
+			//e is target li
+			$(e).find('.details').slideUp();
+			arrowRight($(e).find('.arrow'));
+		}
+		
+		function revealDetails(e) {
+			//e is target li
+			if($(e).parent().attr('id')=='tasks') {
+				hideDetails($('#tasks li'));
+			}
+			$(e).find('.details').slideDown();
+			arrowDown($(e).find('.arrow'));
+		}
 
 		function meetingObjectToggle(e) {
 			return (function() {
@@ -55,8 +69,21 @@
 					arrowToggle($(e).find('.text').prev());
 				}
 				$(e).find('.text').click(function(){
-					$(this).parent().parent().find('.details').slideToggle();
-					arrowToggle($(this).prev());
+					if($(e).parent().attr('id')=='tasks') {
+						//if element is in the #task list then we need accordion behavior
+						//on show, all other tasks must be hidden
+						//on hide, nothing much to it
+						if(!$(e).find('.details').is(':visible')) {
+							hideDetails($('#tasks li'));
+							revealDetails(e);
+						} else {
+							hideDetails(e);
+						}
+					} else {
+						//otherwise, element is in #topics list and we don't need accordion behavior
+						$(this).parent().parent().find('.details').slideToggle();
+						arrowToggle($(this).prev());
+					}
 				});
 			});
 		}
@@ -103,12 +130,6 @@
 			conn.restartTopic(topicUUID);
 			return false;
 		});
-		
-		function revealDetails(e) {
-			//e is target li
-			$(e).find('.details').slideDown();
-			arrowDown($(e).find('.arrow'));
-		}
 
 		conn.addListener({connectionEvent: function(e) {
 			
@@ -175,8 +196,7 @@
 						});
 						revealDetails($('#'+topicUUID));
 					}
-					$('#'+topicUUID).find('.details').slideDown();
-					arrowDown($('#'+topicUUID).find('.arrow'));
+					revealDetails($('#'+topicUUID));
 					$('#'+topicUUID+' .createdby span').css('background-color','#ffff99');
 					$('#'+topicUUID+' .createdby span').animate({
 						'background-color': '#FFF'
@@ -251,8 +271,7 @@
 							return false;
 						});
 					}
-					$('#'+taskUUID).find('.details').slideDown();
-					arrowDown($('#'+taskUUID).find('.arrow'));
+					revealDetails($('#'+taskUUID));
 					$('#'+taskUUID).find('.assignedto').css('background-color','#ffff99').animate({
 						'background-color': '#DDD'
 					},{
