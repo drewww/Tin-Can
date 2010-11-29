@@ -28,7 +28,7 @@
 }
 
 - (void) unswizzle {
-    self.creator = (User *)[[StateManager sharedInstance] getObjWithUUID:creatorUUID withType:[User class]];
+    self.creator = (Actor *)[[StateManager sharedInstance] getObjWithUUID:creatorUUID withType:[Actor class]];
     self.meeting = (Meeting *) [[StateManager sharedInstance] getObjWithUUID:meetingUUID withType:[Meeting class]];
 }
 

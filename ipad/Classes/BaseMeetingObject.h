@@ -17,7 +17,7 @@
 @class User;
 
 @interface BaseMeetingObject : SynchronizedObject {
-    User *creator;
+    Actor *creator;
     UUID *creatorUUID;
     
     Meeting *meeting;
@@ -31,7 +31,7 @@
 
 - (void) unswizzle;
 
-@property (nonatomic, retain) User *creator;
+@property (nonatomic, retain) Actor *creator;
 @property (nonatomic, retain) NSDate *createdAt;
 @property (nonatomic, retain) Meeting *meeting;
 
