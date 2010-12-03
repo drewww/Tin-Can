@@ -6,6 +6,9 @@
 	
 	<!-- iPhone specific viewport sizing instructions. -->
 	<meta name="viewport" content="width=320; initial-scale=1.0; minimum-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+	<meta name="apple-touch-fullscreen" content="yes" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 	<link rel="apple-touch-icon-precomposed" href="{{static_url('images/demoIcon.png')}}" />
 	
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
@@ -454,6 +457,7 @@
 
 	#taskdiv, #topicdiv {
 		padding: 5px;
+		min-height: 313px;
 	}
 
 	/* Task related styles. */
@@ -493,7 +497,7 @@
 		background-color: #EEE;
 	}
 	#topics li.liCurrent {
-		background-color: #00FF80;
+		background-color: #5EFEB2;
 	}
 	#topics li.liFuture {
 		background-color: #E3F6FF;
@@ -557,61 +561,12 @@
 	</div>
 </header>
 <div id="container">
-<div id="navbar">
-	<h1 class="current"><img src="{{static_url('images/note.png')}}"/>&nbsp;TASKS</h1>
-	<h1><img src="{{static_url('images/comments.png')}}"/>&nbsp;TOPICS</h1>
+<div id="navbar">	
+	<h1 class="current"><img src="{{static_url('images/comments.png')}}"/>&nbsp;TOPICS</h1>
+	<h1><img src="{{static_url('images/note.png')}}"/>&nbsp;TASKS</h1>
 </div>
 
 <div id="maindivs">
-
-<div id="taskdiv">
-
-	<div id="add_task" class="add_form">
-	<form action="" method="get" accept-charset="utf-8">
-		<input type="text" name="new_task" value="new task..." id="new_task" class="item_text"/>
-		<input type="submit" value="Add" id="submit_new_task" class="submit_item"/>
-	</form>
-	</div>
-
-	<ul id="tasks">
-	{% for task in tasks %}
-
-	<li id="{{task.uuid}}">
-	
-		<div class="main">
-			<div class="arrow">&#9654;</div>
-			<div class="text">{{task.text}}</div>
-		</div>
-		<div class="details">
-			{% import util %}
-			<div class="createdby">Created by <strong>{{task.createdBy.name}}</strong> <span>{{util.timesince(task.createdAt)}}</span></div>
-			{% if task.assignedTo!=None %}
-			<div class="assignedto">Assigned to <strong>{{task.assignedTo.name}}</strong></span></div>
-			<div class="assignform">
-				<form>
-					<input type="submit" value="Deassign" class="deassign">
-				</form>
-			</div>	
-			{% else %}
-			<div class="assignedto">Not assigned</div>
-			<div class="assignform">
-				<form>
-					<input type="submit" value="Assign" class="assign">&nbsp;to&nbsp;
-					<select class="participants">
-						{% for participant in participants %}
-						<option value="{{participant.uuid}}">{{participant.name}}</option>
-						{% end %}
-					</select>
-				</form>
-			</div>
-			{% end %}
-		</div>
-		<div class="clearfix"></div>
-	</li>
-	{% end %}
-	</ul>
-	
-</div><!--end #taskdiv-->
 
 <div id="topicdiv">
 
@@ -672,6 +627,55 @@
 	{% end %}
 	</ul>
 </div><!--end #topicdiv-->
+
+<div id="taskdiv">
+
+	<div id="add_task" class="add_form">
+	<form action="" method="get" accept-charset="utf-8">
+		<input type="text" name="new_task" value="new task..." id="new_task" class="item_text"/>
+		<input type="submit" value="Add" id="submit_new_task" class="submit_item"/>
+	</form>
+	</div>
+
+	<ul id="tasks">
+	{% for task in tasks %}
+
+	<li id="{{task.uuid}}">
+	
+		<div class="main">
+			<div class="arrow">&#9654;</div>
+			<div class="text">{{task.text}}</div>
+		</div>
+		<div class="details">
+			{% import util %}
+			<div class="createdby">Created by <strong>{{task.createdBy.name}}</strong> <span>{{util.timesince(task.createdAt)}}</span></div>
+			{% if task.assignedTo!=None %}
+			<div class="assignedto">Assigned to <strong>{{task.assignedTo.name}}</strong></span></div>
+			<div class="assignform">
+				<form>
+					<input type="submit" value="Deassign" class="deassign">
+				</form>
+			</div>	
+			{% else %}
+			<div class="assignedto">Not assigned</div>
+			<div class="assignform">
+				<form>
+					<input type="submit" value="Assign" class="assign">&nbsp;to&nbsp;
+					<select class="participants">
+						{% for participant in participants %}
+						<option value="{{participant.uuid}}">{{participant.name}}</option>
+						{% end %}
+					</select>
+				</form>
+			</div>
+			{% end %}
+		</div>
+		<div class="clearfix"></div>
+	</li>
+	{% end %}
+	</ul>
+	
+</div><!--end #taskdiv-->
 
 </div><!--end #maindivs-->
 
