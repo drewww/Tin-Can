@@ -349,22 +349,12 @@
 		
 		$("#submit_new_task").click(function() {
 			conn.addTask($("#new_task").val());
-			$("#new_task").val("new task...");
 			return false;
 		});
 		
 		$("#submit_new_topic").click(function() {
 			conn.addTopic($("#new_topic").val());
-			$("#new_topic").val("new topic...");
 			return false;
-		});
-		
-		$("#new_task").click(function() {
-			$("#new_task").val("");
-		});
-		
-		$("#new_topic").click(function() {
-			$("#new_topic").val("");
 		});
 		
 		$("#login").show();
@@ -572,7 +562,7 @@
 
 	<div id="add_topic" class="add_form">
 	<form action="" method="get" accept-charset="utf-8">
-		<input type="text" name="new_topic" value="new topic..." id="new_topic" class="item_text"/>
+		<input type="text" name="new_topic" value="" id="new_topic" class="item_text" placeholder="new topic..."/>
 		<input type="submit" value="Add"/ id="submit_new_topic" class="submit_item">
 	</form>
 	</div>
@@ -632,7 +622,7 @@
 
 	<div id="add_task" class="add_form">
 	<form action="" method="get" accept-charset="utf-8">
-		<input type="text" name="new_task" value="new task..." id="new_task" class="item_text"/>
+		<input type="text" name="new_task" value="" id="new_task" class="item_text" placeholder="new task..."/>
 		<input type="submit" value="Add" id="submit_new_task" class="submit_item"/>
 	</form>
 	</div>
