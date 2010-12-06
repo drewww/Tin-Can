@@ -18,7 +18,7 @@
 	<script type="text/javascript" src="{{static_url('js/StateManager.js')}}"></script>
 	<script type="text/javascript" src="{{static_url('js/model.js')}}"></script>
 	<!--jqueryui only has Effects Core, Effect "Highlight", and Effect "Slide"-->
-	<script type="text/javascript" src="{{static_url('js/jquery-ui-1.8.6.custom.min.js')}}"></script>
+	<script type="text/javascript" src="{{static_url('js/lib/jquery-ui-1.8.6.custom.min.js')}}"></script>
 
 
 <script type="text/javascript" charset="utf-8">
@@ -323,13 +323,13 @@
 				$(this).click(function(){
 					$('.current').removeClass('current');
 					$(this).addClass('current');
-					$('#maindivs > div').each(function(k,l) {
+					$('#maindivs .pane').each(function(k,l) {
 						if (k==i) $(this).show();
 						else $(this).hide();
 					});
 				});
 				if ($(this).hasClass('current')) {
-					$('#maindivs > div').each(function(k,l) {
+					$('#maindivs .pane').each(function(k,l) {
 						if (k==i) $(this).show();
 						else $(this).hide();
 					});
@@ -391,21 +391,23 @@
 		border-top-left-radius: 3px;
 		padding-bottom: 3px;
 		-webkit-tap-highlight-color: #FFF;
+		padding-top: 10px;
+		font-size: 1.25em;
+		display: inline-block;
+		clear: left;
+		width: 40%;
+		text-align: center;
 	}
 	
 	#navbar h1.current {
 		background-color: #FFF;
 	}
 	
-	h1 {
-		padding-top: 10px;
-		margin-top: 0;
-		margin-bottom: 5px;
-		font-size: 1.25em;
-		display: inline-block;
-		clear: left;
-		width: 40%;
-		text-align: center;
+	#logindiv h1 {
+		background-color: #EEE;
+		margin: 0;
+		padding: 10px;
+		font-size: 25px;
 	}
 	
 	/* Header / Footer setup. */
@@ -540,6 +542,25 @@
 		clear: both;
 	}
 	
+	#maindivs {
+		display: none;
+	}
+	
+	#logindiv {
+		min-height: 354px;
+	}
+	.userPane {
+		border-top: 1px solid #CCC;
+		margin: 0;
+		font-size: 18px;
+	}
+	.userPane li {
+		border-bottom: 1px solid #CCC;
+		margin: 0;
+		padding: 10px;
+		background: url({{static_url('images/next.png')}}) no-repeat right center transparent;
+	}
+	
 </style>
 </head>
 
@@ -552,14 +573,24 @@
 	</div>
 </header>
 <div id="container">
-<div id="navbar">	
-	<h1 class="current"><img src="{{static_url('images/comments.png')}}"/>&nbsp;TOPICS</h1>
-	<h1><img src="{{static_url('images/note.png')}}"/>&nbsp;TASKS</h1>
+
+<div id="logindiv">
+	<h1>Login</h1>
+	<ul class="userPane">
+	{% for user in users %}
+		<li>{{user.name}}</li>
+	{% end %}
+	</ul>
 </div>
 
 <div id="maindivs">
+	
+	<div id="navbar">	
+		<h1 class="current"><img src="{{static_url('images/comments.png')}}"/>&nbsp;TOPICS</h1>
+		<h1><img src="{{static_url('images/note.png')}}"/>&nbsp;TASKS</h1>
+	</div>
 
-<div id="topicdiv">
+	<div id="topicdiv" class="pane">
 
 	<div id="add_topic" class="add_form">
 	<form action="" method="get" accept-charset="utf-8">
@@ -619,7 +650,7 @@
 	</ul>
 </div><!--end #topicdiv-->
 
-<div id="taskdiv">
+	<div id="taskdiv" class="pane">
 
 	<div id="add_task" class="add_form">
 	<form action="" method="get" accept-charset="utf-8">
