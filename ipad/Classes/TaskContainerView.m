@@ -61,7 +61,7 @@
 	CGContextSetLineWidth(ctx,2);
 	CGContextSetStrokeColorWithColor(ctx,  COLOR.CGColor);
 	CGContextStrokeRect(ctx, CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height));
-	
+    	
 }
 
 - (void) setRot:(float) newRot {

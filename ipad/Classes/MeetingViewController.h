@@ -10,7 +10,6 @@
 #import "MeetingTimerView.h"
 #import "TaskContainerView.h"
 #import "TopicContainerView.h"
-#import "LocationContainerView.h"
 #import "Event.h"
 #import "User.h"
 #import "LocationBorderView.h"

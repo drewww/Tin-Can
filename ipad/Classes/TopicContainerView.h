@@ -14,6 +14,9 @@
     
     TopicContainerContentView *contentView;
     UIScrollView *topicScrollView;
+    
+    CGRect buttonRect;
+    bool addButtonPressed;
 }
 
 - (void) addTopicView:(UIView *)newTopicView;
