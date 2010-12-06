@@ -29,3 +29,6 @@ These dependencies are NOT checked in, and you'll need to install them separatel
    * pycurl
    * simplejson
 
+These dependencies are checked in under server/static/js/lib
+
+ * mustache.js v0.3.0 - http://mustache.github.com/
