@@ -19,6 +19,7 @@
 	<script type="text/javascript" src="{{static_url('js/model.js')}}"></script>
 	<!--jqueryui only has Effects Core, Effect "Highlight", and Effect "Slide"-->
 	<script type="text/javascript" src="{{static_url('js/lib/jquery-ui-1.8.6.custom.min.js')}}"></script>
+	<script type="text/javascript" src="{{static_url('js/lib/jquery.mustache.js')}}"></script>
 
 
 <script type="text/javascript" charset="utf-8">
@@ -32,7 +33,8 @@
 		// to connect as. 
 		conn = connection;
 		
-		
+		//paneController is stored here
+		var pc;
 		
 		//for the disclosure arrow
 		function arrowToggle(el) {
@@ -336,6 +338,55 @@
 				}
 			});
 			
+			//pane functions for login interface
+			function PaneController(loginPane,loginMain) {
+				console.log('INIT PaneController');
+				this.panes = [$(loginPane)];
+				this.current = this.panes[0];
+				this.main = $(loginMain);
+				
+				$(this.main).height($(this.current).height());
+			}
+			
+			PaneController.prototype = {
+				
+				push_pane: function(newpane) {
+					var pane = $(newpane);
+					pane.css('display','none');
+					this.panes.push(pane);
+					$('#logindiv').append(pane);
+				},
+				
+				move_forward: function() {
+					var newwidth = $(this.main).width();
+					var index = $.inArray(this.current,this.panes) + 1;
+					var newpane = this.panes[index];
+					var newheight = $(newpane).height();
+					if (typeof newpane !== 'undefined') {
+						$(newpane).width(newwidth);
+						newpane.css({
+							'visibility': 'hidden',
+							'display': 'block',
+							'left': newwidth
+						});
+						newpane.css('visibility','visible');
+						newpane.animate({
+							'left': 0
+						});
+						$(this.current).animate({
+							'left': -newwidth
+						});
+						$(this.main).animate({
+							'height': newheight
+						})
+					}
+				}
+				
+			}
+			
+			pc = new PaneController('#startPane','#logindiv');
+			pc.push_pane('<div class="pane" style="width:200px;height:300px;background-color:blue"></div>');
+			pc.move_forward();
 		}});
 
 		// Tell the connection manager to load state so we can pick
@@ -548,13 +599,21 @@
 	
 	#logindiv {
 		min-height: 354px;
+		overflow: hidden;
+		position: relative;
 	}
-	.userPane {
-		border-top: 1px solid #CCC;
+	.pane {
 		margin: 0;
 		font-size: 18px;
+		width: 100%;
+		position: absolute;
+		top: 0;
 	}
-	.userPane li {
+	.userList {
+		border-top: 1px solid #CCC;
+		margin: 0;
+	}
+	.userList li {
 		border-bottom: 1px solid #CCC;
 		margin: 0;
 		padding: 10px;
@@ -575,12 +634,14 @@
 <div id="container">
 
 <div id="logindiv">
-	<h1>Login</h1>
-	<ul class="userPane">
-	{% for user in users %}
-		<li>{{user.name}}</li>
-	{% end %}
-	</ul>
+	<div id="startPane" class="pane current">
+		<h1>Login</h1>
+		<ul class="userList">
+		{% for user in users %}
+			<li>{{user.name}}</li>
+		{% end %}
+		</ul>
+	</div>
 </div>
 
 <div id="maindivs">
