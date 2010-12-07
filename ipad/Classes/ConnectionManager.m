@@ -533,7 +533,7 @@ static NSString *selectedServer = nil;
     [request startAsynchronous];         
 }
 
-- (void) addTask:(NSString *)newTaskText {
+- (void) addTaskWithText:(NSString *)newTaskText {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/tasks/add"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:newTopicText forKey:@"text"];    
@@ -564,7 +564,7 @@ static NSString *selectedServer = nil;
     [request startAsynchronous];
 }
 
-- (void) addTopic:(NSString *)newTopicText {
+- (void) addTopicWithText:(NSString *)newTopicText {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/topics/add"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:newTopicText forKey:@"text"];    
