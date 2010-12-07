@@ -533,6 +533,14 @@ static NSString *selectedServer = nil;
     [request startAsynchronous];         
 }
 
+- (void) addTask:(NSString *)newTaskText {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/tasks/add"]];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request setPostValue:newTopicText forKey:@"text"];    
+    [request setDelegate:self];
+    [request startAsynchronous];
+}
+
 - (void) updateTopic:(Topic *)theTopic withStatus:(TopicStatus)theStatus {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/topics/update"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
@@ -552,6 +560,14 @@ static NSString *selectedServer = nil;
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/topics/restart"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:theTopic.uuid forKey:@"topicUUID"];    
+    [request setDelegate:self];
+    [request startAsynchronous];
+}
+
+- (void) addTopic:(NSString *)newTopicText {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/topics/add"]];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request setPostValue:newTopicText forKey:@"text"];    
     [request setDelegate:self];
     [request startAsynchronous];
 }

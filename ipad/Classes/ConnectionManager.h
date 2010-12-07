@@ -74,8 +74,6 @@
 
 - (void) publishEvent:(Event *)e;
 
-
-
 #pragma mark -
 #pragma mark State Manipulation Methods
 
@@ -86,9 +84,11 @@
 
 - (void) assignTask:(Task *)theTask toUser:(User *)theUser;
 - (void) deassignTask:(Task *)theTask;
+- (void) addTask:(NSString *)newTaskText;
 
 - (void) updateTopic:(Topic *)theTopic withStatus:(TopicStatus)theStatus;
 - (void) restartTopic:(Topic *)theTopic;
+- (void) addTopic:(NSString *)newTopicText;
 
 
 #pragma mark -
