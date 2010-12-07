@@ -10,6 +10,7 @@
 #import "TopicView.h"
 #import "AddItemController.h"
 #import "TopicContainerContentView.h"
+#import "ConnectionManager.h"
 
 @implementation TopicContainerView
 
@@ -93,10 +94,11 @@
 
 - (void) itemSubmittedWithText:(NSString *)text {
     
-    // send it to the server
-    
     // dismiss the popover
     [popoverController dismissPopoverAnimated:true];
+    
+    // Send it to the server.
+    [[ConnectionManager sharedInstance] addTopicWithText:text];
 }
 
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {

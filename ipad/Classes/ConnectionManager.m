@@ -536,7 +536,7 @@ static NSString *selectedServer = nil;
 - (void) addTaskWithText:(NSString *)newTaskText {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/tasks/add"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
-    [request setPostValue:newTopicText forKey:@"text"];    
+    [request setPostValue:newTaskText forKey:@"text"];    
     [request setDelegate:self];
     [request startAsynchronous];
 }
