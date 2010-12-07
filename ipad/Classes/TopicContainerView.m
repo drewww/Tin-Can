@@ -8,7 +8,7 @@
 
 #import "TopicContainerView.h"
 #import "TopicView.h"
-
+#import "AddTopicController.h"
 #import "TopicContainerContentView.h"
 
 @implementation TopicContainerView
@@ -44,6 +44,10 @@
         
         
 		[self setNeedsLayout];
+        
+        
+        // Now setup the add topic popover.
+        popoverController = [[UIPopoverController alloc] initWithContentViewController:[[AddTopicController alloc] init]];
     }
     
     return self;
@@ -100,6 +104,8 @@
     if(addButtonPressed) {
         // Trigger the add callback here.
         NSLog(@"Add button pressed! Do something now!");
+        [popoverController presentPopoverFromRect:buttonRect inView:self permittedArrowDirections:UIPopoverArrowDirectionAny animated:true];
+        
         addButtonPressed = FALSE;
         [self setNeedsDisplay];
     }

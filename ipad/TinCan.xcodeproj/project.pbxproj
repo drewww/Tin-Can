@@ -16,6 +16,7 @@
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
 		3A0B2C27127B5A69002C08A1 /* TimelineContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A0B2C26127B5A69002C08A1 /* TimelineContainerView.m */; };
 		3A0B2C2E127B6AC7002C08A1 /* EventView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A0B2C2C127B6AC7002C08A1 /* EventView.m */; };
+		3A12614812ADA1DC005D05FA /* AddTopicController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A12614712ADA1DC005D05FA /* AddTopicController.m */; };
 		3A2A6A3C11EE5ED300FF373C /* SynchronizedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A3B11EE5ED300FF373C /* SynchronizedObject.m */; };
 		3A2A6A3F11EE696000FF373C /* StateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A3E11EE696000FF373C /* StateManager.m */; };
 		3A2A6A5A11EE73F800FF373C /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A5911EE73F800FF373C /* User.m */; };
@@ -105,6 +106,8 @@
 		3A0B2C26127B5A69002C08A1 /* TimelineContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimelineContainerView.m; sourceTree = "<group>"; };
 		3A0B2C2C127B6AC7002C08A1 /* EventView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventView.m; sourceTree = "<group>"; };
 		3A0B2C2D127B6AC7002C08A1 /* EventView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventView.h; sourceTree = "<group>"; };
+		3A12614612ADA1DC005D05FA /* AddTopicController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddTopicController.h; sourceTree = "<group>"; };
+		3A12614712ADA1DC005D05FA /* AddTopicController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddTopicController.m; sourceTree = "<group>"; };
 		3A2A6A3A11EE5ED300FF373C /* SynchronizedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SynchronizedObject.h; sourceTree = "<group>"; };
 		3A2A6A3B11EE5ED300FF373C /* SynchronizedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SynchronizedObject.m; sourceTree = "<group>"; };
 		3A2A6A3D11EE696000FF373C /* StateManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StateManager.h; sourceTree = "<group>"; };
@@ -387,6 +390,15 @@
 			name = Containers;
 			sourceTree = "<group>";
 		};
+		3A12613612AD4A63005D05FA /* Popovers */ = {
+			isa = PBXGroup;
+			children = (
+				3A12614612ADA1DC005D05FA /* AddTopicController.h */,
+				3A12614712ADA1DC005D05FA /* AddTopicController.m */,
+			);
+			name = Popovers;
+			sourceTree = "<group>";
+		};
 		3A2A6A3211EE5CD600FF373C /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -483,6 +495,7 @@
 				3AE11A3D1253A49700A91BC8 /* TaskDropTarget.h */,
 				3A82D447126F9CD5007AFA3D /* LocationBorderView.h */,
 				3A82D448126F9CD5007AFA3D /* LocationBorderView.m */,
+				3A12613612AD4A63005D05FA /* Popovers */,
 				3A1260EB12AD3C4E005D05FA /* Containers */,
 				3A1260EA12AD3C34005D05FA /* Type Views */,
 			);
@@ -665,6 +678,7 @@
 				3AD2D16A1295B09200C31515 /* TopicContainerContentView.m in Sources */,
 				3AD2D2621295D21500C31515 /* EventContainerContentView.m in Sources */,
 				3AD2D2FC1296F9AF00C31515 /* ServerSelectViewController.m in Sources */,
+				3A12614812ADA1DC005D05FA /* AddTopicController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

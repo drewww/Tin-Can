@@ -17,6 +17,8 @@
     
     CGRect buttonRect;
     bool addButtonPressed;
+    
+    UIPopoverController *popoverController;
 }
 
 - (void) addTopicView:(UIView *)newTopicView;
