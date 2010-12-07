@@ -48,6 +48,7 @@
         
         // Now setup the add topic popover.
         popoverController = [[UIPopoverController alloc] initWithContentViewController:[[AddTopicController alloc] init]];
+        [popoverController setPopoverContentSize:CGSizeMake(300, 100)];
     }
     
     return self;

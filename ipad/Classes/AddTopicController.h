@@ -16,4 +16,6 @@
     UIButton *submitButton;
 }
 
+- (void) addTopicButtonPressed:(id) sender;
+
 @end

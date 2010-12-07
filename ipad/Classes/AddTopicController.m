@@ -30,11 +30,11 @@
     self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 110)];
     
     // Set up the text field.
-    topicField = [[UITextField alloc] initWithFrame:CGRectMake(10, 10, 280, 50)];
+    topicField = [[UITextField alloc] initWithFrame:CGRectMake(10, 10, 280, 30)];
     
     topicField.borderStyle = UITextBorderStyleRoundedRect;
     topicField.textColor = [UIColor blackColor]; //text color
-    topicField.font = [UIFont systemFontOfSize:14.0];  //font size
+    topicField.font = [UIFont systemFontOfSize:18.0];  //font size
     topicField.placeholder = @"new topic";  //place holder
     topicField.backgroundColor = [UIColor whiteColor]; //background color
     topicField.autocorrectionType = UITextAutocorrectionTypeDefault;	// no auto correction support
@@ -43,23 +43,26 @@
     topicField.returnKeyType = UIReturnKeyDone;  // type of the return key
     
     topicField.clearButtonMode = UITextFieldViewModeWhileEditing;	// has a clear 'x' button to the right
+    topicField.backgroundColor = [UIColor blackColor];
     
-    topicField.delegate = self;	// let us be the delegate so we know when the keyboard's "Done" button is pressed    
+//    topicField.delegate = self;	// let us be the delegate so we know when the keyboard's "Done" button is pressed    
     
     submitButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
     submitButton.frame = CGRectMake(300, 300, 280, 30);
-    submitButton.center = CGPointMake(150, 90);
+    submitButton.center = CGPointMake(150, 70);
     submitButton.backgroundColor = [UIColor clearColor];
     [submitButton setTitle:@"Add Topic" forState: UIControlStateNormal];
     [submitButton setFont:[UIFont boldSystemFontOfSize:24.0f]];
-    [submitButton addTarget:self action:@selector(submitButtonPressed:)forControlEvents:UIControlEventTouchUpInside];
+    [submitButton addTarget:self action:@selector(addTopicButtonPressed:)forControlEvents:UIControlEventTouchUpInside];
     [submitButton setEnabled: YES];
+    
+    submitButton.backgroundColor = [UIColor blackColor];
     
     
     [self.view addSubview:topicField];
     [self.view addSubview:submitButton];
     
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = [UIColor blackColor];
 }
 
 
