@@ -12,11 +12,11 @@
 @interface TaskContainerView : UIView <TaskDropTarget> {
     float rot;
     bool hover;
+    bool isMainView;
 }
 
 - (void) setRot:(float) newRot;
-- (id)initWithFrame:(CGRect)frame withRot:(float)rotation;
-
+- (id) initWithFrame:(CGRect)frame withRot:(float)rotation isMainView:(BOOL) mainView;
 
 - (void) setHoverState:(bool)state;
 

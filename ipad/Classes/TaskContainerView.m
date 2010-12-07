@@ -10,6 +10,10 @@
 #import "TaskView.h"
 
 #define COLOR [UIColor colorWithWhite:0.3 alpha:1]
+#define BUTTON_COLOR [UIColor colorWithWhite:0.6 alpha:1]
+#define BUTTON_PRESSED_COLOR [UIColor colorWithWhite:0.45 alpha:1]
+
+#define HEADER_HEIGHT 26
 
 @implementation TaskContainerView
 
@@ -23,15 +27,15 @@
 // 2. Force contained tasks to be the width of the container (minus 2*the padding)
 // 3. We might need to do add/remove task by UUID for ease of use.
 
-- (id)initWithFrame:(CGRect)frame withRot:(float)rotation {
+- (id)initWithFrame:(CGRect)frame withRot:(float)rotation isMainView:(BOOL) mainView {
     if ((self = [super initWithFrame:frame])) {
-        
         self.frame=frame;
                 
         rot = rotation;
 		[self setTransform:CGAffineTransformMakeRotation(rot)];
 
-
+        isMainView = mainView;
+        
 		[self setNeedsLayout];
     }
     return self;
@@ -51,16 +55,40 @@
     CGContextSetFillColorWithColor(ctx, backgroundColor.CGColor);
     CGContextFillRect(ctx, CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height));
 
+
+    CGRect headerRect;
+    CGRect headerLabelRect;
+    
+    double fontSize;
+    
+    if(isMainView) {
+        // Used fixed size rects.
+        headerRect = CGRectMake(0, 0, self.bounds.size.width, HEADER_HEIGHT);
+        headerLabelRect = CGRectMake(0, 0, self.bounds.size.width, HEADER_HEIGHT-2);
+        fontSize = 22;
+        
+    } else {
+        // Use variable size rects.
+        headerRect = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height/24.0);
+        headerLabelRect = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height/25.0 - self.bounds.size.height/100.0); 
+        fontSize = self.bounds.size.height/28.0;
+        
+    }
+    
     
 	CGContextSetFillColorWithColor(ctx, COLOR.CGColor);
-	CGContextFillRect(ctx, CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height/24.0));
+	CGContextFillRect(ctx, headerRect);
+    
+    
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-	[@"TASKS" drawInRect:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height/25.0 - self.bounds.size.height/100.0) 
-                withFont:[UIFont boldSystemFontOfSize:self.bounds.size.height/28.0] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
+	[@"TASKS" drawInRect: headerLabelRect
+                withFont:[UIFont boldSystemFontOfSize:fontSize] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
 
 	CGContextSetLineWidth(ctx,2);
 	CGContextSetStrokeColorWithColor(ctx,  COLOR.CGColor);
 	CGContextStrokeRect(ctx, CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height));
+    
+    
     	
 }
 

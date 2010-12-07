@@ -44,7 +44,7 @@
     [meetingTimerView retain];
     [self.view addSubview:meetingTimerView];
 	
-	taskContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) withRot: M_PI/2];
+	taskContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) withRot: M_PI/2 isMainView:YES];
 
 	topicContainer=[[TopicContainerView alloc] initWithFrame:CGRectMake(260, 490, 250, 600)];
     
