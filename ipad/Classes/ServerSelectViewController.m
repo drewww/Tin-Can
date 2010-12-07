@@ -44,6 +44,7 @@
     [connectButton setFont:[UIFont boldSystemFontOfSize:30.0f]];
     [connectButton addTarget:self action:@selector(connectButtonPressed:)forControlEvents:UIControlEventTouchUpInside];
     [connectButton setEnabled: YES];
+    connectButton.backgroundColor = [UIColor blackColor];
     
     serverField = [[UITextField alloc] initWithFrame:CGRectMake(300, 300, 400, 50)];
     serverField.center = CGPointMake(512, 330);
@@ -60,6 +61,7 @@
     serverField.clearButtonMode = UITextFieldViewModeWhileEditing;	// has a clear 'x' button to the right
     
     serverField.delegate = self;	// let us be the delegate so we know when the keyboard's "Done" button is pressed    
+    serverField.backgroundColor = [UIColor blackColor];
     
     
     // Try to read in the last value used from the preferences system.
