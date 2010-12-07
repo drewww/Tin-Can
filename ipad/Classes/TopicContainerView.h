@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "TopicContainerContentView.h"
+#import "AddItemController.h"
 
-@interface TopicContainerView : UIView {
+@interface TopicContainerView : UIView <AddItemDelegate> {
 	float rot;    
     
     TopicContainerContentView *contentView;
@@ -22,5 +23,8 @@
 }
 
 - (void) addTopicView:(UIView *)newTopicView;
+- (void) itemSubmittedWithText:(NSString *)text;
+
+
 
 @end

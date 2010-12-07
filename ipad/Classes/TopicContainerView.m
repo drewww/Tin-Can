@@ -8,7 +8,7 @@
 
 #import "TopicContainerView.h"
 #import "TopicView.h"
-#import "AddTopicController.h"
+#import "AddItemController.h"
 #import "TopicContainerContentView.h"
 
 @implementation TopicContainerView
@@ -47,7 +47,11 @@
         
         
         // Now setup the add topic popover.
-        popoverController = [[UIPopoverController alloc] initWithContentViewController:[[AddTopicController alloc] init]];
+        AddItemController *addTopicController = [[AddItemController alloc] initWithPlaceholder:@"new topic" withButtonText:@"Add Topic"];
+        addTopicController.delegate = self;
+        
+        popoverController = [[UIPopoverController alloc] initWithContentViewController:addTopicController];
+
         [popoverController setPopoverContentSize:CGSizeMake(300, 100)];
     }
     
@@ -86,6 +90,14 @@
     CGContextFillRect(ctx, CGRectInset(buttonRect, 2, 9));    
 }
 
+
+- (void) itemSubmittedWithText:(NSString *)text {
+    
+    // send it to the server
+    
+    // dismiss the popover
+    [popoverController dismissPopoverAnimated:true];
+}
 
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     
