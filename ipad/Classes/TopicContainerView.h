@@ -23,8 +23,5 @@
 }
 
 - (void) addTopicView:(UIView *)newTopicView;
-- (void) itemSubmittedWithText:(NSString *)text;
-
-
 
 @end
