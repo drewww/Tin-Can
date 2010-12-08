@@ -100,7 +100,8 @@
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
     
-    cell.textLabel.text = [allUsers objectAtIndex:indexPath.row].name;
+    User *thisUser = (User *)[allUsers objectAtIndex:indexPath.row];
+    cell.textLabel.text = thisUser.name;
     
     return cell;
 }
@@ -152,7 +153,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     if(_delegate != nil) {
-        [delegate userSelected:[allUsers objectAtIndex:indexPath.row]];
+        [self.delegate userSelected:[allUsers objectAtIndex:indexPath.row]];
     }
 }
 
