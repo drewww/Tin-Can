@@ -35,7 +35,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.contentSizeForViewInPopover = CGSizeMake(150.0, 600.0);
+    self.contentSizeForViewInPopover = CGSizeMake(400.0, 600.0);
 }
 
 
@@ -43,20 +43,35 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    NSLog(@"in view will appear");
+    
     // Set up the list, pulling users from the StateManager.
     // We want to do this each time the list is shown, so it's up to date.
     
-    NSMutableSet *allUsersSet = [[NSMutableSet setWithSet:[[StateManager sharedInstance] getUsers]] retain];
+    NSMutableSet *allUsersSet = [NSMutableSet setWithSet:[[StateManager sharedInstance] getUsers]];
+    
+    NSLog(@"got the set of all users: %@", allUsersSet);
+    
     [allUsersSet minusSet:[StateManager sharedInstance].meeting.currentParticipants];
+    
+    NSLog(@"set minus current participants: %@", allUsersSet);
 
+    if(allUsers != nil) {
+        [allUsers release];
+    }
     allUsers = [allUsersSet sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:NO]]];
+    [allUsers retain];
+    
+    NSLog(@"final allUsers array: %@", allUsers);
 }
 
-/*
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    NSLog(@"view did appear: %@", allUsers);
 }
-*/
+
 /*
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
@@ -86,13 +101,14 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
+    NSLog(@"getting number of rows: %@", allUsers);
     return [allUsers count];
 }
 
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+    NSLog(@" IN CELL FOR ROW");
     static NSString *CellIdentifier = @"Cell";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -101,6 +117,7 @@
     }
     
     User *thisUser = (User *)[allUsers objectAtIndex:indexPath.row];
+        
     cell.textLabel.text = thisUser.name;
     
     return cell;

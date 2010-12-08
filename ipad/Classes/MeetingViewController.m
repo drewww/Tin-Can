@@ -21,6 +21,7 @@
 #import "LocationBorderView.h"
 #import "EventView.h"
 #import "CurrentTopicView.h"
+#import "AddUserButton.h"
 
 @implementation MeetingViewController
 
@@ -74,6 +75,9 @@
     timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(44, 409, 290, 208)];
     [self.view addSubview:timelineView];
     
+    AddUserButton *addUserButton = [[AddUserButton alloc] init];
+    addUserButton.center = CGPointMake(30, 995);
+    [self.view addSubview:addUserButton];
     
     
     
