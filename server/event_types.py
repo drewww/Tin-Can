@@ -123,7 +123,8 @@ def _handleJoinedLocation(event):
     location = state.get_obj(event.params["location"], model.Location)
     location.userJoined(event.actor)
     joinedAt = time.time()
-    updateStatusEvent = e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "joined location", "time": joinedAt})
+    updateStatusEvent = e.Event("UPDATE_STATUS", event.actor.uuid, None,
+        {"status": "joined location", "time": joinedAt})
     event.queue(updateStatusEvent)
     event.params["joinedAt"] = joinedAt
     if location.isInMeeting():
@@ -133,21 +134,6 @@ def _handleJoinedLocation(event):
         event.meeting.eventHistoryReadable.append(event.actor.name+
         " joined the meeting in location "+location.name)
     
-    # event.addResult("user", event.actor)
-    
-    # Turning this off for now - I think we can live without it.
-    # The USER_JOINED_LOCATION event will fire, and clients should be able
-    # to imply the rest. 
-    # if location.isInMeeting():
-    #      actorJoinedEvent = Event("JOINED_MEETING", event.actor.uuid,
-    #          location.meeting.uuid)
-    # 
-    #      # TODO Need to do something about dispatch order here. This joined
-    #      # event is going to finish dispatching before the joined_location
-    #      # event does, which might cause some trouble. Need a way for events
-    #      # to dispatch in the order they're created, not the order they're 
-    #      # executed. 
-    #      actorJoinedEvent.dispatch()
     
     return event
 

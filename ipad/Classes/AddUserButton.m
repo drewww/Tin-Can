@@ -7,6 +7,8 @@
 //
 
 #import "AddUserButton.h"
+#import "StateManager.h"
+#import "ConnectionManager.h"
 
 #define COLOR [UIColor colorWithWhite:0.3 alpha:1]
 #define BUTTON_COLOR [UIColor colorWithWhite:0.6 alpha:1]
@@ -71,6 +73,11 @@
     NSLog(@"user selected: %@", userToAdd);
     
     [addUserPopover dismissPopoverAnimated:YES];
+    
+    // Issue the join user commend.
+    StateManager *state = [StateManager sharedInstance];
+    [[ConnectionManager sharedInstance] joinLocation:state.location withUser:userToAdd];
+    
 }
 
 - (void)dealloc {

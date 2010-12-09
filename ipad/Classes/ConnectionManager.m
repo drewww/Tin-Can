@@ -494,6 +494,15 @@ static NSString *selectedServer = nil;
 #pragma mark -
 #pragma mark State Manipulation Methods
 
+- (void) joinLocation:(Location *)locationToJoin withUser:(User *)userJoiningLocation {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/locations/join"]];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request setPostValue:locationToJoin.uuid forKey:@"locationUUID"];    
+    [request setPostValue:userJoiningLocation.uuid forKey:@"userUUID"];    
+    [request setDelegate:self];
+    [request startAsynchronous];    
+}
+
 - (void) joinRoomWithUUID:(UUID *)roomUUID {
     
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/rooms/join"]];
