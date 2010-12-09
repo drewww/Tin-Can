@@ -40,11 +40,19 @@
 - (void) userJoined:(User *)theUser {
     [self.users addObject:theUser];
     theUser.location = self;
+    
+    if(meeting != nil) {
+        [meeting userJoined:theUser theLocation:self];
+    }
 }
 
 - (void) userLeft:(User *)theUser {
     [self.users removeObject:theUser];
     theUser.location = nil;
+
+    if(meeting != nil) {
+        [meeting userLeft:theUser theLocation:self];
+    }
 }
 
 - (void) joinedMeeting:(Meeting *)theMeeting {

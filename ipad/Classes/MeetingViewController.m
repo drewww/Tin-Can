@@ -364,9 +364,10 @@
     
 
     // Debugging to make sure sorting is working properly.
-//    for(UserView *view in sortedUserViews) {
-//        NSLog(@"%@", [view getUser]);
-//    }
+    NSLog(@"laying out users:");
+    for(UserView *view in sortedUserViews) {
+        NSLog(@"%@", [view getUser]);
+    }
     
     int numViews = [sortedUserViews count];
     
@@ -484,6 +485,8 @@
         
         viewIndex++;
     }   
+    
+    [locBorderView setNeedsDisplay];
 }
 
 // Override to allow orientations other than the default portrait orientation.

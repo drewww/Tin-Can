@@ -42,6 +42,12 @@
     NSArray *locations = [[StateManager sharedInstance].meeting.locations allObjects];
     
     for (Location *loc in locations) {
+        
+        // If there are no users in this location, skip it.
+        if([loc.users count]==0) {
+            continue;
+        }
+        
         CGContextSetStrokeColorWithColor(ctx, loc.color.CGColor);
         CGContextSetLineWidth(ctx, 4.0f);
         
