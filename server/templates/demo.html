@@ -26,16 +26,16 @@
 	// We'll put all our code here.
 	
 	var localUser;
+	var pc;
+	var localLocation;
+	var localMeeting;
 	
 	$("document").ready(function() {
 		
 		// On load, grab data from the server so we can pick a user
 		// to connect as. 
 		conn = connection;
-		
-		//paneController is stored here
-		var pc;
-		
+
 		//for the disclosure arrow
 		function arrowToggle(el) {
 			if ($(el).html().charCodeAt(0)=='9654') {
@@ -293,7 +293,7 @@
 					});
 					console.log('ddd');
 					break;
-					
+				/*
 				case "GET_STATE_COMPLETE":
 					var users = state.getUsers();
 
@@ -313,90 +313,128 @@
 					// Connect as the user.
 					localUser = selectedUser;
 					conn.setUser(selectedUser.uuid);
-					break;
+					break;*/
 				case "LOGIN_COMPLETE":
 					$("#login").hide();
 					$("#logged_in").show();
 					break;
 			}
 			
-			//tabs
-			$('#navbar h1').each(function(i,j){
-				$(this).click(function(){
-					$('.current').removeClass('current');
-					$(this).addClass('current');
-					$('#maindivs .pane').each(function(k,l) {
-						if (k==i) $(this).show();
-						else $(this).hide();
-					});
-				});
-				if ($(this).hasClass('current')) {
-					$('#maindivs .pane').each(function(k,l) {
-						if (k==i) $(this).show();
-						else $(this).hide();
-					});
-				}
-			});
-			
-			//pane functions for login interface
-			function PaneController(loginPane,loginMain) {
-				console.log('INIT PaneController');
-				this.panes = [$(loginPane)];
-				this.current = this.panes[0];
-				this.main = $(loginMain);
-				
-				$(this.main).height($(this.current).height());
-			}
-			
-			PaneController.prototype = {
-				
-				push_pane: function(newpane) {
-					var pane = $(newpane);
-					pane.css('display','none');
-					this.panes.push(pane);
-					$('#logindiv').append(pane);
-				},
-				
-				move_forward: function() {
-					var newwidth = $(this.main).width();
-					var index = $.inArray(this.current,this.panes) + 1;
-					var newpane = this.panes[index];
-					var newheight = $(newpane).height();
-					if (typeof newpane !== 'undefined') {
-						$(newpane).width(newwidth);
-						newpane.css({
-							'visibility': 'hidden',
-							'display': 'block',
-							'left': newwidth
-						});
-						newpane.css('visibility','visible');
-						newpane.animate({
-							'left': 0
-						});
-						$(this.current).animate({
-							'left': -newwidth
-						});
-						$(this.main).animate({
-							'height': newheight
-						})
-					}
-				}
-				
-			}
-			
-			pc = new PaneController('#startPane','#logindiv');
-			pc.push_pane('<div class="pane" style="width:200px;height:300px;background-color:blue"></div>');
-			pc.move_forward();
 		}});
 
 		// Tell the connection manager to load state so we can pick
 		// the uuid of the person we want. 
 		conn.getState();
 		
+		//tabs
+		$('#navbar h1').each(function(i,j){
+			$(this).click(function(){
+				$('.current').removeClass('current');
+				$(this).addClass('current');
+				$('#maindivs .pane').each(function(k,l) {
+					if (k==i) $(this).show();
+					else $(this).hide();
+				});
+			});
+			if ($(this).hasClass('current')) {
+				$('#maindivs .pane').each(function(k,l) {
+					if (k==i) $(this).show();
+					else $(this).hide();
+				});
+			}
+		});
+		
+		//pane functions for login interface
+		function PaneController(loginPane,mainDiv) {
+			console.log('INIT PaneController');
+			this.panes = [$(loginPane)];
+			this.current = this.panes[0];
+			this.main = $(mainDiv);
+			//this.transtions is used to store "transition" panes
+			//transition panes will be skipped and popped if this.backward() is called
+			this.transitions = [];
+			
+			$(this.main).height($(this.current).height());
+		}
+		
+		PaneController.prototype = {
+			
+			push_pane: function(newpane,moveforward,transition) {
+				var pane = $(newpane);
+				pane.css('display','none');
+				this.panes.push(pane);
+				$('#logindiv').append(pane);
+				
+				if (typeof moveforward=='undefined') moveforward = true;
+				if (moveforward==true) this.forward();
+				
+				if (typeof transition=='undefined') transition = false;
+				if (transition==true) {
+					this.transitions.push(pane);
+				}
+			},
+			
+			move_pane: function(i) {
+				var newwidth = $(this.main).width();
+				var index = $.inArray(this.current,this.panes) + i*1;
+				var newpane = this.panes[index];
+				if (i==-1) {
+					tindex = $.inArray(newpane,this.transitions);
+					while (tindex!=-1) {
+						this.panes.splice(index,1);
+						this.transitions.splice(tindex,1);
+						var index = $.inArray(this.current,this.panes) + i*1;
+						var newpane = this.panes[index];
+						tindex = $.inArray(newpane,this.transitions);
+					}
+				}
+				var newheight = $(newpane).height();
+				if (typeof newpane !== 'undefined') {
+					$(this.current).animate({
+						'left': i*-newwidth
+					});
+					$(this.main).animate({
+						'height': newheight
+					});
+					$(newpane).width(newwidth);
+					newpane.css({
+						'visibility': 'hidden',
+						'display': 'block',
+						'left': i*newwidth
+					});
+					newpane.css('visibility','visible');
+					if (i==-1) {
+					    var that = this;
+					    newpane.animate({
+					        'left': 0
+					    }, function() {
+					        that.panes.pop();
+					        $(that.current).remove();
+					        that.current = newpane;
+					    });
+					} else {
+					    newpane.animate({
+					        'left': 0
+					    });
+					    this.current = newpane;
+					}
+				}
+			},
+			
+			forward: function() {
+				this.move_pane(1);
+			},
+			
+			backward: function() {
+				this.move_pane(-1);
+			}
+			
+		}
+		
+		pc = new PaneController('#startPane','#logindiv');
+		
 		// Execution picks up in the connection manager event handler
 		// above, in GET_STATE_COMPLETE.
-		
-		$("#login").click(function() {conn.connect();});
 		
 		$("#submit_new_task").click(function() {
 			conn.addTask($("#new_task").val());
@@ -410,6 +448,100 @@
 		
 		$("#login").show();
 		$("#logged_in").hide();
+		
+		//set up various list views using mustache.js
+		//note that otag and ctag have been switched to {! !} to avoid conflicts with tornado
+		function pushLocations() {
+			var locationView  = {
+				locations: state.getLocations()
+			}
+			var template = '<div id="locationPane" class="pane"><h1><a>&laquo;&nbsp;Choose User</a>Locations</h1><ul class="paneList">{!#locations!}<li id={!uuid!}>{!name!}</li>{!/locations!}</ul></div>';
+			var newPane = $($.mustache(template,locationView));
+			newPane.find('a').click(function(){
+				pc.backward();
+			});
+		    newPane.find('li').each(function(){
+			    $(this).click(function(){
+			        localLocation = state.getObj($(this).attr('id'),Location);
+			        pushRooms('Locations');
+			    });
+			});
+			pc.push_pane(newPane);
+		}
+		
+		function pushRooms(lastView) {
+			var meetingView = {
+				lastView: lastView,
+				meetings: state.getMeetings()
+			}
+			var template = '<div id="meetingPane" class="pane"><h1><a>&laquo;&nbsp;{!lastView!}</a>Meetings</h1><ul class="paneList">{!#meetings!}<li id={!uuid!}>{!title!}</li>{!/meetings!}</ul></div>';
+			var newPane = $($.mustache(template,meetingView));
+			newPane.find('a').click(function(){
+				pc.backward();
+			});
+			newPane.find('li').each(function(){
+				$(this).click(function(){
+					localMeeting = state.getObj($(this).attr('id'),Meeting);
+					loadMain();
+				});
+			});
+			pc.push_pane(newPane);
+		}
+		
+		function skipLocations() {
+			var newPane = $('<div id="skipPane" class="pane"><span>User is in location <strong>'+localLocation.name+'</strong>, skipping to meeting selection.</span></div>');
+			pc.push_pane(newPane,true,true);
+			setTimeout(function(){
+				pushRooms('Choose User');
+			},2000)
+		}
+		
+		function skipLocationsAndRooms() {
+			var newPane = $('<div id="skipPane" class="pane"><span>User is in location <strong>'+localLocation.name+'</strong> and meeting <strong>'+localMeeting.title+'</strong>, loading meeting.</span></div>');
+			pc.push_pane(newPane,true,true);
+			setTimeout(function(){
+				loadMain();
+			},2000)
+		}
+		
+		function loadMain() {
+			alert('loadMain');
+		}
+		
+		$('#startPane .paneList li').each(function(){
+			$(this).click(function(){
+				var name = $(this).html();
+				$('#logged_in span').html(name);
+				var uuid = $(this).attr('id');
+				localUser = state.getObj(uuid,User);
+				conn.setUser(uuid);
+				conn.connect();
+				
+				var inLocation = false;
+				var inMeeting = false;
+				$.each(state.getLocations(),function(){
+				    var that = this;
+				    $.each(this.users,function(){
+				        //if the location has a user that is the signed in user
+			            if (this.uuid==uuid) {
+			                inLocation = true;
+			                localLocation = state.getObj(that.uuid,Location);
+			                if (that.meeting!=null) {
+			                    inMeeting = true
+			                    localMeeting = state.getObj(that.meeting.uuid,Meeting);
+			                }
+			            }
+				    });
+				});
+				if (inLocation==false) {
+				    pushLocations();
+				} else if (inLocation==true && inMeeting==false) {
+				    skipLocations();
+				} else {
+				    skipLocationsAndRooms();
+				}
+			});
+		});
 		
 	});
 	
@@ -500,7 +632,10 @@
 
 	#taskdiv, #topicdiv {
 		padding: 5px;
-		min-height: 313px;
+	}
+	
+	#container {
+		min-height: 370px;
 	}
 
 	/* Task related styles. */
@@ -609,15 +744,35 @@
 		position: absolute;
 		top: 0;
 	}
-	.userList {
+	.paneList {
 		border-top: 1px solid #CCC;
 		margin: 0;
 	}
-	.userList li {
+	.paneList li {
 		border-bottom: 1px solid #CCC;
 		margin: 0;
 		padding: 10px;
 		background: url({{static_url('images/next.png')}}) no-repeat right center transparent;
+	}
+	.pane h1 a {
+		font-size: 16px;
+		vertical-align: top;
+		display: inline-block;
+		margin-right: 10px;
+		background-color: #444;
+		color: white;
+		padding: 5px 10px;
+		border-radius: 3px;
+	}
+	#skipPane {
+		text-align: center;
+		padding-top: 30px;
+	}
+	#skipPane span {
+		padding-bottom: 30px;
+		display: inline-block;
+		background: url({{static_url('images/ajax-loader.gif')}}) no-repeat bottom center transparent;
+		width: 90%;
 	}
 	
 </style>
@@ -627,18 +782,18 @@
 <header>
 	<img id="logo" src="{{static_url('images/mini_logo.png')}}"/>
 	<div id="title">TIN CAN</div>
-	<div id="identity"><input type="button" id="login" value="login">
-	<div id="logged_in"><img src="{{static_url('images/user.png')}}">Drew</div>
+	<div id="identity">
+		<div id="logged_in"><img src="{{static_url('images/user.png')}}"><span></span></div>
 	</div>
 </header>
 <div id="container">
 
 <div id="logindiv">
 	<div id="startPane" class="pane current">
-		<h1>Login</h1>
-		<ul class="userList">
+		<h1>Choose User</h1>
+		<ul class="paneList">
 		{% for user in users %}
-			<li>{{user.name}}</li>
+			<li id="{{user.uuid}}">{{user.name}}</li>
 		{% end %}
 		</ul>
 	</div>

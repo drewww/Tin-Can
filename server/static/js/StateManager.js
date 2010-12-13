@@ -247,6 +247,10 @@ StateManager.prototype = {
         }
         
         return locations;
+    },
+    
+    getMeetings: function() {
+        return this.meetings;
     }
 }
 
