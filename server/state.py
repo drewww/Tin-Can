@@ -89,7 +89,7 @@ def init_demo():
     locations[0].userJoined(users[1])
     locations[1].userJoined(users[2])
     locations[1].userJoined(users[3])
-    locations[1].userJoined(users[5])
+    # locations[1].userJoined(users[5])
     locations[1].userJoined(users[6])
     locations[1].userJoined(users[7])
     locations[2].userJoined(users[4])

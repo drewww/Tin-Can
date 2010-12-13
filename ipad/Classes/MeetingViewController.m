@@ -21,6 +21,7 @@
 #import "LocationBorderView.h"
 #import "EventView.h"
 #import "CurrentTopicView.h"
+#import "AddUserButton.h"
 
 @implementation MeetingViewController
 
@@ -44,7 +45,7 @@
     [meetingTimerView retain];
     [self.view addSubview:meetingTimerView];
 	
-	taskContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) withRot: M_PI/2];
+	taskContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(260, -65, 250, 600) withRot: M_PI/2 isMainView:YES];
 
 	topicContainer=[[TopicContainerView alloc] initWithFrame:CGRectMake(260, 490, 250, 600)];
     
@@ -71,9 +72,12 @@
     [self.view addSubview:locBorderView];
     [self.view sendSubviewToBack:locBorderView];
     
-    timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(45, 410, 290, 208)];
+    timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(44, 409, 290, 208)];
     [self.view addSubview:timelineView];
     
+    AddUserButton *addUserButton = [[AddUserButton alloc] init];
+    addUserButton.center = CGPointMake(30, 995);
+    [self.view addSubview:addUserButton];
     
     
     
@@ -360,9 +364,10 @@
     
 
     // Debugging to make sure sorting is working properly.
-//    for(UserView *view in sortedUserViews) {
-//        NSLog(@"%@", [view getUser]);
-//    }
+    NSLog(@"laying out users:");
+    for(UserView *view in sortedUserViews) {
+        NSLog(@"%@", [view getUser]);
+    }
     
     int numViews = [sortedUserViews count];
     
@@ -480,6 +485,8 @@
         
         viewIndex++;
     }   
+    
+    [locBorderView setNeedsDisplay];
 }
 
 // Override to allow orientations other than the default portrait orientation.

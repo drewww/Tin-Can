@@ -510,9 +510,12 @@ class User(Actor):
     def isInLocation(self):
         return self.location != None
     
-    #I hope this is how inheritance works...
-    def isLoggedIn(self):
-        return Actor.isLoggedIn(self) or self.isInLocation()
+    # we use this one to test for users that are listed as in meetings.
+    # not all users that are in meetings will have associated devices.
+    # to test that, use Actor.isLoggedIn - which will check to see if that
+    # user has dedicated devices. 
+    def isInMeeting(self):
+        return self.isInLocation();
         
     def getDict(self):
         d = Actor.getDict(self)

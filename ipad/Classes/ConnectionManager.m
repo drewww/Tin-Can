@@ -494,6 +494,15 @@ static NSString *selectedServer = nil;
 #pragma mark -
 #pragma mark State Manipulation Methods
 
+- (void) joinLocation:(Location *)locationToJoin withUser:(User *)userJoiningLocation {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/locations/join"]];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request setPostValue:locationToJoin.uuid forKey:@"locationUUID"];    
+    [request setPostValue:userJoiningLocation.uuid forKey:@"userUUID"];    
+    [request setDelegate:self];
+    [request startAsynchronous];    
+}
+
 - (void) joinRoomWithUUID:(UUID *)roomUUID {
     
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/rooms/join"]];
@@ -533,6 +542,14 @@ static NSString *selectedServer = nil;
     [request startAsynchronous];         
 }
 
+- (void) addTaskWithText:(NSString *)newTaskText {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/tasks/add"]];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request setPostValue:newTaskText forKey:@"text"];    
+    [request setDelegate:self];
+    [request startAsynchronous];
+}
+
 - (void) updateTopic:(Topic *)theTopic withStatus:(TopicStatus)theStatus {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/topics/update"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
@@ -552,6 +569,14 @@ static NSString *selectedServer = nil;
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/topics/restart"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:theTopic.uuid forKey:@"topicUUID"];    
+    [request setDelegate:self];
+    [request startAsynchronous];
+}
+
+- (void) addTopicWithText:(NSString *)newTopicText {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/topics/add"]];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request setPostValue:newTopicText forKey:@"text"];    
     [request setDelegate:self];
     [request startAsynchronous];
 }

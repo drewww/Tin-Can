@@ -523,6 +523,31 @@ class JoinLocationHandler(BaseHandler):
                 joinLocationEvent = Event("USER_JOINED_LOCATION", userUUID,
                     params={"location":location.uuid})
                 joinLocationEvent.dispatch()
+        elif isinstance(actor, model.Location):
+            # if the actor is a location (eg the join is coming from an ipad)
+            # then we're going to add the specified user to to the specified
+            # location.
+            
+            # This is basically for adding people "in spirit" who are not 
+            # logged in on specific devices. These users will be inMeeting,
+            # but not loggedIn.
+            
+            # [this logic is nearly the same as above and could be collapsed,
+            # but I'm going to keep them separate for conceptual reasons.]
+            
+            locationUUID = self.get_argument("locationUUID")
+            location = state.get_obj(locationUUID, Location)
+            if(location==None):
+                raise HTTPError(400, "Specified location UUID %s\
+                didn't exist or wasn't a valid location."%locationUUID)
+                return None
+            
+            userUUID = self.get_argument("userUUID")
+            
+            joinLocationEvent = Event("USER_JOINED_LOCATION", userUUID,
+                params={"location":location.uuid})
+            joinLocationEvent.dispatch()
+            
 
 class LeaveLocationHandler(BaseHandler):
     
