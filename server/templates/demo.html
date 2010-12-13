@@ -375,6 +375,7 @@
 			},
 			
 			move_pane: function(i) {
+				//i indicates forward (i=1) or backward (i=-1)
 				var newwidth = $(this.main).width();
 				var index = $.inArray(this.current,this.panes) + i*1;
 				var newpane = this.panes[index];
@@ -462,14 +463,17 @@
 			});
 		    newPane.find('li').each(function(){
 			    $(this).click(function(){
+					//set location variables here
 			        localLocation = state.getObj($(this).attr('id'),Location);
-			        pushRooms('Locations');
+					//if location is in a meeting already, loadMain() instead
+					//otherwise pushMeetings
+			        pushMeetings('Locations');
 			    });
 			});
 			pc.push_pane(newPane);
 		}
 		
-		function pushRooms(lastView) {
+		function pushMeetings(lastView) {
 			var meetingView = {
 				lastView: lastView,
 				meetings: state.getMeetings()
@@ -481,6 +485,7 @@
 			});
 			newPane.find('li').each(function(){
 				$(this).click(function(){
+					//set meeting variables here
 					localMeeting = state.getObj($(this).attr('id'),Meeting);
 					loadMain();
 				});
@@ -492,17 +497,19 @@
 			var newPane = $('<div id="skipPane" class="pane"><span>User is in location <strong>'+localLocation.name+'</strong>, skipping to meeting selection.</span></div>');
 			pc.push_pane(newPane,true,true);
 			setTimeout(function(){
-				pushRooms('Choose User');
+				pushMeetings('Choose User');
 			},2000)
 		}
 		
-		function skipLocationsAndRooms() {
+		function skipLocationsAndMeetings() {
 			var newPane = $('<div id="skipPane" class="pane"><span>User is in location <strong>'+localLocation.name+'</strong> and meeting <strong>'+localMeeting.title+'</strong>, skipping location and meeting selection.</span></div>');
 			pc.push_pane(newPane,true,true);
 			setTimeout(function(){
 				loadMain();
 			},2000)
 		}
+		
+		//write function skipMeetings()
 		
 		function loadMain() {
 			alert('loadMain');
@@ -538,7 +545,7 @@
 				} else if (inLocation==true && inMeeting==false) {
 				    skipLocations();
 				} else {
-				    skipLocationsAndRooms();
+				    skipLocationsAndMeetings();
 				}
 			});
 		});
