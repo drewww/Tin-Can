@@ -497,7 +497,7 @@
 		}
 		
 		function skipLocationsAndRooms() {
-			var newPane = $('<div id="skipPane" class="pane"><span>User is in location <strong>'+localLocation.name+'</strong> and meeting <strong>'+localMeeting.title+'</strong>, loading meeting.</span></div>');
+			var newPane = $('<div id="skipPane" class="pane"><span>User is in location <strong>'+localLocation.name+'</strong> and meeting <strong>'+localMeeting.title+'</strong>, skipping location and meeting selection.</span></div>');
 			pc.push_pane(newPane,true,true);
 			setTimeout(function(){
 				loadMain();
