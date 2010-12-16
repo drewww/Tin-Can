@@ -463,8 +463,9 @@
 			    $(this).click(function(){
 					// Tell the server that this user is joining
 					// this location.
-					
-					conn.joinLocation($(this).attr('id'), conn.user.id);
+					console.log("just before we join location, checking conn.user");
+					console.log(conn.user);
+					conn.joinLocation($(this).attr('id'), conn.user.uuid);
 			        //localLocation = state.getObj($(this).attr('id'),Location);
 					
 					// TODO
@@ -490,8 +491,8 @@
 			newPane.find('li').each(function(){
 				$(this).click(function(){
 					//set meeting variables here
-					console.log("About to join meeting, but MISSING A JOIN MEETING API CALL");
-					localMeeting = state.getObj($(this).attr('id'),Meeting);
+					var localMeeting = state.getObj($(this).attr('id'),Meeting);
+					conn.joinRoom(localMeeting.room.uuid)
 					loadMain();
 				});
 			});
@@ -529,12 +530,14 @@
 				var uuid = $(this).attr('id');
 				localUser = state.getObj(uuid,User);
 				conn.setUser(uuid);
+				
+				console.log("Just set user: ")
 				conn.connect();
 				
 				if (conn.user.isInLocation()==false) {
 				    pushLocations();
 				} else if (conn.user.isInLocation()==true &&
-							conn.meeting==null) {
+						   conn.meeting==null) {
 				    skipLocations();
 				} else {
 					// isInLocation is true and conn.meeting != null
@@ -554,7 +557,7 @@
 	body {
 		padding: 0px;
 		margin: 0px;
-		font-family: "Century Gothic", Helvetica, sans-serif;
+		font-family: Helvetica, sans-serif;
 	}
 	
 	a {
@@ -816,53 +819,7 @@
 	</div>
 
 	<ul id="topics">
-	{% for groupStatus in ["PAST","CURRENT","FUTURE"] %}
-		{% for topic in topics %}
-		{% if topic.status==groupStatus %}
-		<li id="{{topic.uuid}}" class="li{{ topic.status.capitalize() }}">
-			<div class="main">
-				<div class="arrow">&#9654;</div>
-				<div class="text">{{topic.text}}</div>	
-			</div>
-			<div class="details{% if topic.status=="CURRENT" %} current{% end %}">
-				{% import util %}
-				{% if topic.status=="PAST" %}
-				<div class="createdby">
-					Created by <strong>{{topic.createdBy.name}}</strong>
-					<span>Ended {{util.timesince(topic.stopTime)}}</span>
-				</div>
-				<div class="controlForm">
-					<form>
-						<input type="submit" value="Restart" class="restart">
-					</form>
-				</div>
-				{% elif topic.status=="CURRENT" %}
-				<div class="createdby">
-					Created by <strong>{{topic.createdBy.name}}</strong>
-					<span>Started {{util.timesince(topic.startTime)}}</span>
-				</div>
-				<div class="controlForm">
-					<form>
-						<input type="submit" value="Stop" class="stop">
-					</form>
-				</div>
-				{% else %}
-				<div class="createdby">
-					Created by <strong>{{topic.createdBy.name}}</strong>
-					<span>Not Started</span>
-				</div>
-				<div class="controlForm">
-					<form>
-						<input type="submit" value="Start" class="start">
-					</form>
-				</div>
-				{% end %}
-			</div>
-			<div class="clearfix"></div>
-		</li>
-		{% end %}
-		{% end %}
-	{% end %}
+
 	</ul>
 </div><!--end #topicdiv-->
 
@@ -876,41 +833,7 @@
 	</div>
 
 	<ul id="tasks">
-	{% for task in tasks %}
 
-	<li id="{{task.uuid}}">
-	
-		<div class="main">
-			<div class="arrow">&#9654;</div>
-			<div class="text">{{task.text}}</div>
-		</div>
-		<div class="details">
-			{% import util %}
-			<div class="createdby">Created by <strong>{{task.createdBy.name}}</strong> <span>{{util.timesince(task.createdAt)}}</span></div>
-			{% if task.assignedTo!=None %}
-			<div class="assignedto">Assigned to <strong>{{task.assignedTo.name}}</strong></span></div>
-			<div class="assignform">
-				<form>
-					<input type="submit" value="Deassign" class="deassign">
-				</form>
-			</div>	
-			{% else %}
-			<div class="assignedto">Not assigned</div>
-			<div class="assignform">
-				<form>
-					<input type="submit" value="Assign" class="assign">&nbsp;to&nbsp;
-					<select class="participants">
-						{% for participant in participants %}
-						<option value="{{participant.uuid}}">{{participant.name}}</option>
-						{% end %}
-					</select>
-				</form>
-			</div>
-			{% end %}
-		</div>
-		<div class="clearfix"></div>
-	</li>
-	{% end %}
 	</ul>
 	
 </div><!--end #taskdiv-->

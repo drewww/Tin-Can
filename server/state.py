@@ -57,7 +57,7 @@ def init_test():
     
     newLocationEvent = Event("NEW_LOCATION", params={"name":"E15-363"})
     newLocationEvent.dispatch()
-    newLocationEvent = Event("NEW_LOCATION", params={"name":"Orange+Green"})
+    newLocationEvent = Event("NEW_LOCATION", params={"name":"Garden Conf Room"})
     newLocationEvent.dispatch()
     newLocationEvent = Event("NEW_LOCATION", params={"name":"S+M Group Area"})
     newLocationEvent.dispatch()
