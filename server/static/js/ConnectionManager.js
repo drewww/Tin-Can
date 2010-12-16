@@ -95,7 +95,6 @@ ConnectionManager.prototype = {
                 events = $.parseJSON(data);
                 var self = this;
                 
-                
                 if (!this.loggedout){
                     setTimeout(function(){self.startPersistentConnection();}, 10);
 
@@ -186,9 +185,10 @@ ConnectionManager.prototype = {
                 // the currentMeeting capture stuff here. This is in addition
                 // to subsequent checks of the same thing.
                 if(actor.uuid == this.userUUID){
-                     this.user = user;
-                     this.loc = user.loc;
+                     this.user = actor;
                      
+                     if(user.loc != null) {
+                         this.loc = user.loc;
                      
                      // Think about the larger issues with this format
                      // sometime. Is it really a good idea to keep
@@ -197,9 +197,7 @@ ConnectionManager.prototype = {
                      if(this.loc.meeting != null) {
                          this.meeting = this.loc.meeting;
                      }
- 
-                     console.log("LOCAL location and user set: " +
-                         this.loc + " / " + this.user);
+                     }
                  }
                 
                 break;
