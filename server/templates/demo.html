@@ -27,8 +27,6 @@
 	
 	var localUser;
 	var pc;
-	var localLocation;
-	var localMeeting;
 	
 	$("document").ready(function() {
 		
@@ -463,9 +461,15 @@
 			});
 		    newPane.find('li').each(function(){
 			    $(this).click(function(){
-					//set location variables here
-			        localLocation = state.getObj($(this).attr('id'),Location);
-					//if location is in a meeting already, loadMain() instead
+					// Tell the server that this user is joining
+					// this location.
+					
+					conn.joinLocation($(this).attr('id'), conn.user.id);
+			        //localLocation = state.getObj($(this).attr('id'),Location);
+					
+					// TODO
+					// if location is in a meeting already, loadMain() instead
+					
 					//otherwise pushMeetings
 			        pushMeetings('Locations');
 			    });
@@ -486,6 +490,7 @@
 			newPane.find('li').each(function(){
 				$(this).click(function(){
 					//set meeting variables here
+					console.log("About to join meeting, but MISSING A JOIN MEETING API CALL");
 					localMeeting = state.getObj($(this).attr('id'),Meeting);
 					loadMain();
 				});
@@ -494,7 +499,7 @@
 		}
 		
 		function skipLocations() {
-			var newPane = $('<div id="skipPane" class="pane"><span>User is in location <strong>'+localLocation.name+'</strong>, skipping to meeting selection.</span></div>');
+			var newPane = $('<div id="skipPane" class="pane"><span>User is in location <strong>'+conn.loc.name+'</strong>, skipping to meeting selection.</span></div>');
 			pc.push_pane(newPane,true,true);
 			setTimeout(function(){
 				pushMeetings('Choose User');
@@ -502,7 +507,7 @@
 		}
 		
 		function skipLocationsAndMeetings() {
-			var newPane = $('<div id="skipPane" class="pane"><span>User is in location <strong>'+localLocation.name+'</strong> and meeting <strong>'+localMeeting.title+'</strong>, skipping location and meeting selection.</span></div>');
+			var newPane = $('<div id="skipPane" class="pane"><span>User is in location <strong>'+conn.loc.name+'</strong> and meeting <strong>'+localMeeting.title+'</strong>, skipping location and meeting selection.</span></div>');
 			pc.push_pane(newPane,true,true);
 			setTimeout(function(){
 				loadMain();
@@ -512,7 +517,9 @@
 		//write function skipMeetings()
 		
 		function loadMain() {
-			alert('loadMain');
+			alert("About to swap in the meeting information.");
+			$('#logindiv').hide();
+			$('#maindiv').show();
 		}
 		
 		$('#startPane .paneList li').each(function(){
@@ -524,27 +531,13 @@
 				conn.setUser(uuid);
 				conn.connect();
 				
-				var inLocation = false;
-				var inMeeting = false;
-				$.each(state.getLocations(),function(){
-				    var that = this;
-				    $.each(this.users,function(){
-				        //if the location has a user that is the signed in user
-			            if (this.uuid==uuid) {
-			                inLocation = true;
-			                localLocation = state.getObj(that.uuid,Location);
-			                if (that.meeting!=null) {
-			                    inMeeting = true
-			                    localMeeting = state.getObj(that.meeting.uuid,Meeting);
-			                }
-			            }
-				    });
-				});
-				if (inLocation==false) {
+				if (conn.user.isInLocation()==false) {
 				    pushLocations();
-				} else if (inLocation==true && inMeeting==false) {
+				} else if (conn.user.isInLocation()==true &&
+							conn.meeting==null) {
 				    skipLocations();
 				} else {
+					// isInLocation is true and conn.meeting != null
 				    skipLocationsAndMeetings();
 				}
 			});

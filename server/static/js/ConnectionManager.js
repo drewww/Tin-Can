@@ -26,6 +26,7 @@ ConnectionManager.prototype = {
    setUser: function(userUUID) {
         console.log("Setting userUUID: " + userUUID);
         this.userUUID = userUUID;
+        this.user = state.getObj(this.userUUID, User);
    },
    
    connect: function () {
