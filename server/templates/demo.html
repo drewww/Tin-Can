@@ -98,6 +98,132 @@
 				conn.assignTask(task,user);
 			});
 		}
+		
+		function initializeMeetingView() {
+			// Construct all the individual pieces of the meeting view,
+			// eg the task the topic DOM elements that we need. Previously,
+			// this was done through templates on the server, but it's
+			// going to happen here now.
+			
+			// Munge the topic data into place, since mustache doesn't
+			// support dot notation.
+			// This isn't exactly the same as in the prev template because
+			// that was executing on the server and I need to double check
+			// that the local names are the same.
+			
+			
+			if(conn.meeting.topics.length > 0) {
+				for(var topicKey in conn.meeting.topics) {
+			
+				var topic = conn.meeting.topics[topicKey];
+			
+				var topicView = {
+					"topic_uuid":topic.uuid,
+					"topic_status":topic.status,            // should be liCurrent,liFuture, liPast
+					"topic_text":topic.text,
+					"topic_is_current":topic.status=="CURRENT",
+					"topic_createdby_name":topic.creator.name,
+					"topic_createdat_ago":timesince(topic.createdAt), // run this one through the time-since conversion to get, eg, 26m ago
+				};
+			
+				var topicTemplate = "<li id=\"{!topic_uuid!}\"\ class=\"li{!topic_status!}\">\
+					<div class=\"main\">\
+						<div class=\"arrow\">&#9654;</div>\
+						<div class=\"text\">{!topic_text!}</div>\
+					</div>\
+					<div class=\"controlForm\">\
+						<form>\
+							<input type=\"submit\" value=\"Restart\" class=\"restart\">\
+						</form>\
+					</div>\
+					{!#topic_is_current!}\
+					<div class=\"createdby\">\
+						Created by <strong>{!topic_createdby_name!}</strong>\
+						<span>Started {!topic_createdat_ago!}</span>\
+					</div>\
+					<div class=\"controlForm\">\
+						<form>\
+							<input type=\"submit\" value=\"Stop\" class=\"stop\">\
+						</form>\
+					</div>\
+					{!/topic_is_current!}\
+					{!^topic_is_current!}\
+					<div class=\"createdby\">\
+						Created by <strong>{!topic_createdby_name!}</strong>\
+						<span>Not Started</span>\
+					</div>\
+					<div class=\"controlForm\">\
+						<form>\
+							<input type=\"submit\" value=\"Start\" class=\"start\">\
+						</form>\
+					</div>\
+					{!/topic_is_current!}\
+					</div>\
+					<div class=\"clearfix\"></div>\
+				</li>";
+			
+				var newTask = $($.mustache(taskTemplate,taskView));
+				console.log("newTask: " + newTask);
+				$("#topicdiv").append(newTask);
+			
+				}
+			}
+			
+			
+			// // generate this in advance
+			// var participantOptionList = "<select class=\"participants\">";
+			// 
+			// for(var userKey in conn.meeting.users) {
+			// 	var user = conn.meeting.users[userKey];
+			// 	
+			// 	participantOptionList = participantOptionList + "<option value=\""user.uuid"\">" + user.name + "</option>";
+			// }
+			// 
+			// participantOptionList = participantOptionList + "</select>";
+			// 
+			// var topicView = {
+			// 	"task_uuid":,
+			// 	"task_text":,
+			// 	"task_is_assigned":,
+			// 	"task_createdby_name":,
+			// 	"task_createdat_ago":,
+			// 	"task_assignedto_name":,
+			// 	"participant_option_list":participantOptionList,
+			// };
+			// 
+			// var topicTemplate = """
+			// <li id=\"{!task_uuid!}\">
+			// 
+			// 		<div class=\"main\">
+			// 			<div class=\"arrow\">&#9654;</div>
+			// 			<div class=\"text\">{!task_text!}</div>
+			// 		</div>
+			// 		<div class=\"details\">
+			// 			<div class=\"createdby\">Created by <strong>{!task_createdby_name!}</strong> <span>{!task_createdat_ago!}</span></div>
+			// 			{!#task_is_assigned!}
+			// 			<div class=\"assignedto\">Assigned to <strong>{!task_assignedto_name!}</strong></span></div>
+			// 			<div class=\"assignform\">
+			// 				<form>
+			// 					<input type=\"submit\" value=\"Deassign\" class=\"deassign\">
+			// 				</form>
+			// 			</div>	
+			// 			{!/task_is_assigned!}
+			// 			{!^task_is_assigned!}
+			// 
+			// 			<div class=\"assignedto\">Not assigned</div>
+			// 			<div class=\"assignform\">
+			// 				<form>
+			// 					<input type=\"submit\" value=\"Assign\" class=\"assign\">&nbsp;to&nbsp;
+			// 					{!participant_option_list!}
+			// 				</form>
+			// 			</div>
+			// 			{!^task_is_assigned!}
+			// 		</div>
+			// 		<div class=\"clearfix\"></div>
+			// 	</li>
+			// """;
+			
+		}
 
 		$('#tasks li, #topics li').each(function(){
 			meetingObjectToggle($(this))();
@@ -519,8 +645,11 @@
 		
 		function loadMain() {
 			alert("About to swap in the meeting information.");
+			initializeMeetingView();
+			
 			$('#logindiv').hide();
 			$('#maindiv').show();
+			
 		}
 		
 		$('#startPane .paneList li').each(function(){

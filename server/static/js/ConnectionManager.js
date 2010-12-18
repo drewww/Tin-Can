@@ -263,6 +263,8 @@ ConnectionManager.prototype = {
                     this.user = user;
                     this.loc = loc;
                     
+                    // TODO do I need to set the meeting here?
+                    
                     console.log("LOCAL location and user set: " +
                         this.loc + " / " + this.user);
                 }
@@ -293,6 +295,9 @@ ConnectionManager.prototype = {
                 break;
                 
             case "LOCATION_JOINED_MEETING":
+            
+                console.log("LOCATION_JOINED_MEETING, checking this.loc");
+                console.loc(this.loc);
                 meeting = state.getObj(ev["params"]["meeting"], Meeting);
                 loc = state.getObj(ev.actorUUID, Location);
                 meeting.locJoined(loc);
