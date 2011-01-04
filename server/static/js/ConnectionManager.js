@@ -170,7 +170,7 @@ ConnectionManager.prototype = {
         
         // Depending on the event type, update the internal state
         // appropriately
-        console.log(ev);
+        console.log("--" + ev.eventType);
         switch(ev.eventType) {
             case "ADD_ACTOR_DEVICE":
                 // We don't really care about this one, actually.
@@ -297,7 +297,7 @@ ConnectionManager.prototype = {
             case "LOCATION_JOINED_MEETING":
             
                 console.log("LOCATION_JOINED_MEETING, checking this.loc");
-                console.loc(this.loc);
+                console.log(this.loc);
                 meeting = state.getObj(ev["params"]["meeting"], Meeting);
                 loc = state.getObj(ev.actorUUID, Location);
                 meeting.locJoined(loc);

@@ -263,7 +263,10 @@
 		conn.addListener({connectionEvent: function(e) {
 			
 			switch(e.eventType) {
-				
+				case "LOCATION_JOINED_MEETING":
+					console.log("LOCATION JOINED MEETING IN DEMO");
+					loadMain();
+					break;
 				// case "LOGIN_COMPLETE":
 				// 	// we should be able to back out the meeting from the
 				// 	// user object. 
@@ -619,7 +622,6 @@
 					//set meeting variables here
 					var localMeeting = state.getObj($(this).attr('id'),Meeting);
 					conn.joinRoom(localMeeting.room.uuid)
-					loadMain();
 				});
 			});
 			pc.push_pane(newPane);
@@ -637,6 +639,11 @@
 			var newPane = $('<div id="skipPane" class="pane"><span>User is in location <strong>'+conn.loc.name+'</strong> and meeting <strong>'+localMeeting.title+'</strong>, skipping location and meeting selection.</span></div>');
 			pc.push_pane(newPane,true,true);
 			setTimeout(function(){
+				
+				// We're allowed to do this directly, here, because in this
+				// situation we should alread have all the info we need
+				// about this person's statuses
+				console.log("At the hard-coded loadMain.");
 				loadMain();
 			},2000)
 		}
