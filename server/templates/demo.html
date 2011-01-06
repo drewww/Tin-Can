@@ -119,9 +119,11 @@
 			
 				var topicView = {
 					"topic_uuid":topic.uuid,
-					"topic_status":topic.status,            // should be liCurrent,liFuture, liPast
+					"topic_status":topic.status,            // should be liCURRENT,liFUTURE, liPAST
 					"topic_text":topic.text,
 					"topic_is_current":topic.status=="CURRENT",
+					"topic_is_past":topic.status=="PAST",
+					"topic_is_future":topic.status=="FUTURE",
 					"topic_createdby_name":topic.creator.name,
 					"topic_createdat_ago":timesince(topic.createdAt), // run this one through the time-since conversion to get, eg, 26m ago
 				};
@@ -132,15 +134,10 @@
 						<div class=\"text\">{!topic_text!}</div>\
 					</div>\
 					<div class=\"details\">\
-					<div class=\"controlForm\">\
-						<form>\
-							<input type=\"submit\" value=\"Restart\" class=\"restart\">\
-						</form>\
-					</div>\
 					{!#topic_is_current!}\
 					<div class=\"createdby\">\
 						Created by <strong>{!topic_createdby_name!}</strong>\
-						<span>Started {!topic_createdat_ago!}</span>\
+						&nbsp;<span>Started {!topic_createdat_ago!}</span>\
 					</div>\
 					<div class=\"controlForm\">\
 						<form>\
@@ -148,20 +145,41 @@
 						</form>\
 					</div>\
 					{!/topic_is_current!}\
-					{!^topic_is_current!}\
+					{!#topic_is_future!}\
 					<div class=\"createdby\">\
 						Created by <strong>{!topic_createdby_name!}</strong>\
-						<span>Not Started</span>\
+						&nbsp;<span>Not Started</span>\
 					</div>\
 					<div class=\"controlForm\">\
 						<form>\
 							<input type=\"submit\" value=\"Start\" class=\"start\">\
 						</form>\
 					</div>\
-					{!/topic_is_current!}\
+					{!/topic_is_future!}\
+					{!#topic_is_past!}\
+					<div class=\"createdby\">\
+						Created by <strong>{!topic_createdby_name!}</strong>\
+						&nbsp;<span>Started {!topic_createdat_ago!}</span>\
+					</div>\
+					<div class=\"controlForm\">\
+						<form>\
+							<input type=\"submit\" value=\"Restart\" class=\"restart\">\
+						</form>\
+					</div>\
+					{!/topic_is_past!}\
+					
+					
 					</div>\
 					<div class=\"clearfix\"></div>\
 				</li>";
+				
+				// <div class=\"controlForm\">\
+				// 	<form>\
+				// 		<input type=\"submit\" value=\"Restart\" class=\"restart\">\
+				// 	</form>\
+				// </div>\
+				
+				
 			
 				var newTask = $($.mustache(topicTemplate,topicView));
 				console.log("newTask: " + newTask);
@@ -292,7 +310,7 @@
 					var topic = e["results"]["topic"];
 					//set topic id
 					topicElement.attr('id',topic["uuid"]);
-					topicElement.attr('class','liFuture');
+					topicElement.attr('class','liFUTURE');
 					//set .text div
 					topicElement.find('.text').html(topic["text"]);
 					//set created by and started at (assuming startTime is null)
@@ -329,8 +347,8 @@
 							return false;
 						});
 						
-						$('#'+topicUUID).insertAfter($('#topics .liPast').last());
-						$('#'+topicUUID).attr('class','liPast');
+						$('#'+topicUUID).insertAfter($('#topics .liPAST').last());
+						$('#'+topicUUID).attr('class','liPAST');
 						revealDetails($('#'+topicUUID));
 					} else if (topic.status == "CURRENT") {
 						$('#'+topicUUID+' .createdby span').first().html('Started just now');
@@ -343,8 +361,8 @@
 							return false;
 						});
 						
-						$('#'+topicUUID).insertAfter($('#topics .liPast').last());
-						$('#'+topicUUID).attr('class','liCurrent');
+						$('#'+topicUUID).insertAfter($('#topics .liPAST').last());
+						$('#'+topicUUID).attr('class','liCURRENT');
 						revealDetails($('#'+topicUUID));
 					}
 					revealDetails($('#'+topicUUID));
@@ -821,13 +839,13 @@
 		background-color: #EEE;
 	}
 	
-	#topics li.liPast {
+	#topics li.liPAST {
 		background-color: #EEE;
 	}
-	#topics li.liCurrent {
+	#topics li.liCURRENT {
 		background-color: #5EFEB2;
 	}
-	#topics li.liFuture {
+	#topics li.liFUTURE {
 		background-color: #E3F6FF;
 	}
 	
