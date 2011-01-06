@@ -131,6 +131,7 @@
 						<div class=\"arrow\">&#9654;</div>\
 						<div class=\"text\">{!topic_text!}</div>\
 					</div>\
+					<div class=\"details\">\
 					<div class=\"controlForm\">\
 						<form>\
 							<input type=\"submit\" value=\"Restart\" class=\"restart\">\
@@ -162,11 +163,18 @@
 					<div class=\"clearfix\"></div>\
 				</li>";
 			
-				var newTask = $($.mustache(taskTemplate,taskView));
+				var newTask = $($.mustache(topicTemplate,topicView));
 				console.log("newTask: " + newTask);
-				$("#topicdiv").append(newTask);
+				
+				// This is almost certainly wrong - we need to be putting
+				// them in the "topics" ul, I'm pretty sure. but
+				// fixing another issue first. TODO 
+				$("#topics").append(newTask);
 			
 				}
+				
+				
+				setupButtonHandlers();
 			}
 			
 			
@@ -225,40 +233,43 @@
 			
 		}
 
-		$('#tasks li, #topics li').each(function(){
-			meetingObjectToggle($(this))();
-		});
+		function setupButtonHandlers() {
+			
+			$('#tasks li, #topics li').each(function(){
+				meetingObjectToggle($(this))();
+			});
 
-		$('#tasks input[type=submit].assign').click(function(){
-			var taskUUID = $(this).closest('li').attr('id');
-			var userUUID = $(this).parent().find('.participants').val();
-			conn.assignTask(taskUUID,userUUID);
-			return false;
-		});
-		
-		$('#tasks input[type=submit].deassign').click(function(){
-			var taskUUID = $(this).closest('li').attr('id');
-			conn.deassignTask(taskUUID);
-			return false;
-		});
-		
-		$('#topics input[type=submit].start').click(function(){
-			var topicUUID = $(this).closest('li').attr('id');
-			conn.updateTopic(topicUUID,"CURRENT");
-			return false;
-		});
-		
-		$('#topics input[type=submit].stop').click(function(){
-			var topicUUID = $(this).closest('li').attr('id');
-			conn.updateTopic(topicUUID,"PAST");
-			return false;
-		});
-		
-		$('#topics input[type=submit].restart').click(function(){
-			var topicUUID = $(this).closest('li').attr('id');
-			conn.restartTopic(topicUUID);
-			return false;
-		});
+			$('#tasks input[type=submit].assign').click(function(){
+				var taskUUID = $(this).closest('li').attr('id');
+				var userUUID = $(this).parent().find('.participants').val();
+				conn.assignTask(taskUUID,userUUID);
+				return false;
+			});
+
+			$('#tasks input[type=submit].deassign').click(function(){
+				var taskUUID = $(this).closest('li').attr('id');
+				conn.deassignTask(taskUUID);
+				return false;
+			});
+
+			$('#topics input[type=submit].start').click(function(){
+				var topicUUID = $(this).closest('li').attr('id');
+				conn.updateTopic(topicUUID,"CURRENT");
+				return false;
+			});
+
+			$('#topics input[type=submit].stop').click(function(){
+				var topicUUID = $(this).closest('li').attr('id');
+				conn.updateTopic(topicUUID,"PAST");
+				return false;
+			});
+
+			$('#topics input[type=submit].restart').click(function(){
+				var topicUUID = $(this).closest('li').attr('id');
+				conn.restartTopic(topicUUID);
+				return false;
+			});
+		}
 
 		conn.addListener({connectionEvent: function(e) {
 			
@@ -628,7 +639,7 @@
 		}
 		
 		function skipLocations() {
-			var newPane = $('<div id="skipPane" class="pane"><span>User is in location <strong>'+conn.loc.name+'</strong>, skipping to meeting selection.</span></div>');
+			var newPane = $('<div id="skipPane" class="pane"><span>User is in location <strong>'+conn.user.loc.name+'</strong>, skipping to meeting selection.</span></div>');
 			pc.push_pane(newPane,true,true);
 			setTimeout(function(){
 				pushMeetings('Choose User');
