@@ -172,25 +172,13 @@
 					</div>\
 					<div class=\"clearfix\"></div>\
 				</li>";
-				
-				// <div class=\"controlForm\">\
-				// 	<form>\
-				// 		<input type=\"submit\" value=\"Restart\" class=\"restart\">\
-				// 	</form>\
-				// </div>\
-				
-				
 			
 				var newTask = $($.mustache(topicTemplate,topicView));
 				console.log("newTask: " + newTask);
 				
-				// This is almost certainly wrong - we need to be putting
-				// them in the "topics" ul, I'm pretty sure. but
-				// fixing another issue first. TODO 
 				$("#topics").append(newTask);
 			
 				}
-				
 				
 				setupButtonHandlers();
 			}
