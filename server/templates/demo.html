@@ -25,6 +25,13 @@
 <script type="text/javascript" charset="utf-8">
 	// We'll put all our code here.
 	
+	
+	// trying to do proper delimiter changing, but it just doesn't work
+	// in mustache.js much to my chagrin. not getting any responses
+	// in the bug tracker, so time to fake it. 
+	//var templateInit = "{" + "{={! !}=}" + "}";
+	var templateInit = "";
+	
 	var localUser;
 	var pc;
 	
@@ -128,7 +135,8 @@
 					"topic_createdat_ago":timesince(topic.createdAt), // run this one through the time-since conversion to get, eg, 26m ago
 				};
 			
-				var topicTemplate = "<li id=\"{!topic_uuid!}\"\ class=\"li{!topic_status!}\">\
+				var topicTemplate = "\
+				<li id=\"{!topic_uuid!}\"\ class=\"li{!topic_status!}\">\
 					<div class=\"main\">\
 						<div class=\"arrow\">&#9654;</div>\
 						<div class=\"text\">{!topic_text!}</div>\
@@ -173,70 +181,89 @@
 					<div class=\"clearfix\"></div>\
 				</li>";
 			
-				var newTask = $($.mustache(topicTemplate,topicView));
-				console.log("newTask: " + newTask);
-				
-				$("#topics").append(newTask);
-			
+				var newTopic = $($.mustache(topicTemplate,topicView));
+				$("#topics").append(newTopic);
 				}
-				
-				setupButtonHandlers();
 			}
 			
-			
 			// // generate this in advance
-			// var participantOptionList = "<select class=\"participants\">";
-			// 
-			// for(var userKey in conn.meeting.users) {
-			// 	var user = conn.meeting.users[userKey];
-			// 	
-			// 	participantOptionList = participantOptionList + "<option value=\""user.uuid"\">" + user.name + "</option>";
-			// }
-			// 
-			// participantOptionList = participantOptionList + "</select>";
-			// 
-			// var topicView = {
-			// 	"task_uuid":,
-			// 	"task_text":,
-			// 	"task_is_assigned":,
-			// 	"task_createdby_name":,
-			// 	"task_createdat_ago":,
-			// 	"task_assignedto_name":,
-			// 	"participant_option_list":participantOptionList,
-			// };
-			// 
-			// var topicTemplate = """
-			// <li id=\"{!task_uuid!}\">
-			// 
-			// 		<div class=\"main\">
-			// 			<div class=\"arrow\">&#9654;</div>
-			// 			<div class=\"text\">{!task_text!}</div>
-			// 		</div>
-			// 		<div class=\"details\">
-			// 			<div class=\"createdby\">Created by <strong>{!task_createdby_name!}</strong> <span>{!task_createdat_ago!}</span></div>
-			// 			{!#task_is_assigned!}
-			// 			<div class=\"assignedto\">Assigned to <strong>{!task_assignedto_name!}</strong></span></div>
-			// 			<div class=\"assignform\">
-			// 				<form>
-			// 					<input type=\"submit\" value=\"Deassign\" class=\"deassign\">
-			// 				</form>
-			// 			</div>	
-			// 			{!/task_is_assigned!}
-			// 			{!^task_is_assigned!}
-			// 
-			// 			<div class=\"assignedto\">Not assigned</div>
-			// 			<div class=\"assignform\">
-			// 				<form>
-			// 					<input type=\"submit\" value=\"Assign\" class=\"assign\">&nbsp;to&nbsp;
-			// 					{!participant_option_list!}
-			// 				</form>
-			// 			</div>
-			// 			{!^task_is_assigned!}
-			// 		</div>
-			// 		<div class=\"clearfix\"></div>
-			// 	</li>
-			// """;
+			var participantOptionList = "<select class=\"participants\">";
+			var currentParticipants = conn.meeting.getCurrentParticipants();
+			for(var userKey in currentParticipants) {
+				var user = currentParticipants[userKey];
+				
+				participantOptionList = participantOptionList + "<option value=\""+ user.uuid + "\">" + user.name + "</option>";
+			}
 			
+			participantOptionList = participantOptionList + "</select>";
+			
+			console.log("participantOptionList: " + participantOptionList);
+			
+			if(conn.meeting.tasks.length > 0) {
+				for(var taskKey in conn.meeting.tasks) {
+			
+					var task = conn.meeting.tasks[taskKey];
+			
+					var assignedToName;
+			
+					if(task.assignedTo!=null) {
+						assignedToName = task.assignedTo.name;
+					} else {
+						assignedToName = "";
+					}
+			
+					var taskView = {
+						"task_uuid":task.uuid,
+						"task_text":task.text,
+						"task_is_assigned":task.assignedTo!=null,
+						"task_createdby_name":task.creator.name,
+						"task_createdat_ago":timesince(task.createdAt),
+						"task_assignedto_name":assignedToName,
+						"participant_option_list":participantOptionList,
+					};
+			
+					var taskTemplate = "\{\{={! !}=\}\}\
+					<li id=\"{!task_uuid!}\">\
+							<div class=\"main\">\
+								<div class=\"arrow\">&#9654;</div>\
+								<div class=\"text\">{!task_text!}</div>\
+							</div>\
+							<div class=\"details\">\
+								<div class=\"createdby\">Created by <strong>{!task_createdby_name!}</strong>\ <span>{!task_createdat_ago!}</span></div>\
+								{!#task_is_assigned!}\
+								<div class=\"assignedto\">Assigned to <strong>{!task_assignedto_name!}</strong></span></div>\
+								<div class=\"assignform\">\
+									<form>\
+										<input type=\"submit\" value=\"Deassign\" class=\"deassign\">\
+									</form>\
+								</div>\
+								{!/task_is_assigned!}\
+								{!^task_is_assigned!}\
+								<div class=\"assignedto\">Not assigned</div>\
+								<div class=\"assignform\">\
+									<form>\
+										<input type=\"submit\" value=\"Assign\" class=\"assign\">&nbsp;to&nbsp;\
+									</form>\
+								</div>\
+								{!/task_is_assigned!}\
+							</div>\
+							<div class=\"clearfix\"></div>\
+						</li>\
+					";
+					
+					var newTask = $($.mustache(taskTemplate,taskView));
+					
+					// add on the participant option list manually because
+					// of the mustache.js bug with non-escaped fields.
+					
+					// See discussion of this issue here: https://github.com/janl/mustache.js/issues/#issue/77
+					$(".assignform form").append($(participantOptionList));
+					
+					$("#tasks").append(newTask);
+				}
+			}
+			
+			setupButtonHandlers();
 		}
 
 		function setupButtonHandlers() {
@@ -600,8 +627,9 @@
 			var locationView  = {
 				locations: state.getLocations()
 			}
-			var template = '<div id="locationPane" class="pane"><h1><a>&laquo;&nbsp;Choose User</a>Locations</h1><ul class="paneList">{!#locations!}<li id={!uuid!}>{!name!}</li>{!/locations!}</ul></div>';
-			var newPane = $($.mustache(template,locationView));
+			var template = '\
+			<div id="locationPane" class="pane"><h1><a>&laquo;&nbsp;Choose User</a>Locations</h1><ul class="paneList">{!#locations!}<li id={!uuid!}>{!name!}</li>{!/locations!}</ul></div>';
+			var newPane = $($.mustache(templateInit+template,locationView));
 			newPane.find('a').click(function(){
 				pc.backward();
 			});
@@ -629,8 +657,9 @@
 				lastView: lastView,
 				meetings: state.getMeetings()
 			}
-			var template = '<div id="meetingPane" class="pane"><h1><a>&laquo;&nbsp;{!lastView!}</a>Meetings</h1><ul class="paneList">{!#meetings!}<li id={!uuid!}>{!title!}</li>{!/meetings!}</ul></div>';
-			var newPane = $($.mustache(template,meetingView));
+			var template = '\{\{={! !}=\}\}\
+			<div id="meetingPane" class="pane"><h1><a>&laquo;&nbsp;{!lastView!}</a>Meetings</h1><ul class="paneList">{!#meetings!}<li id={!uuid!}>{!title!}</li>{!/meetings!}</ul></div>';
+			var newPane = $($.mustache(templateInit+template,meetingView));
 			newPane.find('a').click(function(){
 				pc.backward();
 			});
