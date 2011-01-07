@@ -197,8 +197,6 @@
 			
 			participantOptionList = participantOptionList + "</select>";
 			
-			console.log("participantOptionList: " + participantOptionList);
-			
 			if(conn.meeting.tasks.length > 0) {
 				for(var taskKey in conn.meeting.tasks) {
 			
@@ -222,7 +220,7 @@
 						"participant_option_list":participantOptionList,
 					};
 			
-					var taskTemplate = "\{\{={! !}=\}\}\
+					var taskTemplate = "{{={! !}=}}\
 					<li id=\"{!task_uuid!}\">\
 							<div class=\"main\">\
 								<div class=\"arrow\">&#9654;</div>\
@@ -323,6 +321,8 @@
 				// 
 				// case ""
 				case "NEW_TOPIC":
+					// TODO replace with mustache templates
+					
 					var topicElement = $("#topics").children().first().clone();
 					var topic = e["results"]["topic"];
 					//set topic id
@@ -389,6 +389,7 @@
 					},3000);
 					break;
 				case "NEW_TASK":
+					// TODO replace with mustache templates
 					var taskElement = $("#tasks").children().first().clone();
 					var task = e["results"]["task"];
 					//set task id
@@ -504,13 +505,13 @@
 			$(this).click(function(){
 				$('.current').removeClass('current');
 				$(this).addClass('current');
-				$('#maindivs .pane').each(function(k,l) {
+				$('#topicdiv, #taskdiv').each(function(k,l) {
 					if (k==i) $(this).show();
 					else $(this).hide();
 				});
 			});
 			if ($(this).hasClass('current')) {
-				$('#maindivs .pane').each(function(k,l) {
+				$('#topicdiv, #taskdiv').each(function(k,l) {
 					if (k==i) $(this).show();
 					else $(this).hide();
 				});
@@ -703,6 +704,9 @@
 			
 			$('#logindiv').hide();
 			$('#maindivs').show();
+			
+			$('#topicdiv').show();
+			$('#taskdiv').hide();
 			
 		}
 		
@@ -992,7 +996,7 @@
 		<h1><img src="{{static_url('images/note.png')}}"/>&nbsp;TASKS</h1>
 	</div>
 
-	<div id="topicdiv" class="pane">
+	<div id="topicdiv">
 
 	<div id="add_topic" class="add_form">
 	<form action="" method="get" accept-charset="utf-8">
@@ -1006,7 +1010,7 @@
 	</ul>
 </div><!--end #topicdiv-->
 
-	<div id="taskdiv" class="pane">
+	<div id="taskdiv">
 
 	<div id="add_task" class="add_form">
 	<form action="" method="get" accept-charset="utf-8">
