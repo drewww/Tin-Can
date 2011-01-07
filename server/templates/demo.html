@@ -684,12 +684,12 @@
 		}
 		
 		function skipLocationsAndMeetings() {
-			var newPane = $('<div id="skipPane" class="pane"><span>User is in location <strong>'+conn.loc.name+'</strong> and meeting <strong>'+localMeeting.title+'</strong>, skipping location and meeting selection.</span></div>');
+			var newPane = $('<div id="skipPane" class="pane"><span>User is in location <strong>'+conn.user.loc.name+'</strong> and meeting <strong>'+conn.user.loc.meeting.title+'</strong>, skipping location and meeting selection.</span></div>');
 			pc.push_pane(newPane,true,true);
 			setTimeout(function(){
 				
 				// We're allowed to do this directly, here, because in this
-				// situation we should alread have all the info we need
+				// situation we should already have all the info we need
 				// about this person's statuses
 				console.log("At the hard-coded loadMain.");
 				loadMain();
@@ -699,7 +699,6 @@
 		//write function skipMeetings()
 		
 		function loadMain() {
-			alert("About to swap in the meeting information.");
 			initializeMeetingView();
 			
 			$('#logindiv').hide();
@@ -720,18 +719,18 @@
 				
 				if (conn.user.isInLocation()==false) {
 				    pushLocations();
-				} else if (conn.user.isInLocation()==true &&
-						   conn.meeting==null) {
-				    skipLocations();
-				} else {
-					// isInLocation is true and conn.meeting != null
-				    skipLocationsAndMeetings();
+				} else if (conn.user.isInLocation()==true) {
+					
+					if(conn.user.loc.meeting==null) {
+				    	skipLocations();
+					} else {
+						// isInLocation is true and conn.meeting != null
+				    	skipLocationsAndMeetings();
+					}
 				}
 			});
 		});
-		
 	});
-	
 	
 </script>
 
