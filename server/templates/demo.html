@@ -256,11 +256,13 @@
 					// add on the participant option list manually because
 					// of the mustache.js bug with non-escaped fields.
 					
-					// See discussion of this issue here: https://github.com/janl/mustache.js/issues/#issue/77
-					$(".assignform form").append($(participantOptionList));
 					
 					$("#tasks").append(newTask);
 				}
+				
+				// See discussion of this issue here: https://github.com/janl/mustache.js/issues/#issue/77
+				$(".assignform>form").append($(participantOptionList));
+				
 			}
 			
 			setupButtonHandlers();
