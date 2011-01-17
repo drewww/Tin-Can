@@ -88,7 +88,7 @@
     
     
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-	[@"TASKS" drawInRect: headerLabelRect
+	[@"IDEAS" drawInRect: headerLabelRect
                 withFont:[UIFont boldSystemFontOfSize:fontSize] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
 
 	CGContextSetLineWidth(ctx,2);
