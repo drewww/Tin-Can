@@ -32,6 +32,83 @@
 	//var templateInit = "{" + "{={! !}=}" + "}";
 	var templateInit = "";
 	
+	var participantOptionList;
+	
+	var taskTemplate = "\
+	<li id=\"{!task_uuid!}\">\
+			<div class=\"main\">\
+				<div class=\"arrow\">&#9654;</div>\
+				<div class=\"text\">{!task_text!}</div>\
+			</div>\
+			<div class=\"details\">\
+				<div class=\"createdby\">Created by <strong>{!task_createdby_name!}</strong>\ <span>{!task_createdat_ago!}</span></div>\
+				{!#task_is_assigned!}\
+				<div class=\"assignedto\">Assigned to <strong>{!task_assignedto_name!}</strong></span></div>\
+				<div class=\"assignform\">\
+					<form>\
+						<input type=\"submit\" value=\"Deassign\" class=\"deassign\">\
+					</form>\
+				</div>\
+				{!/task_is_assigned!}\
+				{!^task_is_assigned!}\
+				<div class=\"assignedto\">Not assigned</div>\
+				<div class=\"assignform\">\
+					<form>\
+						<input type=\"submit\" value=\"Assign\" class=\"assign\">&nbsp;to&nbsp;\
+					</form>\
+				</div>\
+				{!/task_is_assigned!}\
+			</div>\
+			<div class=\"clearfix\"></div>\
+		</li>\
+	";
+	
+	var topicTemplate = "\
+	<li id=\"{!topic_uuid!}\"\ class=\"li{!topic_status!}\">\
+		<div class=\"main\">\
+			<div class=\"arrow\">&#9654;</div>\
+			<div class=\"text\">{!topic_text!}</div>\
+		</div>\
+		<div class=\"details\">\
+		{!#topic_is_current!}\
+		<div class=\"createdby\">\
+			Created by <strong>{!topic_createdby_name!}</strong>\
+			&nbsp;<span>Started {!topic_createdat_ago!}</span>\
+		</div>\
+		<div class=\"controlForm\">\
+			<form>\
+				<input type=\"submit\" value=\"Stop\" class=\"stop\">\
+			</form>\
+		</div>\
+		{!/topic_is_current!}\
+		{!#topic_is_future!}\
+		<div class=\"createdby\">\
+			Created by <strong>{!topic_createdby_name!}</strong>\
+			&nbsp;<span>Not Started</span>\
+		</div>\
+		<div class=\"controlForm\">\
+			<form>\
+				<input type=\"submit\" value=\"Start\" class=\"start\">\
+			</form>\
+		</div>\
+		{!/topic_is_future!}\
+		{!#topic_is_past!}\
+		<div class=\"createdby\">\
+			Created by <strong>{!topic_createdby_name!}</strong>\
+			&nbsp;<span>Started {!topic_createdat_ago!}</span>\
+		</div>\
+		<div class=\"controlForm\">\
+			<form>\
+				<input type=\"submit\" value=\"Restart\" class=\"restart\">\
+			</form>\
+		</div>\
+		{!/topic_is_past!}\
+		
+		
+		</div>\
+		<div class=\"clearfix\"></div>\
+	</li>";
+	
 	var localUser;
 	var pc;
 	
@@ -118,6 +195,16 @@
 			// that was executing on the server and I need to double check
 			// that the local names are the same.
 			
+			// // generate this in advance
+			participantOptionList = "<select class=\"participants\">";
+			var currentParticipants = conn.meeting.getCurrentParticipants();
+			for(var userKey in currentParticipants) {
+				var user = currentParticipants[userKey];
+				
+				participantOptionList = participantOptionList + "<option value=\""+ user.uuid + "\">" + user.name + "</option>";
+			}
+			participantOptionList = participantOptionList + "</select>";
+			
 			
 			if(conn.meeting.topics.length > 0) {
 				for(var topicKey in conn.meeting.topics) {
@@ -134,68 +221,12 @@
 					"topic_createdby_name":topic.creator.name,
 					"topic_createdat_ago":timesince(topic.createdAt), // run this one through the time-since conversion to get, eg, 26m ago
 				};
-			
-				var topicTemplate = "\
-				<li id=\"{!topic_uuid!}\"\ class=\"li{!topic_status!}\">\
-					<div class=\"main\">\
-						<div class=\"arrow\">&#9654;</div>\
-						<div class=\"text\">{!topic_text!}</div>\
-					</div>\
-					<div class=\"details\">\
-					{!#topic_is_current!}\
-					<div class=\"createdby\">\
-						Created by <strong>{!topic_createdby_name!}</strong>\
-						&nbsp;<span>Started {!topic_createdat_ago!}</span>\
-					</div>\
-					<div class=\"controlForm\">\
-						<form>\
-							<input type=\"submit\" value=\"Stop\" class=\"stop\">\
-						</form>\
-					</div>\
-					{!/topic_is_current!}\
-					{!#topic_is_future!}\
-					<div class=\"createdby\">\
-						Created by <strong>{!topic_createdby_name!}</strong>\
-						&nbsp;<span>Not Started</span>\
-					</div>\
-					<div class=\"controlForm\">\
-						<form>\
-							<input type=\"submit\" value=\"Start\" class=\"start\">\
-						</form>\
-					</div>\
-					{!/topic_is_future!}\
-					{!#topic_is_past!}\
-					<div class=\"createdby\">\
-						Created by <strong>{!topic_createdby_name!}</strong>\
-						&nbsp;<span>Started {!topic_createdat_ago!}</span>\
-					</div>\
-					<div class=\"controlForm\">\
-						<form>\
-							<input type=\"submit\" value=\"Restart\" class=\"restart\">\
-						</form>\
-					</div>\
-					{!/topic_is_past!}\
-					
-					
-					</div>\
-					<div class=\"clearfix\"></div>\
-				</li>";
-			
+				
 				var newTopic = $($.mustache(topicTemplate,topicView));
 				$("#topics").append(newTopic);
 				}
 			}
 			
-			// // generate this in advance
-			var participantOptionList = "<select class=\"participants\">";
-			var currentParticipants = conn.meeting.getCurrentParticipants();
-			for(var userKey in currentParticipants) {
-				var user = currentParticipants[userKey];
-				
-				participantOptionList = participantOptionList + "<option value=\""+ user.uuid + "\">" + user.name + "</option>";
-			}
-			
-			participantOptionList = participantOptionList + "</select>";
 			
 			if(conn.meeting.tasks.length > 0) {
 				for(var taskKey in conn.meeting.tasks) {
@@ -219,36 +250,7 @@
 						"task_assignedto_name":assignedToName,
 						"participant_option_list":participantOptionList,
 					};
-			
-					var taskTemplate = "{{={! !}=}}\
-					<li id=\"{!task_uuid!}\">\
-							<div class=\"main\">\
-								<div class=\"arrow\">&#9654;</div>\
-								<div class=\"text\">{!task_text!}</div>\
-							</div>\
-							<div class=\"details\">\
-								<div class=\"createdby\">Created by <strong>{!task_createdby_name!}</strong>\ <span>{!task_createdat_ago!}</span></div>\
-								{!#task_is_assigned!}\
-								<div class=\"assignedto\">Assigned to <strong>{!task_assignedto_name!}</strong></span></div>\
-								<div class=\"assignform\">\
-									<form>\
-										<input type=\"submit\" value=\"Deassign\" class=\"deassign\">\
-									</form>\
-								</div>\
-								{!/task_is_assigned!}\
-								{!^task_is_assigned!}\
-								<div class=\"assignedto\">Not assigned</div>\
-								<div class=\"assignform\">\
-									<form>\
-										<input type=\"submit\" value=\"Assign\" class=\"assign\">&nbsp;to&nbsp;\
-									</form>\
-								</div>\
-								{!/task_is_assigned!}\
-							</div>\
-							<div class=\"clearfix\"></div>\
-						</li>\
-					";
-					
+						
 					var newTask = $($.mustache(taskTemplate,taskView));
 					
 					// add on the participant option list manually because
@@ -322,31 +324,23 @@
 				// case ""
 				case "NEW_TOPIC":
 					// TODO replace with mustache templates
-					
-					var topicElement = $("#topics").children().first().clone();
 					var topic = e["results"]["topic"];
-					//set topic id
-					topicElement.attr('id',topic["uuid"]);
-					topicElement.attr('class','liFUTURE');
-					//set .text div
-					topicElement.find('.text').html(topic["text"]);
-					//set created by and started at (assuming startTime is null)
-					var createdBy = state.getObj(topic["createdBy"],User);
-					topicElement.find('.createdby').html("Created by <strong>"+createdBy.name+"</strong> <span>Not started</apn>");
-					//add start form
-					var html = '<form>';
-					html += '<input type="submit" value="Start" class="start">';
-					html += '</form>';
-					topicElement.find('.controlForm').html(html);
-					topicElement.find('.start').click(function(){
-						conn.updateTopic(topic["uuid"],"CURRENT");
-						return false;
-					});
-					//add onclick behavior
-					meetingObjectToggle(topicElement)();
-					arrowDown(topicElement.find('.arrow'));
-					topicElement.find('.details').css('display','block');
-					$("#topics").append(topicElement);
+					
+					var topicView = {
+						"topic_uuid":topic.uuid,
+						"topic_status":topic.status,            // should be liCURRENT,liFUTURE, liPAST
+						"topic_text":topic.text,
+						"topic_is_current":topic.status=="CURRENT",
+						"topic_is_past":topic.status=="PAST",
+						"topic_is_future":topic.status=="FUTURE",
+						"topic_createdby_name":topic.creator.name,
+						"topic_createdat_ago":timesince(topic.createdAt), // run this one through the time-since conversion to get, eg, 26m ago
+					};
+
+					var newTopic = $($.mustache(topicTemplate,topicView));
+					$("#topics").append(newTopic);
+					setupButtonHandlers();
+					
 					break;
 				case "UPDATE_TOPIC":
 					var topicUUID = e["params"]["topicUUID"];
@@ -389,46 +383,24 @@
 					},3000);
 					break;
 				case "NEW_TASK":
-					// TODO replace with mustache templates
-					var taskElement = $("#tasks").children().first().clone();
 					var task = e["results"]["task"];
-					//set task id
-					taskElement.attr('id',task["uuid"]);
-					//set .text div
-					taskElement.find('.text').html(task["text"]);
-					//set created by and created at
-					var createdBy = state.getObj(task["createdBy"],User);
-					taskElement.find('.createdby').html("Created by <strong>"+createdBy.name+"</strong> <span>"+timesince(task['createdAt'])+"</span>");
-					//assuming that the new task is not assigned
-					taskElement.find('.assignedto').html("Not assigned");
-					//add onclick behavior
-					meetingObjectToggle(taskElement)();
-					//add assign form
-					var html = '<form>';
-					html += '<input type="submit" value="Assign" class="assign">&nbsp;to&nbsp;';
-					html += '<select class="participants">';
-					var participants = conn.meeting.getCurrentParticipants();
-					var x;
-					for (x in participants) {
-						html += '<option value="'+participants[x].uuid+'">'+participants[x].name+'</option>';
-					}
-					html += '</select>';
-					html += '</form>';
-					taskElement.find('.assignform').html(html);
+					var taskView = {
+						"task_uuid":task.uuid,
+						"task_text":task.text,
+						"task_is_assigned":task.assignedTo!=null,
+						"task_createdby_name":task.creator.name,
+						"task_createdat_ago":timesince(task.createdAt),
+						"task_assignedto_name":assignedToName,
+						"participant_option_list":participantOptionList,
+					};
 						
-					taskElement.find('input[type=submit].assign').click(function(){
-						var task = $(this).closest('li').attr('id');
-						var user = $(this).parent().find('.participants').val();
-						conn.assignTask(task,user);
-						return false;	
-					});
-					arrowDown(taskElement.find('.arrow'));
-					taskElement.find('.details').css('display','block');
-					$("#tasks").prepend(taskElement);
-					setTimeout(function() {
-						taskElement.find('.details').slideUp();
-						arrowRight(taskElement.find('.arrow').first());
-					},500);
+					var newTask = $($.mustache(taskTemplate,taskView));
+					
+					// add on the participant option list manually because
+					// of the mustache.js bug with non-escaped fields.
+					$("#tasks").append(newTask);
+					$(".assignform>form").append($(participantOptionList));
+					setupButtonHandlers();
 					break;
 				case "ASSIGN_TASK":
 					var taskUUID = e['params']['taskUUID'];
