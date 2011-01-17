@@ -103,23 +103,23 @@ def init_demo():
     locations[2].joinedMeeting(meeting)
     
     #new topics
-    newTopic = model.Topic(meeting.uuid, users[0].uuid, "Sponsor week planning",
+    newTopic = model.Topic(meeting.uuid, users[0].uuid, "what is postmodernism?",
         status=model.Topic.FUTURE, color="006600", createdAt=time.time()-14*60)
     meeting.addTopic(newTopic)
     users[0].setStatus("created new topic", newTopic.createdAt)
-    newTopic = model.Topic(meeting.uuid, users[3].uuid, "Conference trip report (Andrea)",
+    newTopic = model.Topic(meeting.uuid, users[3].uuid, "the end of modernism",
         status=model.Topic.FUTURE, color="006600", createdAt=time.time()-14*60)
     meeting.addTopic(newTopic)
     users[3].setStatus("created new topic", newTopic.createdAt)
-    newTopic = model.Topic(meeting.uuid, users[2].uuid, "Paper discussion",
+    newTopic = model.Topic(meeting.uuid, users[2].uuid, "what images mean",
         status=model.Topic.FUTURE, color="006600", createdAt=time.time()-13*60)
     meeting.addTopic(newTopic)
     users[2].setStatus("created new topic", newTopic.createdAt)
-    newTopic = model.Topic(meeting.uuid, users[2].uuid, "Tin Can design review",
+    newTopic = model.Topic(meeting.uuid, users[2].uuid, "media and spectacle",
         status=model.Topic.FUTURE, color="006600", createdAt=time.time()-13*60)
     meeting.addTopic(newTopic)
     users[2].setStatus("created new topic", newTopic.createdAt)
-    newTopic = model.Topic(meeting.uuid, users[2].uuid, "purchase new oscilloscope?",
+    newTopic = model.Topic(meeting.uuid, users[2].uuid, "power and agency",
         status=model.Topic.FUTURE, color="006600", createdAt=time.time()-13*60)
     meeting.addTopic(newTopic)
     users[2].setStatus("created new topic", newTopic.createdAt)
@@ -142,21 +142,21 @@ def init_demo():
 
     
     #new tasks
-    newTask = model.Task(meeting.uuid, users[1].uuid, "email out the best papers from the conference", createdAt=time.time()-10*60)
+    newTask = model.Task(meeting.uuid, users[1].uuid, "does postmodernism mean the end of history?", createdAt=time.time()-10*60)
     meeting.addTask(newTask)                                 
     users[1].setStatus("created new task", newTask.createdAt)
-    newTask = model.Task(meeting.uuid, users[0].uuid, "find a place to store our unused furniture", createdAt=time.time()-3*60)
+    newTask = model.Task(meeting.uuid, users[0].uuid, "does Baudrillard really deny agency to human actors?", createdAt=time.time()-3*60)
     meeting.addTask(newTask)
     users[0].setStatus("created new task", newTask.createdAt)
-    newTask = model.Task(meeting.uuid, users[0].uuid, "check our projectors to make sure they still work", createdAt=time.time()-3*60)
+    newTask = model.Task(meeting.uuid, users[0].uuid, "can a media event become so large it becomes a spectacle?", createdAt=time.time()-3*60)
     meeting.addTask(newTask)
     users[0].setStatus("created new task", newTask.createdAt)
-    newTask = model.Task(meeting.uuid, users[0].uuid, "handle poster printing", createdAt=time.time()-3*60)
+    newTask = model.Task(meeting.uuid, users[0].uuid, "Images are no different than language - they make meaning through reading", createdAt=time.time()-3*60)
     meeting.addTask(newTask)
     users[0].setStatus("created new task", newTask.createdAt)
-    newTask = model.Task(meeting.uuid, users[0].uuid, "update the group website with the latest photo", createdAt=time.time()-3*60)
-    meeting.addTask(newTask)
-    users[0].setStatus("created new task", newTask.createdAt)
+    # newTask = model.Task(meeting.uuid, users[0].uuid, "update the group website with the latest photo", createdAt=time.time()-3*60)
+    # meeting.addTask(newTask)
+    # users[0].setStatus("created new task", newTask.createdAt)
 
     
     tasks = meeting.tasks
