@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "LogoView.h"
-#import "LocationViewController.h"
+#import "UserViewController.h"
 #import "RoomViewController.h"
 #import "TinCanViewController.h"
 #import "Location.h"
@@ -16,7 +16,7 @@
 
 // Do we need all of these? Should check sometime. 
 @class LoginMasterViewController;
-@class LocationViewController;
+@class UserViewController;
 @class RoomViewController;
 @class LogoView;
 
@@ -31,8 +31,8 @@
 	CGFloat currentPoint;
 	
 	// These track the user selections
-	Location *chosenLocation;
 	Room *chosenRoom;
+	User *chosenUser;
 	
 	// Text to appear on screen
 	UILabel *loginInstructions;
@@ -44,7 +44,7 @@
     
     UILabel *connectionInfoLabel;
     
-	LocationViewController *locViewController;
+	UserViewController *userViewController;
 	RoomViewController *roomViewController;
 	TinCanViewController *controller;
 }
@@ -56,8 +56,8 @@
 
 - (void) loginButtonPressed:(id)sender;
 
-- (void) chooseLocation:(Location *)loc;
 - (void) chooseRoom:(Room *)room;
+- (void) chooseUser:(User *)user;
 
 - (void) updateLoginButton;
 - (void) setLoginButtonEnabled:(bool) enabled;

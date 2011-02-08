@@ -10,7 +10,7 @@
 #import "LoginMasterViewController.h"
 #import "LoginAppDelegate.h"
 #import "LogoView.h"
-#import "LocationViewController.h"
+#import "UserViewController.h"
 #import "RoomViewController.h"
 #import "headerView.h"
 #import "TinCanViewController.h"
@@ -45,7 +45,7 @@
 		
 		roomViewController = [[[RoomViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250, 400,500) withController:self] retain];
 		
-		locViewController = [[[LocationViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600, 400,500) withController:self] retain];
+		userViewController = [[[UserViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600, 400,500) withController:self] retain];
 		
 		
 		// Initializes Login Button
@@ -88,7 +88,7 @@
 		[self.view addSubview:loginButton];
 		[self.view addSubview:roomInstructions];
 		[self.view addSubview:locationInstructions];
-		[self.view addSubview:locViewController.view];
+		[self.view addSubview:userViewController.view];
 		[self.view addSubview:roomViewController.view];
 		[self.view addSubview:headerLocation];
 		[self.view addSubview:headerRoom];
@@ -96,7 +96,11 @@
         
 	} else if (event.type==kADD_ACTOR_DEVICE) {
         NSLog(@"In ADD_ACTOR_DEVICE callback. Doing room joining now.");
-        [[ConnectionManager sharedInstance] joinRoomWithUUID:chosenRoom.uuid];
+//        [[ConnectionManager sharedInstance] joinRoomWithUUID:chosenRoom.uuid];
+
+        // This needs to be rewritten - wait until we can actually get the selector working (or maybe we do nothing here? since it happens
+        // during connect.
+        
     } else if (event.type==kLOCATION_JOINED_MEETING) {
 
         NSLog(@"LOCATION_JOINED_MEETING");
@@ -126,7 +130,7 @@
 
 	if(self.view != nil) {
 		NSLog(@"calling reload data:");
-		[locViewController update];
+		[userViewController update];
 		[roomViewController update];
 	}
 	
@@ -147,8 +151,8 @@
 	currentPage=0;
 		
 	// Tracks user selections
+	chosenUser=NULL;
 	chosenRoom=NULL;
-	chosenLocation=NULL;
     
     connectionInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200, 325, 350, 200)];
     [connectionInfoLabel setTransform:CGAffineTransformMakeRotation(M_PI/2)];
@@ -177,12 +181,12 @@
     [self setLoginButtonEnabled:false];
 	
 	NSLog(@"Login button pressed.");
-    NSLog(@"location: %@; room: %@", chosenLocation, chosenRoom);
+    NSLog(@"location: %@; user: %@", chosenRoom, chosenUser);
     
     ConnectionManager *connMan = [ConnectionManager sharedInstance];
     
     // Do the login work here.
-    [connMan setLocation:chosenLocation.uuid];
+    [connMan setLocation:chosenUser.uuid];
 	[connMan connect];
     
     // Now we need to join a room, but we need to block on getting
@@ -205,22 +209,21 @@
     }
 }
 
-// Stores the location the User seleted in chosenLocation then updates login instructions
--(void)chooseLocation:(Location *)loc{
+// Stores the room the user seleted in chosenRoom then updates login instructions
+-(void)chooseRoom:(Room *)room{
 	
-	chosenLocation= loc;
+	chosenRoom= room;
     [self updateLoginButton];	
 }		
 
-
-// Stores the room the user seleted in chosenRoom then updates login instructions
--(void)chooseRoom:(Room *)room {
+// Stores the location the User seleted in chosenLocation then updates login instructions
+-(void)chooseUser:(User *)user {
 	
-	chosenRoom= room;
+	chosenUser=user;
     
     // Now pass a message to the LocationViewController so it can highlight 
     // physical locations appropropriately.
-    [locViewController setSelectedRoom:room];
+    [userViewController setSelectedUser:user];
     
     [self updateLoginButton];    
 }	
@@ -230,15 +233,15 @@
     // Looks at the current state of selected room/location and
     // updates the login button and login instruction text
     // appropriately.
-    if(chosenRoom != nil && chosenLocation != nil) {
+    if(chosenUser != nil && chosenRoom != nil) {
         [self setLoginButtonEnabled:true];
         loginInstructions.text = @"";
 
-    } else if (chosenRoom != nil && chosenLocation==nil) {
+    } else if (chosenUser != nil && chosenRoom==nil) {
         [self setLoginButtonEnabled:false];
-        loginInstructions.text = @"Please select a room to join.";
+        loginInstructions.text = @"Please select a user.";
         loginInstructions.numberOfLines = 2;
-    } else if (chosenLocation != nil && chosenRoom==nil) {
+    } else if (chosenRoom != nil && chosenUser==nil) {
         [self setLoginButtonEnabled:false];
         loginInstructions.text = @"Please select a meeting to join.";
         loginInstructions.numberOfLines = 2;

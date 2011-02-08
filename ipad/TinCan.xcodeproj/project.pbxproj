@@ -17,8 +17,6 @@
 		3A0B2C27127B5A69002C08A1 /* TimelineContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A0B2C26127B5A69002C08A1 /* TimelineContainerView.m */; };
 		3A0B2C2E127B6AC7002C08A1 /* EventView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A0B2C2C127B6AC7002C08A1 /* EventView.m */; };
 		3A12614812ADA1DC005D05FA /* AddItemController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A12614712ADA1DC005D05FA /* AddItemController.m */; };
-		3A12624712B0255E005D05FA /* AddUserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A12624612B0255E005D05FA /* AddUserController.m */; };
-		3A12627012B02EC1005D05FA /* AddUserButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A12626F12B02EC1005D05FA /* AddUserButton.m */; };
 		3A2A6A3C11EE5ED300FF373C /* SynchronizedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A3B11EE5ED300FF373C /* SynchronizedObject.m */; };
 		3A2A6A3F11EE696000FF373C /* StateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A3E11EE696000FF373C /* StateManager.m */; };
 		3A2A6A5A11EE73F800FF373C /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A5911EE73F800FF373C /* User.m */; };
@@ -79,9 +77,9 @@
 		DA7FD27A1208A127007A9217 /* TaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA7FD2791208A127007A9217 /* TaskView.m */; };
 		DA7FD3E11209E424007A9217 /* TaskContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA7FD3E01209E424007A9217 /* TaskContainerView.m */; };
 		DA96F0F811EE525500B64D3D /* HeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E311EE525500B64D3D /* HeaderView.m */; };
-		DA96F0F911EE525500B64D3D /* LocationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E511EE525500B64D3D /* LocationCell.m */; };
-		DA96F0FA11EE525500B64D3D /* LocationCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E711EE525500B64D3D /* LocationCellView.m */; };
-		DA96F0FB11EE525500B64D3D /* LocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E911EE525500B64D3D /* LocationViewController.m */; };
+		DA96F0F911EE525500B64D3D /* UserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E511EE525500B64D3D /* UserCell.m */; };
+		DA96F0FA11EE525500B64D3D /* UserCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E711EE525500B64D3D /* UserCellView.m */; };
+		DA96F0FB11EE525500B64D3D /* UserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0E911EE525500B64D3D /* UserViewController.m */; };
 		DA96F0FC11EE525500B64D3D /* LoginAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0EB11EE525500B64D3D /* LoginAppDelegate.m */; };
 		DA96F0FD11EE525500B64D3D /* LoginMasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0ED11EE525500B64D3D /* LoginMasterViewController.m */; };
 		DA96F0FE11EE525500B64D3D /* LogoView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA96F0EF11EE525500B64D3D /* LogoView.m */; };
@@ -110,10 +108,6 @@
 		3A0B2C2D127B6AC7002C08A1 /* EventView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventView.h; sourceTree = "<group>"; };
 		3A12614612ADA1DC005D05FA /* AddItemController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddItemController.h; sourceTree = "<group>"; };
 		3A12614712ADA1DC005D05FA /* AddItemController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddItemController.m; sourceTree = "<group>"; };
-		3A12624512B0255E005D05FA /* AddUserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddUserController.h; sourceTree = "<group>"; };
-		3A12624612B0255E005D05FA /* AddUserController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddUserController.m; sourceTree = "<group>"; };
-		3A12626E12B02EC1005D05FA /* AddUserButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddUserButton.h; sourceTree = "<group>"; };
-		3A12626F12B02EC1005D05FA /* AddUserButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddUserButton.m; sourceTree = "<group>"; };
 		3A2A6A3A11EE5ED300FF373C /* SynchronizedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SynchronizedObject.h; sourceTree = "<group>"; };
 		3A2A6A3B11EE5ED300FF373C /* SynchronizedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SynchronizedObject.m; sourceTree = "<group>"; };
 		3A2A6A3D11EE696000FF373C /* StateManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StateManager.h; sourceTree = "<group>"; };
@@ -227,12 +221,12 @@
 		DA7FD3E01209E424007A9217 /* TaskContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskContainerView.m; sourceTree = "<group>"; };
 		DA96F0E211EE525500B64D3D /* HeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeaderView.h; sourceTree = "<group>"; };
 		DA96F0E311EE525500B64D3D /* HeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeaderView.m; sourceTree = "<group>"; };
-		DA96F0E411EE525500B64D3D /* LocationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationCell.h; sourceTree = "<group>"; };
-		DA96F0E511EE525500B64D3D /* LocationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationCell.m; sourceTree = "<group>"; };
-		DA96F0E611EE525500B64D3D /* LocationCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationCellView.h; sourceTree = "<group>"; };
-		DA96F0E711EE525500B64D3D /* LocationCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationCellView.m; sourceTree = "<group>"; };
-		DA96F0E811EE525500B64D3D /* LocationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationViewController.h; sourceTree = "<group>"; };
-		DA96F0E911EE525500B64D3D /* LocationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationViewController.m; sourceTree = "<group>"; };
+		DA96F0E411EE525500B64D3D /* UserCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserCell.h; sourceTree = "<group>"; };
+		DA96F0E511EE525500B64D3D /* UserCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserCell.m; sourceTree = "<group>"; };
+		DA96F0E611EE525500B64D3D /* UserCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserCellView.h; sourceTree = "<group>"; };
+		DA96F0E711EE525500B64D3D /* UserCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserCellView.m; sourceTree = "<group>"; };
+		DA96F0E811EE525500B64D3D /* UserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserViewController.h; sourceTree = "<group>"; };
+		DA96F0E911EE525500B64D3D /* UserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserViewController.m; sourceTree = "<group>"; };
 		DA96F0EA11EE525500B64D3D /* LoginAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginAppDelegate.h; sourceTree = "<group>"; };
 		DA96F0EB11EE525500B64D3D /* LoginAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginAppDelegate.m; sourceTree = "<group>"; };
 		DA96F0EC11EE525500B64D3D /* LoginMasterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginMasterViewController.h; sourceTree = "<group>"; };
@@ -401,10 +395,6 @@
 			children = (
 				3A12614612ADA1DC005D05FA /* AddItemController.h */,
 				3A12614712ADA1DC005D05FA /* AddItemController.m */,
-				3A12624512B0255E005D05FA /* AddUserController.h */,
-				3A12624612B0255E005D05FA /* AddUserController.m */,
-				3A12626E12B02EC1005D05FA /* AddUserButton.h */,
-				3A12626F12B02EC1005D05FA /* AddUserButton.m */,
 			);
 			name = Popovers;
 			sourceTree = "<group>";
@@ -519,12 +509,12 @@
 				DA7FD24912086F74007A9217 /* WebViewController.m */,
 				DA96F0E211EE525500B64D3D /* HeaderView.h */,
 				DA96F0E311EE525500B64D3D /* HeaderView.m */,
-				DA96F0E411EE525500B64D3D /* LocationCell.h */,
-				DA96F0E511EE525500B64D3D /* LocationCell.m */,
-				DA96F0E611EE525500B64D3D /* LocationCellView.h */,
-				DA96F0E711EE525500B64D3D /* LocationCellView.m */,
-				DA96F0E811EE525500B64D3D /* LocationViewController.h */,
-				DA96F0E911EE525500B64D3D /* LocationViewController.m */,
+				DA96F0E411EE525500B64D3D /* UserCell.h */,
+				DA96F0E511EE525500B64D3D /* UserCell.m */,
+				DA96F0E611EE525500B64D3D /* UserCellView.h */,
+				DA96F0E711EE525500B64D3D /* UserCellView.m */,
+				DA96F0E811EE525500B64D3D /* UserViewController.h */,
+				DA96F0E911EE525500B64D3D /* UserViewController.m */,
 				DA96F0EA11EE525500B64D3D /* LoginAppDelegate.h */,
 				DA96F0EB11EE525500B64D3D /* LoginAppDelegate.m */,
 				DA96F0EC11EE525500B64D3D /* LoginMasterViewController.h */,
@@ -646,9 +636,9 @@
 				3A57217F11EB7515004C2687 /* MeetingViewController.m in Sources */,
 				3A57237811EBDE0B004C2687 /* TinCanViewController.m in Sources */,
 				DA96F0F811EE525500B64D3D /* HeaderView.m in Sources */,
-				DA96F0F911EE525500B64D3D /* LocationCell.m in Sources */,
-				DA96F0FA11EE525500B64D3D /* LocationCellView.m in Sources */,
-				DA96F0FB11EE525500B64D3D /* LocationViewController.m in Sources */,
+				DA96F0F911EE525500B64D3D /* UserCell.m in Sources */,
+				DA96F0FA11EE525500B64D3D /* UserCellView.m in Sources */,
+				DA96F0FB11EE525500B64D3D /* UserViewController.m in Sources */,
 				DA96F0FC11EE525500B64D3D /* LoginAppDelegate.m in Sources */,
 				DA96F0FD11EE525500B64D3D /* LoginMasterViewController.m in Sources */,
 				DA96F0FE11EE525500B64D3D /* LogoView.m in Sources */,
@@ -689,8 +679,6 @@
 				3AD2D2621295D21500C31515 /* EventContainerContentView.m in Sources */,
 				3AD2D2FC1296F9AF00C31515 /* ServerSelectViewController.m in Sources */,
 				3A12614812ADA1DC005D05FA /* AddItemController.m in Sources */,
-				3A12624712B0255E005D05FA /* AddUserController.m in Sources */,
-				3A12627012B02EC1005D05FA /* AddUserButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
