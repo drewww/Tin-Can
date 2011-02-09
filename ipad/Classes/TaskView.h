@@ -60,6 +60,8 @@
 - (void) finishDeassignByActor:(Actor *)byActor atTime:(NSDate *)assignTime withTaskContainer:(UIView *)taskContainer;
 
 - (NSComparisonResult) compareByPointer:(TaskView *)view;
+- (NSComparisonResult) compareByCreationDate:(TaskView *)view;
+
 -(void)setFrameWidthWithContainerWidth:(CGFloat )width;
 
 @end

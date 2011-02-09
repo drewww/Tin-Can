@@ -16,7 +16,9 @@
 @synthesize assignedBy;
 @synthesize assignedAt;
 
-- (id) initWithUUID:(UUID *)myUUID withCreatorUUID:(UUID *)myCreatorUUID createdAt:(NSDate *)myCreatedAt
+- (id) initWithUUID:(UUID *)myUUID
+    withCreatorUUID:(UUID *)myCreatorUUID
+          createdAt:(NSDate *)myCreatedAt
     withMeetingUUID:(UUID *)myMeetingUUID 
            withText:(NSString *)myText
      assignedToUUID:(UUID *)myAssignedToUUID
@@ -25,7 +27,6 @@
 {
     self = [super initWithUUID:myUUID withCreatorUUID:myCreatorUUID withMeetingUUID:myMeetingUUID
                      createdAt:myCreatedAt];
-    
     
     self.text = myText;
     assignedToUUID = myAssignedToUUID;

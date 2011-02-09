@@ -23,6 +23,10 @@
     
     creatorUUID = myCreatorUUID;
     meetingUUID = myMeetingUUID;
+        
+    if(myCreatedAt == nil) myCreatedAt = [NSDate date];
+    
+    self.createdAt = myCreatedAt;
     
     return self;
 }
