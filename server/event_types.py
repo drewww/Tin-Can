@@ -344,11 +344,15 @@ def _handleNewTask(event):
         d=event.results["task"]
         newTask = model.Task(event.meeting.uuid, event.actor.uuid, text,
             taskUUID=d["uuid"], createdAt=d["createdAt"])
-
-    event.meeting.addTask(newTask)
-    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "created new task", "time": newTask.createdAt}))
     
-    event.meeting.eventHistoryReadable.append(event.actor.name+" created a new task ("+text+")")
+    # we're going to hardcode events and make them part of the person
+    # who created them. we'll start by queueing up an assignment task 
+    event.queue(e.Event("ASSIGN_TASK", event.actor.uuid, event.meeting.uuid, {"taskUUID":newTask.uuid, "assignedTo":event.actor.uuid, "deassign":False}))
+    
+    event.meeting.addTask(newTask)
+    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "created new idea", "time": newTask.createdAt}))
+    
+    event.meeting.eventHistoryReadable.append(event.actor.name+" created a new idea ("+text+")")
     
     return event
 
@@ -359,11 +363,11 @@ def _handleDeleteTask(event):
     deletedAt = time.time()
     
     event.meeting.removeTask(task)
-    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "deleted task", "time": deletedAt}))
+    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "deleted idea", "time": deletedAt}))
     #needed to keep track of statuses on client-side
     event.params["deletedAt"] = deletedAt
     
-    event.meeting.eventHistoryReadable.append(event.actor.name+" deleted task ("+task.text+")")
+    event.meeting.eventHistoryReadable.append(event.actor.name+" deleted idea ("+task.text+")")
     
     return event
 
@@ -372,10 +376,10 @@ def _handleEditTask(event):
     task = state.get_obj(event.params["taskUUID"], model.Task)
     editedAt = time.time()
     
-    event.meeting.eventHistoryReadable.append(event.actor.name+" changed task ("+task.text+") to task ("+text+")")
+    event.meeting.eventHistoryReadable.append(event.actor.name+" changed idea ("+task.text+") to idea ("+text+")")
     
     task.setText(text)
-    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "editted task", "time": editedAt}))
+    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "edited ideatask", "time": editedAt}))
     #needed to keep track of statuses on client-side
     event.params["editedAt"] = editedAt
     
@@ -394,15 +398,15 @@ def _handleAssignTask(event):
     if(not deassign):
         assignedTo = state.get_obj(event.params["assignedTo"], model.User)
         task.assign(assignedBy,assignedTo, None)
-        event.queue(e.Event("UPDATE_STATUS", assignedBy.uuid, None, {"status": "assigned task", "time": task.assignedAt}))
-        event.queue(e.Event("UPDATE_STATUS", assignedTo.uuid, None, {"status": "claimed task", "time": task.assignedAt}))
+        event.queue(e.Event("UPDATE_STATUS", assignedBy.uuid, None, {"status": "moved idea", "time": task.assignedAt}))
+        event.queue(e.Event("UPDATE_STATUS", assignedTo.uuid, None, {"status": "claimed idea", "time": task.assignedAt}))
         
-        event.meeting.eventHistoryReadable.append(assignedBy.name + " assigned task ("+task.text+") to "+assignedTo.name)
+        event.meeting.eventHistoryReadable.append(assignedBy.name + " moved idea ("+task.text+") to "+assignedTo.name)
     else:
         task.deassign(assignedBy)
-        event.queue(e.Event("UPDATE_STATUS", assignedBy.uuid, None, {"status": "deassigned task", "time": task.assignedAt}))
+        event.queue(e.Event("UPDATE_STATUS", assignedBy.uuid, None, {"status": "deassigned idea", "time": task.assignedAt}))
         
-        event.meeting.eventHistoryReadable.append(assignedBy.name + " deassigned task ("+task.text+")")
+        event.meeting.eventHistoryReadable.append(assignedBy.name + " deassigned idea ("+task.text+")")
 
     event.params["assignedAt"]=task.assignedAt
     return event
