@@ -22,6 +22,7 @@ static StateManager *sharedInstance = nil;
 
 @synthesize meeting;
 @synthesize location;
+@synthesize user;
 
 #pragma mark -
 #pragma mark class instance methods
@@ -72,20 +73,20 @@ static StateManager *sharedInstance = nil;
     // Do this in two passes. Make the objects first, then
     // unswizzle them to convert UUIDs into actual objects.
     NSDate *date;
-    for(NSDictionary *user in newUsers) {
+    for(NSDictionary *userDict in newUsers) {
 
         
-        if([[user objectForKey:@"statusTime"] isKindOfClass:[NSNull class]]) {
+        if([[userDict objectForKey:@"statusTime"] isKindOfClass:[NSNull class]]) {
             date = nil;
         } else {
-            date = [NSDate dateWithTimeIntervalSince1970:[[user objectForKey:@"statusTime"] doubleValue]];
+            date = [NSDate dateWithTimeIntervalSince1970:[[userDict objectForKey:@"statusTime"] doubleValue]];
         }
         
         
-        User *newUser = [[User alloc] initWithUUID:[user objectForKey:@"uuid"]
-                                          withName:[user objectForKey:@"name"]
-                                  withLocationUUID:[user objectForKey:@"location"]
-                                        withStatus:[user objectForKey:@"status"]
+        User *newUser = [[User alloc] initWithUUID:[userDict objectForKey:@"uuid"]
+                                          withName:[userDict objectForKey:@"name"]
+                                  withLocationUUID:[userDict objectForKey:@"location"]
+                                        withStatus:[userDict objectForKey:@"status"]
                                             atDate:date];
 
         
