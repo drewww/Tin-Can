@@ -95,12 +95,16 @@
 		[self.view setNeedsDisplay];
         
 	} else if (event.type==kADD_ACTOR_DEVICE) {
-        NSLog(@"In ADD_ACTOR_DEVICE callback. Doing room joining now.");
-//        [[ConnectionManager sharedInstance] joinRoomWithUUID:chosenRoom.uuid];
+        NSLog(@"In ADD_ACTOR_DEVICE callback. Doing location joining now.");
+        // get a random location to join
+        Location *selectedLocation = (Location *)[[[StateManager sharedInstance] getLocations] anyObject];
 
-        // This needs to be rewritten - wait until we can actually get the selector working (or maybe we do nothing here? since it happens
-        // during connect.
+        [[ConnectionManager sharedInstance] joinLocation:selectedLocation withUser:[StateManager sharedInstance].user];
+    } else if (event.type==kUSER_JOINED_LOCATION) {
         
+        NSLog(@"got USER JOINED LOCATION event!");
+        
+        [[ConnectionManager sharedInstance] joinRoomWithUUID:chosenRoom.uuid];
     } else if (event.type==kLOCATION_JOINED_MEETING) {
 
         NSLog(@"LOCATION_JOINED_MEETING");
@@ -108,8 +112,6 @@
         // controller is never going to get released. Really need to find a nicer way to do this.
         // Controllers should be owned by the TinCanViewController, perhaps, and not
         // created by people trying to switch into something specific. 
-        
-        NSLog(@"Would normally be switching viewcontrollers now, but not going to.");
         
         // Deregister ourselves for server messages.
         [[ConnectionManager sharedInstance] removeListener:self];
@@ -186,7 +188,7 @@
     ConnectionManager *connMan = [ConnectionManager sharedInstance];
     
     // Do the login work here.
-    [connMan setLocation:chosenUser.uuid];
+    [connMan setUser:chosenUser.uuid];
 	[connMan connect];
     
     // Now we need to join a room, but we need to block on getting
