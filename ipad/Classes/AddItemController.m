@@ -69,7 +69,6 @@
     self.view.backgroundColor = [UIColor blackColor];
 }
 
-
 - (NSString *) getText {
     return textField.text;
 }
@@ -81,6 +80,8 @@
     if(delegate != nil) {
         [delegate itemSubmittedWithText:textField.text];
     }
+    
+    textField.text = @"";
 }
 
 /*
