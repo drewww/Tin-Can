@@ -29,6 +29,7 @@
 		self.frame=frame;
 
 		task = theTask;
+        [task retain];
         
         initialOrigin = CGPointMake(self.frame.origin.x, self.frame.origin.y);//self.frame.origin;  
 		self.userInteractionEnabled = YES; 
@@ -379,8 +380,24 @@
     return retVal;
 }
 
+- (NSComparisonResult) compareByCreationDate:(TaskView *)view {
+    NSLog(@"in compare by creation date");
+    NSLog(@"about to compared based on creation times: %@ and %@", self.task.createdAt, view.task.createdAt);
+    NSComparisonResult retVal = [self.task.createdAt compare:view.task.createdAt];
+    
+    if(retVal==NSOrderedSame) {
+        if (self < view)
+            retVal = NSOrderedAscending;
+        else if (self > view) 
+            retVal = NSOrderedDescending;
+    }
+    
+    return retVal;
+}
+
 - (void)dealloc {
     [super dealloc];
+    [task release];
 }
 
 

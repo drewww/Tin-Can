@@ -395,7 +395,7 @@ static NSString *selectedServer = nil;
             topic = [[Topic alloc] initWithUUID:[results objectForKey:@"uuid"]
                                        withText:[results objectForKey:@"text"]
                                 withCreatorUUID:[results objectForKey:@"createdBy"]
-                                      createdAt:[results objectForKey:@"createdAt"]
+                                      createdAt:[NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"createdAt"] doubleValue]]
                                      withStatus:[results objectForKey:@"status"]
                                 withMeetingUUID:[results objectForKey:@"meeting"]
                              withStartActorUUID:[results objectForKey:@"startActor"]
@@ -436,7 +436,7 @@ static NSString *selectedServer = nil;
             
             task = [[Task alloc] initWithUUID:[results objectForKey:@"uuid"]
                               withCreatorUUID:[results objectForKey:@"createdBy"]
-                                    createdAt:[results objectForKey:@"createdAt"]
+                                    createdAt:[NSDate dateWithTimeIntervalSince1970:[[results objectForKey:@"createdAt"] doubleValue]]
                               withMeetingUUID:[results objectForKey:@"meeting"]
                                      withText:[results objectForKey:@"text"]
                                assignedToUUID:[results objectForKey:@"assignedTo"]
