@@ -347,7 +347,8 @@ def _handleNewTask(event):
     
     # we're going to hardcode events and make them part of the person
     # who created them. we'll start by queueing up an assignment task 
-    event.queue(e.Event("ASSIGN_TASK", event.actor.uuid, event.meeting.uuid, {"taskUUID":newTask.uuid, "assignedTo":event.actor.uuid, "deassign":False}))
+    # event.queue(e.Event("ASSIGN_TASK", event.actor.uuid, event.meeting.uuid, {"taskUUID":newTask.uuid, "assignedTo":event.actor.uuid, "deassign":False}))
+    newTask.assign(newTask.createdBy, newTask.createdBy, None)
     
     event.meeting.addTask(newTask)
     event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "created new idea", "time": newTask.createdAt}))

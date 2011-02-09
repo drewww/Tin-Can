@@ -148,6 +148,7 @@
     // special and per-event-type, not global.
 
     Location *location;
+    Task *task;
     switch(event.type) {
         case kADD_ACTOR_DEVICE:
             // Don't need to do anything here.
@@ -250,7 +251,22 @@
             
         case kNEW_TASK:
             NSLog(@"adding new task to the task container.");
-            [taskContainer addSubview:[[event.results objectForKey:@"task"] getView]];
+            
+            task = [event.results objectForKey:@"task"];
+            
+            if([task isAssigned]) {
+                NSLog(@"Found a new task that is already assigned on creation.");
+                
+                // This is obviously a bit wonky - all the data is already there. But this routes
+                // through the task assiginment code that's already there and handles the view stuff
+                // in a consistent way.
+                [task assignToUser:task.assignedTo byActor:task.assignedTo atTime:[NSDate date]];
+            } else {
+                [taskContainer addSubview:[[event.results objectForKey:@"task"] getView]];
+            }
+            
+            // Is there a different way to do this? In this c
+            
             break;
             
         case kDELETE_TASK:
@@ -262,7 +278,7 @@
         case kASSIGN_TASK:
             NSLog(@"assigning tasks in the meeting view controller because I'm a bad person");
             
-            Task *task = (Task *)[state getObjWithUUID:[event.params objectForKey:@"taskUUID"] withType:[Task class]];
+            task = (Task *)[state getObjWithUUID:[event.params objectForKey:@"taskUUID"] withType:[Task class]];
             
             NSLog(@"in assign task handler");
             
