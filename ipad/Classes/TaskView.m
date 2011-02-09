@@ -331,6 +331,7 @@
     // Check and see if we're a task in the pool. If we are, ignore touches.
     if(![self.task isAssigned]) return;
 
+    isTouched=FALSE;
     
     // TODO think about multitouch for this!
     UITouch *touch = [touches anyObject];
@@ -347,7 +348,6 @@
         NSLog(@"animating to initialOrigin: %f, %f", initialOrigin.x, initialOrigin.y);
 		[self.superview setNeedsLayout];
         [UIView commitAnimations];
-		isTouched=FALSE;
 		[self.superview sendSubviewToBack:self];
     } else {
             // We were dropped on an actual drop target. Something else will handle our
@@ -357,6 +357,7 @@
     }
     
 
+    
 		[self setNeedsDisplay];
 }
 
