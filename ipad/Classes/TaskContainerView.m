@@ -124,8 +124,9 @@
 - (void)layoutSubviews{
 	int i =0;
     NSLog(@"laying out task container with %d subviews", [[self subviews] count]);
-	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByPointer:)];
-	for(TaskView *subview in sortedArray){
+	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByCreationDate:)];
+
+	for(TaskView *subview in [sortedArray reverseObjectEnumerator]){
         
         // Make sure lastParentViews are up to date.
         subview.lastParentView = self;
