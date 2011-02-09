@@ -109,6 +109,10 @@
 
 }
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    // Check and see if we're a task in the pool. If we are, ignore touches.
+    if(![self.task isAssigned]) return;
+        
 	NSLog(@"I have been touched");
     UITouch *touch = [touches anyObject];
 
@@ -302,6 +306,9 @@
 
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    // Check and see if we're a task in the pool. If we are, ignore touches.
+    if(![self.task isAssigned]) return;
+
 	// When we move, we want to know the delta from its previous location
 	// and then we can adjust our position accordingly. 
 	
@@ -320,7 +327,10 @@
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    // Check and see if we're a task in the pool. If we are, ignore touches.
+    if(![self.task isAssigned]) return;
 
+    
     // TODO think about multitouch for this!
     UITouch *touch = [touches anyObject];
     
