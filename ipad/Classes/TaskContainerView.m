@@ -38,7 +38,7 @@
         isMainView = mainView;
         
         // Now setup the add topic popover.
-        AddItemController *addTaskController = [[AddItemController alloc] initWithPlaceholder:@"new task" withButtonText:@"Add Task"];
+        AddItemController *addTaskController = [[AddItemController alloc] initWithPlaceholder:@"new idea" withButtonText:@"Add Idea"];
         addTaskController.delegate = self;
         
         popoverController = [[UIPopoverController alloc] initWithContentViewController:addTaskController];
