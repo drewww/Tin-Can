@@ -17,6 +17,7 @@
     
     Meeting *meeting;
     Location *location;
+    User *user;
     
     NSMutableSet *actors;
     NSMutableSet *rooms;
@@ -39,5 +40,6 @@
 
 @property(nonatomic, retain)Meeting *meeting;
 @property(nonatomic, retain)Location *location;
+@property(nonatomic, retain)User *user;
 
 @end

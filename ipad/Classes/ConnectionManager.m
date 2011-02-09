@@ -76,6 +76,20 @@ static NSString *selectedServer = nil;
     NSLog(@"Set local location: %@", locationUUID);
 }
 
+- (void) setUser:(UUID *)newUserUUID {
+    if(userUUID!=nil) [userUUID release];
+    
+    userUUID = newUserUUID;
+    [userUUID retain];
+    
+    StateManager *state = [StateManager sharedInstance];
+    
+    state.user = (User *)[state getObjWithUUID:userUUID withType:[User class]];
+    
+    NSLog(@"Set local user: %@", userUUID);    
+}
+
+
 - (void) connect {
     if(locationUUID==nil) {
         NSLog(@"Must call setLocation before connecting.");
@@ -90,10 +104,24 @@ static NSString *selectedServer = nil;
     // go through, messing everything up. I catch it in the failure block 
     isConnected = YES;
 
+    // Do a bit of logic here to decide if we're going to connect with the location as the
+    // actor or the user. Basically, user is going to take precedence because it's more specific
+    // but we can fall back on the locationUUID. 
+    
+    UUID *actorUUID = nil;
+    
+    if(userUUID != nil) actorUUID = userUUID;
+    else actorUUID = locationUUID;
+    
+    if(actorUUID == nil) {
+        NSLog(@"Neither user or actor was specificed before attempting to connect. Failing.");
+        return;
+    }
+    
     NSLog(@"logging in...");
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/connect/login"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
-    [request setPostValue:locationUUID forKey:@"actorUUID"];    
+    [request setPostValue:actorUUID forKey:@"actorUUID"];    
     [request setDelegate:self];
     [request startAsynchronous];
 }

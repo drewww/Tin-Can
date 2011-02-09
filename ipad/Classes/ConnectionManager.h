@@ -16,6 +16,7 @@
 #import "Reachability.h"
 
 @interface ConnectionManager : NSObject {
+    UUID *userUUID;
     UUID *locationUUID;
     
     // This may be converted to a delegate structure.
@@ -53,6 +54,8 @@
 - (void) handleNotification:(NSNotification *)notification;
 
 - (void) setLocation:(UUID *)newLocationUUID;
+- (void) setUser:(UUID *)newUserUUID;
+
 - (void) connect;
 
 - (void) getState;
