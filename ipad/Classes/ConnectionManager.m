@@ -320,6 +320,11 @@ static NSString *selectedServer = nil;
             user = (User *)[state getObjWithUUID:e.actorUUID withType:[User class]];
             
             [location userLeft:user];                  
+            
+            if(user.uuid = state.user.uuid) {
+                state.location = nil;
+            }            
+            
             NSLog(@"USER_LEFT_LOCATION: %@ left %@", user, location);
             break;
             
@@ -329,7 +334,12 @@ static NSString *selectedServer = nil;
             
             user = (User *)[state getObjWithUUID:e.actorUUID withType:[User class]];
             
-            [location userJoined:user];                  
+            [location userJoined:user]; 
+            
+            if(user.uuid = state.user.uuid) {
+                state.location = location;
+            }
+            
             NSLog(@"USER_JOINED_LOCATION: %@ joined %@", user, location);
             break;
             
