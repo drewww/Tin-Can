@@ -580,10 +580,17 @@ static NSString *selectedServer = nil;
     [request startAsynchronous];         
 }
 
-- (void) addTaskWithText:(NSString *)newTaskText {
+- (void) addTaskWithText:(NSString *)newTaskText isInPool:(bool)isInPool {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/tasks/add"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:newTaskText forKey:@"text"];    
+    
+    NSString *val;
+    
+    if(isInPool) val = @"1";
+    else val = @"0";
+    
+    [request setPostValue:val forKey:@"createInPool"];
     [request setDelegate:self];
     [request startAsynchronous];
 }

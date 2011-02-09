@@ -655,7 +655,8 @@ class AddTaskHandler(BaseHandler):
         
         newTaskEvent = Event("NEW_TASK", actor.uuid ,
             actor.getMeeting().uuid,
-            params={"text": self.get_argument("text")})
+            params={"text": self.get_argument("text"),
+                "createInPool": self.get_argument("createInPool")=="1"})
         newTaskEvent.dispatch()
         return
 

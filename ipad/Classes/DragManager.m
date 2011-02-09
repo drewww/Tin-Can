@@ -179,32 +179,46 @@ static DragManager *sharedInstance = nil;
         // physically does the assignment.
         
         if([curTargetView isKindOfClass:[UserView class]]) {
-            UserView *curTargetUserView = (UserView *)curTargetView;
-            [[ConnectionManager sharedInstance] assignTask:task toUser:[curTargetUserView getUser]];
-            [curTargetView setHoverState:false];
+            
+            // Commenting this out to disable assigning ideas to other users (per classroom design spec)
+//            UserView *curTargetUserView = (UserView *)curTargetView;
+//            [[ConnectionManager sharedInstance] assignTask:task toUser:[curTargetUserView getUser]];
+//            [curTargetView setHoverState:false];
+            
         } else if ([curTargetView isKindOfClass:[TaskContainerView class]]) {
-            NSLog(@"got a drop on a task container, deassign the task now!");
-            [[ConnectionManager sharedInstance] deassignTask:task];
+            NSLog(@"got a drop on a task container, copy the task now!");
+            
+            
+            // Per the classroom "idea" model, don't move the idea over, just create a new one
+            // that is unassigned. 
+            [[ConnectionManager sharedInstance] addTaskWithText:task.text isInPool:TRUE];
+            
+            [self animateTaskToHome:task];
+            
             [curTargetView setHoverState:false];
         }
         return true;
     } else {
      // We need to add it back to its original home view. 
-    
-        NSLog(@"Adding the task back to its original parent view since dragging is done.");
-        TaskView *taskView = (TaskView *)[task getView];
+        [self animateTaskToHome:task];
         
-        // Do the position translation back again.
-        CGPoint p = [taskView.lastParentView convertPoint:taskView.center fromView:draggedItemsContainer];
-        taskView.center = p;
-
-        [taskView.lastParentView addSubview:taskView];
-        
-        NSLog(@"setting draggedItemsContainer to hidden");
-        [draggedItemsContainer setHidden:true];
     }
     
     return false;
+}
+
+- (void) animateTaskToHome:(Task *)task {
+    NSLog(@"Adding the task back to its original parent view since dragging is done.");
+    TaskView *taskView = (TaskView *)[task getView];
+    
+    // Do the position translation back again.
+    CGPoint p = [taskView.lastParentView convertPoint:taskView.center fromView:draggedItemsContainer];
+    taskView.center = p;
+    
+    [taskView.lastParentView addSubview:taskView];
+    
+    NSLog(@"setting draggedItemsContainer to hidden");
+    [draggedItemsContainer setHidden:true];
 }
 
 - (bool) moveTaskViewToDragContainer:(TaskView *)view {

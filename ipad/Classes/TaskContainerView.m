@@ -178,7 +178,7 @@
 - (void) itemSubmittedWithText:(NSString *)text {
     [popoverController dismissPopoverAnimated:YES];
     
-    [[ConnectionManager sharedInstance] addTaskWithText:text];
+    [[ConnectionManager sharedInstance] addTaskWithText:text isInPool:FALSE];
 }
 
 
