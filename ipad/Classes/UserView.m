@@ -38,7 +38,7 @@
     userExtended = FALSE;
     
 	//the + 11 was to hide the container view well under the user
-    taskContainerView = [[[TaskContainerView alloc] initWithFrame:CGRectMake(-BASE_WIDTH/2, -BASE_HEIGHT/2 +15, BASE_WIDTH, 300) withRot:0.0 isMainView:NO] retain];
+    taskContainerView = [[[TaskContainerView alloc] initWithFrame:CGRectMake(-BASE_WIDTH, +15, BASE_WIDTH*2, 600) withRot:0.0 isMainView:NO] retain];
     [self addSubview:taskContainerView];
     
 
@@ -72,7 +72,7 @@
 	
     [self setNeedsDisplay];
     // The 14 was to make sure the container was well above the label
-	initialHeight = taskContainerView.bounds.size.height+14;
+	initialHeight = taskContainerView.bounds.size.height+14+40;
 
 	
     return self;
