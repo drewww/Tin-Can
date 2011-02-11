@@ -498,6 +498,8 @@
         
         view.side = [sidesList objectAtIndex:viewIndex];
         
+        [view wasLaidOut];
+        
         viewIndex++;
     }   
     

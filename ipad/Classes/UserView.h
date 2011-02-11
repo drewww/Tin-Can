@@ -68,6 +68,8 @@
 
 - (User *)getUser;
 
+- (void) wasLaidOut;
+
 @property (nonatomic, retain) NSNumber *side;
 
 @end

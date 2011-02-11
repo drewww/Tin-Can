@@ -244,6 +244,32 @@
     }
 }
 
+
+- (void) wasLaidOut {
+    
+    // Now, move the TaskContainer around based on what side we're on (eg what our orientation is).
+    
+    // First step, just make sure the rotations are right; everything facing up.
+    float newRot;
+    switch([self.side intValue]) {
+        case 0:
+            newRot = M_PI;
+            break;
+        case 1:
+            newRot = M_PI/2;
+            break;
+        case 2:
+            newRot = 0;
+            break;
+        case 3:
+            newRot = -M_PI/2;
+            break;
+    }
+    
+    taskContainerView.transform = CGAffineTransformMakeRotation(newRot);
+    
+}
+
 - (void)dealloc {
     
     [userRenderView release];
