@@ -40,6 +40,7 @@
     
     float lastHeightChange;
 	float initialHeight;
+    float initialWidth;
     
     bool doAutorevert;
     
