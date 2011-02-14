@@ -22,7 +22,6 @@
     
     TaskContainerView *taskContainer;
     TopicContainerView *topicContainer;
-	LocationBorderView *locBorderView;
     TimelineContainerView *timelineView;
     CurrentTopicView *currentTopicView;
     

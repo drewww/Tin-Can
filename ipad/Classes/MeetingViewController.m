@@ -67,10 +67,6 @@
 
     queue = [[[NSOperationQueue alloc] init] retain];
     
-    locBorderView = [[LocationBorderView alloc] initWithFrame:self.view.frame];
-    [self.view addSubview:locBorderView];
-    [self.view sendSubviewToBack:locBorderView];
-    
     timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(44, 409, 290, 208)];
     [self.view addSubview:timelineView];
     
@@ -174,7 +170,6 @@
             }
             
             [[location getView] setNeedsDisplay];
-            [locBorderView setNeedsDisplay];
             
         break;
            
@@ -195,7 +190,6 @@
             
             // Also, ask the user's location to redraw itself.
             [[location getView] setNeedsDisplay];
-            [locBorderView setNeedsDisplay];
                     
             break;
             
@@ -502,8 +496,6 @@
         
         viewIndex++;
     }   
-    
-    [locBorderView setNeedsDisplay];
 }
 
 // Override to allow orientations other than the default portrait orientation.
