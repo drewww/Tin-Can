@@ -291,13 +291,69 @@
     CGRect globalBounds;
     float distanceFromTop;
     float distanceFromBottom;
+    float distanceFromLeft;
+    float distanceFromRight;
     
     // Now run through them again and do the constraint checking,
     NSLog(@"handling a view on side: %d", [self.side intValue]);
     switch([self.side intValue]) {
         case 0:
+            taskContainerView.frame = CGRectMake(-BASE_WIDTH, 15, BASE_WIDTH*2, 600);    
+            
+            globalBounds = [self convertRect:taskContainerView.frame toView:self.superview];
+            NSLog(@"global bounds: %@", NSStringFromCGRect(globalBounds));
+            
+            // this is the other side
+            // on the side, we're concerned with the top and bottom. 
+            // so get the global coordinate upper left and bottom right
+            // coordinates.
+            distanceFromLeft = CGRectGetMinY(globalBounds) - 40;
+            distanceFromRight = CGRectGetMaxY(globalBounds) - 984 ;
+            
+            NSLog(@"distanceFromLeft: %f; distanceFromRight: %f", distanceFromLeft, distanceFromRight);
+            
+            
+            if(distanceFromLeft < 0) {
+                taskContainerView.frame = CGRectMake(taskContainerView.frame.origin.x + distanceFromLeft,
+                                                     taskContainerView.frame.origin.y,
+                                                     taskContainerView.frame.size.width,
+                                                     taskContainerView.frame.size.height);
+            } else if (distanceFromRight > 0) {
+                taskContainerView.frame = CGRectMake(taskContainerView.frame.origin.x + distanceFromRight,
+                                                     taskContainerView.frame.origin.y,
+                                                     taskContainerView.frame.size.width,
+                                                     taskContainerView.frame.size.height);                
+            }
+            break;
+            
         case 2:
-            // Do the left/right checking. 
+            taskContainerView.frame = CGRectMake(-BASE_WIDTH, 15, BASE_WIDTH*2, 600);    
+            
+            globalBounds = [self convertRect:taskContainerView.frame toView:self.superview];
+            NSLog(@"global bounds: %@", NSStringFromCGRect(globalBounds));
+            
+            // this is the other side
+            // on the side, we're concerned with the top and bottom. 
+            // so get the global coordinate upper left and bottom right
+            // coordinates.
+            distanceFromLeft = CGRectGetMinY(globalBounds) - 40;
+            distanceFromRight = CGRectGetMaxY(globalBounds) - 984 ;
+            
+            NSLog(@"distanceFromLeft: %f; distanceFromRight: %f", distanceFromLeft, distanceFromRight);
+            
+            
+            if(distanceFromLeft < 0) {
+                taskContainerView.frame = CGRectMake(taskContainerView.frame.origin.x - distanceFromLeft,
+                                                     taskContainerView.frame.origin.y,
+                                                     taskContainerView.frame.size.width,
+                                                     taskContainerView.frame.size.height);
+            } else if (distanceFromRight > 0) {
+                taskContainerView.frame = CGRectMake(taskContainerView.frame.origin.x - distanceFromRight,
+                                                     taskContainerView.frame.origin.y, 
+                                                     taskContainerView.frame.size.width,
+                                                     taskContainerView.frame.size.height);                
+            }
+            break;
             
             break;
         case 1:
