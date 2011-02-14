@@ -168,7 +168,17 @@
             [UIView beginAnimations:@"retract_drawer" context:nil];
             
             [UIView setAnimationDuration:0.4f];
-            taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y + lastHeightChange);
+            switch([self.side intValue]) {
+                case 0:
+                case 2:
+                    taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y + initialHeight + USER_EXTEND_HEIGHT);
+                    break;
+                case 1:
+                case 3:
+                    taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y + initialWidth + USER_EXTEND_HEIGHT);
+                    break;
+                    
+            }
             
             CGRect curFrame = self.bounds;
             curFrame.origin.y = curFrame.origin.y + lastHeightChange;
@@ -283,6 +293,7 @@
     float distanceFromBottom;
     
     // Now run through them again and do the constraint checking,
+    NSLog(@"handling a view on side: %d", [self.side intValue]);
     switch([self.side intValue]) {
         case 0:
         case 2:
@@ -290,7 +301,6 @@
             
             break;
         case 1:
-        case 3:
             taskContainerView.frame = CGRectMake(-BASE_WIDTH, 15,600, BASE_WIDTH*2);    
             
             globalBounds = [self convertRect:taskContainerView.frame toView:self.superview];
@@ -300,15 +310,14 @@
             // on the side, we're concerned with the top and bottom. 
             // so get the global coordinate upper left and bottom right
             // coordinates.
-            NSLog(@"blah");
-            distanceFromTop = CGRectGetMaxX(globalBounds) - 768;
-            distanceFromBottom = CGRectGetMinX(globalBounds);
+            distanceFromTop = CGRectGetMaxX(globalBounds) - 728;
+            distanceFromBottom = CGRectGetMinX(globalBounds) - 40 ;
 
             NSLog(@"distanceFromTop: %f; distanceFromBottom: %f", distanceFromTop, distanceFromBottom);
 
             
             if(distanceFromBottom < 0) {
-                taskContainerView.frame = CGRectMake(taskContainerView.frame.origin.x + distanceFromBottom,
+                taskContainerView.frame = CGRectMake(taskContainerView.frame.origin.x - distanceFromBottom,
                                                      taskContainerView.frame.origin.y,
                                                      taskContainerView.frame.size.width,
                                                      taskContainerView.frame.size.height);
@@ -319,6 +328,39 @@
                                                      taskContainerView.frame.size.height);                
             }
             break;
+        case 3:
+            taskContainerView.frame = CGRectMake(-BASE_WIDTH, 15,600, BASE_WIDTH*2);    
+            
+            globalBounds = [self convertRect:taskContainerView.frame toView:self.superview];
+            NSLog(@"global bounds: %@", NSStringFromCGRect(globalBounds));
+            
+            // this is the other side
+            // on the side, we're concerned with the top and bottom. 
+            // so get the global coordinate upper left and bottom right
+            // coordinates.
+            distanceFromTop = CGRectGetMaxX(globalBounds) - 728;
+            distanceFromBottom = CGRectGetMinX(globalBounds) - 40 ;
+            
+            NSLog(@"distanceFromTop: %f; distanceFromBottom: %f", distanceFromTop, distanceFromBottom);
+            
+            // Swapping the signs on the adjustments here should make it work.
+            if(distanceFromBottom < 0) {
+                taskContainerView.frame = CGRectMake(taskContainerView.frame.origin.x + distanceFromBottom,
+                                                     taskContainerView.frame.origin.y,
+                                                     taskContainerView.frame.size.width,
+                                                     taskContainerView.frame.size.height);
+            } else if (distanceFromTop > 0) {
+                taskContainerView.frame = CGRectMake(taskContainerView.frame.origin.x + distanceFromTop,
+                                                     taskContainerView.frame.origin.y,
+                                                     taskContainerView.frame.size.width,
+                                                     taskContainerView.frame.size.height);                
+            }
+            
+            globalBounds = [self convertRect:taskContainerView.frame toView:self.superview];
+            NSLog(@"global frame after edit: %@", NSStringFromCGRect(globalBounds));
+            
+            break;
+            
     }
     
     
