@@ -124,21 +124,31 @@
 - (void)layoutSubviews{
 	int i =0;
     NSLog(@"laying out task container with %d subviews", [[self subviews] count]);
-	NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByPointer:)];
-	for(TaskView *subview in sortedArray){
-        
+    NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByCreationDate:)];
+
+    float taskHeight;
+    float taskMargin = 3.5;
+    
+    if(isMainView) {
+        taskHeight = 50.0;
+    } else {
+        taskHeight = 50.0;
+    }
+    
+	for(TaskView *subview in [sortedArray reverseObjectEnumerator]){
         // Make sure lastParentViews are up to date.
         subview.lastParentView = self;
 
-        
-		if([[self subviews]count]<=(floor(self.bounds.size.height/60.0))){
+        // This is not properly abstracted. 60 is, I assume, the height of
+        // one full-size task + its margins. Except that 
+		if([[self subviews]count]<=(floor(self.bounds.size.height/(taskHeight + taskMargin)))){
 			NSLog(@"laying out task: %@", subview.task.text);
-			subview.frame=CGRectMake(7, (self.bounds.size.height/22.0)+6.5 +(56.5*i), (self.bounds.size.width)-14, 50);
+			subview.frame=CGRectMake(7, (self.bounds.size.height/22.0)+taskMargin*2 +((taskHeight+taskMargin*2)*i), (self.bounds.size.width)-14, taskHeight);
 		}
 		
 		else {
 			NSLog(@"laying out task: %@", subview.task.text);
-			subview.frame=CGRectMake(7, (self.bounds.size.height/22.0)+6.5 +(28*i), (self.bounds.size.width)-14, (50-3)/2);
+			subview.frame=CGRectMake(7, (self.bounds.size.height/22.0)+taskMargin*2 +((taskHeight+taskMargin*2/2)*i), (self.bounds.size.width)-14, (taskHeight-taskMargin)/2);
 		}
 		
 		[subview setNeedsDisplay];
