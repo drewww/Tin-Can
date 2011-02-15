@@ -29,8 +29,12 @@
 #define STATUS_HEIGHT 20
 
 @class UserRenderView;
+@class MeetingViewController;
 
 @interface UserView : UIView <TaskDropTarget> {
+
+//    MeetingViewController *controller;
+    UIViewController *controller;
     
     TaskContainerView *taskContainerView;
     UserRenderView *userRenderView;
@@ -48,7 +52,7 @@
 }
 
 
-- (id) initWithUser:(User *)theUser;
+- (id) initWithUser:(User *)theUser withController:(MeetingViewController *)theController;
 
 - (void) userTouched;
 
@@ -72,5 +76,6 @@
 - (void) wasLaidOut;
 
 @property (nonatomic, retain) NSNumber *side;
+@property (nonatomic, retain) UIViewController *controller;
 
 @end

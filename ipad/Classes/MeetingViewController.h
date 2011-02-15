@@ -54,5 +54,7 @@
 
 - (void) handleConnectionEvent:(Event *)event;
 
+- (void) userTaskDrawerExtended:(UserView *)extendedView;
+
 @end
 

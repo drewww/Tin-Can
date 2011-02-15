@@ -22,6 +22,8 @@
 #import "EventView.h"
 #import "CurrentTopicView.h"
 
+@class UserView;
+
 @implementation MeetingViewController
 
 #pragma mark Application Events
@@ -32,7 +34,7 @@
     // portability / scalability if resolutions change in the future.
     self.view = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 768, 1024)] retain];
     [self.view setBackgroundColor:[UIColor blackColor]];
-
+        
     // Now, drop the MeetingTimer in the middle of the screen.
     // Add the timer first, so it's underneath everything.
 
@@ -355,9 +357,24 @@
     
 }
 
+- (void) userTaskDrawerExtended:(UserView *)extendedView {
+    
+    // Loop through all our subviews and look for ones that are UserViews. 
+    // Send a message to all of them (except the one that actually extended)
+    // to retract their own trask drawer.
+    
+    for (UserView *view in [UserView getAllUserViews]) {
+            if(view != extendedView) {
+                [view setDrawerExtended:false];
+        }
+    }
+}
+
 - (void) addUserViewForUser:(User *)newUser {
+    
     [self.view addSubview:[newUser getView]];
     [self.view bringSubviewToFront:[newUser getView]];
+    ((UserView *)[newUser getView]).controller = self;
     
     [self layoutUsers];
 }
