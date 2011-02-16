@@ -146,30 +146,38 @@
             //float initialHeight = taskContainerView.bounds.size.height;
             
             // TODO make this an absolute position, not an adjustment.
+            float extendAmount;
             switch([self.side intValue]) {
                 case 0:
                 case 2:
+                    extendAmount = initialHeight;
                     taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y - initialHeight - USER_EXTEND_HEIGHT);
                     break;
                 case 1:
                 case 3:
+                    extendAmount = initialWidth;
                     taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y - initialWidth - USER_EXTEND_HEIGHT);
                     break;
                     
             }
             
+            
             CGRect curFrame = self.bounds;
-            curFrame.origin.y = curFrame.origin.y - (initialHeight+USER_EXTEND_HEIGHT);
-            curFrame.size.height = curFrame.size.height + (initialHeight + USER_EXTEND_HEIGHT)*2;
+            curFrame.origin.y = curFrame.origin.y - (extendAmount+USER_EXTEND_HEIGHT);
+            curFrame.size.height = curFrame.size.height + (extendAmount + USER_EXTEND_HEIGHT)*2;
             self.bounds = curFrame;
             
             // Save the amount we changed the dimensions by so the retract can make
             // sure to move the same amount back. This is going to be most important
             // in situations where the container changes sizes (ie a task was removed)
-            lastHeightChange = initialHeight + USER_EXTEND_HEIGHT;
+            lastHeightChange = extendAmount + USER_EXTEND_HEIGHT;
             
             [UIView commitAnimations];
             taskDrawerExtended = true;
+            
+            // Update the bounds of the UserView to include the task box.
+            
+            
         } else {
             // in this situation, we can be sure that
             // taskDrawerExtended == true && extended == false
