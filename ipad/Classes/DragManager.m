@@ -94,8 +94,7 @@ static DragManager *sharedInstance = nil;
 
 - (void) taskDragStartedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task {
     // When we get the first touch, pull it out of its current superview and put it on the root view.
-    // We'll push it back when it gets dropped again.
-        
+    // We'll push it back when it gets dropped again.    
     TaskView *taskView = (TaskView *)[task getView];
 
     // Try making the task subtly bigger to make it feel like you've picked it up.
@@ -227,7 +226,6 @@ static DragManager *sharedInstance = nil;
     [draggedItemsContainer setHidden:false];
     [draggedItemsContainer.superview bringSubviewToFront:draggedItemsContainer];
 
-    
     if([draggedItemsContainer.subviews containsObject:view]) {
         NSLog(@"TaskView already in draggedItemsContainer.");
         return false;
@@ -271,6 +269,10 @@ static DragManager *sharedInstance = nil;
     
     // Return true if we did successfully move the view to the draggedItemsContainer view.
     // If it was already there, we returned false up top.
+    
+    // Close all the draw of the user that owns the task right now for visibility reasons.
+    [((UserView *)[view.task.assignedTo getView]) setDrawerExtended:false];
+    
     return true;
 }
 
