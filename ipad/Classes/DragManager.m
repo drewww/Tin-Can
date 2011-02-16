@@ -232,10 +232,7 @@ static DragManager *sharedInstance = nil;
         NSLog(@"TaskView already in draggedItemsContainer.");
         return false;
     }
-    
-    // Grab the UserView's transform.
-    CGAffineTransform transform = view.superview.superview.transform;
-    
+        
     // (it occurs to me that this will likely cause problems when
     // I start animating TaskViews into their final destinations.)
     
@@ -256,16 +253,18 @@ static DragManager *sharedInstance = nil;
     
     // (bonus twist - if it's a user owned task, we do this - if it's
     // a task manager owned one, we don't)
+    
+    // Knocking out the transforms now, since everything should be facing up.
     if(view.task.assignedTo == nil) {
         [draggedItemsContainer addSubview:view];
-        [draggedItemsContainer setTransform:CGAffineTransformMakeRotation(M_PI/2)];
+//        [draggedItemsContainer setTransform:CGAffineTransformMakeRotation(M_PI/2)];
         CGPoint p = [draggedItemsContainer convertPoint:view.center fromView:view.lastParentView]; 
         NSLog(@"Point in draggedItemsContainer perspective: (%f, %f)", p.x, p.y);
         NSLog(@"current center: (%f, %f)", view.center.x, view.center.y);
         view.center = p;        
     } else {            
         [draggedItemsContainer addSubview:view];
-        [draggedItemsContainer setTransform:transform];
+//        [draggedItemsContainer setTransform:transform];
         CGPoint p = [draggedItemsContainer convertPoint:view.center fromView:view.lastParentView];    
         view.center = p;
     }
