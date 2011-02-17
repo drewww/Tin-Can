@@ -49,10 +49,6 @@
         return;
     }
     
-    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-    
-    CGContextAddEllipseInRect(ctx, CGRectMake(-10, -10, 20, 20));
-    CGContextFillPath(ctx);
     
 	if(hover)
         CGContextSetFillColorWithColor(ctx, [user.location.color colorDarkenedByPercent:0.3].CGColor);
@@ -141,6 +137,7 @@
         
         xPos += TAB_MARGIN + TAB_WIDTH;
     }
+
 }
 
 

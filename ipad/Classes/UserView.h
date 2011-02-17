@@ -41,10 +41,11 @@
     
     bool taskDrawerExtended;
     bool userExtended;
+        
+    CGRect initialBounds;
+    CGRect initialFrame;
     
-    float lastHeightChange;
-	float initialHeight;
-    float initialWidth;
+    float drawerExtendAmount;
     
     bool doAutorevert;
     

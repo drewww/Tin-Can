@@ -77,11 +77,11 @@
 	[UIView commitAnimations];
 	
     [self setNeedsDisplay];
-    // The 14 was to make sure the container was well above the label
-	initialHeight = taskContainerView.bounds.size.height+14+40;
-    initialWidth = taskContainerView.bounds.size.width+40;
-
-	
+    
+//    UIView *centerDot = [[UIView alloc] initWithFrame:CGRectMake(-3, -3, 6, 6)];
+//    centerDot.backgroundColor = [UIColor blackColor];
+//    [self addSubview:centerDot];
+    
     return self;
 }
 
@@ -143,35 +143,86 @@
             
             [UIView setAnimationDuration:0.4f];
             
-            //float initialHeight = taskContainerView.bounds.size.height;
+            float frameDX;
+            float frameDY;
             
-            // TODO make this an absolute position, not an adjustment.
-            float extendAmount;
+            float yExtendAmount;
+            float xExtendAmount;
+            
+            float xOffsetAmount;
+            
             switch([self.side intValue]) {
                 case 0:
                 case 2:
-                    extendAmount = initialHeight;
-                    taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y - initialHeight - USER_EXTEND_HEIGHT);
+                    yExtendAmount =  taskContainerView.bounds.size.height + USER_EXTEND_HEIGHT + 50;
+                    xExtendAmount =  taskContainerView.bounds.size.width - self.bounds.size.width;
+                    
+                    xOffsetAmount = ABS(taskContainerView.frame.origin.x - self.bounds.origin.x);
+                    
+                    drawerExtendAmount = yExtendAmount;
+                    
+                    taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y - yExtendAmount);
                     break;
                 case 1:
                 case 3:
-                    extendAmount = initialWidth;
-                    taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y - initialWidth - USER_EXTEND_HEIGHT);
+                    yExtendAmount =  taskContainerView.bounds.size.width + USER_EXTEND_HEIGHT + 50;
+                    xExtendAmount =  taskContainerView.bounds.size.height - self.bounds.size.width;
+
+                    xOffsetAmount = ABS(taskContainerView.frame.origin.x - self.bounds.origin.x);
+
+                    drawerExtendAmount = yExtendAmount;
+
+                    
+                    taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y - yExtendAmount);
                     break;
                     
             }
+
+            frameDX = 0;
+            frameDY = 0;
             
+            switch ([self.side intValue]) {
+                case 0:
+                    frameDX = yExtendAmount/2;
+                    frameDY = xExtendAmount/2 - xOffsetAmount;
+                    break;
+                case 1:
+                    frameDY = yExtendAmount/2;
+                    frameDX = -xExtendAmount/2 + xOffsetAmount;
+                    break;
+                case 2:
+                    frameDX = -yExtendAmount/2;
+                    frameDY = -xExtendAmount/2 + xOffsetAmount;
+                    break;
+                case 3:
+                    frameDY = -yExtendAmount/2;
+                    frameDX = xExtendAmount/2 - xOffsetAmount;
+                    break;
+            }
             
-            CGRect curFrame = self.bounds;
-            curFrame.origin.y = curFrame.origin.y - (extendAmount+USER_EXTEND_HEIGHT);
-            curFrame.size.height = curFrame.size.height + (extendAmount + USER_EXTEND_HEIGHT)*2;
-            self.bounds = curFrame;
+            CGRect curBounds = self.bounds;
+            initialBounds = curBounds;
             
-            // Save the amount we changed the dimensions by so the retract can make
-            // sure to move the same amount back. This is going to be most important
-            // in situations where the container changes sizes (ie a task was removed)
-            lastHeightChange = extendAmount + USER_EXTEND_HEIGHT;
+            curBounds.size.height = curBounds.size.height + yExtendAmount;
+            curBounds.origin.y = curBounds.origin.y - yExtendAmount;
             
+            curBounds.size.width = curBounds.size.width + xExtendAmount;
+            curBounds.origin.x = curBounds.origin.x - xOffsetAmount;
+                                    
+            self.bounds = curBounds;
+
+            
+            CGRect curFrame = self.frame;
+            initialFrame = curFrame;
+            
+            curFrame.origin.y = curFrame.origin.y - frameDY;
+            curFrame.origin.x = curFrame.origin.x - frameDX;
+            
+            self.frame = curFrame;
+            
+            NSLog(@"finalBounds: %@", NSStringFromCGRect(self.bounds));
+            
+
             [UIView commitAnimations];
             taskDrawerExtended = true;
             
@@ -187,19 +238,19 @@
             switch([self.side intValue]) {
                 case 0:
                 case 2:
-                    taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y + initialHeight + USER_EXTEND_HEIGHT);
+                    taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y + drawerExtendAmount + USER_EXTEND_HEIGHT);
                     break;
                 case 1:
                 case 3:
-                    taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y + initialWidth + USER_EXTEND_HEIGHT);
+                    taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y + drawerExtendAmount + USER_EXTEND_HEIGHT);
                     break;
                     
             }
-            
-            CGRect curFrame = self.bounds;
-            curFrame.origin.y = curFrame.origin.y + lastHeightChange;
-            curFrame.size.height = curFrame.size.height - lastHeightChange*2;
-            self.bounds = curFrame;
+                        
+            self.frame = initialFrame;
+
+            self.bounds = initialBounds;
+
             
             [UIView commitAnimations];        
             taskDrawerExtended = false;
@@ -208,6 +259,7 @@
         [self setUserExtended:extended withAutorevert:false];
     }
 }
+
 
 - (void) setUserExtended:(bool)extended withAutorevert:(bool)autorevert {
     if(extended != userExtended) {
