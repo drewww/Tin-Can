@@ -53,6 +53,19 @@ def init_test():
     newUserEvent.dispatch()
     newUserEvent = Event("NEW_USER", params={"name":"Wu-Hsi"})
     newUserEvent.dispatch()
+    newUserEvent = Event("NEW_USER", params={"name":"Jon"})
+    newUserEvent.dispatch()
+    newUserEvent = Event("NEW_USER", params={"name":"Santiago"})
+    newUserEvent.dispatch()
+    newUserEvent = Event("NEW_USER", params={"name":"Claudia"})
+    newUserEvent.dispatch()
+    newUserEvent = Event("NEW_USER", params={"name":"Mikell"})
+    newUserEvent.dispatch()
+    newUserEvent = Event("NEW_USER", params={"name":"Ig-Jae"})
+    newUserEvent.dispatch()
+
+
+
 
     
     newLocationEvent = Event("NEW_LOCATION", params={"name":"E15-363"})
@@ -89,10 +102,15 @@ def init_demo():
     locations[0].userJoined(users[1])
     locations[1].userJoined(users[2])
     locations[1].userJoined(users[3])
-    # locations[1].userJoined(users[5])
+    locations[1].userJoined(users[5])
     locations[1].userJoined(users[6])
     locations[1].userJoined(users[7])
-    locations[2].userJoined(users[4])
+    locations[2].userJoined(users[8])
+    locations[2].userJoined(users[9])
+    locations[2].userJoined(users[10])
+    locations[2].userJoined(users[11])
+    locations[2].userJoined(users[12])
+    locations[2].userJoined(users[13])
     
     #new meeting. I've only created one, hope that's okay.
     meeting = model.Meeting(rooms[0].uuid, startedAt=time.time()-15*60)
