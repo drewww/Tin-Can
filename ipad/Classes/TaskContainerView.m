@@ -130,11 +130,12 @@
     float taskMargin = 3.5;
     
     if(isMainView) {
-        taskHeight = 50.0;
+        taskHeight = 100.0;
     } else {
         taskHeight = 50.0;
     }
-    
+
+    int maxVisibleTasks = floor(self.bounds.size.height/(taskHeight + taskMargin*2));
 	for(TaskView *subview in [sortedArray reverseObjectEnumerator]){
         
         // Make sure lastParentViews are up to date.
@@ -142,15 +143,14 @@
 
         // This is not properly abstracted. 60 is, I assume, the height of
         // one full-size task + its margins. Except that 
-		if([[self subviews]count]<=(floor(self.bounds.size.height/(taskHeight + taskMargin)))){
+        
+        if(i<maxVisibleTasks) {
 			NSLog(@"laying out task: %@", subview.task.text);
+            [subview setHidden:FALSE];
 			subview.frame=CGRectMake(7, (self.bounds.size.height/22.0)+taskMargin*2 +((taskHeight+taskMargin*2)*i), (self.bounds.size.width)-14, taskHeight);
-		}
-		
-		else {
-			NSLog(@"laying out task: %@", subview.task.text);
-			subview.frame=CGRectMake(7, (self.bounds.size.height/22.0)+taskMargin*2 +((taskHeight+taskMargin*2/2)*i), (self.bounds.size.width)-14, (taskHeight-taskMargin)/2);
-		}
+		} else {
+            [subview setHidden:TRUE];
+        }
 		
 		[subview setNeedsDisplay];
 		NSLog(@"Frame: %f",self.bounds.size.width);
