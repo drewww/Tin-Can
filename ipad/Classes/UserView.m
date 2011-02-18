@@ -201,8 +201,11 @@
             }
             
             CGRect curBounds = self.bounds;
-            initialBounds = curBounds;
+            initialBounds = self.bounds;
             
+            // Adjust the bounds size and origin to make it big enough for
+            // the task drawer and in the right place relative to drawing
+            // origin.
             curBounds.size.height = curBounds.size.height + yExtendAmount;
             curBounds.origin.y = curBounds.origin.y - yExtendAmount;
             
@@ -211,10 +214,10 @@
                                     
             self.bounds = curBounds;
 
-            
-            CGRect curFrame = self.frame;
-            initialFrame = curFrame;
-            
+            // Move the frame appropriately to compensate for the change in bounds size.
+            CGRect curFrame = self.frame;            
+            initialFrame = self.frame;
+
             curFrame.origin.y = curFrame.origin.y - frameDY;
             curFrame.origin.x = curFrame.origin.x - frameDX;
             
@@ -235,20 +238,12 @@
             [UIView beginAnimations:@"retract_drawer" context:nil];
             
             [UIView setAnimationDuration:0.4f];
-            switch([self.side intValue]) {
-                case 0:
-                case 2:
-                    taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y + drawerExtendAmount + USER_EXTEND_HEIGHT);
-                    break;
-                case 1:
-                case 3:
-                    taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y + drawerExtendAmount + USER_EXTEND_HEIGHT);
-                    break;
-                    
-            }
+            
+            // We save this when we're laid out and the task container view
+            // is put in its proper position. 
+            taskContainerView.frame = taskContainerViewInitialFrame;
                         
             self.frame = initialFrame;
-
             self.bounds = initialBounds;
 
             
@@ -365,38 +360,38 @@
     bool adjustLeftRight = false;
     bool adjustTopBottom = false;
     
-    CGRect initialFrame;
+    CGRect initialDrawerFrame;
     
     int adjustDirection;
     
     
     switch([self.side intValue]) {
         case 0:
-            initialFrame = CGRectMake(-BASE_WIDTH, 15, BASE_WIDTH*2, 600);
+            initialDrawerFrame = CGRectMake(-BASE_WIDTH, 15, BASE_WIDTH*2, 600);
             adjustLeftRight = true;
             adjustDirection = 1;
             break;
             
         case 2:
-            initialFrame = CGRectMake(-BASE_WIDTH, 15, BASE_WIDTH*2, 600);
+            initialDrawerFrame = CGRectMake(-BASE_WIDTH, 15, BASE_WIDTH*2, 600);
             adjustLeftRight = true;
             adjustDirection = -1;
             break;
             
         case 1:
-            initialFrame = CGRectMake(-BASE_WIDTH, 15, 600, BASE_WIDTH*2);
+            initialDrawerFrame = CGRectMake(-BASE_WIDTH, 15, 600, BASE_WIDTH*2);
             adjustTopBottom = true;
             adjustDirection = -1;
             break;
             
         case 3:
-            initialFrame = CGRectMake(-BASE_WIDTH, 15, 600, BASE_WIDTH*2);
+            initialDrawerFrame = CGRectMake(-BASE_WIDTH, 15, 600, BASE_WIDTH*2);
             adjustTopBottom = true;
             adjustDirection = 1;
             break;
     }
     
-    taskContainerView.frame = initialFrame;
+    taskContainerView.frame = initialDrawerFrame;
     globalBounds = [self convertRect:taskContainerView.frame toView:self.superview];
     
     
@@ -424,7 +419,8 @@
                                          taskContainerView.frame.size.height);
     
     globalBounds = [self convertRect:taskContainerView.frame toView:self.superview];
-
+    
+    taskContainerViewInitialFrame = taskContainerView.frame;
 }
 
 - (void)dealloc {    

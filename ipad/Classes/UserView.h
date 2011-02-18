@@ -45,6 +45,8 @@
     CGRect initialBounds;
     CGRect initialFrame;
     
+    CGRect taskContainerViewInitialFrame;
+    
     float drawerExtendAmount;
     
     bool doAutorevert;
