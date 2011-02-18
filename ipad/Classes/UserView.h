@@ -18,8 +18,8 @@
 // Messing with this also works for debugging. Set it huge to have max height visibility.
 #define HEIGHT_MARGIN 50
 
-#define TAB_WIDTH 15
-#define TAB_HEIGHT 15
+#define TAB_WIDTH 5
+#define TAB_HEIGHT 12
 #define TAB_MARGIN 5
 
 #define LOCATION_HEIGHT 20
