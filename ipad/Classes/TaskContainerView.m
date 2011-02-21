@@ -18,6 +18,8 @@
 
 @implementation TaskContainerView
 
+@synthesize isMainView;
+
 // TODOS
 // To make this class work as both the main task view that holds unassigned tasks as well as
 // the view that each user has that stores that user's tasks, there are some changes we need

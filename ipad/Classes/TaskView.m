@@ -9,6 +9,7 @@
 #import "TaskView.h"
 #import "Task.h"
 #import "DragManager.h"
+#import "TaskContainerView.h"
 
 @implementation TaskView
 
@@ -99,7 +100,25 @@
 
 	CGContextFillRect(ctx, CGRectMake(BAR_WIDTH, 0, self.frame.size.width-12, self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:1].CGColor);
-	[task.text drawInRect:CGRectMake(BAR_WIDTH + 5, 2, self.frame.size.width-16, self.frame.size.height) 
+    
+    // Check and see if our parent view is the task container view. If it is, then we want to show
+    // the name of the person who created us. Otherwise, hide that because we're in that users'
+    // task container view so it's obvious.
+    NSString *displayString;
+    if([self.superview isKindOfClass:[TaskContainerView class]]) {
+        TaskContainerView *taskContainer = (TaskContainerView *)self.superview;
+        
+        if(taskContainer.isMainView) {
+            displayString = [task.text stringByAppendingFormat:@" (from %@)", task.creator.name, nil];
+        } else {
+            displayString = task.text;
+        }
+    } else {
+        displayString = task.text;
+    }
+
+    
+	[displayString drawInRect:CGRectMake(BAR_WIDTH + 5, 2, self.frame.size.width-16, self.frame.size.height) 
 			withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
 	CGContextSetLineWidth(ctx,2);

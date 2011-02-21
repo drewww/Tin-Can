@@ -25,4 +25,6 @@
 
 - (void) setHoverState:(bool)state;
 
+@property (readonly) bool isMainView;
+
 @end
