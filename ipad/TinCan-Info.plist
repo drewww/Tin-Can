@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleShortVersionString</key>
+	<string>0.2.1</string>
 	<key>UIApplicationExitsOnSuspend</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -25,7 +27,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>3</string>
 	<key>UIStatusBarHidden</key>
 	<true/>
 	<key>LSRequiresIPhoneOS</key>
