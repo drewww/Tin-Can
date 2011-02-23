@@ -21,6 +21,7 @@
 #import "LocationBorderView.h"
 #import "EventView.h"
 #import "CurrentTopicView.h"
+#import "AddItemController.h"
 
 @class UserView;
 
@@ -69,8 +70,53 @@
 
     queue = [[[NSOperationQueue alloc] init] retain];
     
-    timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(44, 409, 290, 208)];
-    [self.view addSubview:timelineView];
+    //timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(44, 409, 290, 208)];
+    //[self.view addSubview:timelineView];
+
+    
+    // Add a pair of buttons for adding topics and adding ideas. This is instead of the + buttons on the 
+    // container views for those types, which are absurdly hard to hit on an actual ipad.
+    addIdeaButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+    addIdeaButton.frame = CGRectMake(44, 487, 290, 50);
+    addIdeaButton.backgroundColor = [UIColor clearColor];
+    [addIdeaButton setTitle:@"Add Idea" forState: UIControlStateNormal];
+    addIdeaButton.titleLabel.font = [UIFont boldSystemFontOfSize:24.0f];
+    [addIdeaButton addTarget:self action:@selector(addIdeaButtonPressed:)forControlEvents:UIControlEventTouchUpInside];
+    [addIdeaButton setEnabled: YES];
+    
+    addIdeaButton.backgroundColor = [UIColor blackColor];
+    addIdeaButton.transform = CGAffineTransformMakeRotation(M_PI/2);
+    
+    [self.view addSubview:addIdeaButton];
+
+    
+    addTopicButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+    addTopicButton.frame = CGRectMake(-10, 487, 290, 50);
+    addTopicButton.backgroundColor = [UIColor clearColor];
+    [addTopicButton setTitle:@"Add Topic" forState: UIControlStateNormal];
+    addTopicButton.titleLabel.font = [UIFont boldSystemFontOfSize:24.0f];
+    [addTopicButton addTarget:self action:@selector(addTopicButtonPressed:)forControlEvents:UIControlEventTouchUpInside];
+    [addTopicButton setEnabled: YES];
+    
+    addTopicButton.backgroundColor = [UIColor blackColor];
+    addTopicButton.transform = CGAffineTransformMakeRotation(M_PI/2);
+    
+    [self.view addSubview:addTopicButton];
+    
+    
+    // Set up the two popover controllers.
+    addIdeaController = [[AddItemController alloc] initWithPlaceholder:@"new idea" withButtonText:@"Add Idea"];
+    addIdeaController.delegate = self;
+    
+    addIdeaPopoverController = [[UIPopoverController alloc] initWithContentViewController:addIdeaController];
+    [addIdeaPopoverController setPopoverContentSize:CGSizeMake(300, 100)];
+
+    addTopicController = [[AddItemController alloc] initWithPlaceholder:@"new topic" withButtonText:@"Add Topic"];
+    addTopicController.delegate = self;
+    
+    addTopicPopoverController = [[UIPopoverController alloc] initWithContentViewController:addTopicController];
+    [addTopicPopoverController setPopoverContentSize:CGSizeMake(300, 100)];
+    
     
 //    SetUserButton *setUserButton = [[SetUserButton alloc] init];
 //    setUserButton.center = CGPointMake(30, 945);
@@ -355,6 +401,30 @@
     
     
     
+}
+
+- (void) addIdeaButtonPressed:(id) sender {
+    NSLog(@"In ADD IDEA BUTTON PRESSED.");
+    [addIdeaPopoverController presentPopoverFromRect:addIdeaButton.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:true];
+}
+
+- (void) addTopicButtonPressed:(id) sender {
+    NSLog(@"In ADD TOPIC BUTTON PRESSED.");
+    [addTopicPopoverController presentPopoverFromRect:addTopicButton.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:true];    
+}
+
+
+- (void) itemSubmittedWithText:(NSString *)text fromController:(UIViewController *)controller {
+
+    NSLog(@"item submitted! text: %@ fromController: %@", text, controller);
+    
+    if(controller == (UIViewController *)addIdeaController) {
+        [addIdeaPopoverController dismissPopoverAnimated:true];
+        [[ConnectionManager sharedInstance] addTaskWithText:text isInPool:false];
+    } else if (controller == (UIViewController *)addTopicController) {
+        [addTopicPopoverController dismissPopoverAnimated:true];
+        [[ConnectionManager sharedInstance] addTopicWithText:text];        
+    }
 }
 
 - (void) userTaskDrawerExtended:(UserView *)extendedView {

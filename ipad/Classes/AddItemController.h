@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @protocol AddItemDelegate 
-- (void) itemSubmittedWithText:(NSString *)text;
+- (void) itemSubmittedWithText:(NSString *)text fromController:(UIViewController *)controller;
 @end 
 
 @interface AddItemController : UIViewController {

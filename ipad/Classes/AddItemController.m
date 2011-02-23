@@ -78,7 +78,7 @@
     NSLog(@"Add button pressed! Contents: %@", textField.text);
 
     if(delegate != nil) {
-        [delegate itemSubmittedWithText:textField.text];
+        [delegate itemSubmittedWithText:textField.text fromController:self];
     }
     
     textField.text = @"";

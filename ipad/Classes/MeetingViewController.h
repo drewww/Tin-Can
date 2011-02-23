@@ -15,10 +15,11 @@
 #import "LocationBorderView.h"
 #import "TimelineContainerView.h"
 #import "CurrentTopicView.h"
+#import "AddItemController.h"
 
 @class Todo;
 
-@interface MeetingViewController : UIViewController {    
+@interface MeetingViewController : UIViewController <AddItemDelegate>{    
     
     TaskContainerView *taskContainer;
     TopicContainerView *topicContainer;
@@ -35,7 +36,16 @@
     
     MeetingTimerView *meetingTimerView;
     NSTimer *clock;
-        
+    
+    UIPopoverController *addIdeaPopoverController;
+    UIPopoverController *addTopicPopoverController;
+
+    AddItemController *addIdeaController;
+    AddItemController *addTopicController;
+    
+    UIButton *addIdeaButton;
+    UIButton *addTopicButton;
+    
     // Not sure if this should live here or in AppDelegate,
     // but we'll start with here for now.
     NSOperationQueue *queue;
@@ -55,6 +65,9 @@
 - (void) handleConnectionEvent:(Event *)event;
 
 - (void) userTaskDrawerExtended:(UserView *)extendedView;
+
+- (void) addIdeaButtonPressed:(id) sender;
+- (void) addTopicButtonPressed:(id) sender;
 
 @end
 

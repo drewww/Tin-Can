@@ -54,7 +54,7 @@
 		loginButton.frame = CGRectMake(self.view.frame.size.width/2.0-200+150,self.view.frame.size.height/2.0-250+600+475, 100,150);
 		loginButton.backgroundColor = [UIColor clearColor];
 		[loginButton setTitle:@"Login" forState: UIControlStateNormal];
-		[loginButton setFont:[UIFont boldSystemFontOfSize:30.0f]];
+        loginButton.titleLabel.font = [UIFont boldSystemFontOfSize:30.0f];
 		[loginButton addTarget:self action:@selector(loginButtonPressed:)forControlEvents:UIControlEventTouchUpInside];
 		[loginButton setEnabled: NO];
 		

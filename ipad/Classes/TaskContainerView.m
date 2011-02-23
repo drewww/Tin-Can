@@ -98,23 +98,23 @@
 	CGContextStrokeRect(ctx, CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height));
     
  
-    if(isMainView) {
-        // Draw a + button in the header for adding tasks.
-        if(buttonPressed) {
-            CGContextSetFillColorWithColor(ctx, BUTTON_PRESSED_COLOR.CGColor);
-        } else {
-            CGContextSetFillColorWithColor(ctx, BUTTON_COLOR.CGColor);
-        }
-        
-        buttonRect = CGRectMake(self.bounds.size.width-23, 3, 20, 20);
-        
-        CGContextFillRect(ctx, buttonRect);
-        
-        // Now put a plus in the middle of it. 
-        CGContextSetFillColorWithColor(ctx, COLOR.CGColor);
-        CGContextFillRect(ctx, CGRectInset(buttonRect, 9, 2));
-        CGContextFillRect(ctx, CGRectInset(buttonRect, 2, 9));        
-    }
+//    if(isMainView) {
+//        // Draw a + button in the header for adding tasks.
+//        if(buttonPressed) {
+//            CGContextSetFillColorWithColor(ctx, BUTTON_PRESSED_COLOR.CGColor);
+//        } else {
+//            CGContextSetFillColorWithColor(ctx, BUTTON_COLOR.CGColor);
+//        }
+//        
+//        buttonRect = CGRectMake(self.bounds.size.width-23, 3, 20, 20);
+//        
+//        CGContextFillRect(ctx, buttonRect);
+//        
+//        // Now put a plus in the middle of it. 
+//        CGContextSetFillColorWithColor(ctx, COLOR.CGColor);
+//        CGContextFillRect(ctx, CGRectInset(buttonRect, 9, 2));
+//        CGContextFillRect(ctx, CGRectInset(buttonRect, 2, 9));        
+//    }
     	
 }
 
@@ -164,31 +164,31 @@
     
 }
 
-- (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    
-    UITouch *touch = [touches anyObject];
-    
-    CGPoint touchLoc = [touch locationInView:self];
-    
-    if(CGRectContainsPoint(buttonRect, touchLoc)) {
-        buttonPressed = YES;
-        [self setNeedsDisplay];
-    }
-}
+//- (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+//    
+//    UITouch *touch = [touches anyObject];
+//    
+//    CGPoint touchLoc = [touch locationInView:self];
+//    
+//    if(CGRectContainsPoint(buttonRect, touchLoc)) {
+//        buttonPressed = YES;
+//        [self setNeedsDisplay];
+//    }
+//}
+//
+//- (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+//    
+//    if(buttonPressed) {
+//        // Trigger the add callback here.
+//        NSLog(@"Add button pressed! Do something now!");
+//        [popoverController presentPopoverFromRect:buttonRect inView:self permittedArrowDirections:UIPopoverArrowDirectionAny animated:true];
+//        
+//        buttonPressed = NO;
+//        [self setNeedsDisplay];
+//    }
+//}
 
-- (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    
-    if(buttonPressed) {
-        // Trigger the add callback here.
-        NSLog(@"Add button pressed! Do something now!");
-        [popoverController presentPopoverFromRect:buttonRect inView:self permittedArrowDirections:UIPopoverArrowDirectionAny animated:true];
-        
-        buttonPressed = NO;
-        [self setNeedsDisplay];
-    }
-}
-
-- (void) itemSubmittedWithText:(NSString *)text {
+- (void) itemSubmittedWithText:(NSString *)text fromController:(UIViewController *)controller {
     [popoverController dismissPopoverAnimated:YES];
     
     [[ConnectionManager sharedInstance] addTaskWithText:text isInPool:FALSE];
