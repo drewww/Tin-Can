@@ -420,7 +420,7 @@
     
     if(controller == (UIViewController *)addIdeaController) {
         [addIdeaPopoverController dismissPopoverAnimated:true];
-        [[ConnectionManager sharedInstance] addTaskWithText:text isInPool:false];
+        [[ConnectionManager sharedInstance] addTaskWithText:text isInPool:false isCreatedBy:nil isAssignedBy:nil];
     } else if (controller == (UIViewController *)addTopicController) {
         [addTopicPopoverController dismissPopoverAnimated:true];
         [[ConnectionManager sharedInstance] addTopicWithText:text];        

@@ -336,13 +336,23 @@ def _handleTopicList(event):
 def _handleNewTask(event):
     text = event.params["text"]
 
+    # by default, show ideas as created by the user who sent the message
+    # but support the ability to specific a specific creator OTHER than the
+    # actor. This is important in the classroom context specifically where
+    # people can drag and drop ideas onto the pool, but we don't want them
+    # to be "created" by the person who dragged them.
+    if(event.params["createdBy"]!=None):
+        createdBy = event.params["createdBy"].uuid
+    else:
+        createdBy = event.actor.uuid
+    
     # TODO write a real color picker here.
     if len(event.results)==0:
-        newTask = model.Task(event.meeting.uuid, event.actor.uuid, text)
+        newTask = model.Task(event.meeting.uuid, createdBy, text)
         event.addResult("task", newTask)
     else:
         d=event.results["task"]
-        newTask = model.Task(event.meeting.uuid, event.actor.uuid, text,
+        newTask = model.Task(event.meeting.uuid, createdBy, text,
             taskUUID=d["uuid"], createdAt=d["createdAt"])
     
     # we're going to hardcode events and make them part of the person
@@ -354,6 +364,12 @@ def _handleNewTask(event):
     # of the user who created it. 
     if(not event.params["createInPool"]):
         newTask.assign(newTask.createdBy, newTask.createdBy, None)
+    else:
+        if(event.params["assignedBy"]):
+            newTask.deassign(event.params["assignedBy"])
+        else:
+            newTask.deassign(event.actor)
+    
     
     event.meeting.addTask(newTask)
     event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "created new idea", "time": newTask.createdAt}))

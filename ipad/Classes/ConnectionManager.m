@@ -580,7 +580,7 @@ static NSString *selectedServer = nil;
     [request startAsynchronous];         
 }
 
-- (void) addTaskWithText:(NSString *)newTaskText isInPool:(bool)isInPool {
+- (void) addTaskWithText:(NSString *)newTaskText isInPool:(bool)isInPool isCreatedBy:(UUID *)createdBy isAssignedBy:(UUID *)assignedBy {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/tasks/add"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:newTaskText forKey:@"text"];    
@@ -591,6 +591,15 @@ static NSString *selectedServer = nil;
     else val = @"0";
     
     [request setPostValue:val forKey:@"createInPool"];
+    
+    if(createdBy != nil) {
+        [request setPostValue:createdBy forKey:@"createdBy"];
+    }
+    
+    if(assignedBy != nil) {
+        [request setPostValue:assignedBy forKey:@"assignedBy"];
+    }
+
     [request setDelegate:self];
     [request startAsynchronous];
 }

@@ -754,15 +754,19 @@ class Task(MeetingObject):
         
     def deassign(self, deassignedBy):
         # do some quick assertion checking.
-        if(self.assignedTo==None):
-            logging.warning("Tried to deassign a task %s that was not\
- assigned yet."%self)
-            return
+        # (this is acceptable usage now - a weird classroom quirk)
+ #        if(self.assignedTo==None):
+ #            logging.warning("Tried to deassign a task %s that was not\
+ # assigned yet."%self)
+ #            return
 
         self.assignedBy = deassignedBy
         self.assignedAt=time.time()
 
-        self.assignedTo.removeTask(self)
+        # per earlier assertion being removed.
+        if(self.assignedTo!=None):
+            self.assignedTo.removeTask(self)
+        
         self.assignedTo = None
 
     def __str__(self):
