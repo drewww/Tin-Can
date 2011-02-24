@@ -184,6 +184,8 @@ def init_demo():
     users[2].setStatus("assigned task", tasks[0].assignedAt)
     users[4].setStatus("claimed task", tasks[0].assignedAt)
     
+    tasks[1].assign(users[3], users[3], time.time()-3*60)
+    
     #since join meeting events aren't being fired, we need to manually set the title
     title = "Meeting with "
     for location in meeting.locations:

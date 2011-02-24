@@ -109,7 +109,12 @@
         TaskContainerView *taskContainer = (TaskContainerView *)self.superview;
         
         if(taskContainer.isMainView) {
-            displayString = [task.text stringByAppendingFormat:@" (from %@)", task.creator.name, nil];
+            
+            if(task.assignedBy != nil && [task.creator.uuid isEqual:task.assignedBy.uuid]) {
+                displayString = [task.text stringByAppendingFormat:@" (%@, added by %@)", task.creator.name, task.assignedBy.name, nil];                
+            } else {
+                displayString = [task.text stringByAppendingFormat:@" (%@)", task.creator.name, nil];
+            }
         } else {
             displayString = task.text;
         }

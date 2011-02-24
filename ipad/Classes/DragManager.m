@@ -189,7 +189,7 @@ static DragManager *sharedInstance = nil;
             
             
             // Per the classroom "idea" model, don't move the idea over, just create a new one
-            // that is unassigned. 
+            // that is unassigned.
             [[ConnectionManager sharedInstance] addTaskWithText:task.text isInPool:TRUE];
             
             [self animateTaskToHome:task];
