@@ -31,6 +31,9 @@
     [window makeKeyAndVisible];
 	
     
+    // This works, but if you're actually plugged in, it represents a major performance hit. 
+    // It doesn't SEEM to represent a performance problem if you're not plugged in at all,
+    // so I'm going to just leave it here for now and see what happens.
     [[UIApplication sharedApplication] setupScreenMirroring];
     
 	return YES;
