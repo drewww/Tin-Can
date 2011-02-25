@@ -348,12 +348,14 @@ def _handleNewTask(event):
     
     # TODO write a real color picker here.
     if len(event.results)==0:
-        newTask = model.Task(event.meeting.uuid, createdBy, text)
+        newTask = model.Task(event.meeting.uuid, createdBy, text,
+            color=event.params["color"])
         event.addResult("task", newTask)
     else:
         d=event.results["task"]
         newTask = model.Task(event.meeting.uuid, createdBy, text,
-            taskUUID=d["uuid"], createdAt=d["createdAt"])
+            taskUUID=d["uuid"], createdAt=d["createdAt"],
+            color=event.params["color"])
     
     # we're going to hardcode events and make them part of the person
     # who created them. we'll start by queueing up an assignment task 

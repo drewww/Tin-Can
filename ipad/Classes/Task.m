@@ -15,6 +15,7 @@
 @synthesize assignedTo;
 @synthesize assignedBy;
 @synthesize assignedAt;
+@synthesize color;
 
 - (id) initWithUUID:(UUID *)myUUID
     withCreatorUUID:(UUID *)myCreatorUUID
@@ -24,6 +25,7 @@
      assignedToUUID:(UUID *)myAssignedToUUID
      assignedByUUID:(UUID *)myAssignedByUUID
          assignedAt:(NSDate *)myAssignedAt
+          withColor:(UIColor *)myColor
 {
     self = [super initWithUUID:myUUID withCreatorUUID:myCreatorUUID withMeetingUUID:myMeetingUUID
                      createdAt:myCreatedAt];
@@ -32,6 +34,12 @@
     assignedToUUID = myAssignedToUUID;
     assignedByUUID = myAssignedByUUID;
     self.assignedAt = myAssignedAt;
+    
+    // Give it a default gray color if there's some issue with color assignment.
+    if(myColor == nil) {
+        myColor = [UIColor colorWithWhite:0.5 alpha:1];
+    }
+    self.color = myColor;
     
     return self;
 }

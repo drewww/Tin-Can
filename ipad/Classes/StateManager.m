@@ -144,7 +144,8 @@ static StateManager *sharedInstance = nil;
                                      withText:[results objectForKey:@"text"]
                                assignedToUUID:[results objectForKey:@"assignedTo"]
                                assignedByUUID:[results objectForKey:@"assignedBy"]
-                                   assignedAt:date];
+                                   assignedAt:date
+                                    withColor:[UIColor colorWithHexString:[results objectForKey:@"color"]]];
             [task unswizzle];
         }
         

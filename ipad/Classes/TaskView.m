@@ -66,7 +66,10 @@
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	
 	
-	CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.5 alpha:1].CGColor);
+	CGContextSetFillColorWithColor(ctx, task.color.CGColor);
+    
+    NSLog(@"TASK COLOR: %@", task.color);
+    
 	CGContextFillRect(ctx, CGRectMake(0, 0, BAR_WIDTH, self.frame.size.height));
     
     // Now draw the draggability bars here. Just do a series of lighter rects at first.

@@ -25,15 +25,19 @@
     NSDate *assignedAt;
     
     UIView *view;
+    
+    UIColor *color;
 }
 
 
-- (id) initWithUUID:(UUID *)myUUID withCreatorUUID:(UUID *)myCreatorUUID createdAt:(NSDate *)myCreatedAt
+- (id) initWithUUID:(UUID *)myUUID withCreatorUUID:(UUID *)myCreatorUUID
+          createdAt:(NSDate *)myCreatedAt
     withMeetingUUID:(UUID *)myMeetingUUID 
            withText:(NSString *)myText
      assignedToUUID:(UUID *)myAssignedToUUID
      assignedByUUID:(UUID *)myAssignedByUUID
-         assignedAt:(NSDate *)myAssignedAt;
+         assignedAt:(NSDate *)myAssignedAt
+          withColor:(UIColor *)myColor;
 
 - (void) startDeassignByActor:(Actor *)byActor atTime:(NSDate *)deassignTime withTaskContainer:(UIView *)taskContainer;
 - (void) deassignByActor:(Actor *)byActor atTime:(NSDate *)deassignTime;
@@ -49,5 +53,6 @@
 @property(nonatomic, retain) User *assignedTo;
 @property(nonatomic, retain) Actor *assignedBy;
 @property(nonatomic, retain) NSDate *assignedAt;
+@property(nonatomic, retain) UIColor *color;
 
 @end

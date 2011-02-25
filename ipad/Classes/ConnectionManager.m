@@ -13,6 +13,7 @@
 #import "Event.h"
 #import "Topic.h"
 #import "Task.h"
+#import "UIColor+Util.h"
 
 static ConnectionManager *sharedInstance = nil;
 static NSString *selectedServer = nil;
@@ -441,7 +442,8 @@ static NSString *selectedServer = nil;
                                      withText:[results objectForKey:@"text"]
                                assignedToUUID:[results objectForKey:@"assignedTo"]
                                assignedByUUID:[results objectForKey:@"assignedBy"]
-                                   assignedAt:date];
+                                   assignedAt:date
+                                    withColor:[UIColor colorWithHexString:[results objectForKey:@"color"]]];
             
             [task unswizzle];
             
@@ -580,7 +582,7 @@ static NSString *selectedServer = nil;
     [request startAsynchronous];         
 }
 
-- (void) addTaskWithText:(NSString *)newTaskText isInPool:(bool)isInPool isCreatedBy:(UUID *)createdBy isAssignedBy:(UUID *)assignedBy {
+- (void) addTaskWithText:(NSString *)newTaskText isInPool:(bool)isInPool isCreatedBy:(UUID *)createdBy isAssignedBy:(UUID *)assignedBy withColor:(UIColor *)theColor {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/tasks/add"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:newTaskText forKey:@"text"];    
@@ -598,6 +600,10 @@ static NSString *selectedServer = nil;
     
     if(assignedBy != nil) {
         [request setPostValue:assignedBy forKey:@"assignedBy"];
+    }
+    
+    if(theColor != nil) {
+        [request setPostValue:theColor forKey:@"color"];
     }
 
     [request setDelegate:self];

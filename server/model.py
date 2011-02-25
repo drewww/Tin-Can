@@ -703,7 +703,8 @@ class Task(MeetingObject):
     """Store information about a task."""
     
     def __init__(self, meetingUUID, creatorUUID, text, assignedByUUID=None, 
-        assignedToUUID=None,taskUUID=None, createdAt=None, assignedAt=None):
+        assignedToUUID=None,taskUUID=None, createdAt=None, assignedAt=None,
+        color=None):
         MeetingObject.__init__(self, creatorUUID, meetingUUID, createdAt, taskUUID)
         self.text = text
         self.assignedAt=assignedAt
@@ -717,7 +718,12 @@ class Task(MeetingObject):
             self.assignedTo = state.get_obj(assignedToUUID, User)
             assignedTo.assignTask(self)
         else:
-            self.assignedTo = None    
+            self.assignedTo = None
+        
+        if(color==None):
+            self.color = "888888"
+        else:
+            self.color = color
         
         
     def getDict(self):
@@ -734,6 +740,8 @@ class Task(MeetingObject):
             d["assignedBy"] = self.assignedBy.uuid
         else:
             d["assignedBy"] = None
+        
+        d["color"] = self.color
 
         return d
     
