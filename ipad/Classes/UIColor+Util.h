@@ -13,6 +13,8 @@
 
 - (UIColor *)colorDarkenedByPercent:(CGFloat)percent;
 - (UIColor *)colorByChangingAlphaTo:(CGFloat)newAlpha;
+- (NSString *)toHexString;
+
 + (UIColor *)colorForIndex:(NSInteger)index;
 + (UIColor *)colorWithHexString:(NSString *)hexString;
 @end

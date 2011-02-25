@@ -77,6 +77,45 @@
 	
 }
 
+// Ignores alpha values.
+- (NSString *)toHexString {
+
+	int numComponents = CGColorGetNumberOfComponents([self CGColor]);
+    
+   	CGFloat *components = (CGFloat *)CGColorGetComponents([self CGColor]);
+    NSString *hexString;
+    
+    
+	switch (numComponents) 
+	{
+		case 2:
+		{            
+            int grayValue = components[0]*255;
+            
+            hexString = [NSString stringWithFormat:@"%02X%02X%02X", grayValue,grayValue,grayValue, nil]; 
+			break;
+		}
+		case 4:
+		{
+            int redValue = components[0]*255;
+            int greenValue = components[1]*255;
+            int blueValue = components[2]*255;
+
+            hexString = [NSString stringWithFormat:@"%02X%02X%02X", redValue,greenValue,blueValue, nil]; 
+			break;
+		}
+        default:
+        {
+            hexString = @"FFFFFF";
+            break;
+        }
+	}
+
+    NSLog(@"HEX STRING FROM %@ -> %@", self, hexString);
+
+    return hexString;
+}
+
 - (UIColor *)colorByChangingAlphaTo:(CGFloat)newAlpha
 {
 	// oldComponents is the array INSIDE the original color
