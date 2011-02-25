@@ -47,7 +47,13 @@
 		self.alpha = 1.0;
 		
 		[UIView commitAnimations];
-		
+        
+        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+        longPress.minimumPressDuration = 1;
+        
+        [self addGestureRecognizer:longPress];
+        [longPress release];
+        
     }
     return self;
 }
@@ -91,7 +97,7 @@
 //    CGContextFillRect(ctx, CGRectMake(3, 18, BAR_WIDTH -6, 3));
 //
     
-
+    
     
 	if(isTouched==FALSE){
         CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
@@ -135,14 +141,13 @@
 	[self setNeedsDisplay];
 
 }
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    
-    // Check and see if we're a task in the pool. If we are, ignore touches.
-    if(![self.task isAssigned]) return;
-        
-	NSLog(@"I have been touched");
-    UITouch *touch = [touches anyObject];
 
+- (IBOutlet) handleLongPress: (UIGestureRecognizer *)sender{
+    // Check and see if we're a task in the pool. If we are, ignore touches.
+    if(![self.task isAssigned]) return nil;
+    
+	NSLog(@"I have been LONG PRESSED");
+    
 	isTouched=TRUE;
 	//self.frame=CGRectMake(self.frame.origin.x, self.frame.origin.y, self.bounds.size.width-100, 50);
 	[self setNeedsDisplay];
@@ -152,7 +157,13 @@
     // not going to get released any time soon?
     lastParentView = self.superview;
     
-    [self.delegate taskDragStartedWithTouch:touch withEvent:event withTask:self.task];   
+    // TODO Remove the withTouch and withEvent arguments. They're not actually used, and we don't
+    // get them from the gesture recognizer anyway.
+    [self.delegate taskDragStartedWithTouch:nil withEvent:nil withTask:self.task]; 
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    NSLog(@"TASK TOUCH BEGAN");
 }
 
 
@@ -333,6 +344,15 @@
 
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    // Check and see if we're dragging now, eg have we had a long-press
+    // detected and not a touchesEnded?
+    if (!isTouched){
+        NSLog(@"got a moved event, but we haven't officially been long pressed yet");
+        return;
+    }
+    NSLog(@"got a move event and handling it");
+    
     // Check and see if we're a task in the pool. If we are, ignore touches.
     if(![self.task isAssigned]) return;
 
@@ -356,6 +376,10 @@
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     // Check and see if we're a task in the pool. If we are, ignore touches.
     if(![self.task isAssigned]) return;
+    
+    // Including this to avoid handling touches that ended without an official
+    // gesture-recognized start.
+    if(!isTouched) return;
 
     isTouched=FALSE;
     

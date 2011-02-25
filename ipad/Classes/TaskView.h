@@ -64,4 +64,6 @@
 
 -(void)setFrameWidthWithContainerWidth:(CGFloat )width;
 
+- (IBOutlet) handleLongPress: (UIGestureRecognizer *)sender;
+
 @end
