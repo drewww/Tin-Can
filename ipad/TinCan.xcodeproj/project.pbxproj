@@ -26,6 +26,7 @@
 		3A2A6ACB11EFDB0E00FF373C /* Room.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6ACA11EFDB0E00FF373C /* Room.m */; };
 		3A2A6C7C11F0D86500FF373C /* ConnectionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6C7B11F0D86500FF373C /* ConnectionManager.m */; };
 		3A2A6C9811F0F68300FF373C /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6C9711F0F68300FF373C /* Event.m */; };
+		3A434A75131842B2008C803C /* UIApplication+ScreenMirroring.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A434A74131842B2008C803C /* UIApplication+ScreenMirroring.m */; };
 		3A4941B8124D209B0068C6D6 /* DragManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4941B7124D209B0068C6D6 /* DragManager.m */; };
 		3A57217F11EB7515004C2687 /* MeetingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57217E11EB7515004C2687 /* MeetingViewController.m */; };
 		3A57237811EBDE0B004C2687 /* TinCanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57237711EBDE0B004C2687 /* TinCanViewController.m */; };
@@ -127,6 +128,8 @@
 		3A2A6C7B11F0D86500FF373C /* ConnectionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConnectionManager.m; sourceTree = "<group>"; };
 		3A2A6C9611F0F68300FF373C /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
 		3A2A6C9711F0F68300FF373C /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
+		3A434A73131842B2008C803C /* UIApplication+ScreenMirroring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIApplication+ScreenMirroring.h"; path = "Classes/UIApplication+ScreenMirroring.h"; sourceTree = "<group>"; };
+		3A434A74131842B2008C803C /* UIApplication+ScreenMirroring.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIApplication+ScreenMirroring.m"; path = "Classes/UIApplication+ScreenMirroring.m"; sourceTree = "<group>"; };
 		3A4941B6124D209B0068C6D6 /* DragManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DragManager.h; sourceTree = "<group>"; };
 		3A4941B7124D209B0068C6D6 /* DragManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DragManager.m; sourceTree = "<group>"; };
 		3A57217D11EB7515004C2687 /* MeetingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeetingViewController.h; sourceTree = "<group>"; };
@@ -313,6 +316,8 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				3A434A73131842B2008C803C /* UIApplication+ScreenMirroring.h */,
+				3A434A74131842B2008C803C /* UIApplication+ScreenMirroring.m */,
 				3AC2B9D21198BB120071F912 /* UIColor+Util.h */,
 				3AC2B9D31198BB120071F912 /* UIColor+Util.m */,
 				32CA4F630368D1EE00C91783 /* TinCan_Prefix.pch */,
@@ -679,6 +684,7 @@
 				3AD2D2621295D21500C31515 /* EventContainerContentView.m in Sources */,
 				3AD2D2FC1296F9AF00C31515 /* ServerSelectViewController.m in Sources */,
 				3A12614812ADA1DC005D05FA /* AddItemController.m in Sources */,
+				3A434A75131842B2008C803C /* UIApplication+ScreenMirroring.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
