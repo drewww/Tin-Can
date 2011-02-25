@@ -9,6 +9,7 @@
 #import "TinCanAppDelegate.h"
 #import "TinCanViewController.h"
 #import "LoginMasterViewController.h"
+#import "UIApplication+ScreenMirroring.h"
 
 @implementation TinCanAppDelegate
 
@@ -29,6 +30,9 @@
 	
     [window makeKeyAndVisible];
 	
+    
+    [[UIApplication sharedApplication] setupScreenMirroring];
+    
 	return YES;
 	
 
