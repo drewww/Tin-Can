@@ -80,7 +80,7 @@
 		HeaderView *headerRoom =[[[HeaderView alloc] 
 									  initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0-30, 400,60) withTitle:@"Meetings"] retain];
 		HeaderView *headerLocation =[[[HeaderView alloc] 
-								  initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0+600-30, 400,60) withTitle:@"Rooms"] retain];
+								  initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0+600-30, 400,60) withTitle:@"People"] retain];
 
 		// Add Elements to View
 		//[self.view addSubview:wvTutorial];
