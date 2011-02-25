@@ -92,21 +92,21 @@
 		{            
             int grayValue = components[0]*255;
             
-            hexString = [NSString stringWithFormat:@"%02X%02X%02X", grayValue,grayValue,grayValue, nil]; 
+            hexString = [NSString stringWithFormat:@"#%02X%02X%02X", grayValue,grayValue,grayValue, nil]; 
 			break;
 		}
 		case 4:
 		{
-            int redValue = components[0]*255;
+            int redValue = components[2]*255;
             int greenValue = components[1]*255;
-            int blueValue = components[2]*255;
+            int blueValue = components[0]*255;
 
-            hexString = [NSString stringWithFormat:@"%02X%02X%02X", redValue,greenValue,blueValue, nil]; 
+            hexString = [NSString stringWithFormat:@"#%02X%02X%02X", redValue,greenValue,blueValue, nil]; 
 			break;
 		}
         default:
         {
-            hexString = @"FFFFFF";
+            hexString = @"#FFFFFF";
             break;
         }
 	}
