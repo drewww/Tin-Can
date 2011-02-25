@@ -91,11 +91,10 @@
 //    CGContextFillRect(ctx, CGRectMake(3, 18, BAR_WIDTH -6, 3));
 //
     
-    CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
 
     
 	if(isTouched==FALSE){
-	CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
+        CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
 	}
 	else {
 		CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1].CGColor );
@@ -130,7 +129,7 @@
 			withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
 	CGContextSetLineWidth(ctx,2);
-	CGContextSetStrokeColorWithColor(ctx,  [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:1].CGColor);
+	CGContextSetStrokeColorWithColor(ctx,  task.color.CGColor);
 	CGContextStrokeRect(ctx, CGRectMake(0, 0, self.frame.size.width, self.frame.size.height));
 	
 	[self setNeedsDisplay];

@@ -603,7 +603,7 @@ static NSString *selectedServer = nil;
     }
     
     if(theColor != nil) {
-        [request setPostValue:theColor forKey:@"color"];
+        [request setPostValue:[theColor toHexString] forKey:@"color"];
     }
 
     [request setDelegate:self];
