@@ -40,6 +40,8 @@
     NSDate *assignedAt;
     
     UIView *tempTaskContainer;
+    
+    UILongPressGestureRecognizer *longPress;
 }
 
 @property (nonatomic, readonly) Task *task;

@@ -48,11 +48,10 @@
 		
 		[UIView commitAnimations];
         
-        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+        longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
         longPress.minimumPressDuration = 1;
         
         [self addGestureRecognizer:longPress];
-        [longPress release];
         
     }
     return self;
@@ -145,6 +144,8 @@
 - (IBOutlet) handleLongPress: (UIGestureRecognizer *)sender{
     // Check and see if we're a task in the pool. If we are, ignore touches.
     if(![self.task isAssigned]) return nil;
+    
+    longPress.enabled = false;
     
 	NSLog(@"I have been LONG PRESSED");
     
@@ -376,12 +377,15 @@
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     // Check and see if we're a task in the pool. If we are, ignore touches.
     if(![self.task isAssigned]) return;
+    NSLog(@"Got touch ended.");
     
     // Including this to avoid handling touches that ended without an official
     // gesture-recognized start.
     if(!isTouched) return;
 
     isTouched=FALSE;
+    longPress.enabled = true;
+
     
     // TODO think about multitouch for this!
     UITouch *touch = [touches anyObject];
@@ -406,9 +410,7 @@
         NSLog(@"dropped on drop target.");
     }
     
-
-    
-		[self setNeedsDisplay];
+	[self setNeedsDisplay];
 }
 
 - (NSComparisonResult) compareByPointer:(TaskView *)view {
