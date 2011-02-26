@@ -99,7 +99,7 @@
 
 - (void) taskAssigned:(Task *)theTask {
     NSLog(@"Task assigned to user. Requesting redraw.");
-    [taskContainerView addSubview:[theTask getView]];
+    [taskContainerView addTaskView:[theTask getView]];
     
     [self setHoverState:false];
     [self setNeedsDisplay];

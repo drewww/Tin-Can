@@ -411,7 +411,7 @@
 
     [[task getView] removeFromSuperview];
     [self setTransform: CGAffineTransformMakeRotation(0.0)];
-    [taskContainer addSubview:[task getView]];
+    [taskContainer addTaskView:[task getView]];
     
     [task.assignedTo removeTask:task];
     

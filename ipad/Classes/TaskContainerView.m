@@ -9,6 +9,7 @@
 #import "TaskContainerView.h"
 #import "TaskView.h"
 #import "ConnectionManager.h"
+#import "TaskContainerContentView.h"
 
 #define COLOR [UIColor colorWithWhite:0.3 alpha:1]
 #define BUTTON_COLOR [UIColor colorWithWhite:0.6 alpha:1]
@@ -48,7 +49,19 @@
         [popoverController setPopoverContentSize:CGSizeMake(300, 100)];
         buttonPressed = NO;
         
+        taskScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, HEADER_HEIGHT, self.bounds.size.width, self.bounds.size.height - HEADER_HEIGHT-2)];
+        
+        contentView = [[TaskContainerContentView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, 50) isMainView:mainView];
+        [contentView setNeedsLayout];
+        
+        [taskScrollView setCanCancelContentTouches:NO];
+        taskScrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
+        
+        [taskScrollView addSubview:contentView];
+        [self addSubview:taskScrollView];
+        
 		[self setNeedsLayout];
+        
     }
     return self;
 }
@@ -123,46 +136,6 @@
 }
 
 
-- (void)layoutSubviews{
-	int i =0;
-    NSLog(@"laying out task container with %d subviews", [[self subviews] count]);
-    NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByCreationDate:)];
-
-    float taskHeight;
-    float taskMargin = 3.5;
-    
-    if(isMainView) {
-        taskHeight = 100.0;
-    } else {
-        taskHeight = 50.0;
-    }
-
-    int maxVisibleTasks = floor(self.bounds.size.height/(taskHeight + taskMargin*2));
-	for(TaskView *subview in [sortedArray reverseObjectEnumerator]){
-        
-        // Make sure lastParentViews are up to date.
-        subview.lastParentView = self;
-
-        // This is not properly abstracted. 60 is, I assume, the height of
-        // one full-size task + its margins. Except that 
-        
-        if(i<maxVisibleTasks) {
-			NSLog(@"laying out task: %@", subview.task.text);
-            [subview setHidden:FALSE];
-			subview.frame=CGRectMake(7, (self.bounds.size.height/22.0)+taskMargin*2 +((taskHeight+taskMargin*2)*i), (self.bounds.size.width)-14, taskHeight);
-		} else {
-            [subview setHidden:TRUE];
-        }
-		
-		[subview setNeedsDisplay];
-		NSLog(@"Frame: %f",self.bounds.size.width);
-
-		NSLog(@"Subview frame: %f",subview.bounds.size.width);
-		i++;
-	}
-	
-    
-}
 
 //- (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 //    
@@ -194,6 +167,16 @@
     [[ConnectionManager sharedInstance] addTaskWithText:text isInPool:FALSE isCreatedBy:nil isAssignedBy:nil withColor:nil];
 }
 
+- (void) addTaskView:(TaskView *)newTaskView {
+    NSLog(@"adding a TASK VIEW the CORRECT WAY: %@", newTaskView);
+    [contentView addSubview:newTaskView];
+}
+
+- (void) addSubview:(UIView *)view {
+    [super addSubview:view];
+    
+    NSLog(@"got ADD SUBVIEW on the TASK CONTAINER: %@", view);
+}
 
 - (void) setHoverState:(bool)state {
     hover = state;
@@ -207,6 +190,7 @@
         [v setNeedsDisplay];
     }
     
+    [contentView setNeedsDisplay];    
 }
 
 - (void)dealloc {

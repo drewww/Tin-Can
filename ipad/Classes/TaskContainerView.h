@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "TaskDropTarget.h"
 #import "AddItemController.h"
+#import "TaskContainerContentView.h"
+#import "TaskView.h"
 
 @interface TaskContainerView : UIView <TaskDropTarget, AddItemDelegate> {
     float rot;
@@ -18,12 +20,16 @@
     UIPopoverController *popoverController;
     bool buttonPressed;
     CGRect buttonRect;
+    
+    TaskContainerContentView *contentView;
+    UIScrollView *taskScrollView;
 }
 
 - (void) setRot:(float) newRot;
 - (id) initWithFrame:(CGRect)frame withRot:(float)rotation isMainView:(BOOL) mainView;
 
 - (void) setHoverState:(bool)state;
+- (void) addTaskView:(TaskView *)newTaskView;
 
 @property (readonly) bool isMainView;
 

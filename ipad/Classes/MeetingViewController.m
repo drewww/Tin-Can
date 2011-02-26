@@ -304,7 +304,7 @@
                 // in a consistent way.
                 [task assignToUser:task.assignedTo byActor:task.assignedTo atTime:[NSDate date]];
             } else {
-                [taskContainer addSubview:[[event.results objectForKey:@"task"] getView]];
+                [taskContainer addTaskView:(TaskView *)[[event.results objectForKey:@"task"] getView]];
             }
             
             // Is there a different way to do this? In this c
@@ -658,7 +658,7 @@
     NSSet *unassignedTasks = [[[StateManager sharedInstance].meeting getUnassignedTasks] retain];    
     // Look at the meeting objecet and see if there are any unassigned tasks. 
     for(Task *task in unassignedTasks) {
-        [taskContainer addSubview:[task getView]];
+        [taskContainer addTaskView:(TaskView *)[task getView]];
     }
     
     [taskContainer setNeedsLayout];
