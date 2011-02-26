@@ -162,7 +162,7 @@
             // not going to get released any time soon?
             lastParentView = self.superview;
             
-            previousGesturePoint = [sender locationOfTouch:0 inView:self.superview];
+            previousGesturePoint = CGPointZero;
             
             // TODO Remove the withTouch and withEvent arguments. They're not actually used, and we don't
             // get them from the gesture recognizer anyway.
@@ -182,7 +182,11 @@
             
             // When we move, we want to know the delta from its previous location
             // and then we can adjust our position accordingly. 
-                        
+            
+            if(CGPointEqualToPoint(previousGesturePoint, CGPointZero)) {
+                previousGesturePoint = [sender locationOfTouch:0 inView:self.superview];
+            }
+            
             float dX = [sender locationOfTouch:0 inView:self.superview].x - previousGesturePoint.x;
             float dY = [sender locationOfTouch:0 inView:self.superview].y - previousGesturePoint.y;
             self.center = CGPointMake(self.center.x + dX, self.center.y + dY);
