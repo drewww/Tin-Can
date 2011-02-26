@@ -48,7 +48,7 @@
 //        if(i<maxVisibleTasks) {
 			NSLog(@"laying out task: %@", subview.task.text);
             [subview setHidden:FALSE];
-			subview.frame=CGRectMake(7, (self.bounds.size.height/22.0)+taskMargin*2 +((taskHeight+taskMargin*2)*i), (self.bounds.size.width)-14, taskHeight);
+			subview.frame=CGRectMake(7, taskMargin + ((taskHeight+taskMargin*2)*i), (self.bounds.size.width)-14, taskHeight);
 //		} else {
 //            [subview setHidden:TRUE];
 //        }
