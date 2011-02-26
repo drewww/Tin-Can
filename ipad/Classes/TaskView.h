@@ -13,13 +13,13 @@
 
 @protocol TaskDragDelegate
 
-- (void) taskDragStartedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task;
-- (void) taskDragMovedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task;
+- (void) taskDragStartedWithGesture:(UIGestureRecognizer *)gesture withTask:(Task *)task;
+- (void) taskDragMovedWithGesture:(UIGestureRecognizer *)gesture withTask:(Task *)task;
 
 // Returns true if the drag ended on a drop target, false otherwise.
 // (TODO should this actually return the target we dropped on instead of just true/false?)
 // (alternatively, should we have a generic drop target interface? Hmm.)
-- (bool) taskDragEndedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task;
+- (bool) taskDragEndedWithGesture:(UIGestureRecognizer *)gesture withTask:(Task *)task;
 @end
 
 @interface TaskView : UIView {
@@ -40,6 +40,8 @@
     NSDate *assignedAt;
     
     UIView *tempTaskContainer;
+    
+    CGPoint previousGesturePoint;
     
     UILongPressGestureRecognizer *longPress;
 }
@@ -66,6 +68,6 @@
 
 -(void)setFrameWidthWithContainerWidth:(CGFloat )width;
 
-- (IBOutlet) handleLongPress: (UIGestureRecognizer *)sender;
+- (void) handleLongPress: (UIGestureRecognizer *)sender;
 
 @end

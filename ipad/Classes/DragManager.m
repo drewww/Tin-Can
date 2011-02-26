@@ -47,10 +47,8 @@ static DragManager *sharedInstance = nil;
 }
 
 
-- (UIView <TaskDropTarget> *) userViewAtTouch:(UITouch *)touch withEvent:(UIEvent *)event {
-    
-    CGPoint point = [touch locationInView:self.rootView];
-    
+- (UIView <TaskDropTarget> *) userViewAtPoint:(CGPoint)point {
+        
     // TODO We'll need to hit-test the taskContainer separately here, which is annoying, unless
     // we add it to the UsersContainer. 
     
@@ -64,12 +62,12 @@ static DragManager *sharedInstance = nil;
         }
     }
     
-    if([taskContainer pointInside:[taskContainer convertPoint:point fromView:self.rootView] withEvent:event]) {
+    if([taskContainer pointInside:[taskContainer convertPoint:point fromView:self.rootView] withEvent:nil]) {
         NSLog(@"point in task container, returning that!");
         return taskContainer;
     }
     
-    UIView *potentialTaskContainer = [self.taskContainer hitTest:point withEvent:event];
+    UIView *potentialTaskContainer = [self.taskContainer hitTest:point withEvent:nil];
 
     
     if(returnedView==nil && potentialTaskContainer==nil) {
@@ -92,7 +90,7 @@ static DragManager *sharedInstance = nil;
 
 #pragma mark TaskDragDelegate
 
-- (void) taskDragStartedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task {
+- (void) taskDragStartedWithGesture:(UIGestureRecognizer *)gesture withTask:(Task *)task{
     // When we get the first touch, pull it out of its current superview and put it on the root view.
     // We'll push it back when it gets dropped again.    
     TaskView *taskView = (TaskView *)[task getView];
@@ -104,13 +102,13 @@ static DragManager *sharedInstance = nil;
     [self moveTaskViewToDragContainer:taskView];
 }
 
-- (void) taskDragMovedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task {
+- (void) taskDragMovedWithGesture:(UIGestureRecognizer *)gesture withTask:(Task *)task {
     
     // Get the last target
     UIView <TaskDropTarget> *lastDropTarget = [lastTaskDropTargets objectForKey:task.uuid];
     
     // Now check and see if we're over a participant right now.
-	UIView <TaskDropTarget> *curDropTarget = [self userViewAtTouch:touch withEvent:event];
+	UIView <TaskDropTarget> *curDropTarget = [self userViewAtPoint:[gesture locationOfTouch:0 inView:self.rootView]];
 
 	// if cur and last are the same, do nothing.
 	// if they're different, release the old and retain the new and manage states.
@@ -159,9 +157,9 @@ static DragManager *sharedInstance = nil;
     [lastTaskDropTargets setValue:lastDropTarget forKey:task.uuid];
 }
 
-- (bool) taskDragEndedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task {
+- (bool) taskDragEndedWithGesture:(UIGestureRecognizer *)gesture withTask:(Task *)task {
     // Get the current target
-    UIView <TaskDropTarget> *curTargetView = [self userViewAtTouch:touch withEvent:event];	
+    UIView <TaskDropTarget> *curTargetView = [self userViewAtPoint:[gesture locationOfTouch:0 inView:self.rootView]];	
     
     // Assign the Task.
     if(curTargetView != nil) {

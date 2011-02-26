@@ -26,12 +26,10 @@
 + (DragManager*)sharedInstance;
 
 
-- (UIView *) userViewAtTouch:(UITouch *)touch withEvent:(UIEvent *)event;
+- (UIView *) userViewAtPoint:(CGPoint)point;
 
 - (void) setRootView:(UIView *)view andTaskContainer:(UIView *)theTaskContainer;
 
-- (void) taskDragMovedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task;
-- (bool) taskDragEndedWithTouch:(UITouch *)touch withEvent:(UIEvent *)event withTask:(Task *)task;
 - (void) taskDragAnimationComplete;
 - (bool) moveTaskViewToDragContainer:(TaskView *)view;
 - (void) animateTaskToHome:(Task *)theTask;

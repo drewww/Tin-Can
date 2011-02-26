@@ -141,26 +141,100 @@
 
 }
 
-- (IBOutlet) handleLongPress: (UIGestureRecognizer *)sender{
-    // Check and see if we're a task in the pool. If we are, ignore touches.
-    if(![self.task isAssigned]) return nil;
+- (void) handleLongPress: (UIGestureRecognizer *)sender{
     
-    longPress.enabled = false;
+    NSLog(@"in LONG PRESS with state: %d and parent: %@", sender.state, self.superview);
     
-	NSLog(@"I have been LONG PRESSED");
-    
-	isTouched=TRUE;
-	//self.frame=CGRectMake(self.frame.origin.x, self.frame.origin.y, self.bounds.size.width-100, 50);
-	[self setNeedsDisplay];
-	[self.superview bringSubviewToFront:self];
-    
-    // retain this? can get away without it, right, since it's in the hierarchy and 
-    // not going to get released any time soon?
-    lastParentView = self.superview;
-    
-    // TODO Remove the withTouch and withEvent arguments. They're not actually used, and we don't
-    // get them from the gesture recognizer anyway.
-    [self.delegate taskDragStartedWithTouch:nil withEvent:nil withTask:self.task]; 
+
+    switch (sender.state) {
+        case UIGestureRecognizerStateBegan:
+            // Check and see if we're a task in the pool. If we are, ignore touches.
+            if(![self.task isAssigned]) return;
+            
+            NSLog(@"I have been LONG PRESSED");
+            
+            isTouched=TRUE;
+            //self.frame=CGRectMake(self.frame.origin.x, self.frame.origin.y, self.bounds.size.width-100, 50);
+            [self setNeedsDisplay];
+            [self.superview bringSubviewToFront:self];
+            
+            // retain this? can get away without it, right, since it's in the hierarchy and 
+            // not going to get released any time soon?
+            lastParentView = self.superview;
+            
+            previousGesturePoint = [sender locationOfTouch:0 inView:self.superview];
+            
+            // TODO Remove the withTouch and withEvent arguments. They're not actually used, and we don't
+            // get them from the gesture recognizer anyway.
+            [self.delegate taskDragStartedWithGesture:sender withTask:self.task];             
+            break;
+        case UIGestureRecognizerStateChanged:
+            // Check and see if we're dragging now, eg have we had a long-press
+            // detected and not a touchesEnded?
+            if (!isTouched){
+                NSLog(@"got a moved event, but we haven't officially been long pressed yet");
+                return;
+            }
+            NSLog(@"got a move event and handling it");
+            
+            // Check and see if we're a task in the pool. If we are, ignore touches.
+            if(![self.task isAssigned]) return;
+            
+            // When we move, we want to know the delta from its previous location
+            // and then we can adjust our position accordingly. 
+                        
+            float dX = [sender locationOfTouch:0 inView:self.superview].x - previousGesturePoint.x;
+            float dY = [sender locationOfTouch:0 inView:self.superview].y - previousGesturePoint.y;
+            self.center = CGPointMake(self.center.x + dX, self.center.y + dY);
+            
+            [self setNeedsDisplay];
+            
+            // Inform the delegate.
+            [self.delegate taskDragMovedWithGesture:sender withTask:task];
+
+            previousGesturePoint = [sender locationOfTouch:0 inView:self.superview];
+
+            break;
+        case UIGestureRecognizerStateEnded:
+            // Check and see if we're a task in the pool. If we are, ignore touches.
+            if(![self.task isAssigned]) return;
+            NSLog(@"Got touch ended.");
+            
+            // Including this to avoid handling touches that ended without an official
+            // gesture-recognized start.
+            if(!isTouched) return;
+            
+            isTouched=FALSE;
+
+            // TODO think about multitouch for this!
+            
+            if (![self.delegate taskDragEndedWithGesture:sender withTask:self.task]) {
+                
+                [UIView beginAnimations:@"snap_to_initial_position" context:nil];
+                
+                [UIView setAnimationDuration:1.0f];
+                
+                CGRect newFrame = self.frame;
+                newFrame.origin = CGPointMake(initialOrigin.x, initialOrigin.y);
+                self.frame = newFrame;
+                NSLog(@"animating to initialOrigin: %f, %f", initialOrigin.x, initialOrigin.y);
+                [self.superview setNeedsLayout];
+                [UIView commitAnimations];
+                [self.superview sendSubviewToBack:self];
+            } else {
+                // We were dropped on an actual drop target. Something else will handle our
+                // animation at this point (although we should think about moving it here for
+                // consistency.
+                NSLog(@"dropped on drop target.");
+            }
+            
+            [self setNeedsDisplay];
+            
+            break;
+        default:
+            NSLog(@"received a gesture state that I wasn't expecting: %d", sender.state);
+            break;
+    }
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -345,72 +419,11 @@
 
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    
-    // Check and see if we're dragging now, eg have we had a long-press
-    // detected and not a touchesEnded?
-    if (!isTouched){
-        NSLog(@"got a moved event, but we haven't officially been long pressed yet");
-        return;
-    }
-    NSLog(@"got a move event and handling it");
-    
-    // Check and see if we're a task in the pool. If we are, ignore touches.
-    if(![self.task isAssigned]) return;
-
-	// When we move, we want to know the delta from its previous location
-	// and then we can adjust our position accordingly. 
-	
-	UITouch *touch = [touches anyObject];
-	
-	float dX = [touch locationInView:self.superview].x - [touch previousLocationInView:self.superview].x;
-	float dY = [touch locationInView:self.superview].y - [touch previousLocationInView:self.superview].y;
-	self.center = CGPointMake(self.center.x + dX, self.center.y + dY);
-	
-	[self setNeedsDisplay];
-
-    
-    // Inform the delegate.
-    [self.delegate taskDragMovedWithTouch:touch withEvent:event withTask:self.task];
-    
+    NSLog(@"touches moved");
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    // Check and see if we're a task in the pool. If we are, ignore touches.
-    if(![self.task isAssigned]) return;
-    NSLog(@"Got touch ended.");
-    
-    // Including this to avoid handling touches that ended without an official
-    // gesture-recognized start.
-    if(!isTouched) return;
-
-    isTouched=FALSE;
-    longPress.enabled = true;
-
-    
-    // TODO think about multitouch for this!
-    UITouch *touch = [touches anyObject];
-    
-    if (![self.delegate taskDragEndedWithTouch:touch withEvent:event withTask:self.task]) {
-                
-        [UIView beginAnimations:@"snap_to_initial_position" context:nil];
-        
-        [UIView setAnimationDuration:1.0f];
-        
-        CGRect newFrame = self.frame;
-        newFrame.origin = CGPointMake(initialOrigin.x, initialOrigin.y);
-        self.frame = newFrame;
-        NSLog(@"animating to initialOrigin: %f, %f", initialOrigin.x, initialOrigin.y);
-		[self.superview setNeedsLayout];
-        [UIView commitAnimations];
-		[self.superview sendSubviewToBack:self];
-    } else {
-            // We were dropped on an actual drop target. Something else will handle our
-            // animation at this point (although we should think about moving it here for
-            // consistency.
-        NSLog(@"dropped on drop target.");
-    }
-    
-	[self setNeedsDisplay];
+    NSLog(@"touches ENDED");
 }
 
 - (NSComparisonResult) compareByPointer:(TaskView *)view {
