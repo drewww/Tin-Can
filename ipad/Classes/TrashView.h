@@ -10,7 +10,11 @@
 #import "TaskDropTarget.h"
 
 @interface TrashView : UIView <TaskDropTarget> {
-    bool isHovered;
+    bool hover;
+    
 }
+
+- (id) init;
+- (void) wasLaidOut;
 
 @end

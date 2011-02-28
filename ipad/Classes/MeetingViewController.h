@@ -16,6 +16,7 @@
 #import "TimelineContainerView.h"
 #import "CurrentTopicView.h"
 #import "AddItemController.h"
+#import "TrashView.h"
 
 @class Todo;
 
@@ -49,6 +50,8 @@
     // Not sure if this should live here or in AppDelegate,
     // but we'll start with here for now.
     NSOperationQueue *queue;
+    
+    TrashView *trashView;
 }
 
 

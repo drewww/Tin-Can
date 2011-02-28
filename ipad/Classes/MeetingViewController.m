@@ -22,6 +22,7 @@
 #import "EventView.h"
 #import "CurrentTopicView.h"
 #import "AddItemController.h"
+#import "TrashView.h"
 
 @class UserView;
 
@@ -123,8 +124,9 @@
 //    setUserButton.center = CGPointMake(30, 945);
 //    [self.view addSubview:setUserButton];
     
-    
-    
+    trashView = [[[TrashView alloc] init] retain];
+    [self.view addSubview:trashView];
+
     [self.view bringSubviewToFront:currentTopicView];
     
     [self initUsers];
@@ -459,13 +461,11 @@
     // First, sort the users so they get grouped properly by location.
     NSArray *sortedUserViews = [UserView getAllUserViews];
     
-
-    // Debugging to make sure sorting is working properly.
-    NSLog(@"laying out users:");
-    for(UserView *view in sortedUserViews) {
-        NSLog(@"%@", [view getUser]);
-    }
+    NSMutableArray *finalSortedViews = [NSMutableArray arrayWithArray:sortedUserViews];
     
+    [finalSortedViews addObject:trashView];
+    sortedUserViews = finalSortedViews;
+        
     int numViews = [sortedUserViews count];
     
     int i = 0;
@@ -578,9 +578,11 @@
               
         [view setTransform:CGAffineTransformMakeRotation([[rotations objectAtIndex:viewIndex] floatValue])];
         
-        view.side = [sidesList objectAtIndex:viewIndex];
-        
-        [view wasLaidOut];
+        // The trash object is in here, too. 
+        if([view isKindOfClass:[UserView class]]) {
+            view.side = [sidesList objectAtIndex:viewIndex];
+            [view wasLaidOut];
+        }
         
         viewIndex++;
     }   
@@ -651,6 +653,7 @@
         
         i++;
     }
+
 }
 
 - (void) initTasks {
