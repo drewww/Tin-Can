@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleShortVersionString</key>
-	<string>0.2.1</string>
+	<string>0.2.2</string>
 	<key>UIApplicationExitsOnSuspend</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -27,7 +27,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>3</string>
+	<string>4</string>
 	<key>UIStatusBarHidden</key>
 	<true/>
 	<key>LSRequiresIPhoneOS</key>
