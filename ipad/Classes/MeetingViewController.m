@@ -70,14 +70,15 @@
 
     queue = [[[NSOperationQueue alloc] init] retain];
     
-    //timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(44, 409, 290, 208)];
-    //[self.view addSubview:timelineView];
+    timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(44, 409, 290, 208)];
+    [self.view addSubview:timelineView];
 
+    
     
     // Add a pair of buttons for adding topics and adding ideas. This is instead of the + buttons on the 
     // container views for those types, which are absurdly hard to hit on an actual ipad.
     addIdeaButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-    addIdeaButton.frame = CGRectMake(44, 487, 290, 50);
+    addIdeaButton.frame = CGRectMake(-15, 220, 240, 30);
     addIdeaButton.backgroundColor = [UIColor clearColor];
     [addIdeaButton setTitle:@"Add Idea" forState: UIControlStateNormal];
     addIdeaButton.titleLabel.font = [UIFont boldSystemFontOfSize:24.0f];

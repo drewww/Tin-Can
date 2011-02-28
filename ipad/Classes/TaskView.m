@@ -49,7 +49,7 @@
 		[UIView commitAnimations];
         
         longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-        longPress.minimumPressDuration = 1;
+        longPress.minimumPressDuration = 0.6;
         
         [self addGestureRecognizer:longPress];
         
