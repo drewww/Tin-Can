@@ -186,7 +186,8 @@ static DragManager *sharedInstance = nil;
 //            [[ConnectionManager sharedInstance] assignTask:task toUser:[curTargetUserView getUser]];
 //            [curTargetView setHoverState:false];
             
-            [self animateTaskToHome:task];
+//            [self animateTaskToHome:task];
+            return false;
             
         } else if ([curTargetView isKindOfClass:[TaskContainerView class]]) {
             NSLog(@"got a drop on a task container, copy the task now!");
