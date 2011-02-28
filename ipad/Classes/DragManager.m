@@ -116,6 +116,10 @@ static DragManager *sharedInstance = nil;
 	// if cur is something and last is nothing, retain and set true
 	
 //    NSLog(@"Drop targets: (last) %@ =? %@ (cur)", lastDropTarget, curDropTarget);
+
+    // This disables highlighting users when we drag tasks over them. 
+    // Going to add a special check for the trash in a sec.
+    if([curDropTarget isKindOfClass:[UserView class]]) return;
     
 	if(curDropTarget != nil) {
 		if (lastDropTarget == nil) {
@@ -181,6 +185,8 @@ static DragManager *sharedInstance = nil;
 //            UserView *curTargetUserView = (UserView *)curTargetView;
 //            [[ConnectionManager sharedInstance] assignTask:task toUser:[curTargetUserView getUser]];
 //            [curTargetView setHoverState:false];
+            
+            [self animateTaskToHome:task];
             
         } else if ([curTargetView isKindOfClass:[TaskContainerView class]]) {
             NSLog(@"got a drop on a task container, copy the task now!");
