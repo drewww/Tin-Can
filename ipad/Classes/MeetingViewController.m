@@ -92,7 +92,7 @@
 
     
     addTopicButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-    addTopicButton.frame = CGRectMake(-10, 487, 290, 50);
+    addTopicButton.frame = CGRectMake(-15, 775, 240, 30);
     addTopicButton.backgroundColor = [UIColor clearColor];
     [addTopicButton setTitle:@"Add Topic" forState: UIControlStateNormal];
     addTopicButton.titleLabel.font = [UIFont boldSystemFontOfSize:24.0f];
