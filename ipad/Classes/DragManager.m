@@ -11,6 +11,7 @@
 #import "UserView.h"
 #import "ASIFormDataRequest.h"
 #import "ConnectionManager.h"
+#import "TrashView.h"
 
 @implementation DragManager
 
@@ -19,6 +20,7 @@ static DragManager *sharedInstance = nil;
 @synthesize rootView;
 @synthesize usersContainer;
 @synthesize taskContainer;
+@synthesize trashView;
 
 #pragma mark -
 #pragma mark class instance methods
@@ -33,7 +35,7 @@ static DragManager *sharedInstance = nil;
     return self;
 }
 
-- (void) setRootView:(UIView *)view andTaskContainer:(TaskContainerView *)theTaskContainer{
+- (void) setRootView:(UIView *)view andTaskContainer:(UIView *)theTaskContainer andTrashView:(UIView *)theTrashView{
     
     self.rootView = view;
     self.taskContainer = theTaskContainer;
@@ -43,6 +45,8 @@ static DragManager *sharedInstance = nil;
     
     [self.rootView addSubview:draggedItemsContainer];
     [self.rootView bringSubviewToFront:draggedItemsContainer];
+    
+    self.trashView = theTrashView;
     
 }
 
@@ -65,6 +69,10 @@ static DragManager *sharedInstance = nil;
     if([taskContainer pointInside:[taskContainer convertPoint:point fromView:self.rootView] withEvent:nil]) {
         NSLog(@"point in task container, returning that!");
         return taskContainer;
+    }
+    
+    if(CGRectContainsPoint(trashView.frame, point)) {
+        return trashView;
     }
     
     UIView *potentialTaskContainer = [self.taskContainer hitTest:point withEvent:nil];
@@ -115,11 +123,17 @@ static DragManager *sharedInstance = nil;
 	// if cur is nothing and last is something, release and set false
 	// if cur is something and last is nothing, retain and set true
 	
-//    NSLog(@"Drop targets: (last) %@ =? %@ (cur)", lastDropTarget, curDropTarget);
+    NSLog(@"Drop targets: (last) %@ =? %@ (cur)", lastDropTarget, curDropTarget);
 
     // This disables highlighting users when we drag tasks over them. 
     // Going to add a special check for the trash in a sec.
+    
+    
     if([curDropTarget isKindOfClass:[UserView class]]) return;
+    
+    if([curDropTarget isKindOfClass:[TrashView class]]) {
+        NSLog(@"OVER TRASH VIEW");
+    }
     
 	if(curDropTarget != nil) {
 		if (lastDropTarget == nil) {

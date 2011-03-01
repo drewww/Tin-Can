@@ -63,7 +63,10 @@
 	[self.view addSubview:taskContainer];	
 	[self.view addSubview:topicContainer];
 
-    [[DragManager sharedInstance] setRootView:self.view andTaskContainer:taskContainer];
+    trashView = [[[TrashView alloc] init] retain];
+    [self.view addSubview:trashView];
+    
+    [[DragManager sharedInstance] setRootView:self.view andTaskContainer:taskContainer andTrashView:trashView];
 
 	[self.view bringSubviewToFront:meetingTimerView];
 	[self.view bringSubviewToFront:topicContainer];
@@ -124,9 +127,6 @@
 //    setUserButton.center = CGPointMake(30, 945);
 //    [self.view addSubview:setUserButton];
     
-    trashView = [[[TrashView alloc] init] retain];
-    [self.view addSubview:trashView];
-
     [self.view bringSubviewToFront:currentTopicView];
     
     [self initUsers];

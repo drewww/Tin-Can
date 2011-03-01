@@ -14,12 +14,15 @@
     UIView *rootView;
     UIView *usersContainer;
     UIView *taskContainer;
+    UIView *trashView;
     
     UIView *draggedItemsContainer;
     
     NSMutableDictionary *lastTaskDropTargets;
     
     CGAffineTransform originalTransform;
+    
+    
 }
 
 
@@ -28,7 +31,7 @@
 
 - (UIView *) userViewAtPoint:(CGPoint)point;
 
-- (void) setRootView:(UIView *)view andTaskContainer:(UIView *)theTaskContainer;
+- (void) setRootView:(UIView *)view andTaskContainer:(UIView *)theTaskContainer andTrashView:(UIView *)theTrashView;
 
 - (void) taskDragAnimationComplete;
 - (bool) moveTaskViewToDragContainer:(TaskView *)view;
@@ -38,6 +41,6 @@
 @property (nonatomic, retain) UIView *rootView;
 @property (nonatomic, retain) UIView *usersContainer;
 @property (nonatomic, retain) UIView *taskContainer;
-
+@property (nonatomic, retain) UIView *trashView;
 
 @end
