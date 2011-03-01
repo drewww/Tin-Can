@@ -223,6 +223,13 @@ static DragManager *sharedInstance = nil;
             [self animateTaskToHome:task];
             
             [curTargetView setHoverState:false];
+        } else if ([curTargetView isKindOfClass:[TrashView class]]) {
+            
+            // Delete the task!
+            [task deleteTask];
+            [[ConnectionManager sharedInstance] deleteTask:task];
+            return true;
+            
         }
         return true;
     } else {
