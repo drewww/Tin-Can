@@ -403,7 +403,7 @@ def _handleEditTask(event):
     event.meeting.eventHistoryReadable.append(event.actor.name+" changed idea ("+task.text+") to idea ("+text+")")
     
     task.setText(text)
-    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "edited ideatask", "time": editedAt}))
+    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "edited idea", "time": editedAt}))
     #needed to keep track of statuses on client-side
     event.params["editedAt"] = editedAt
     

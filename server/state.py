@@ -162,16 +162,16 @@ def init_demo():
     #new tasks
     newTask = model.Task(meeting.uuid, users[1].uuid, "does postmodernism mean the end of history?", createdAt=time.time()-10*60)
     meeting.addTask(newTask)                                 
-    users[1].setStatus("created new task", newTask.createdAt)
+    users[1].setStatus("created new idea", newTask.createdAt)
     newTask = model.Task(meeting.uuid, users[0].uuid, "does Baudrillard really deny agency to human actors?", createdAt=time.time()-3*60)
     meeting.addTask(newTask)
-    users[0].setStatus("created new task", newTask.createdAt)
+    users[0].setStatus("created new idea", newTask.createdAt)
     newTask = model.Task(meeting.uuid, users[0].uuid, "can a media event become so large it becomes a spectacle?", createdAt=time.time()-3*60)
     meeting.addTask(newTask)
-    users[0].setStatus("created new task", newTask.createdAt)
+    users[0].setStatus("created new idea", newTask.createdAt)
     newTask = model.Task(meeting.uuid, users[0].uuid, "Images are no different than language - they make meaning through reading", createdAt=time.time()-3*60)
     meeting.addTask(newTask)
-    users[0].setStatus("created new task", newTask.createdAt)
+    users[0].setStatus("created new idea", newTask.createdAt)
     # newTask = model.Task(meeting.uuid, users[0].uuid, "update the group website with the latest photo", createdAt=time.time()-3*60)
     # meeting.addTask(newTask)
     # users[0].setStatus("created new task", newTask.createdAt)
@@ -181,8 +181,8 @@ def init_demo():
     
     #assigning tasks
     tasks[0].assign(users[2],users[4], time.time()-4*60)
-    users[2].setStatus("assigned task", tasks[0].assignedAt)
-    users[4].setStatus("claimed task", tasks[0].assignedAt)
+    users[2].setStatus("assigned idea", tasks[0].assignedAt)
+    # users[4].setStatus("claimed task", tasks[0].assignedAt)
     
     tasks[1].assign(users[3], users[3], time.time()-3*60)
     
