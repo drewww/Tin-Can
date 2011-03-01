@@ -8,6 +8,7 @@
 
 #import "TrashView.h"
 #import "UIView+Rounded.h"
+#import "UIColor+Util.h"
 #import "UserView.h"
 
 
@@ -40,7 +41,7 @@
     CGContextRef ctx = UIGraphicsGetCurrentContext();
 
     if(hover)
-        CGContextSetFillColorWithColor(ctx, COLOR.CGColor);
+        CGContextSetFillColorWithColor(ctx, [COLOR colorDarkenedByPercent:0.3].CGColor);
 	else
 		CGContextSetFillColorWithColor(ctx, COLOR.CGColor);
         
@@ -63,6 +64,7 @@
 
 - (void) setHoverState:(bool)state {
     hover = state;
+    [self setNeedsDisplay];
 }
 
 - (void) wasLaidOut {

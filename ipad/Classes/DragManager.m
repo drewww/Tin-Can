@@ -132,7 +132,7 @@ static DragManager *sharedInstance = nil;
     if([curDropTarget isKindOfClass:[UserView class]]) return;
     
     if([curDropTarget isKindOfClass:[TrashView class]]) {
-        NSLog(@"OVER TRASH VIEW");
+        NSLog(@"ON A TRASH VIEW");
     }
     
 	if(curDropTarget != nil) {
