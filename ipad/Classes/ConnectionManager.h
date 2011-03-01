@@ -89,6 +89,7 @@
 - (void) assignTask:(Task *)theTask toUser:(User *)theUser;
 - (void) deassignTask:(Task *)theTask;
 - (void) addTaskWithText:(NSString *)newTaskText isInPool:(bool)isInPool isCreatedBy:(UUID *)createdBy isAssignedBy:(UUID *)assignedBy withColor:(UIColor *)theColor;
+- (void) deleteTask:(Task *)taskToDelete;
 
 - (void) updateTopic:(Topic *)theTopic withStatus:(TopicStatus)theStatus;
 - (void) restartTopic:(Topic *)theTopic;

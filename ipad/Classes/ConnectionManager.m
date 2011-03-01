@@ -610,6 +610,14 @@ static NSString *selectedServer = nil;
     [request startAsynchronous];
 }
 
+- (void) deleteTask:(Task *)taskToDelete {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/tasks/delete"]];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request setPostValue:taskToDelete.uuid forKey:@"taskUUID"];    
+    [request setDelegate:self];
+    [request startAsynchronous];
+}
+
 - (void) updateTopic:(Topic *)theTopic withStatus:(TopicStatus)theStatus {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/topics/update"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
