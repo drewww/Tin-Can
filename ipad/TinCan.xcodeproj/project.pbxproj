@@ -72,6 +72,7 @@
 		3AD2D2FC1296F9AF00C31515 /* ServerSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD2D2FB1296F9AF00C31515 /* ServerSelectViewController.m */; };
 		3AD66C4D120B0CBE00F974DA /* UserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD66C4C120B0CBE00F974DA /* UserView.m */; };
 		3AD66E5B120B80C000F974DA /* UserRenderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD66E5A120B80C000F974DA /* UserRenderView.m */; };
+		3AD6A197131D900E00802D2D /* UIView+Rounded.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD6A195131D900E00802D2D /* UIView+Rounded.m */; };
 		DA707CCD1212F9C40057B509 /* TopicView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA707CCC1212F9C40057B509 /* TopicView.m */; };
 		DA707CD01212F9EB0057B509 /* TopicContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA707CCF1212F9EB0057B509 /* TopicContainerView.m */; };
 		DA72601F1215A116008A0E0C /* LocationView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA72601E1215A116008A0E0C /* LocationView.m */; };
@@ -212,6 +213,8 @@
 		3AD66C4C120B0CBE00F974DA /* UserView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserView.m; sourceTree = "<group>"; };
 		3AD66E59120B80C000F974DA /* UserRenderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserRenderView.h; sourceTree = "<group>"; };
 		3AD66E5A120B80C000F974DA /* UserRenderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserRenderView.m; sourceTree = "<group>"; };
+		3AD6A195131D900E00802D2D /* UIView+Rounded.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+Rounded.m"; path = "Classes/UIView+Rounded.m"; sourceTree = "<group>"; };
+		3AD6A196131D900E00802D2D /* UIView+Rounded.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+Rounded.h"; path = "Classes/UIView+Rounded.h"; sourceTree = "<group>"; };
 		3AE11A3D1253A49700A91BC8 /* TaskDropTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskDropTarget.h; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* TinCan-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "TinCan-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		DA707CCB1212F9C40057B509 /* TopicView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicView.h; sourceTree = "<group>"; };
@@ -330,6 +333,8 @@
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				3AD2D0971294798700C31515 /* NSString+Util.h */,
 				3AD2D0981294798700C31515 /* NSString+Util.m */,
+				3AD6A195131D900E00802D2D /* UIView+Rounded.m */,
+				3AD6A196131D900E00802D2D /* UIView+Rounded.h */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -697,6 +702,7 @@
 				3A12624712B0255E005D05FA /* AddUserController.m in Sources */,
 				3A12627012B02EC1005D05FA /* AddUserButton.m in Sources */,
 				3A434A75131842B2008C803C /* UIApplication+ScreenMirroring.m in Sources */,
+				3AD6A197131D900E00802D2D /* UIView+Rounded.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
