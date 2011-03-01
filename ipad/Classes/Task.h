@@ -45,6 +45,8 @@
 - (void) startAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime;
 - (void) assignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime;
 
+- (void) deleteTask;
+
 - (UIView *)getView;
 
 - (bool) isAssigned;

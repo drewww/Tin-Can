@@ -83,6 +83,16 @@
     [self.assignedTo assignTask:self];
 }
 
+- (void) deleteTask {
+    // A few steps. First, remove the task from the person it's assigned to.
+    
+    if(self.assignedTo != nil) {
+        [self.assignedTo removeTask:self];
+    }
+    
+    [view removeFromSuperview];    
+}
+
 - (void) startDeassignByActor:(Actor *)byActor atTime:(NSDate *)deassignTime withTaskContainer:(UIView *)taskContainer {
     [(TaskView *)view startDeassignByActor:byActor atTime:deassignTime withTaskContainer:taskContainer];   
 }
