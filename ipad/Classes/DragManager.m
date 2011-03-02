@@ -206,19 +206,9 @@ static DragManager *sharedInstance = nil;
         } else if ([curTargetView isKindOfClass:[TaskContainerView class]]) {
             NSLog(@"got a drop on a task container, copy the task now!");
             
-            
-            // Per the classroom "idea" model, don't move the idea over, just create a new one
-            // that is unassigned.
-            Topic *currentTopic = [[StateManager sharedInstance].meeting getCurrentTopic];
-            UIColor *theColor = nil;
-            if (currentTopic != nil) {
-                theColor = currentTopic.color;
-            }
-            
             [[ConnectionManager sharedInstance] addTaskWithText:task.text isInPool:TRUE
                                                     isCreatedBy:task.creator.uuid
-                                                   isAssignedBy:[StateManager sharedInstance].user.uuid
-                                                      withColor:theColor];
+                                                   isAssignedBy:[StateManager sharedInstance].user.uuid];
             
             [self animateTaskToHome:task];
             

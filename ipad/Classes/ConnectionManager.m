@@ -582,7 +582,7 @@ static NSString *selectedServer = nil;
     [request startAsynchronous];         
 }
 
-- (void) addTaskWithText:(NSString *)newTaskText isInPool:(bool)isInPool isCreatedBy:(UUID *)createdBy isAssignedBy:(UUID *)assignedBy withColor:(UIColor *)theColor {
+- (void) addTaskWithText:(NSString *)newTaskText isInPool:(bool)isInPool isCreatedBy:(UUID *)createdBy isAssignedBy:(UUID *)assignedBy {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/tasks/add"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:newTaskText forKey:@"text"];    
@@ -600,6 +600,14 @@ static NSString *selectedServer = nil;
     
     if(assignedBy != nil) {
         [request setPostValue:assignedBy forKey:@"assignedBy"];
+    }
+    
+    // Per the classroom "idea" model, don't move the idea over, just create a new one
+    // that is unassigned.
+    Topic *currentTopic = [[StateManager sharedInstance].meeting getCurrentTopic];
+    UIColor *theColor = nil;
+    if (currentTopic != nil) {
+        theColor = currentTopic.color;
     }
     
     if(theColor != nil) {
