@@ -61,7 +61,9 @@ def _handleNewUser(event):
         newUser = model.User(event.params["name"])
         event.addResult("actor", newUser)
     else:
-        newUser = model.User(event.params["name"], event.results["actor"]["uuid"])
+        newUser = model.User(event.params["name"],
+            event.results["actor"]["uuid"],
+            event.params["email"])
 
     # Make sure to do this for new locations, too. 
     state.add_actor(newUser)

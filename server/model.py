@@ -498,13 +498,14 @@ class User(Actor):
     part of a meeting, and users are part of a location by virtue of being
     connected to a device that's in a location."""
     
-    def __init__(self, name=None, userUUID=None):
+    def __init__(self, name=None, userUUID=None, email=None):
         
         Actor.__init__(self, name, userUUID)
         
         self.handRaised = False
         self.location = None
         self.tasks = set()
+        self.email = email
         
         
     def isInLocation(self):
