@@ -13,7 +13,7 @@
 
 @synthesize delegate;
 
-- (id) initWithPlaceholder:(NSString *)placeholderString withButtonText:(NSString *)buttonLabelString{
+- (id) initWithPlaceholder:(NSString *)placeholderString withButtonText:(NSString *)buttonLabelString withAltButtonText:(NSString *)altButtonLabelString {
     
     self = [super init];
     
@@ -21,6 +21,7 @@
         // do init if necessary
         placeholder = placeholderString;
         buttonLabel = buttonLabelString;
+        altButtonLabel = altButtonLabelString;
     }
     
     return self;
@@ -31,7 +32,7 @@
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
     
-    self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 110)];
+    self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 170)];
     
     // Set up the text field.
     textField = [[UITextField alloc] initWithFrame:CGRectMake(10, 10, 280, 30)];
@@ -61,10 +62,25 @@
     [submitButton setEnabled: YES];
     
     submitButton.backgroundColor = [UIColor blackColor];
-    
+
     
     [self.view addSubview:textField];
     [self.view addSubview:submitButton];
+    
+    
+    if(altButtonLabel != nil) {
+        NSLog(@"SETTING UP ALTERNATIVE ADD ITEM BUTTON WITH TEXT: %@", altButtonLabel);
+        altSubmitButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+        altSubmitButton.frame = CGRectMake(300, 300, 280, 30);
+        altSubmitButton.center = CGPointMake(150, 110);
+        altSubmitButton.backgroundColor = [UIColor clearColor];
+        [altSubmitButton setTitle:buttonLabel forState: UIControlStateNormal];
+        [altSubmitButton setFont:[UIFont boldSystemFontOfSize:24.0f]];
+        [altSubmitButton addTarget:self action:@selector(altSubmitButtonPressed:)forControlEvents:UIControlEventTouchUpInside];
+        [altSubmitButton setEnabled: YES];
+        [self.view addSubview:altSubmitButton];
+    }
+    
     
     self.view.backgroundColor = [UIColor blackColor];
 }
@@ -78,7 +94,17 @@
     NSLog(@"Add button pressed! Contents: %@", textField.text);
 
     if(delegate != nil) {
-        [delegate itemSubmittedWithText:textField.text fromController:self];
+        [delegate itemSubmittedWithText:textField.text fromController:self isAltSubmit:false];
+    }
+    
+    textField.text = @"";
+}
+
+- (void) altSubmitButtonPressed:(id) sender {
+    NSLog(@"Add button pressed! Contents: %@", textField.text);
+    
+    if(delegate != nil) {
+        [delegate itemSubmittedWithText:textField.text fromController:self isAltSubmit:true];
     }
     
     textField.text = @"";

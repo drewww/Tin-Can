@@ -40,13 +40,6 @@
 
         isMainView = mainView;
         
-        // Now setup the add topic popover.
-        AddItemController *addTaskController = [[AddItemController alloc] initWithPlaceholder:@"new idea" withButtonText:@"Add Idea"];
-        addTaskController.delegate = self;
-        
-        popoverController = [[UIPopoverController alloc] initWithContentViewController:addTaskController];
-        
-        [popoverController setPopoverContentSize:CGSizeMake(300, 100)];
         buttonPressed = NO;
         
         taskScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, HEADER_HEIGHT, self.bounds.size.width, self.bounds.size.height - HEADER_HEIGHT-2)];
@@ -161,11 +154,6 @@
 //    }
 //}
 
-- (void) itemSubmittedWithText:(NSString *)text fromController:(UIViewController *)controller {
-    [popoverController dismissPopoverAnimated:YES];
-    
-    [[ConnectionManager sharedInstance] addTaskWithText:text isInPool:FALSE isCreatedBy:nil isAssignedBy:nil withColor:nil];
-}
 
 - (void) addTaskView:(TaskView *)newTaskView {
     NSLog(@"adding a TASK VIEW the CORRECT WAY: %@", newTaskView);

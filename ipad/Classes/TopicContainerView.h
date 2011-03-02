@@ -8,18 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "TopicContainerContentView.h"
-#import "AddItemController.h"
 
-@interface TopicContainerView : UIView <AddItemDelegate> {
+@interface TopicContainerView : UIView {
 	float rot;    
     
     TopicContainerContentView *contentView;
     UIScrollView *topicScrollView;
     
     CGRect buttonRect;
-    bool addButtonPressed;
-    
-    UIPopoverController *popoverController;
+    bool addButtonPressed;    
 }
 
 - (void) addTopicView:(UIView *)newTopicView;

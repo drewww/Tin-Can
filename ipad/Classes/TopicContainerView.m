@@ -8,7 +8,6 @@
 
 #import "TopicContainerView.h"
 #import "TopicView.h"
-#import "AddItemController.h"
 #import "TopicContainerContentView.h"
 #import "ConnectionManager.h"
 
@@ -44,16 +43,7 @@
         [self addSubview:topicScrollView];        
         
         
-		[self setNeedsLayout];
-        
-        
-        // Now setup the add topic popover.
-        AddItemController *addTopicController = [[AddItemController alloc] initWithPlaceholder:@"new topic" withButtonText:@"Add Topic"];
-        addTopicController.delegate = self;
-        
-        popoverController = [[UIPopoverController alloc] initWithContentViewController:addTopicController];
-
-        [popoverController setPopoverContentSize:CGSizeMake(300, 100)];
+		[self setNeedsLayout];                
     }
     
     return self;
@@ -91,15 +81,6 @@
 //    CGContextFillRect(ctx, CGRectInset(buttonRect, 2, 9));    
 }
 
-
-- (void) itemSubmittedWithText:(NSString *)text fromController:(UIViewController *)controller {
-    
-    // dismiss the popover
-    [popoverController dismissPopoverAnimated:true];
-    
-    // Send it to the server.
-    [[ConnectionManager sharedInstance] addTopicWithText:text];
-}
 
 //- (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 //    

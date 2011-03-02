@@ -110,13 +110,13 @@
     
     
     // Set up the two popover controllers.
-    addIdeaController = [[AddItemController alloc] initWithPlaceholder:@"new idea" withButtonText:@"Add Idea"];
+    addIdeaController = [[AddItemController alloc] initWithPlaceholder:@"new idea" withButtonText:@"Add Idea" withAltButtonText:@"Add Idea To Group"];
     addIdeaController.delegate = self;
     
     addIdeaPopoverController = [[UIPopoverController alloc] initWithContentViewController:addIdeaController];
     [addIdeaPopoverController setPopoverContentSize:CGSizeMake(300, 100)];
 
-    addTopicController = [[AddItemController alloc] initWithPlaceholder:@"new topic" withButtonText:@"Add Topic"];
+    addTopicController = [[AddItemController alloc] initWithPlaceholder:@"new topic" withButtonText:@"Add Topic" withAltButtonText:nil];
     addTopicController.delegate = self;
     
     addTopicPopoverController = [[UIPopoverController alloc] initWithContentViewController:addTopicController];
@@ -417,13 +417,18 @@
 }
 
 
-- (void) itemSubmittedWithText:(NSString *)text fromController:(UIViewController *)controller {
+- (void) itemSubmittedWithText:(NSString *)text fromController:(UIViewController *)controller isAltSubmit:(bool)isAltSubmit{
 
     NSLog(@"item submitted! text: %@ fromController: %@", text, controller);
     
     if(controller == (UIViewController *)addIdeaController) {
         [addIdeaPopoverController dismissPopoverAnimated:true];
         [[ConnectionManager sharedInstance] addTaskWithText:text isInPool:false isCreatedBy:nil isAssignedBy:nil withColor:nil];
+        
+        if(isAltSubmit) {
+            [[ConnectionManager sharedInstance] addTaskWithText:text isInPool:true isCreatedBy:nil isAssignedBy:nil withColor:nil];            
+        }
+        
     } else if (controller == (UIViewController *)addTopicController) {
         [addTopicPopoverController dismissPopoverAnimated:true];
         [[ConnectionManager sharedInstance] addTopicWithText:text];        

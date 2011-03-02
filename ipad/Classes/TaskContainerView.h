@@ -8,11 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "TaskDropTarget.h"
-#import "AddItemController.h"
 #import "TaskContainerContentView.h"
 #import "TaskView.h"
 
-@interface TaskContainerView : UIView <TaskDropTarget, AddItemDelegate> {
+@interface TaskContainerView : UIView <TaskDropTarget> {
     float rot;
     bool hover;
     bool isMainView;
