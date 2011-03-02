@@ -21,7 +21,7 @@
 #define BOTTOM 2
 #define LEFT 3
 
-#define USER_EXTEND_HEIGHT 40
+#define USER_EXTEND_HEIGHT 20
 
 #define CONTAINER_EDGE_OFFSET 40
 
