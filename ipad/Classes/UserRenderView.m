@@ -70,7 +70,17 @@
     UIFont *f = [UIFont boldSystemFontOfSize:16];
     CGSize nameSize = [[self.user.name uppercaseString] sizeWithFont:f];
     
-    [[self.user.name uppercaseString] drawAtPoint:CGPointMake(-nameSize.width/2, -nameSize.height-NAME_BOTTOM_MARGIN) withFont:f];
+    CGContextSaveGState(ctx);
+    if([((UserView *)self.superview).side isEqualToNumber:[NSNumber numberWithInt:0]]) {
+        CGContextRotateCTM(ctx, M_PI);
+        [[self.user.name uppercaseString] drawAtPoint:CGPointMake(-nameSize.width/2, NAME_BOTTOM_MARGIN) withFont:f];
+    } else {
+        [[self.user.name uppercaseString] drawAtPoint:CGPointMake(-nameSize.width/2, -nameSize.height-NAME_BOTTOM_MARGIN) withFont:f];
+    }
+    
+    
+    CGContextRestoreGState(ctx);
+
     
     // Draw the status block..
     f = [UIFont boldSystemFontOfSize:16];
@@ -116,6 +126,8 @@
     f = [UIFont boldSystemFontOfSize:12];
     CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:1.0 alpha:1.0].CGColor);
     CGSize locationNameSize = [self.user.location.name sizeWithFont:f];
+    
+    
     [self.user.location.name drawAtPoint:CGPointMake(-locationNameSize.width/2, 5+22) withFont:f];
     
     // Now draw a thin, lighter line to separate it from the name and line it up with the location border
