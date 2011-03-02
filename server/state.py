@@ -85,7 +85,29 @@ def init_test():
     newRoomEvent.dispatch()
     newRoomEvent = Event("NEW_ROOM", params={"name":"Saturn"})
     newRoomEvent.dispatch()
+
+def init_emerson():
+    # load in all the users from a text file, so we're not checking
+    # in all their information.
     
+    with open("emerson.csv", "r") as f:
+        for line in f:
+            # split the line on comma
+            params = line.split(",")
+            
+            newUserEvent = Event("NEW_USER", params={"name":params[0],
+                "email":params[1]})
+            newUserEvent.dispatch()
+            
+    newLocationEvent = Event("NEW_LOCATION", params={"name":"Tufte 1114"})
+    newLocationEvent.dispatch()
+    
+    newRoomEvent = Event("NEW_ROOM", params={"name":"Mars"})
+    newRoomEvent.dispatch()
+    
+    
+    
+
 def init_demo():
     init_test()
     

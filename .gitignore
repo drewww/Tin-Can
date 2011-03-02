@@ -1,3 +1,6 @@
+# Don't save the user data for the emerson people.
+emerson.csv
+
 # Mac OS X Finder and whatnot
 .DS_Store
 
