@@ -9,9 +9,12 @@
 #import "UserRenderView.h"
 #import "UIColor+Util.h"
 #import "UIView+Rounded.h"
+#import "StateManager.h"
 
 // For constants.
 #import "UserView.h"
+
+#define LOCAL_USER_GLOW 5
 
 @implementation UserRenderView
 
@@ -26,7 +29,7 @@
     self.user = theUser;
     hover = FALSE;
     
-    self.bounds = CGRectMake(-BASE_WIDTH/2, -(BASE_HEIGHT + TAB_HEIGHT)/2, BASE_WIDTH, BASE_HEIGHT + TAB_HEIGHT);
+    self.bounds = CGRectMake(-BASE_WIDTH/2-LOCAL_USER_GLOW*2, -(BASE_HEIGHT + TAB_HEIGHT)/2, BASE_WIDTH+LOCAL_USER_GLOW*4, BASE_HEIGHT + TAB_HEIGHT);
     self.center = CGPointMake(0, 0);
     
     [self setBackgroundColor:[UIColor clearColor]];
@@ -50,20 +53,42 @@
         return;
     }
     
+
+    CGFloat topEdge;
+    
+    topEdge = -BASE_HEIGHT/2 +10;    
+    
+    bool isLocalUser = [StateManager sharedInstance].user == self.user;
+
+    // Do a bit of a dance here to make a glow effect. We're cheating by doing three
+    // separate shadows, each offset in a different direction. This is because we 
+    // can't just have the shadow grow outwards, so it takes a bit more effort.
+    if(isLocalUser) {
+        NSLog(@"DRAWING LOCAL USER");
+        CGContextSaveGState(ctx);
+        CGContextSetShadowWithColor(ctx, CGSizeMake(0, -LOCAL_USER_GLOW), LOCAL_USER_GLOW, user.location.color.CGColor);
+        
+        CGContextSetFillColorWithColor(ctx, user.location.color.CGColor);
+        [self fillRoundedRect:CGRectMake(-BASE_WIDTH/2, topEdge, BASE_WIDTH, BASE_HEIGHT) withRadius:10 withRoundedBottom:true];        
+
+        
+        CGContextSetShadowWithColor(ctx, CGSizeMake(LOCAL_USER_GLOW, 0), LOCAL_USER_GLOW, user.location.color.CGColor);        
+        [self fillRoundedRect:CGRectMake(-BASE_WIDTH/2, topEdge, BASE_WIDTH, BASE_HEIGHT) withRadius:10 withRoundedBottom:true];        
+
+        CGContextSetShadowWithColor(ctx, CGSizeMake(-LOCAL_USER_GLOW, 0), LOCAL_USER_GLOW, user.location.color.CGColor);        
+        [self fillRoundedRect:CGRectMake(-BASE_WIDTH/2, topEdge, BASE_WIDTH, BASE_HEIGHT) withRadius:10 withRoundedBottom:true];        
+        
+        
+        CGContextRestoreGState(ctx);
+    }
     
 	if(hover)
         CGContextSetFillColorWithColor(ctx, [user.location.color colorDarkenedByPercent:0.3].CGColor);
 	else
 		CGContextSetFillColorWithColor(ctx, user.location.color.CGColor);
     
-    
-    CGFloat topEdge;
-    
-    topEdge = -BASE_HEIGHT/2 +10;
-    
     [self fillRoundedRect:CGRectMake(-BASE_WIDTH/2, topEdge, BASE_WIDTH, BASE_HEIGHT) withRadius:10 withRoundedBottom:true];        
-    
-    
+        
     CGContextSetRGBFillColor(ctx, 1.0, 1.0, 1.0, 1.0);
     CGContextSetRGBStrokeColor(ctx, 1.0, 0.0, 0.0, 1.0);
     
