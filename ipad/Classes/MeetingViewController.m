@@ -114,7 +114,7 @@
     addIdeaController.delegate = self;
     
     addIdeaPopoverController = [[UIPopoverController alloc] initWithContentViewController:addIdeaController];
-    [addIdeaPopoverController setPopoverContentSize:CGSizeMake(300, 100)];
+    [addIdeaPopoverController setPopoverContentSize:CGSizeMake(300, 130)];
 
     addTopicController = [[AddItemController alloc] initWithPlaceholder:@"new topic" withButtonText:@"Add Topic" withAltButtonText:nil];
     addTopicController.delegate = self;

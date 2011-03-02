@@ -32,7 +32,8 @@
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
     
-    self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 170)];
+    // The details of this frame appear to not matter at all. It's set elsewhere. 
+    self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     
     // Set up the text field.
     textField = [[UITextField alloc] initWithFrame:CGRectMake(10, 10, 280, 30)];
@@ -74,7 +75,7 @@
         altSubmitButton.frame = CGRectMake(300, 300, 280, 30);
         altSubmitButton.center = CGPointMake(150, 110);
         altSubmitButton.backgroundColor = [UIColor clearColor];
-        [altSubmitButton setTitle:buttonLabel forState: UIControlStateNormal];
+        [altSubmitButton setTitle:altButtonLabel forState: UIControlStateNormal];
         [altSubmitButton setFont:[UIFont boldSystemFontOfSize:24.0f]];
         [altSubmitButton addTarget:self action:@selector(altSubmitButtonPressed:)forControlEvents:UIControlEventTouchUpInside];
         [altSubmitButton setEnabled: YES];
