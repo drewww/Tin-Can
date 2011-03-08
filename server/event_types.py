@@ -17,6 +17,8 @@ import state
 import time
 import event as e
 
+import tornado.template as template
+
 # DISPATCH METHODS
 # These methods will not be called by anyone other than the event dispatch
 # method. They determine what happens to internal state based on the event.
@@ -215,6 +217,27 @@ def _handleEndMeeting(event):
     
     meeting.room.currentMeeting = None
     meeting.room = None
+    
+    
+    # this is where we would trigger final processing of what happened
+    # in the meeting. like, generating a summary HTML file and emailing
+    # all the participants.
+    
+    # load the template
+    
+    # can probably speed this up by making this a global thing and loading
+    # the template once, but for now this is rare + fine.
+    loader = template.Loader("templates")
+    t = loader.load("timeline.html")
+    
+    # run it with the current meeting.
+    results = t.generate(meeting=meeting)
+    
+    # now write it out to disk
+    filename = str(int(time.time())) + ".html"
+    out = open("archive/" + filename, 'w')
+    
+    out.write(results)
     
     return event
     
