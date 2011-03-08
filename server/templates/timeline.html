@@ -7,6 +7,18 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
 </head>
 <body id="meeting_timeline" onload="">
+	{% import time %}
+	Generated at {{time.strftime("%I:%M %p")}}
+	
+	<!-- First pass, just dump a bunch of shit. -->
+	{% for event in meeting.eventHistoryReadable %}
+	
+	{{ event }} <br>
+	
+	
+	{% end %}
+	
+	
 	
 </body>
 </html>
