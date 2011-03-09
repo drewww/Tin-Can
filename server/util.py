@@ -12,6 +12,9 @@ Copyright (c) 2010 MIT Media Lab. All rights reserved.
 
 import time
 
+# stores the configuration information for easy global access.
+config = None
+
 def timesince(d, now=None):
     """
     Takes two time objects and returns time between d and now
