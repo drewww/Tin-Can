@@ -17,6 +17,9 @@ import state
 import time
 import event as e
 
+import mail
+import util
+
 import tornado.template as template
 
 # DISPATCH METHODS
@@ -218,7 +221,6 @@ def _handleEndMeeting(event):
     meeting.room.currentMeeting = None
     meeting.room = None
     
-    
     # this is where we would trigger final processing of what happened
     # in the meeting. like, generating a summary HTML file and emailing
     # all the participants.
@@ -235,9 +237,27 @@ def _handleEndMeeting(event):
     
     # now write it out to disk
     filename = str(int(time.time())) + ".html"
-    out = open("archive/" + filename, 'w')
+    out = open("static/archive/" + filename, 'w')
     
     out.write(results)
+    
+    
+    # now we want to email everyone a link to the file + some personalized
+    # information relevant to them. Mainly, we want to send people the list
+    # of stuff in their idea drawer. 
+    for user in meeting.allParticipants:
+        # compose and send the email.
+        
+        
+        body = ""
+        for task in user.tasks:
+            body = body + task.text + "\n"
+        
+        # for now hardcode my email address in, but later use a real one
+        mail.sendmail(util.config.get("email", "from_email"), user.name +
+            "- your class timeline", "your remaining tasks: \n" +
+            body)
+        
     
     return event
     
