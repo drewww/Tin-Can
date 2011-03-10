@@ -15,6 +15,8 @@ import os.path
 import uuid
 import time
 
+import ConfigParser
+
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
@@ -32,6 +34,8 @@ define("port", default=8888, help="run on the given port", type=int)
 define("readFromFile", default=False, help="re-creating server state from logs?", type=bool)
 define("eraseLogs", default=False, help="erase logs or append to logs", type=bool)
 define("demoMode", default=False, help="start in demo mode?", type=bool)
+define("config", default="config", help="location of config file", type=str)
+
 
 # TODO We need to load this out of a file somewhere so it's consistent
 #      across reboots.
