@@ -232,8 +232,14 @@ def _handleEndMeeting(event):
     loader = template.Loader("templates")
     t = loader.load("timeline.html")
     
+    # do some other variable prep work
+    metadata = {}
+    metadata["meetingStart"] = meeting.eventHistory[0].timestamp
+    metadata["meetingEnd"] = meeting.eventHistory[-1].timestamp
+    
+    
     # run it with the current meeting.
-    results = t.generate(meeting=meeting)
+    results = t.generate(meeting=meeting, metadata=metadata)
     
     # now write it out to disk
     filename = str(int(time.time())) + ".html"

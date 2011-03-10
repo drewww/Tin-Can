@@ -1,3 +1,4 @@
+{% import time %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,18 +8,19 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
 </head>
 <body id="meeting_timeline" onload="">
-	{% import time %}
-	Generated at {{time.strftime("%I:%M %p")}}
+<div id="container">
+<h1>Class Summary</h1>
+<div id="summary">
+<div id="length">
+On <span id="date">{{time.strftime("%d/%m/%y")}}</span> from <span class="time">{{time.strftime("%I:%M", time.localtime(metadata["meetingStart"]))}}</span> to <span class="time">{{time.strftime("%I:%M", time.localtime(metadata["meetingEnd"]))}}</span>
+<span class="duration">({{str((int((metadata["meetingEnd"] - metadata["meetingStart"])/60)))}}m)
+</div>
+</div>
 	
-	<!-- First pass, just dump a bunch of shit. -->
-	{% for event in meeting.eventHistoryReadable %}
+<div id="timeline">
 	
-	{{ event }} <br>
+</div>
 	
-	
-	{% end %}
-	
-	
-	
+</div>
 </body>
 </html>
