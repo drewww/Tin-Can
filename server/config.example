@@ -1,0 +1,7 @@
+[server]
+domain: example.com
+
+[email]
+smtp_server: smtp.example.com
+from_email: me@example.com
+
