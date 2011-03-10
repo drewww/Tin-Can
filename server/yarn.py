@@ -822,7 +822,7 @@ if __name__ == '__main__':
     config.read(options.config)
     
     try:
-        config.get("server")
+        config.has_section("server")
     except:
         logging.error("Failed to find configuration file. Did you copy config\
 .example to config and enter appropriate values?")
