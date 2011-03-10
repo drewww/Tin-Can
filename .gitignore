@@ -25,7 +25,8 @@ dsa_priv.pem
 *.perspective
 *.perspectivev3
 *.pbxuser
-
+ipad/TinCan.xcodeproj/xcuserdata/*
+ipad/TinCan.xcodeproj/project.xcworkspace/xcuserdata/*
 
 # Generated files
 VersionX-revision.h
