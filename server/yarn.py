@@ -802,6 +802,20 @@ if __name__ == '__main__':
         f1.flush()
         f2.flush()
     
+    # load more configuration from the config file.
+    config = ConfigParser.SafeConfigParser()
+    config.read(options.config)
+    
+    try:
+        config.has_section("server")
+    except:
+        logging.error("Failed to find configuration file. Did you copy config\
+.example to config and enter appropriate values?")
+        sys.exit(1)
+    
+    util.config = config
+    
+    # start up the http server and kick off tornado
     http_server = tornado.httpserver.HTTPServer(YarnApplication())
     
     # defaults to 8888
