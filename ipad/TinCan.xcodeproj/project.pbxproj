@@ -723,7 +723,6 @@
 				INFOPLIST_FILE = "TinCan-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				PRODUCT_NAME = TinCan;
-				VALID_ARCHS = armv7;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -740,7 +739,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				PRODUCT_NAME = TinCan;
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = armv7;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -762,7 +760,6 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "8290A1A5-C7F9-42F4-9572-ABD28164CFD9";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
-				VALID_ARCHS = armv7;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = "Ad Hoc";
@@ -781,7 +778,6 @@
 				PRODUCT_NAME = TinCan;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "8290A1A5-C7F9-42F4-9572-ABD28164CFD9";
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = armv7;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = "Ad Hoc";
@@ -802,7 +798,6 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "30E6166E-BB4C-4B67-A0F8-1085F83716E6";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
-				VALID_ARCHS = armv7;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -823,7 +818,6 @@
 				PREBINDING = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
-				VALID_ARCHS = armv7;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
