@@ -248,15 +248,19 @@ def _handleEndMeeting(event):
     for user in meeting.allParticipants:
         # compose and send the email.
         
-        
-        body = ""
+        body = "Hi " + user.name + ",\n\n"
+        body = body + "You can find the timeline from today's class here:\n\n"
+        body = body + "http://" + util.config.get("server", "domain") + \
+"/static/archive/" + filename + "\n\n"
+            
+        body = body + "Here are all the ideas you had in\
+your bin: \n"
         for task in user.tasks:
-            body = body + task.text + "\n"
+            body = body + "   - " + task.text + "\n"
         
         # for now hardcode my email address in, but later use a real one
         mail.sendmail(util.config.get("email", "from_email"), user.name +
-            "- your class timeline", "your remaining tasks: \n" +
-            body)
+            " - today's class timeline", body)
         
     
     return event
