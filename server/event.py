@@ -302,11 +302,13 @@ failed" + str(self.params[paramKey]))
             location = state.get_obj(self.params["location"], model.Location)
             out = self.actor.name + " left " + location.name
         elif self.eventType == EventType.types["LOCATION_JOINED_MEETING"]:
+            meeting = state.get_obj(self.params["meeting"], model.Meeting)
             out = self.actor.name + " has conneted to meeting in room " + \
-                self.meeting.room.name
+                meeting.room.name
         elif self.eventType == EventType.types["LOCATION_LEFT_MEETING"]:
+            meeting = state.get_obj(self.params["meeting"], model.Meeting)
             out = self.actor.name + " has left meeting in room " + \
-                self.meeting.room.name
+                meeting.room.name
         elif self.eventType == EventType.types["END_MEETING"]:
             out = "Class ended."
         elif self.eventType == EventType.types["NEW_TOPIC"]:
@@ -323,7 +325,7 @@ failed" + str(self.params[paramKey]))
                 # this might be subtly wrong - I think the actor is right
                 # here, but we might want to plug into assignedBy/createdBy
                 out = self.actor.name + " suggested idea \"" +\
-                    self.params["text"] + " to the group."
+                    self.params["text"] + "\" to the group."
             else:
                 out = self.actor.name + " created idea \"" +\
                     self.params["text"] + "\"."
