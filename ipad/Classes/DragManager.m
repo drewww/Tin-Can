@@ -218,6 +218,8 @@ static DragManager *sharedInstance = nil;
             // Delete the task!
             [task deleteTask];
             [[ConnectionManager sharedInstance] deleteTask:task];
+            [curTargetView setHoverState:false];
+            [draggedItemsContainer setHidden:true];
             return true;
             
         }
