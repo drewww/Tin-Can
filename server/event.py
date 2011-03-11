@@ -41,6 +41,8 @@ class Event:
         
         # look up the appropriate event type object from the event type list
         self.eventType = EventType.types[eventType]
+        
+        # this event list is used for event-chaining.
         self.events = []
         
         # For a discussion of what this is for, check self.addResult
@@ -287,6 +289,55 @@ failed" + str(self.params[paramKey]))
 
     def queue(self, event):
         self.events.append(event)
+
+    # returns a nice readable display string that can be user-facing.
+    def __str__(self):
+        out = ""
+        if self.eventType == EventType.types["NEW_MEETING"]:
+            out = "Class started."
+        elif self.eventType == EventType.types["USER_JOINED_LOCATION"]:
+            location = state.get_obj(self.params["location"], model.Location)
+            out = self.actor.name + " joined " + location.name
+        elif self.eventType == EventType.types["USER_LEFT_LOCATION"]:
+            location = state.get_obj(self.params["location"], model.Location)
+            out = self.actor.name + " left " + location.name
+        elif self.eventType == EventType.types["LOCATION_JOINED_MEETING"]:
+            out = self.actor.name + " has conneted to meeting in room " + \
+                self.meeting.room.name
+        elif self.eventType == EventType.types["LOCATION_LEFT_MEETING"]:
+            out = self.actor.name + " has left meeting in room " + \
+                self.meeting.room.name
+        elif self.eventType == EventType.types["END_MEETING"]:
+            out = "Class ended."
+        elif self.eventType == EventType.types["NEW_TOPIC"]:
+            out = self.actor.name + " added topic \"" + self.params["text"] +\
+                "\"."
+        elif self.eventType == EventType.types["UPDATE_TOPIC"]:
+            verb = {"CURRENT":"started", "PAST":"stopped"}
+            topic = state.get_obj(self.params["topicUUID"], model.Topic)
+            out = self.actor.name + " " + verb[self.params["status"]] +\
+                " topic \"" + topic.text + "\"."
+        elif self.eventType == EventType.types["NEW_TASK"]:
+            # going to want to refactor this out on master
+            if self.params["createInPool"]:
+                # this might be subtly wrong - I think the actor is right
+                # here, but we might want to plug into assignedBy/createdBy
+                out = self.actor.name + " suggested idea \"" +\
+                    self.params["text"] + " to the group."
+            else:
+                out = self.actor.name + " created idea \"" +\
+                    self.params["text"] + "\"."
+        elif self.eventType == EventType.types["DELETE_TASK"]:
+            out = self.actor.name + " deleted an idea."
+        elif self.eventType == EventType.types["ASSIGN_TASK"]:
+            assignedTo = state.get_obj(self.params["assignedTo"], model.User)
+            task = state.get_obj(self.params["taskUUID"], model.Task)
+            out = self.actor.name + " assigned idea \"" + task.text +"\" to "\
+                + assignedTo.name + "."
+        else:
+            out = "This event has no string representation."
+        
+        return out
 
 def sendEventsToDevices(devices, events):
     

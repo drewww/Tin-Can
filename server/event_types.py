@@ -238,6 +238,14 @@ def _handleEndMeeting(event):
     metadata["meetingEnd"] = meeting.eventHistory[-1].timestamp
     
     
+    # Run all the major processing of events here. Our goal here is to process
+    # all the events of the meeting and turn them into a new event data
+    # structure that is easier to manipulate. Our main task here is to 
+    # create human-readable versions of each event that appropriately include
+    # information from that event in the right places. 
+    
+    
+    
     # run it with the current meeting.
     results = t.generate(meeting=meeting, metadata=metadata)
     
@@ -259,7 +267,7 @@ def _handleEndMeeting(event):
         body = body + "http://" + util.config.get("server", "domain") + \
 "/static/archive/" + filename + "\n\n"
             
-        body = body + "Here are all the ideas you had in\
+        body = body + "Here are all the ideas you had in \
 your bin: \n"
         for task in user.tasks:
             body = body + "   - " + task.text + "\n"
@@ -529,6 +537,10 @@ class EventType:
 # Defines each event type, what parameters it expects, the name of its
 # handler, whether or not it is a global event, and whether it requires
 # an actor to be defined.
+
+# the list of required parameters is woefully out of date here. Do we care?
+# I think in almost all cases, the handlers aren't actually requiring the 
+# other parameters and will fallback gracefully if they're not there.
 
 EventType("NEW_MEETING",        ["room"],   _handleNewMeeting,  True,   True)
 EventType("NEW_USER",           ["name"],   _handleNewUser,     True,   False)

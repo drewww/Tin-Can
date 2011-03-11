@@ -16,7 +16,19 @@ On <span id="date">{{time.strftime("%d/%m/%y")}}</span> from <span class="time">
 <span class="duration">({{str((int((metadata["meetingEnd"] - metadata["meetingStart"])/60)))}}m)
 </div>
 </div>
-	
+
+
+<div id="Participants">
+<h2>Participants</h2>
+<ul>
+{% for user in meeting.allParticipants %}
+<li>{{user.name}}</li>
+{% end %}
+</ul>
+</div>
+
+<hr/>
+
 <div id="timeline">
 	
 </div>
