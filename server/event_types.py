@@ -237,17 +237,24 @@ def _handleEndMeeting(event):
     metadata["meetingStart"] = meeting.eventHistory[0].timestamp
     metadata["meetingEnd"] = meeting.eventHistory[-1].timestamp
     
+
+    # run through all the events to filter out stuff we don't want to show
+    # for now, this is just personally created ideas. That shouldn't be
+    # available to end-users.
     
-    # Run all the major processing of events here. Our goal here is to process
-    # all the events of the meeting and turn them into a new event data
-    # structure that is easier to manipulate. Our main task here is to 
-    # create human-readable versions of each event that appropriately include
-    # information from that event in the right places. 
+    outEvents = []
+    
+    for event in meeting.eventHistory:
+        if event.eventType == EventType.types["NEW_TASK"]:
+            if event.params["createInPool"]:
+                outEvents.append(event)
+        else:
+            outEvents.append(event)
     
     
     
     # run it with the current meeting.
-    results = t.generate(meeting=meeting, metadata=metadata)
+    results = t.generate(meeting=meeting, metadata=metadata, events=outEvents)
     
     # now write it out to disk
     filename = str(int(time.time())) + ".html"

@@ -31,14 +31,26 @@ On <span id="date">{{time.strftime("%d/%m/%y")}}</span> from <span class="time">
 
 <div id="timeline">
 <table border="0" cellspacing="5" cellpadding="5">
-{% for event in meeting.eventHistory %}
+{% for event in events %}
 <tr class="{{event.eventType}}">
+
 <td class="icon">icon</td>
-<td class="timestamp">{{time.strftime("%I:%M",time.localtime(event.timestamp))}}</td>
+
+<td class="timestamp">
+{{time.strftime("%I:%M",time.localtime(event.timestamp))}}
+</td>
+
 <td class="string">{{event}}</td>
 </tr>
 {% end %}
 </table>
+</div>
+
+<hr/>
+<div id="readable_history">
+{% for event in meeting.eventHistoryReadable %}
+{{event}}<br/>
+{% end %}
 </div>
 	
 </div>

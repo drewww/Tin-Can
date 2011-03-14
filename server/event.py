@@ -248,6 +248,8 @@ failed" + str(self.params[paramKey]))
             if event.meeting != None:
                 event.meeting.eventHistory.append(event)
         else:
+            # this branch is never used because we switched all events
+            # to global events. 
             # try:
             event.meeting.sendEvent(event)
             # except Exception, e:
