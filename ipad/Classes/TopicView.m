@@ -69,8 +69,8 @@
     // Drawing code
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	
-    CGContextSetRGBFillColor(ctx, 0, 0, 0, 1.0);
-    CGContextFillRect(ctx, self.frame);
+//    CGContextSetRGBFillColor(ctx, 0, 0, 0, 1.0);
+//    CGContextFillRect(ctx, self.frame);
 
     
     
