@@ -248,6 +248,11 @@ def _handleEndMeeting(event):
         if event.eventType == EventType.types["NEW_TASK"]:
             if event.params["createInPool"]:
                 outEvents.append(event)
+        elif event.eventType == EventType.types["RESTART_TOPIC"]:
+            # try to do something fancy about removing the "NEW TOPIC" for
+            # this topic, so we don't get two entries for it? For now, just
+            # exclude it.
+            pass
         else:
             outEvents.append(event)
     
