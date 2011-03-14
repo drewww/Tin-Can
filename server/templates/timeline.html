@@ -6,9 +6,16 @@
 	<title>Class Summary</title>
 	
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
+	
+	<link rel="stylesheet" href="../css/timeline.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	
 </head>
 <body id="meeting_timeline" onload="">
 <div id="container">
+<div id="header"><img src="../images/icon.png" class="logo"></div>
+
+
+	
 <h1>Class Summary</h1>
 <div id="summary">
 <div id="length">
@@ -34,7 +41,7 @@ On <span id="date">{{time.strftime("%d/%m/%y")}}</span> from <span class="time">
 {% for event in events %}
 <tr class="{{event.eventType}}">
 
-<td class="icon">icon</td>
+<td class="icon"><img src="../images/{{event.icon()}}"></td>
 
 <td class="timestamp">
 {{time.strftime("%I:%M",time.localtime(event.timestamp))}}
