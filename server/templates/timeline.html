@@ -12,17 +12,9 @@
 </head>
 <body id="meeting_timeline" onload="">
 <div id="container">
-<div id="header"><img src="../images/icon.png" class="logo"></div>
-
-
-	
-<h1>Class Summary</h1>
-<div id="summary">
-<div id="length">
-On <span id="date">{{time.strftime("%d/%m/%y")}}</span> from <span class="time">{{time.strftime("%I:%M", time.localtime(metadata["meetingStart"]))}}</span> to <span class="time">{{time.strftime("%I:%M", time.localtime(metadata["meetingEnd"]))}}</span>
-<span class="duration">({{str((int((metadata["meetingEnd"] - metadata["meetingStart"])/60)))}}m)
-</div>
-</div>
+	<div id="header"><span>Class Summary</span><span class="date">{{time.strftime("%m/%d/%y")}}</span>
+		<span class="time">{{time.strftime("%I:%M", time.localtime(metadata["meetingStart"]))}}</span>-<span class="time">{{time.strftime("%I:%M", time.localtime(metadata["meetingEnd"]))}}</span>
+		<span class="duration">({{str((int((metadata["meetingEnd"] - metadata["meetingStart"])/60)))}}m)</span></div>
 
 
 <div id="Participants">
