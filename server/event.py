@@ -342,6 +342,23 @@ failed" + str(self.params[paramKey]))
             out = "This event has no string representation."
         
         return out
+    
+    def icon(self):
+        iconOptions = {
+        EventType.types["NEW_MEETING"]:"door_open.png",
+        EventType.types["USER_JOINED_LOCATION"]:"door_in.png",
+        EventType.types["USER_LEFT_LOCATION"]:"door_out.png",
+        EventType.types["LOCATION_JOINED_MEETING"]:"door_in.png",
+        EventType.types["LOCATION_LEFT_MEETING"]:"door_out.png",
+        EventType.types["END_MEETING"]:"door.png",
+        EventType.types["NEW_TOPIC"]:"time_add.png",
+        EventType.types["UPDATE_TOPIC"]:"time_go.png",
+        EventType.types["NEW_TASK"]:"comment_add.png",
+        EventType.types["DELETE_TASK"]:"comment_delete.png",
+        EventType.types["ASSIGN_TASK"]:"comment_edit.png"
+        }
+        
+        return iconOptions[self.eventType]
 
 def sendEventsToDevices(devices, events):
     
