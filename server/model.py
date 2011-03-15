@@ -383,21 +383,12 @@ class Device(YarnBaseType):
         self.checkingForReconnect = False
         logging.debug("Checking for re-connection from recently closed device")
         if self.connection==None and (time.time()-self.lastConnectEnded)>3:
-            logging.debug("No reconnection. Logging out actor")
-            
-            if isinstance(self.actor, User):
-                if self.actor.location!=None:
-                    if len(self.actor.location.users)==1:
-                        leaveLocationEvent = event.Event("USER_LEFT_LOCATION", 
-                            self.actor.uuid, params={"location":self.actor.location.uuid})
-                        leaveLocationEvent.dispatch()
-            elif isinstance(self.actor, Location):
-                if self.actor.meeting!=None:
-                    if len(self.actor.meeting.locations)==1:
-                        leaveMeetingEvent = event.Event("LOCATION_LEFT_MEETING", 
-                            self.actor.uuid, params={"meeting":self.actor.meeting.uuid})
-                        leaveMeetingEvent.dispatch()
-            
+            logging.debug("No reconnection. Logging out actor: " + str(self.actor))
+
+            # we have to save this because the DEVICE_LEFT event will
+            # clear it in the actual object.
+            actor = self.actor
+
             if self.actor!=None:            
                 deviceLeftEvent = event.Event("DEVICE_LEFT", self.actor.uuid, 
                     params={"device":self.uuid})
@@ -406,6 +397,23 @@ class Device(YarnBaseType):
                 deviceLeftEvent = event.Event("DEVICE_LEFT", None, 
                     params={"device":self.uuid})
                 deviceLeftEvent.dispatch()
+
+            logging.debug("Done dispatching device left message, now checking\
+to see if we need to log out the user, too: " + str(actor))
+            if isinstance(actor, User):
+                logging.debug("is a user, checking actor device list: " + str(actor.getDevices()))
+                if actor.location!=None:
+                    if len(actor.getDevices())==0:
+                        leaveLocationEvent = event.Event("USER_LEFT_LOCATION", 
+                            actor.uuid, params={"location":actor.location.uuid})
+                        leaveLocationEvent.dispatch()
+            elif isinstance(actor, Location):
+                if actor.meeting!=None:
+                    if len(actor.getDevices())==0:
+                        leaveMeetingEvent = event.Event("LOCATION_LEFT_MEETING", 
+                            actor.uuid, params={"meeting":actor.meeting.uuid})
+                        leaveMeetingEvent.dispatch()
+
         else:
             logging.debug("Device re-connected")
     
