@@ -55,3 +55,43 @@ body {
     font-size: 0.8em;
     font-weight: normal;
 }
+
+.clear {
+    clear: both;
+}
+
+#participants {
+    float: left;
+    
+    width: 450px;
+}
+
+#participants ul {
+    list-style:none;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+#participants ul li:after {
+	content: ", ";
+}
+
+#topics {
+    float: left;
+    width: 450px;
+}
+
+#readable_history {
+    display: none;
+}
+
+#timeline tr:nth-child(even) {
+    background-color: #ddd;
+}
+
+#timeline {
+    width: 100%;
+}
+
+

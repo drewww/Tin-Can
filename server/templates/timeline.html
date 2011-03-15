@@ -18,7 +18,7 @@
 <div id="container">
 
 
-<div id="Participants">
+<div id="participants">
 <h2>Participants</h2>
 <ul>
 {% for user in meeting.allParticipants %}
@@ -27,10 +27,20 @@
 </ul>
 </div>
 
+<div id="topics">
+<h2>Topics</h2>
+<ol>
+{% for topic in meeting.topics %}
+<li>{{topic.text}}</li>
+{% end %}
+</ol>
+</div>
+<br class="clear"/>
 <hr/>
 
-<div id="timeline">
-<table border="0" cellspacing="5" cellpadding="5">
+<div id="timeline-container">
+<h1>Timeline</h1>
+<table id="timeline" border="0" cellspacing="5" cellpadding="5">
 {% for event in events %}
 <tr class="{{event.eventType}}">
 
@@ -46,7 +56,6 @@
 </table>
 </div>
 
-<hr/>
 <div id="readable_history">
 {% for event in meeting.eventHistoryReadable %}
 {{event}}<br/>
