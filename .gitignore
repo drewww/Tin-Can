@@ -1,6 +1,13 @@
 # Don't save the user data for the emerson people.
 emerson.csv
 
+# Don't save the actual config file, except when I want to update the example
+# version.
+server/config
+
+# don't save generated archive files
+server/static/archive/*.html
+
 # Mac OS X Finder and whatnot
 .DS_Store
 

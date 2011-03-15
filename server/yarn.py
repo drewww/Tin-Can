@@ -14,6 +14,8 @@ import logging
 import os.path
 import uuid
 import time
+import ConfigParser
+import sys
 
 import tornado.httpserver
 import tornado.ioloop
@@ -23,20 +25,24 @@ from tornado.options import define, options
 
 import simplejson as json
 
-
 import state
 from model import *
 from event import *
+import util
+import mail
+
 
 define("port", default=8888, help="run on the given port", type=int)
 define("readFromFile", default=False, help="re-creating server state from logs?", type=bool)
 define("eraseLogs", default=False, help="erase logs or append to logs", type=bool)
 define("demoMode", default=False, help="start in demo mode?", type=bool)
 define("emerson", default=False, help="use emerson settings?", type=bool)
+define("config", default="config", help="location of config file", type=str)
 
 # TODO We need to load this out of a file somewhere so it's consistent
 #      across reboots.
 SERVER_UUID = uuid.uuid4()
+
 
 class YarnApplication(tornado.web.Application):
     def __init__(self):
@@ -811,6 +817,21 @@ if __name__ == '__main__':
         f1.flush()
         f2.flush()
     
+    # load more configuration from the config file.
+    config = ConfigParser.SafeConfigParser()
+    config.read(options.config)
+    
+    try:
+        config.has_section("server")
+    except:
+        logging.error("Failed to find configuration file. Did you copy config\
+.example to config and enter appropriate values?")
+        sys.exit(1)
+        
+    
+    util.config = config
+    
+    # start up the http server and kick off tornado
     http_server = tornado.httpserver.HTTPServer(YarnApplication())
     
     # defaults to 8888

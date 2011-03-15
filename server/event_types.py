@@ -17,6 +17,9 @@ import state
 import time
 import event as e
 
+import mail
+import util
+
 import tornado.template as template
 
 # DISPATCH METHODS
@@ -218,7 +221,6 @@ def _handleEndMeeting(event):
     meeting.room.currentMeeting = None
     meeting.room = None
     
-    
     # this is where we would trigger final processing of what happened
     # in the meeting. like, generating a summary HTML file and emailing
     # all the participants.
@@ -230,14 +232,77 @@ def _handleEndMeeting(event):
     loader = template.Loader("templates")
     t = loader.load("timeline.html")
     
+    # do some other variable prep work
+    metadata = {}
+    metadata["meetingStart"] = meeting.eventHistory[0].timestamp
+    metadata["meetingEnd"] = meeting.eventHistory[-1].timestamp
+    
+
+    # run through all the events to filter out stuff we don't want to show
+    # for now, this is just personally created ideas. That shouldn't be
+    # available to end-users.
+    
+    outEvents = []
+    
+    for event in meeting.eventHistory:
+        if event.eventType == EventType.types["NEW_TASK"]:
+            if event.params["createInPool"]:
+                outEvents.append(event)
+        elif event.eventType == EventType.types["RESTART_TOPIC"]:
+            # try to do something fancy about removing the "NEW TOPIC" for
+            # this topic, so we don't get two entries for it? For now, just
+            # exclude it.
+            pass
+        else:
+            outEvents.append(event)
+    
+    # do a pass on topics, too, sorting them based on start time (if it has
+    # one) otherwise, put it at the end.
+    
+    futureTopics = []
+    pastTopics = []
+    for topic in meeting.topics:
+        if(topic.status == "FUTURE"):
+            futureTopics.append(topic)
+        else:
+            pastTopics.append(topic)
+    
+    # now sort pastTopics based on startTime. 
+    pastTopics.sort(key=lambda topic:topic.startTime)
+    
+    # put the lists back together.
+    outTopics = pastTopics + futureTopics
+    
     # run it with the current meeting.
-    results = t.generate(meeting=meeting)
+    results = t.generate(meeting=meeting, metadata=metadata, events=outEvents)
     
     # now write it out to disk
     filename = str(int(time.time())) + ".html"
-    out = open("archive/" + filename, 'w')
+    out = open("static/archive/" + filename, 'w')
     
     out.write(results)
+    
+    
+    # now we want to email everyone a link to the file + some personalized
+    # information relevant to them. Mainly, we want to send people the list
+    # of stuff in their idea drawer. 
+    for user in meeting.allParticipants:
+        # compose and send the email.
+        
+        body = "Hi " + user.name + ",\n\n"
+        body = body + "You can find the timeline from today's class here:\n\n"
+        body = body + "http://" + util.config.get("server", "domain") + \
+"/static/archive/" + filename + "\n\n"
+            
+        body = body + "Here are all the ideas you had in \
+your bin: \n"
+        for task in user.tasks:
+            body = body + "   - " + task.text + "\n"
+        
+        # for now hardcode my email address in, but later use a real one
+        mail.sendmail(util.config.get("email", "from_email"), user.name +
+            " - today's class timeline", body)
+        
     
     return event
     
@@ -499,6 +564,10 @@ class EventType:
 # Defines each event type, what parameters it expects, the name of its
 # handler, whether or not it is a global event, and whether it requires
 # an actor to be defined.
+
+# the list of required parameters is woefully out of date here. Do we care?
+# I think in almost all cases, the handlers aren't actually requiring the 
+# other parameters and will fallback gracefully if they're not there.
 
 EventType("NEW_MEETING",        ["room"],   _handleNewMeeting,  True,   True)
 EventType("NEW_USER",           ["name"],   _handleNewUser,     True,   False)
