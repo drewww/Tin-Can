@@ -211,10 +211,9 @@
             // if it's a location in our meeting, then
             // remove those users from the display.
             location = (Location *)[state getObjWithUUID:[event.params objectForKey:@"location"]
-                                                withType:[Meeting class]];
+                                                withType:[Location class]];
             
             NSLog(@"User left a location, and the meeting view control got notice of it.");
-            
             if([curMeeting.locations containsObject:location]) {
                 User *user = (User *)[state getObjWithUUID:event.actorUUID withType:[User class]];
                 [self removeUserViewForUser:user];
