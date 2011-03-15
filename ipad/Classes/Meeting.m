@@ -64,6 +64,11 @@
 }
 
 - (void) locationLeft:(Location *)theLocation {
+    // Remove that location's associated users.
+    for (User *user in theLocation.users) {
+        [self userLeft:user theLocation:theLocation];
+    }
+    
     [theLocation leftMeeting:self];
     [self.locations removeObject:theLocation];
 }

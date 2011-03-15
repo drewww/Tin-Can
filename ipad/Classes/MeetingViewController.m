@@ -248,15 +248,22 @@
             // If it's a location 
             location = (Location *)[state getObjWithUUID:event.actorUUID withType:[Location class]];
 
-            if([curMeeting.locations containsObject:location]) {
-                NSLog(@"Location in this meeting left it!");
-
-                for(User *user in location.users) {
-                    [self removeUserViewForUser:user];
-                }
+            // We used to test to make sure that the meeting had this location
+            // before removing the users. I'm not sure why that test was here, but
+            // it's causing trouble now because this executes after the ConnectionManager
+            // event processes and it removes the location from the meeting, making this
+            // test always fail (even when it should pass). So for now just dropping
+            // the test entirely.
+            //            if([curMeeting.locations containsObject:location]) {
+            
+            NSLog(@"Location in this meeting left it!");
+            
+            for(User *user in location.users) {
+                [self removeUserViewForUser:user];
             }
             
             // Remove the location object from the display, too.
+            // (this might be obselete - do we even have location views anymore?)
             [[location getView] removeFromSuperview];
             
             break;
@@ -391,6 +398,8 @@
         case kNEW_TASK:
         case kASSIGN_TASK:
         case kNEW_TOPIC:
+        case kLOCATION_LEFT_MEETING:
+        case kLOCATION_JOINED_MEETING:
             NSLog(@"...");
             EventView *eventView = [[EventView alloc] initWithFrame:CGRectMake(0, 0, 100, 100) withEvent:event];
             NSLog(@"made the event view");
