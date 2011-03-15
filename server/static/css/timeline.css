@@ -1,6 +1,8 @@
 body {
     margin: 0px;
     font-family: Helvetica;
+    
+    background-color: #ddd;
 }
 
 #container {
@@ -11,6 +13,10 @@ body {
     padding: 5px;
     padding-top: 0px;
     
+    
+    background-color: white;
+    border: 1px solid #bbbbbb;
+    
 }
 
 #header {
@@ -19,6 +25,12 @@ body {
     font-weight: bold;
 /*    height: 45px;*/
     color: white;
+    
+    width: 915px;
+    margin-right: auto;
+    margin-left: auto;
+    
+    margin-bottom: 10px;
     
     -moz-border-radius-bottomleft: 5px;
 	-webkit-border-bottom-left-radius: 5px;

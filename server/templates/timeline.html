@@ -11,10 +11,11 @@
 	
 </head>
 <body id="meeting_timeline" onload="">
-<div id="container">
-	<div id="header"><span>Class Summary</span><span class="date">{{time.strftime("%m/%d/%y")}}</span>
+<div id="header"><span>Class Summary</span><span class="date">{{time.strftime("%m/%d/%y")}}</span>
 		<span class="time">{{time.strftime("%I:%M", time.localtime(metadata["meetingStart"]))}}</span>-<span class="time">{{time.strftime("%I:%M", time.localtime(metadata["meetingEnd"]))}}</span>
 		<span class="duration">({{str((int((metadata["meetingEnd"] - metadata["meetingStart"])/60)))}}m)</span></div>
+
+<div id="container">
 
 
 <div id="Participants">
