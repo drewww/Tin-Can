@@ -94,4 +94,18 @@ body {
     width: 100%;
 }
 
+.CURRENT {
+    background-color: #A1EB84;
+    color: #111;
+}
+
+.PAST {
+    background-color: #ddd;
+    color: #333;
+}
+
+.FUTURE {
+    background-color: #95D9E7;
+    color: #111;
+}
 
