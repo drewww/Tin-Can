@@ -256,7 +256,22 @@ def _handleEndMeeting(event):
         else:
             outEvents.append(event)
     
+    # do a pass on topics, too, sorting them based on start time (if it has
+    # one) otherwise, put it at the end.
     
+    futureTopics = []
+    pastTopics = []
+    for topic in meeting.topics:
+        if(topic.status == "FUTURE"):
+            futureTopics.append(topic)
+        else:
+            pastTopics.append(topic)
+    
+    # now sort pastTopics based on startTime. 
+    pastTopics.sort(key=lambda topic:topic.startTime)
+    
+    # put the lists back together.
+    outTopics = pastTopics + futureTopics
     
     # run it with the current meeting.
     results = t.generate(meeting=meeting, metadata=metadata, events=outEvents)
