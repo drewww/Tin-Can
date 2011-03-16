@@ -35,6 +35,16 @@
 		controller=control;
 		
 		self.userList = [[NSMutableArray alloc] initWithArray:[[[StateManager sharedInstance] getUsers] allObjects]];
+        
+        NSSortDescriptor *descriptor =
+        [[[NSSortDescriptor alloc]
+          initWithKey:@"name"
+          ascending:YES
+          selector:@selector(localizedCaseInsensitiveCompare:)] autorelease];
+        
+        NSArray * descriptors = [NSArray arrayWithObjects:descriptor, nil];
+
+        [self.userList sortUsingDescriptors:descriptors];
 
 		[self.view setTransform:CGAffineTransformMakeRotation(M_PI/2)];
         
@@ -114,7 +124,8 @@
     User *user = [userList objectAtIndex:indexPath.row];
 	testCell.user = user;
     [testCell setController:self];
-	
+    [testCell setNeedsDisplay];
+
     return testCell;
 }
 
