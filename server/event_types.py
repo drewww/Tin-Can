@@ -282,7 +282,7 @@ def _handleEndMeeting(event):
     # now write it out to disk
     meetingEndTime = int(time.time())
     filename = str(meetingEndTime) + ".html"
-    out = open("static/archive/" + filename + ".txt", 'w')
+    out = open("static/archive/" + filename, 'w')
     
     out.write(results)
     
@@ -313,7 +313,7 @@ your bin: \n"
         # write the taskString out to disk
         
         taskFile = open("static/archive/" + str(meetingEndTime) + "/" + \
-            str(user.email), 'w')
+            str(user.email) + ".txt", 'w')
         taskFile.write(taskString)
         taskFile.close()
         
