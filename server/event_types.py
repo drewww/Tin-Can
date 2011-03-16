@@ -16,6 +16,7 @@ import logging
 import state
 import time
 import event as e
+import os
 
 import mail
 import util
@@ -62,13 +63,15 @@ def _handleLeftRoom(event):
     return event
     
 def _handleNewUser(event):
+    # I'm not totally sure why the second case here exists. When will newUser
+    # get called and there's already a user object in the results dict?
     if len(event.results)==0:
-        newUser = model.User(event.params["name"])
+        newUser = model.User(event.params["name"],\
+            email=event.params["email"])
         event.addResult("actor", newUser)
     else:
         newUser = model.User(event.params["name"],
-            event.results["actor"]["uuid"],
-            event.params["email"])
+            event.results["actor"]["uuid"])
 
     # Make sure to do this for new locations, too. 
     state.add_actor(newUser)
@@ -277,8 +280,9 @@ def _handleEndMeeting(event):
     results = t.generate(meeting=meeting, metadata=metadata, events=outEvents)
     
     # now write it out to disk
-    filename = str(int(time.time())) + ".html"
-    out = open("static/archive/" + filename, 'w')
+    meetingEndTime = int(time.time())
+    filename = str(meetingEndTime) + ".html"
+    out = open("static/archive/" + filename + ".txt", 'w')
     
     out.write(results)
     
@@ -286,6 +290,11 @@ def _handleEndMeeting(event):
     # now we want to email everyone a link to the file + some personalized
     # information relevant to them. Mainly, we want to send people the list
     # of stuff in their idea drawer. 
+    
+    # also write this out to disk so we don't lose them in the case of email
+    # troubles. 
+    os.mkdir("static/archive/" + str(meetingEndTime))
+    
     for user in meeting.allParticipants:
         # compose and send the email.
         
@@ -296,8 +305,19 @@ def _handleEndMeeting(event):
             
         body = body + "Here are all the ideas you had in \
 your bin: \n"
+        
+        taskString = ""
         for task in user.tasks:
-            body = body + "   - " + task.text + "\n"
+            taskString = taskString + "   - " + task.text + "\n"
+        
+        # write the taskString out to disk
+        
+        taskFile = open("static/archive/" + str(meetingEndTime) + "/" + \
+            str(user.email), 'w')
+        taskFile.write(taskString)
+        taskFile.close()
+        
+        body = body + taskString
         
         # for now hardcode my email address in, but later use a real one
         mail.sendmail(util.config.get("email", "from_email"), user.name +
