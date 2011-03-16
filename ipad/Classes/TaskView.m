@@ -112,9 +112,15 @@
     // the name of the person who created us. Otherwise, hide that because we're in that users'
     // task container view so it's obvious.
     NSString *displayString;
-    if([self.superview isKindOfClass:[TaskContainerView class]]) {
-        TaskContainerView *taskContainer = (TaskContainerView *)self.superview;
-        
+
+    // The way the display hierarchy works here is:
+    //  - TaskContainerview
+    //      - UIScrollView
+    //          - TaskContainerContentView
+    //              - TaskView 
+    if([self.superview.superview.superview isKindOfClass:[TaskContainerView class]]) {
+        TaskContainerView *taskContainer = (TaskContainerView *)self.superview.superview.superview;
+                
         if(taskContainer.isMainView) {
             
             if(task.assignedBy != nil && ![task.creator.uuid isEqual:task.assignedBy.uuid]) {
