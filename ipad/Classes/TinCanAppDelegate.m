@@ -22,7 +22,7 @@
    
 	viewController = [TinCanViewController alloc];
     
-    [application setStatusBarOrientation:UIInterfaceOrientationLandscapeRight];
+    [application setStatusBarOrientation:UIInterfaceOrientationLandscapeLeft];
 
 	[window setBackgroundColor:[UIColor clearColor]];
 	

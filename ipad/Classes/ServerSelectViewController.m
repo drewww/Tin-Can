@@ -33,7 +33,7 @@
     self.view.backgroundColor = [UIColor blackColor];
     self.view.center = CGPointMake(384, 512);
     
-    self.view.transform = CGAffineTransformMakeRotation(M_PI/2);
+    self.view.transform = CGAffineTransformMakeRotation(-M_PI/2);
     
     UIButton *connectButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
     //[connectButton setTransform:CGAffineTransformMakeRotation(M_PI/2)];

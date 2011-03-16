@@ -49,9 +49,12 @@
     c.view.backgroundColor=[UIColor blackColor];
     c.view.alpha = 1.0;
     
-	//    CGAffineTransform transform = CGAffineTransformMakeRotation(M_PI/2);
+//    CGAffineTransform transform = CGAffineTransformMakeRotation(-M_PI/2);
     CGAffineTransform transform = c.view.transform;
-    //transform = CGAffineTransformScale(transform, 0.4, 0.4);
+    
+    // Doing this extra rotation so that ipads in cases can sit up properly.
+    // This just complicates all the rotational issues, but it's an okay for-now hack.
+    transform = CGAffineTransformRotate(transform, -M_PI);
     [self.view setTransform:transform];  
     
     // Now set the callback. 
