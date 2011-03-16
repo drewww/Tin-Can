@@ -397,8 +397,8 @@
         case kNEW_TASK:
         case kASSIGN_TASK:
         case kNEW_TOPIC:
-        case kLOCATION_LEFT_MEETING:
-        case kLOCATION_JOINED_MEETING:
+//        case kLOCATION_LEFT_MEETING:
+//        case kLOCATION_JOINED_MEETING:
             NSLog(@"...");
             EventView *eventView = [[EventView alloc] initWithFrame:CGRectMake(0, 0, 100, 100) withEvent:event];
             NSLog(@"made the event view");
