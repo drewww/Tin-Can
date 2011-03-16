@@ -60,12 +60,12 @@ def _handleLeftRoom(event):
     
 def _handleNewUser(event):
     if len(event.results)==0:
-        newUser = model.User(event.params["name"])
+        newUser = model.User(event.params["name"], email=\
+        event.params["email"])
         event.addResult("actor", newUser)
     else:
         newUser = model.User(event.params["name"],
-            event.results["actor"]["uuid"],
-            event.params["email"])
+            event.results["actor"]["uuid"])
 
     # Make sure to do this for new locations, too. 
     state.add_actor(newUser)
