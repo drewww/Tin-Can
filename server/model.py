@@ -388,7 +388,7 @@ class Device(YarnBaseType):
             # we have to save this because the DEVICE_LEFT event will
             # clear it in the actual object.
             actor = self.actor
-
+            
             if self.actor!=None:            
                 deviceLeftEvent = event.Event("DEVICE_LEFT", self.actor.uuid, 
                     params={"device":self.uuid})
