@@ -289,6 +289,26 @@ def get_devices():
     return allDevices
 
 
+def end_all_meetings():
+    """Sends END_MEETING events to all open meetings."""
+    
+    for room in rooms:
+        if(room.currentMeeting != None):
+            
+            logging.info("Sending an END_MEETING event to " + \
+                str(room.currentMeeting.uuid))
+            
+            # we need to fake the actor UUID somehow, so we'll just pick
+            # a random location in the meeting and blame it on that.
+            actor = list(room.currentMeeting.locations)[0]
+            
+            endMeetingEvent = e.Event("END_MEETING", actor.uuid, None,
+            {"meeting": room.currentMeeting.uuid})
+            endMeetingEvent.dispatch()
+            
+    
+    logging.info("All meetings have been ended.")
+
 if __name__ == '__main__':
     init_test()
     

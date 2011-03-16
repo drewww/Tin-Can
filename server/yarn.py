@@ -832,9 +832,24 @@ if __name__ == '__main__':
     util.config = config
     
     # start up the http server and kick off tornado
-    http_server = tornado.httpserver.HTTPServer(YarnApplication())
+    try:
+        http_server = tornado.httpserver.HTTPServer(YarnApplication())
     
-    # defaults to 8888
-    http_server.listen(options.port)
-    logging.info("YARN LOADED, INITIALIZED AND STARTING...")
-    tornado.ioloop.IOLoop.instance().start()
+        # defaults to 8888
+        http_server.listen(options.port)
+        logging.info("YARN LOADED, INITIALIZED AND STARTING...")
+        tornado.ioloop.IOLoop.instance().start()
+    except Exception, e:
+        logging.error("Error bubbled up to the top level: " + str(e))
+        
+        # try to send the endMeeting event for all open meetings?
+        state.end_all_meetings()
+        
+        
+    except KeyboardInterrupt, key:
+        logging.error("Got a keyboard interrupt! Cleaning up...")
+        
+        # send an end-meeting event for all open meetings
+        state.end_all_meetings()
+        
+        
