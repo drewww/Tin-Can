@@ -5,6 +5,8 @@ emerson.csv
 # version.
 server/config
 
+server/static/archive/*
+
 # don't save generated archive files
 server/static/archive/*.html
 
