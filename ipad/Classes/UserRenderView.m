@@ -142,8 +142,16 @@
         statusString = @"no recent activity";        
     }
     
-    CGSize statusSize = [statusString sizeWithFont:f];    
-    [statusString drawAtPoint:CGPointMake(-statusSize.width/2, 2) withFont:f];
+    CGSize statusSize = [statusString sizeWithFont:f];  
+    CGContextSaveGState(ctx);
+    if([((UserView *)self.superview).side isEqualToNumber:[NSNumber numberWithInt:0]]) {
+        CGContextRotateCTM(ctx, M_PI);
+        [statusString drawAtPoint:CGPointMake(-statusSize.width/2, -statusSize.height) withFont:f];
+    } else {
+        [statusString drawAtPoint:CGPointMake(-statusSize.width/2, 2) withFont:f];
+    }
+    CGContextRestoreGState(ctx);
+    
     
 
     // Now draw the location name. It'll only show when extended, but we just draw it
