@@ -10,6 +10,7 @@
 #import "Task.h"
 #import "DragManager.h"
 #import "TaskContainerView.h"
+#import "TaskContainerContentView.h"
 
 @implementation TaskView
 
@@ -469,6 +470,23 @@
     }
     
     return retVal;
+}
+
+- (float) getHeight {
+    // Decide how tall we should be. For now, simply mimicing the current behavior. But eventually
+    // we'll be able to respond to touches and change the task size and the rendering will update
+    // appropriately.
+    
+    if([self.superview isKindOfClass:[TaskContainerContentView class]]) {
+        TaskContainerContentView *taskContainer = (TaskContainerContentView *)self.superview;
+        if(taskContainer.isMainView) {
+            return 100;
+        } else {
+            return 50;
+        }
+    } else {
+        return 50;
+    }
 }
 
 - (void)dealloc {

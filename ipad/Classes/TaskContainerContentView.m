@@ -12,6 +12,7 @@
 
 @implementation TaskContainerContentView
 
+@synthesize isMainView;
 
 - (id)initWithFrame:(CGRect)frame isMainView:(bool)setIsMainView {
     
@@ -30,15 +31,17 @@
     float taskHeight;
     float taskMargin = 3.5;
     
-    if(isMainView) {
-        taskHeight = 100.0;
-    } else {
-        taskHeight = 50.0;
-    }
+//    if(isMainView) {
+//        taskHeight = 100.0;
+//    } else {
+//        taskHeight = 50.0;
+//    }
     
 //    int maxVisibleTasks = floor(self.bounds.size.height/(taskHeight + taskMargin*2));
 	for(TaskView *subview in [sortedArray reverseObjectEnumerator]){
-        
+
+        taskHeight = [subview getHeight];
+
         // Make sure lastParentViews are up to date.
         subview.lastParentView = self;
         

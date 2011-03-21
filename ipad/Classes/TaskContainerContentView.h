@@ -15,4 +15,6 @@
 
 - (id)initWithFrame:(CGRect)frame isMainView:(bool)setIsMainView;
 
+@property (nonatomic, assign) bool isMainView;
+
 @end
