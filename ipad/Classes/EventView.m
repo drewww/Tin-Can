@@ -57,6 +57,11 @@
         Task *task;
         Topic *topic;
 
+        
+        // TODO I really should refactor these to properly measure how much space they have to 
+        // work with based on the variable name length and interstitial string. But until then,
+        // hardcoding for ease.
+        
         switch (event.type) {
             case kUSER_JOINED_LOCATION:
                 
@@ -82,9 +87,9 @@
                 NSString *status = [event.params objectForKey:@"status"];
                 
                 if ([status isEqualToString:@"CURRENT"]) {
-                    displayString = [NSString stringWithFormat:@"%@ started topic: \"%@\"", actor.name, [topic.text excerptBeyondLength:15]];
+                    displayString = [NSString stringWithFormat:@"%@ started topic: \"%@\"", actor.name, [topic.text excerptBeyondLength:20]];
                 } else if ([status isEqualToString:@"PAST"]) {
-                    displayString = [NSString stringWithFormat:@"%@ stopped topic: \"%@\"", actor.name, [topic.text excerptBeyondLength:15]];                
+                    displayString = [NSString stringWithFormat:@"%@ stopped topic: \"%@\"", actor.name, [topic.text excerptBeyondLength:20]];                
                 } 
 
                 displayImage = [UIImage imageNamed:@"time_go.png"];
@@ -93,7 +98,7 @@
             case kNEW_TASK:
                 actor = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
                 task = [event.results objectForKey:@"task"];
-                displayString = [NSString stringWithFormat:@"%@ added idea \"%@\"", actor.name, [task.text excerptBeyondLength:15]];
+                displayString = [NSString stringWithFormat:@"%@ added idea \"%@\"", actor.name, [task.text excerptBeyondLength:25]];
                 displayImage = [UIImage imageNamed:@"note_add.png"];
                 break;
             case kASSIGN_TASK:
@@ -118,7 +123,7 @@
                 topic = [event.results objectForKey:@"topic"];
                 
                 actor = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
-                displayString = [NSString stringWithFormat:@"%@ created new topic: \"%@\"", actor.name, [topic.text excerptBeyondLength:15]];
+                displayString = [NSString stringWithFormat:@"%@ created new topic: \"%@\"", actor.name, [topic.text excerptBeyondLength:20]];
                 displayImage = [UIImage imageNamed:@"time_add.png"];
                 break;
             default:
