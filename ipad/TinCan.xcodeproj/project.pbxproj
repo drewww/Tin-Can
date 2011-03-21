@@ -32,6 +32,7 @@
 		3A57217F11EB7515004C2687 /* MeetingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57217E11EB7515004C2687 /* MeetingViewController.m */; };
 		3A57237811EBDE0B004C2687 /* TinCanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57237711EBDE0B004C2687 /* TinCanViewController.m */; };
 		3A82D449126F9CD5007AFA3D /* LocationBorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A82D448126F9CD5007AFA3D /* LocationBorderView.m */; };
+		3A9304361337D54A00A83A44 /* BackdropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A9304351337D54900A83A44 /* BackdropView.m */; };
 		3A95E0631264B92700518580 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A95E0621264B92700518580 /* QuartzCore.framework */; };
 		3AA06D1411AAD1C500C3D279 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AA06D1311AAD1C500C3D279 /* Icon.png */; };
 		3AA2DDE31261178800235573 /* full_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AA2DDE21261178800235573 /* full_logo.png */; };
@@ -143,6 +144,8 @@
 		3A57237711EBDE0B004C2687 /* TinCanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TinCanViewController.m; sourceTree = "<group>"; };
 		3A82D447126F9CD5007AFA3D /* LocationBorderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationBorderView.h; sourceTree = "<group>"; };
 		3A82D448126F9CD5007AFA3D /* LocationBorderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationBorderView.m; sourceTree = "<group>"; };
+		3A9304341337D54800A83A44 /* BackdropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackdropView.h; sourceTree = "<group>"; };
+		3A9304351337D54900A83A44 /* BackdropView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackdropView.m; sourceTree = "<group>"; };
 		3A95E0621264B92700518580 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		3AA06D1311AAD1C500C3D279 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		3AA2DDE21261178800235573 /* full_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = full_logo.png; sourceTree = "<group>"; };
@@ -515,6 +518,8 @@
 				3AE11A3D1253A49700A91BC8 /* TaskDropTarget.h */,
 				3A82D447126F9CD5007AFA3D /* LocationBorderView.h */,
 				3A82D448126F9CD5007AFA3D /* LocationBorderView.m */,
+				3A9304341337D54800A83A44 /* BackdropView.h */,
+				3A9304351337D54900A83A44 /* BackdropView.m */,
 				3A12613612AD4A63005D05FA /* Popovers */,
 				3A1260EB12AD3C4E005D05FA /* Containers */,
 				3A1260EA12AD3C34005D05FA /* Type Views */,
@@ -703,6 +708,7 @@
 				3A434C00131890A2008C803C /* TaskContainerContentView.m in Sources */,
 				3AD6A072131C55C900802D2D /* TrashView.m in Sources */,
 				3AD6A1BE131D94BA00802D2D /* UIView+Rounded.m in Sources */,
+				3A9304361337D54A00A83A44 /* BackdropView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

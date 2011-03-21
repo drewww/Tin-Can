@@ -17,10 +17,11 @@
 #import "CurrentTopicView.h"
 #import "AddItemController.h"
 #import "TrashView.h"
+#import "BackdropView.h"
 
 @class Todo;
 
-@interface MeetingViewController : UIViewController <AddItemDelegate>{    
+@interface MeetingViewController : UIViewController <AddItemDelegate, BackdropViewDelegate> {    
     
     TaskContainerView *taskContainer;
     TopicContainerView *topicContainer;
@@ -52,6 +53,8 @@
     NSOperationQueue *queue;
     
     TrashView *trashView;
+    
+    BackdropView *backdropView;
 }
 
 
@@ -71,6 +74,9 @@
 
 - (void) addIdeaButtonPressed:(id) sender;
 - (void) addTopicButtonPressed:(id) sender;
+
+- (void) backdropTouchedFrom: (id) sender;
+- (void) setBackdropHidden: (bool) hidden;
 
 @end
 

@@ -23,6 +23,7 @@
 #import "CurrentTopicView.h"
 #import "AddItemController.h"
 #import "TrashView.h"
+#import "BackdropView.h"
 
 @class UserView;
 
@@ -71,7 +72,17 @@
 	[self.view bringSubviewToFront:meetingTimerView];
 	[self.view bringSubviewToFront:topicContainer];
     [self.view bringSubviewToFront:taskContainer];
+    [self.view bringSubviewToFront:currentTopicView];
 
+    // Now setup the backdrop view. It'll sit ABOVE the major containers but BELOW the buttons and 
+    // users, so you can still click on those directly. We'll make it, put it in place, then hide it
+    // so it doesn't get touches until a drawer is extended.
+    backdropView = [[BackdropView alloc] initWithFrame:self.view.frame];
+    backdropView.delegate = self;
+    
+    [self.view addSubview: backdropView];
+    [self.view bringSubviewToFront:backdropView];
+    
     queue = [[[NSOperationQueue alloc] init] retain];
     
     timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(44, 409, 290, 208)];
@@ -127,7 +138,6 @@
 //    setUserButton.center = CGPointMake(30, 945);
 //    [self.view addSubview:setUserButton];
     
-    [self.view bringSubviewToFront:currentTopicView];
     
     [self initUsers];
     [self initTasks];
@@ -601,6 +611,18 @@
         
         viewIndex++;
     }   
+}
+
+- (void) setBackdropHidden: (bool) hidden {
+    backdropView.hidden = hidden;
+}
+
+- (void) backdropTouchedFrom:(id)sender {
+    // Hide all drawers.
+    [self userTaskDrawerExtended:nil];
+    
+    // Hide the backdrop itself.
+    backdropView.hidden = TRUE;
 }
 
 // Override to allow orientations other than the default portrait orientation.

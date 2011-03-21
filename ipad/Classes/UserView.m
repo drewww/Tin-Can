@@ -231,7 +231,9 @@
             
             // Update the bounds of the UserView to include the task box.
             
-            
+            // Show the backdrop from the controller so 
+            [controller setBackdropHidden:FALSE];
+
         } else {
             // in this situation, we can be sure that
             // taskDrawerExtended == true && extended == false
@@ -249,6 +251,8 @@
             
             [UIView commitAnimations];        
             taskDrawerExtended = false;
+            
+            [controller setBackdropHidden:TRUE];
         }
         
         [self setUserExtended:extended withAutorevert:false];
