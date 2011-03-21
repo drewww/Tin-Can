@@ -416,11 +416,13 @@
 
 - (void) addIdeaButtonPressed:(id) sender {
     NSLog(@"In ADD IDEA BUTTON PRESSED.");
+    [self userTaskDrawerExtended:nil];
     [addIdeaPopoverController presentPopoverFromRect:addIdeaButton.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:true];
 }
 
 - (void) addTopicButtonPressed:(id) sender {
     NSLog(@"In ADD TOPIC BUTTON PRESSED.");
+    [self userTaskDrawerExtended:nil];
     [addTopicPopoverController presentPopoverFromRect:addTopicButton.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:true];    
 }
 
