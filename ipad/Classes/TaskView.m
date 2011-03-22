@@ -17,6 +17,7 @@
 @synthesize task;
 @synthesize delegate;
 @synthesize lastParentView;
+@synthesize expanded;
 
 #define ASSIGN [NSNumber numberWithInt:0] 
 #define DEASSIGN [NSNumber numberWithInt:1]
@@ -53,6 +54,8 @@
         longPress.minimumPressDuration = 0.6;
         
         [self addGestureRecognizer:longPress];
+        
+        expanded = false;
         
     }
     return self;
@@ -435,6 +438,18 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     NSLog(@"touches ENDED");
+    
+    // Swap the expanded status.
+    expanded = !expanded;
+
+    
+    
+    [self.superview setNeedsLayout];
+    
+    if([self.superview isKindOfClass:[TaskContainerContentView class]]) {
+        TaskContainerContentView *container = (TaskContainerContentView *)self.superview;
+        [container taskViewExpanded:self];
+    }
 }
 
 - (NSComparisonResult) compareByPointer:(TaskView *)view {
@@ -480,9 +495,17 @@
     if([self.superview isKindOfClass:[TaskContainerContentView class]]) {
         TaskContainerContentView *taskContainer = (TaskContainerContentView *)self.superview;
         if(taskContainer.isMainView) {
-            return 100;
+            if(expanded) {
+                return 200;
+            } else {
+                return 100;
+            }
         } else {
-            return 50;
+            if(expanded) {
+                return 100;
+            } else {
+                return 50;
+            }
         }
     } else {
         return 50;

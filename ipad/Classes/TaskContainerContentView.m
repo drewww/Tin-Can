@@ -24,7 +24,6 @@
 }
 
 - (void)layoutSubviews{
-	int i =0;
     NSLog(@"laying out task container with %d subviews", [[self subviews] count]);
     NSArray *sortedArray = [[self subviews] sortedArrayUsingSelector:@selector(compareByCreationDate:)];
     
@@ -36,6 +35,8 @@
 //    } else {
 //        taskHeight = 50.0;
 //    }
+    
+    float accumulatedHeight = 0.0;
     
 //    int maxVisibleTasks = floor(self.bounds.size.height/(taskHeight + taskMargin*2));
 	for(TaskView *subview in [sortedArray reverseObjectEnumerator]){
@@ -51,7 +52,7 @@
 //        if(i<maxVisibleTasks) {
 			NSLog(@"laying out task: %@", subview.task.text);
             [subview setHidden:FALSE];
-			subview.frame=CGRectMake(7, taskMargin + ((taskHeight+taskMargin*2)*i), (self.bounds.size.width)-14, taskHeight);
+			subview.frame=CGRectMake(7, taskMargin + accumulatedHeight, (self.bounds.size.width)-14, taskHeight);
 //		} else {
 //            [subview setHidden:TRUE];
 //        }
@@ -60,7 +61,10 @@
         
 		NSLog(@"Subview frame: %@",NSStringFromCGRect(subview.frame));
     
-		i++;
+        
+        accumulatedHeight += taskHeight+taskMargin*2;
+        
+        NSLog(@"accumulatedHeight: %f", accumulatedHeight);
 	}
 	
     self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, (taskHeight + taskMargin)*[[self subviews]count] + taskMargin);
@@ -74,6 +78,14 @@
     }
 }
 
+- (void) taskViewExpanded:(TaskView *)viewExpanded {
+    for (TaskView *taskView in self.subviews) {
+        if(taskView != viewExpanded) {
+            taskView.expanded = false;
+        }
+    }
+    
+}
 
 - (void)dealloc {
     [super dealloc];

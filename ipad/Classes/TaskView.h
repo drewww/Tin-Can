@@ -44,12 +44,14 @@
     CGPoint previousGesturePoint;
     
     UILongPressGestureRecognizer *longPress;
+    
+    bool expanded;
 }
 
 @property (nonatomic, readonly) Task *task;
 @property (nonatomic, assign) id <TaskDragDelegate> delegate;
 @property (nonatomic, assign) UIView *lastParentView;
-
+@property (assign) bool expanded;
 
 - (id)initWithFrame:(CGRect)frame withTask:(Task *)task;
 - (id)initWithTask:(Task *)theTask;

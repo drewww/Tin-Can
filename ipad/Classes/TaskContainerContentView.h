@@ -7,13 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "TaskView.h"
 
 @interface TaskContainerContentView : UIView {
     bool isMainView;
 }
 
 - (id)initWithFrame:(CGRect)frame isMainView:(bool)setIsMainView;
+- (void) taskViewExpanded:(TaskView *)viewExpanded;
 
 @property (nonatomic, assign) bool isMainView;
 
