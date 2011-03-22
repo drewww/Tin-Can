@@ -51,7 +51,7 @@
 		[UIView commitAnimations];
         
         longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-        longPress.minimumPressDuration = 0.6;
+        longPress.minimumPressDuration = 0.4;
         
         [self addGestureRecognizer:longPress];
         
@@ -437,7 +437,7 @@
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    NSLog(@"touches ENDED");
+    NSLog(@"touches ENDED on task: %@", self.task);
     
     // Swap the expanded status.
     expanded = !expanded;

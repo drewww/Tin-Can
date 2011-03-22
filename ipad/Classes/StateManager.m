@@ -89,6 +89,7 @@ static StateManager *sharedInstance = nil;
                                         withStatus:[userDict objectForKey:@"status"]
                                             atDate:date];
 
+        NSLog(@"CREATED USER IN GET STATE: %@", newUser);
         
         [actors addObject:newUser];
     }

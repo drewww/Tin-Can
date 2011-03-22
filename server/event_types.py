@@ -477,7 +477,11 @@ def _handleNewTask(event):
     if(not event.params["createInPool"]):
         newTask.assign(newTask.createdBy, newTask.createdBy, None)
     else:
+        # if we're creating in the pool, then we're going to call deassign
+        # to make sure it's not owned by anyone.
         if(event.params["assignedBy"]):
+            logging.debug("assignedBy: " + str(event.params["assignedBy"]))
+            logging.debug("HANDLING POOL DEASSIGN ZONE: " + str(event.params["assignedBy"]))
             newTask.deassign(event.params["assignedBy"])
         else:
             newTask.deassign(event.actor)

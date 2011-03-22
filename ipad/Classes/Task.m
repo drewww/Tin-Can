@@ -121,7 +121,7 @@
         self.assignedBy = (Actor *)[[StateManager sharedInstance] getObjWithUUID:assignedByUUID
                                                                        withType:[Actor class]];
     }
-    
+    NSLog(@"NEW TASK AFTER UNSWIZZLE. CREATED BY: %@, ASSIGNED BY: %@", self.creator, self.assignedBy);
     [self.meeting addTask:self];
 }
 

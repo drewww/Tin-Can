@@ -335,6 +335,17 @@ static NSString *selectedServer = nil;
             
             user = (User *)[state getObjWithUUID:e.actorUUID withType:[User class]];
             
+            
+            NSLog(@"USER JOINING %@ with UUID %@", user, user.uuid);
+            
+            NSLog(@"dumping known user list");
+            
+            
+            
+            for (User *u in [[StateManager sharedInstance] getUsers]) {
+                NSLog(@"%@", u);
+            }
+            
             [location userJoined:user]; 
             
             if(user.uuid = state.user.uuid) {
@@ -601,6 +612,7 @@ static NSString *selectedServer = nil;
     if(assignedBy != nil) {
         [request setPostValue:assignedBy forKey:@"assignedBy"];
     }
+    NSLog(@" sending new task request with createdBy: %@ and assignedBy: %@", createdBy, assignedBy);
     
     // Per the classroom "idea" model, don't move the idea over, just create a new one
     // that is unassigned.
