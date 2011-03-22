@@ -38,8 +38,6 @@
 
 - (id) initWithUser:(User *)theUser;
 
-- (void) fillRoundedRect:(CGRect)boundingRect withRadius:(CGFloat)radius withRoundedBottom:(bool)roundedBottom;
-
 
 @property (nonatomic, retain) User *user;
 @property bool hover;
