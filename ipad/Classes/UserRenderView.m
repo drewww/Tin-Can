@@ -175,14 +175,36 @@
     // Draw the tabs to show that this person has tasks assigned.
     // Hardcoding the number of tasks for now.
     CGContextSetFillColorWithColor(ctx, [user.location.color colorByChangingAlphaTo:0.9].CGColor);
-    CGFloat xPos = 15;
     NSLog(@"about to render a user, with %d tasks", [user.tasks count]);
     
-    for (int i=0; i<[user.tasks count]; i++) {
+    
+    // 16 is our max, then we need to start chunking them. Lets make chunks of 5? 
+    
+    int sizeOfClump = 5;
+    int numClumps = (int)([user.tasks count]/sizeOfClump);
+    int remainder = [user.tasks count] % sizeOfClump;
+    CGFloat xPos = 15;
+
+    
+    // draw the clumps
+    for (int i=0; i<numClumps; i++) {
+        CGContextFillRect(ctx, CGRectMake(xPos-BASE_WIDTH/2, topEdge-TAB_HEIGHT+8, TAB_WIDTH*3, TAB_HEIGHT-8));
+        xPos += TAB_MARGIN + TAB_WIDTH*3;
+    }
+    
+    // draw the singles
+    for (int i=0; i<remainder; i++) {
         CGContextFillRect(ctx, CGRectMake(xPos-BASE_WIDTH/2, topEdge-TAB_HEIGHT+8, TAB_WIDTH, TAB_HEIGHT-8));
-        
         xPos += TAB_MARGIN + TAB_WIDTH;
     }
+    
+
+    // This is the right way to do it if we don't want any clumping. 
+//    for (int i=0; i<[user.tasks count]; i++) {
+//        CGContextFillRect(ctx, CGRectMake(xPos-BASE_WIDTH/2, topEdge-TAB_HEIGHT+8, TAB_WIDTH, TAB_HEIGHT-8));
+//        
+//        xPos += TAB_MARGIN + TAB_WIDTH;
+//    }
 
 }
 
