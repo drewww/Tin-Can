@@ -322,7 +322,7 @@ static NSString *selectedServer = nil;
             
             [location userLeft:user];                  
             
-            if(user.uuid = state.user.uuid) {
+            if(user.uuid == state.user.uuid) {
                 state.location = nil;
             }            
             
@@ -348,7 +348,7 @@ static NSString *selectedServer = nil;
             
             [location userJoined:user]; 
             
-            if(user.uuid = state.user.uuid) {
+            if(user.uuid == state.user.uuid) {
                 state.location = location;
             }
             

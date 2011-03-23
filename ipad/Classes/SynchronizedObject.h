@@ -16,6 +16,6 @@
 - (id) initWithUUID:(UUID *) uuid;
 - (void) unswizzle;
 
-@property(nonatomic, retain) UUID *uuid;
+@property(nonatomic, readonly) UUID *uuid;
 
 @end

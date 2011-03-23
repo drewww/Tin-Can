@@ -17,8 +17,9 @@
 
 - (id) initWithUUID:(UUID *)myUuid {
     self = [super init];
+    [myUuid retain];
     
-    self.uuid = myUuid;
+    uuid = myUuid;
     
     // Register this object with the main object store.
     [[StateManager sharedInstance] putObj:self withUUID:self.uuid];
