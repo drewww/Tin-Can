@@ -314,6 +314,21 @@ def _handleEndMeeting(event):
         except:
             logging.debug("Dropping out of loop - at end of event list.")
             topicsDict.append(curTopicDict)
+            
+            # check and see if there are any remaining topics. If there are,
+            # we need to add them on with empty idea lists.
+            
+            # if the current eventIndex is not the last item,
+            # then we have topics left that don't have events
+            # in them, but should still be on the list
+            while (topicIndex != len(pastTopics)-1):
+                topicIndex = topicIndex+1
+                # loop through remaining topics and add them on
+                curTopic = pastTopics[topicIndex]
+                curTopicDict = {"topic":curTopic, "ideas":[]}
+                topicsDict.append(curTopicDict)
+                
+                
             done = True
         
         # skip anything that's not a new idea 
