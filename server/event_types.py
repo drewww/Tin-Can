@@ -277,7 +277,8 @@ def _handleEndMeeting(event):
     outTopics = pastTopics + futureTopics
     
     # run it with the current meeting.
-    results = t.generate(meeting=meeting, metadata=metadata, events=outEvents)
+    results = t.generate(meeting=meeting, metadata=metadata,events=outEvents,
+        topics = outTopics)
     
     # now write it out to disk
     meetingEndTime = int(time.time())
