@@ -159,6 +159,14 @@ class Meeting(YarnBaseType):
                 location.getUsers())
         
         return currentParticipants
+    
+    def getCurrentTopic(self):
+        
+        # there's probably a nice list comprehension way to do this but I
+        # don't have wifi right now to remind myself of the syntax, soooo
+        for topic in self.topics:
+            if topic.status=="CURRENT":
+                return topic
         
     def setTitle(self, title):
         self.title = title
