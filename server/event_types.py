@@ -220,16 +220,26 @@ def _handleLocationLeftMeeting(event):
     
 def _handleEndMeeting(event):
     meeting = state.get_obj(event.params["meeting"], model.Meeting)
-    
+
+    # we need to stop the current topic for data purity reasons
+    currentTopic = meeting.getCurrentTopic()
+    endTopicEvent = e.Event("UPDATE_TOPIC", event.actor.uuid,
+        meeting.uuid, 
+        params={"topicUUID":currentTopic.uuid, "status":"PAST"})
+
+    # do this first so we don't have a current topic hanging around anymore
+    # which will cause lingering issues with the organize-ideas-by-topic
+    # code below.
+    endTopicEvent.dispatch()
+
+    # do a few sideeffecting things that, if done first, will start breaking
+    # any future events related to this meeting.
     meeting.room.currentMeeting = None
     meeting.room = None
     
-    # this is where we would trigger final processing of what happened
-    # in the meeting. like, generating a summary HTML file and emailing
-    # all the participants.
+        
     
     # load the template
-    
     # can probably speed this up by making this a global thing and loading
     # the template once, but for now this is rare + fine.
     loader = template.Loader("templates")
@@ -268,6 +278,7 @@ def _handleEndMeeting(event):
         if(topic.status == "FUTURE"):
             futureTopics.append(topic)
         else:
+            # capture both current and past here
             pastTopics.append(topic)
     
     # now sort pastTopics based on startTime. 
@@ -275,6 +286,83 @@ def _handleEndMeeting(event):
     
     # put the lists back together.
     outTopics = pastTopics + futureTopics
+    
+    
+    # now we want to cluster the data around topics, so we have a topic-based
+    # view of what happened in the meeting. The data structure will be a list
+    # (sorted by time) of dictionaries, where each dictionary has two keys:
+    # a topic object, and a list of ideas that happened inside that topic. 
+    
+    # we'll construct this by maintaining two separate lists. 
+    
+    # start on the first topic
+    curTopic = pastTopics[0]
+    topicIndex = 0
+    topicsDict = []
+    
+    curTopicDict = {"topic":curTopic, "ideas":[]}
+    
+    done = False
+    eventIndex = 0
+    while not done:
+        
+        # get the next event (assuming the event index gets incremented,
+        # which you can skip if you want to keep processing a previous
+        # event. this happens when the topic changes.)
+        try:
+            event = outEvents[eventIndex]
+        except:
+            logging.debug("Dropping out of loop - at end of event list.")
+            topicsDict.append(curTopicDict)
+            done = True
+        
+        # skip anything that's not a new idea 
+        if event.eventType != EventType.types["NEW_TASK"]:
+            eventIndex = eventIndex+1
+            continue
+            
+        # loop through all the events. Look only for NEW_TASK events.
+        # (side question - what to do about ideas that happen before
+        # the first topic starts? for now throw them out.)
+        
+        # (going to need to think about whether it's a group idea or
+        #  not at some point)
+        if (curTopic.startTime < event.timestamp and \
+            curTopic.stopTime > event.timestamp):
+            # if the event is between the current topics start and stop times
+            # then add it to the ideas list and move to the next event.
+            logging.debug("Adding event " + str(event) + " to cur topic "+ \
+                str(curTopic))
+            curTopicDict["ideas"].append(event)
+            eventIndex = eventIndex+1
+        elif (curTopic.stopTime < event.timestamp):
+            logging.debug("Found an event beyond the topic's stop time")
+            
+            # first, save this topic in the main dict
+            topicsDict.append(curTopicDict)
+            
+            # if this is the case, then we need to move onto the next topic
+            # without advancing the event counter. 
+            if((topicIndex+1) < len(pastTopics)):
+                logging.debug("   there are more topics to process, advanting current topic!")
+                topicIndex = topicIndex+1
+                curTopic = pastTopics[topicIndex]
+                
+                curTopicDict = {"topic":curTopic, "ideas":[]}
+            else:
+                # we've hit the end of the topic list, drop out
+                done = True
+        elif (curTopic.startTime > event.timestamp):
+            # this should only happen for events that happen before the first
+            # topic starts. Just ignore these.
+            logging.debug("Found an event that happens before the topic:" + \
+                str(event) + " (before topic " + str(curTopic) + ")")
+            eventIndex = eventIndex+1
+    
+    
+    logging.debug("-------- DONE PROCESSING TOPICS + IDEAS----------")
+    logging.debug("topicsDict: ")
+    logging.debug(topicsDict)
     
     # run it with the current meeting.
     results = t.generate(meeting=meeting, metadata=metadata,events=outEvents,
