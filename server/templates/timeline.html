@@ -47,6 +47,28 @@
 <br class="clear"/>
 <hr/>
 
+
+<div id="topics-container">
+{% for topic in topicsDict %}
+<div class="topic-container">
+	<div class="header">
+		{{topic["topic"].text}}
+	</div>
+	<div class="ideas">
+	<table>
+	{% for idea in topic["ideas"] %}
+	<tr>
+		<td>{{idea.createdBy.name}}</td>
+		<td>{{idea.text}}</td>
+	</tr>
+	{% end %}
+	</table>
+	</div>
+</div>
+{% end %}
+</div>
+
+
 <div id="timeline-container">
 <h1>Timeline</h1>
 <table id="timeline" border="0" cellspacing="0" cellpadding="5">

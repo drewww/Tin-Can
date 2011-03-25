@@ -218,12 +218,12 @@ def _handleLocationLeftMeeting(event):
     
     return event
     
-def _handleEndMeeting(event):
-    meeting = state.get_obj(event.params["meeting"], model.Meeting)
+def _handleEndMeeting(endMeetingEvent):
+    meeting = state.get_obj(endMeetingEvent.params["meeting"], model.Meeting)
 
     # we need to stop the current topic for data purity reasons
     currentTopic = meeting.getCurrentTopic()
-    endTopicEvent = e.Event("UPDATE_TOPIC", event.actor.uuid,
+    endTopicEvent = e.Event("UPDATE_TOPIC", endMeetingEvent.actor.uuid,
         meeting.uuid, 
         params={"topicUUID":currentTopic.uuid, "status":"PAST"})
 
@@ -304,6 +304,10 @@ def _handleEndMeeting(event):
     
     done = False
     eventIndex = 0
+    
+    # in retrospect, this is a really stupidly involved way to do this. it's
+    # efficient, but who cares? I should have 
+    
     while not done:
         
         # get the next event (assuming the event index gets incremented,
@@ -333,8 +337,14 @@ def _handleEndMeeting(event):
         
         # skip anything that's not a new idea or wasn't created in the
         # general pool
-        if event.eventType != EventType.types["NEW_TASK"] and \
-            not event.params["createInPool"]:
+        logging.debug("current event: " + str(event))
+        if event.eventType != EventType.types["NEW_TASK"]:
+            eventIndex = eventIndex+1
+            continue
+            
+        # at this point we know it's a new_task, so check and see if it's
+        # going to the main pool
+        if(not event.params["createInPool"]):
             eventIndex = eventIndex+1
             continue
             
@@ -350,7 +360,12 @@ def _handleEndMeeting(event):
             # then add it to the ideas list and move to the next event.
             logging.debug("Adding event " + str(event) + " to cur topic "+ \
                 str(curTopic))
-            curTopicDict["ideas"].append(event)
+                
+            # we might be able to just use the Task object directly but I'm
+            # not 100% sure, so bounce it off the state manager.
+            curTopicDict["ideas"].append(state.get_obj(
+                event.results["task"].uuid,
+                model.Task))
             eventIndex = eventIndex+1
         elif (curTopic.stopTime < event.timestamp):
             logging.debug("Found an event beyond the topic's stop time")
@@ -383,7 +398,7 @@ def _handleEndMeeting(event):
     
     # run it with the current meeting.
     results = t.generate(meeting=meeting, metadata=metadata,events=outEvents,
-        topics = outTopics)
+        topics = outTopics, topicsDict=topicsDict)
     
     # now write it out to disk
     meetingEndTime = int(time.time())
