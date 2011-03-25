@@ -51,11 +51,11 @@ body {
     margin-right: 5px;
 }
 
-.date,.time,.duration {
+/*.date,.time,.duration {
     font-size: 0.8em;
     font-weight: normal;
 }
-
+*/
 .clear {
     clear: both;
 }
@@ -81,10 +81,6 @@ body {
 	content: ", ";
 }
 
-#topics {
-    float: left;
-    width: 450px;
-}
 
 #readable_history {
     display: none;
@@ -121,11 +117,11 @@ body {
     width: 100%;
 }
 
-#topics-container .topic-container {
+#topics-container .topic {
     margin-bottom: 10px;
 }
 
-#topics-container .topic-container .header {
+#topics-container .topic .header {
     padding: 5px;
     background-color: #ccc;
     font-size: 1.2em;
@@ -133,7 +129,41 @@ body {
     width: 50%;
 }
 
-#topics-container .topic-container .ideas {
-    margin-left: 30px;
+#topics-container .topic .ideas {
+    margin-left: 15px;
 }
 
+#topics-container .topic .header .footer {
+    font-size: 0.6em;
+    font-weight: normal;
+    font-style: italic;
+    margin-left: 10px;
+    margin-bottom: 0px;
+}
+
+#topics-container .topic div {
+    margin-bottom: 10px;
+}
+
+#topics-container .creator, #topics-container .duration {
+    background-color: #eee;
+    margin-left: 5px;
+    padding: 1px;
+}
+
+
+#topics-container .topic td {
+    padding-top: 5px;
+}
+
+#topics-container span.name {
+    font-style: italic;
+    font-size: 0.9em;
+    background-color: #eee;
+    padding:8px;
+    vertical-align: top;
+}
+
+#topics-container td.text {
+    width: 400px;
+}

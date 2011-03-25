@@ -27,64 +27,32 @@
 </ul>
 </div>
 
-<div id="topics">
-<h2>Topics</h2>
-<ol>
-{% for topic in topics %}
-<li class="topic {{topic.status}}">
-	<span class="text">{{topic.text}}</span>
+<br class="clear">
 
-{% if topic.status=="CURRENT" %}
-({{str(int(time.time() - topic.startTime)/60)}}m)
-{% elif topic.status=="PAST" %}
-({{str(int(topic.stopTime - topic.startTime)/60)}}m)
-{% end %}
-
-</li>
-{% end %}
-</ol>
-</div>
-<br class="clear"/>
 <hr/>
-
 
 <div id="topics-container">
 {% for topic in topicsDict %}
-<div class="topic-container">
+<div class="topic">
 	<div class="header">
-		{{topic["topic"].text}}
+	<div>{{topic["topic"].text}}</div>
+	<div class="footer">
+		<span class="creator">created by {{topic["topic"].createdBy.name}}</span>
+		<span class="duration">lasted {{str(int(topic["topic"].stopTime - topic["topic"].startTime)/60)}} minutes</span>
+	</div>
 	</div>
 	<div class="ideas">
 	<table>
 	{% for idea in topic["ideas"] %}
 	<tr>
-		<td>{{idea.createdBy.name}}</td>
-		<td>{{idea.text}}</td>
+		<td class="name">{{idea.createdBy.name}}</td>
+		<td class="text">{{idea.text}}</td>
 	</tr>
 	{% end %}
 	</table>
 	</div>
 </div>
 {% end %}
-</div>
-
-
-<div id="timeline-container">
-<h1>Timeline</h1>
-<table id="timeline" border="0" cellspacing="0" cellpadding="5">
-{% for event in events %}
-<tr class="{{event.eventType}}">
-
-<td class="icon"><img src="../images/{{event.icon()}}"></td>
-
-<td class="timestamp">
-{{time.strftime("%I:%M",time.localtime(event.timestamp))}}
-</td>
-
-<td class="string">{{event}}</td>
-</tr>
-{% end %}
-</table>
 </div>
 
 <div id="readable_history">
