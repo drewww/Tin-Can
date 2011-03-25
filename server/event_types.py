@@ -331,8 +331,10 @@ def _handleEndMeeting(event):
                 
             done = True
         
-        # skip anything that's not a new idea 
-        if event.eventType != EventType.types["NEW_TASK"]:
+        # skip anything that's not a new idea or wasn't created in the
+        # general pool
+        if event.eventType != EventType.types["NEW_TASK"] and \
+            not event.params["createInPool"]:
             eventIndex = eventIndex+1
             continue
             
