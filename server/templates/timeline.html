@@ -45,7 +45,7 @@
 	<table>
 	{% for idea in topic["ideas"] %}
 	<tr>
-		<td class="name">{{idea.createdBy.name}}</td>
+		<td><span class="name">{{idea.createdBy.name}}</span></td>
 		<td class="text">{{idea.text}}</td>
 	</tr>
 	{% end %}
