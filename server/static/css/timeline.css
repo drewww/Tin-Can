@@ -73,6 +73,10 @@ body {
     border: none;
 }
 
+#participants ul li {
+    display: inline;
+}
+
 #participants ul li:after {
 	content: ", ";
 }
@@ -111,5 +115,25 @@ body {
 
 .UPDATE_TOPIC {
     font-size: 1.5em;
+}
+
+#topics-container {
+    width: 100%;
+}
+
+#topics-container .topic-container {
+    margin-bottom: 10px;
+}
+
+#topics-container .topic-container .header {
+    padding: 5px;
+    background-color: #ccc;
+    font-size: 1.2em;
+    font-weight: bold;
+    width: 50%;
+}
+
+#topics-container .topic-container .ideas {
+    margin-left: 30px;
 }
 
