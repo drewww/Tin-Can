@@ -75,6 +75,16 @@
     }
     
     
+    NSString *build = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+
+    versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 20, 150, 30)];
+    versionLabel.text = [NSString stringWithFormat:@"%@ (%@)", version, build, nil];
+    versionLabel.font = [UIFont systemFontOfSize:18.0f];
+    versionLabel.textColor = [UIColor whiteColor];
+    versionLabel.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:versionLabel];
+    
     [self.view addSubview:connectButton];
     [self.view bringSubviewToFront:connectButton];
     
@@ -90,6 +100,8 @@
         
     // Put the keyboard away just in case.
     [serverField resignFirstResponder];
+    
+    versionLabel.hidden = TRUE;
 
     [ConnectionManager setServer:serverField.text];
     NSLog(@"Setting the server to %@", serverField.text);

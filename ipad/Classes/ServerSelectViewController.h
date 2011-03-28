@@ -16,6 +16,7 @@
     NSArray *servers;
     
     UITextField *serverField;
+    UILabel *versionLabel;
 }
 
 
