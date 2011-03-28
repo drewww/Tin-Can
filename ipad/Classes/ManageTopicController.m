@@ -49,7 +49,7 @@
     startTopicButton.frame = CGRectMake(5, 5, 70, 40);
     startTopicButton.backgroundColor = [UIColor clearColor];
     [startTopicButton setTitle:@"Start" forState:UIControlStateNormal];
-    [startTopicButton setFont:[UIFont boldSystemFontOfSize:24.0f]];
+    [startTopicButton.titleLabel setFont:[UIFont boldSystemFontOfSize:24.0f]];
     [startTopicButton addTarget:self action:@selector(startButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     startTopicButton.enabled = YES;
         
@@ -57,7 +57,7 @@
     stopTopicButton.frame = CGRectMake(80, 5, 70, 40);
     stopTopicButton.backgroundColor = [UIColor clearColor];
     [stopTopicButton setTitle:@"Stop" forState:UIControlStateNormal];
-    [stopTopicButton setFont:[UIFont boldSystemFontOfSize:24.0f]];
+    [stopTopicButton.titleLabel setFont:[UIFont boldSystemFontOfSize:24.0f]];
     [stopTopicButton addTarget:self action:@selector(stopButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     stopTopicButton.enabled = YES;
     
@@ -65,7 +65,7 @@
     deleteTopicButton.frame = CGRectMake(155, 5, 90, 40);
     deleteTopicButton.backgroundColor = [UIColor clearColor];
     [deleteTopicButton setTitle:@"Delete" forState:UIControlStateNormal];
-    [deleteTopicButton setFont:[UIFont boldSystemFontOfSize:24.0f]];
+    [deleteTopicButton.titleLabel setFont:[UIFont boldSystemFontOfSize:24.0f]];
     [deleteTopicButton addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     deleteTopicButton.enabled = YES;
     
