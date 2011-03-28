@@ -13,11 +13,14 @@
 
 @synthesize delegate;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (id)initWithTopic:(Topic *)theTopic
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    self = [super init];
     if (self) {
-        // Custom initialization
+        
+        // We'll do some different things depending on the topic's status, eg
+        // you can't delete a past topic only a future one.
+        topic = theTopic;
     }
     return self;
 }
@@ -44,7 +47,6 @@
     // The details of this frame appear to not matter at all. It's set elsewhere. 
     self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     
-                 
     startTopicButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
     startTopicButton.frame = CGRectMake(5, 5, 75, 30);
     startTopicButton.backgroundColor = [UIColor clearColor];

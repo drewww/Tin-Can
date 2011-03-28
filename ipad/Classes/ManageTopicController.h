@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Topic.h";
 
 @protocol ManageTopicDelegate
 - (void) startTopic;
@@ -16,12 +17,20 @@
 
 @interface ManageTopicController : UIViewController {
     
+    Topic *topic;
+    
     UIButton *startTopicButton;
     UIButton *stopTopicButton;
     UIButton *deleteTopicButton;
     
     id <ManageTopicDelegate> delegate;
 }
+
+- (id)initWithTopic:(Topic *)theTopic;
+- (void) startButtonPressed;
+- (void) stopButtonPressed;
+- (void) deleteButtonPressed;
+
 
 @property (nonatomic, assign) id <ManageTopicDelegate> delegate;
 
