@@ -254,14 +254,24 @@
 
 - (void) startTopic {
     NSLog(@"Got start topic message on topic %@", topic);
+    if (topic.status == kFUTURE) {
+        [[ConnectionManager sharedInstance] updateTopic:topic withStatus:kCURRENT];
+    } else if (topic.status == kPAST) {
+        [[ConnectionManager sharedInstance] restartTopic:topic];
+    }
+    [manageTopicPopover dismissPopoverAnimated:YES];
 }
 
 - (void) stopTopic {
-    NSLog(@"Got stop topic message on topic %@", topic);
+    if(topic.status == kCURRENT) {
+        [[ConnectionManager sharedInstance] updateTopic:topic withStatus:kPAST];
+    }
+    [manageTopicPopover dismissPopoverAnimated:YES];
 }
 
 - (void) deleteTopic {
-    NSLog(@"Got delete topic message on topic %@", topic);    
+    NSLog(@"Not supported yet.");
+    [manageTopicPopover dismissPopoverAnimated:YES];
 }
 
 
