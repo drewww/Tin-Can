@@ -56,7 +56,7 @@
         ManageTopicController *controller = [[ManageTopicController alloc] initWithTopic:theTopic];
         controller.delegate = self;
         manageTopicPopover = [[UIPopoverController alloc] initWithContentViewController:controller];
-        [manageTopicPopover setPopoverContentSize:CGSizeMake(250, 50)];
+        [manageTopicPopover setPopoverContentSize:CGSizeMake(270, 50)];
         
     }
     return self;
@@ -249,6 +249,7 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     // Show the popover.
+    [manageTopicPopover.contentViewController updateButtonStates];
     [manageTopicPopover presentPopoverFromRect:self.bounds inView:self permittedArrowDirections:UIPopoverArrowDirectionUp animated:TRUE];
 }
 

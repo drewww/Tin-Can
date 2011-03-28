@@ -31,6 +31,7 @@
 - (void) stopButtonPressed:(id)sender;
 - (void) deleteButtonPressed:(id)sender;
 
+- (void) updateButtonStates;
 
 @property (nonatomic, assign) id <ManageTopicDelegate> delegate;
 

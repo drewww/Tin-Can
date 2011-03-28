@@ -46,7 +46,7 @@
     self.view.backgroundColor = [UIColor blackColor];
     
     startTopicButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-    startTopicButton.frame = CGRectMake(5, 5, 70, 40);
+    startTopicButton.frame = CGRectMake(5, 5, 90, 40);
     startTopicButton.backgroundColor = [UIColor clearColor];
     [startTopicButton setTitle:@"Start" forState:UIControlStateNormal];
     [startTopicButton.titleLabel setFont:[UIFont boldSystemFontOfSize:24.0f]];
@@ -54,7 +54,7 @@
     startTopicButton.enabled = YES;
         
     stopTopicButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-    stopTopicButton.frame = CGRectMake(80, 5, 70, 40);
+    stopTopicButton.frame = CGRectMake(100, 5, 70, 40);
     stopTopicButton.backgroundColor = [UIColor clearColor];
     [stopTopicButton setTitle:@"Stop" forState:UIControlStateNormal];
     [stopTopicButton.titleLabel setFont:[UIFont boldSystemFontOfSize:24.0f]];
@@ -62,16 +62,40 @@
     stopTopicButton.enabled = YES;
     
     deleteTopicButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-    deleteTopicButton.frame = CGRectMake(155, 5, 90, 40);
+    deleteTopicButton.frame = CGRectMake(175, 5, 90, 40);
     deleteTopicButton.backgroundColor = [UIColor clearColor];
     [deleteTopicButton setTitle:@"Delete" forState:UIControlStateNormal];
     [deleteTopicButton.titleLabel setFont:[UIFont boldSystemFontOfSize:24.0f]];
     [deleteTopicButton addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    deleteTopicButton.enabled = YES;
+    deleteTopicButton.enabled = NO;
     
     [self.view addSubview:startTopicButton];
     [self.view addSubview:stopTopicButton];
-    [self.view addSubview:deleteTopicButton];
+    [self.view addSubview:deleteTopicButton];    
+}
+
+- (void) updateButtonStates {
+    // I'm not sure if I can do this logic here or not - is this called each time the popover is created?
+    switch(topic.status) {
+        case kCURRENT:
+            [startTopicButton setTitle:@"Start" forState:UIControlStateNormal];
+            startTopicButton.enabled = NO;
+            stopTopicButton.enabled = YES;
+            deleteTopicButton.enabled = NO;
+            break;
+        case kFUTURE:
+            [startTopicButton setTitle:@"Start" forState:UIControlStateNormal];
+            startTopicButton.enabled = YES;
+            stopTopicButton.enabled = NO;
+            deleteTopicButton.enabled = YES;
+            break;
+        case kPAST:
+            [startTopicButton setTitle:@"Restart" forState:UIControlStateNormal];
+            startTopicButton.enabled = YES;
+            stopTopicButton.enabled = NO;
+            deleteTopicButton.enabled = NO;
+            break;
+    }
 }
 
 
