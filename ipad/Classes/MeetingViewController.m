@@ -49,9 +49,9 @@
     [meetingTimerView retain];
     [self.view addSubview:meetingTimerView];
 	
-	taskContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(285, -50, 250, 565) withRot: M_PI/2 isMainView:YES];
+	taskContainer=[[TaskContainerView alloc] initWithFrame:CGRectMake(285, 510, 250, 565) withRot: M_PI/2 isMainView:YES];
 
-	topicContainer=[[TopicContainerView alloc] initWithFrame:CGRectMake(285, 510, 250, 565)];
+	topicContainer=[[TopicContainerView alloc] initWithFrame:CGRectMake(285, -50, 250, 565)];
     
     
     currentTopicView = [[CurrentTopicView alloc] initWithFrame:CGRectMake(490, 462, 290, 100)];
@@ -93,7 +93,7 @@
     // Add a pair of buttons for adding topics and adding ideas. This is instead of the + buttons on the 
     // container views for those types, which are absurdly hard to hit on an actual ipad.
     addIdeaButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-    addIdeaButton.frame = CGRectMake(-15, 220, 240, 30);
+    addIdeaButton.frame = CGRectMake(-15, 775, 240, 30);
     addIdeaButton.backgroundColor = [UIColor clearColor];
     [addIdeaButton setTitle:@"Add Idea" forState: UIControlStateNormal];
     addIdeaButton.titleLabel.font = [UIFont boldSystemFontOfSize:24.0f];
@@ -107,7 +107,7 @@
 
     
     addTopicButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-    addTopicButton.frame = CGRectMake(-15, 775, 240, 30);
+    addTopicButton.frame = CGRectMake(-15, 220, 240, 30);
     addTopicButton.backgroundColor = [UIColor clearColor];
     [addTopicButton setTitle:@"Add Topic" forState: UIControlStateNormal];
     addTopicButton.titleLabel.font = [UIFont boldSystemFontOfSize:24.0f];
