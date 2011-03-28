@@ -401,19 +401,27 @@
     // Okay, now for every event, we want to add an entry to the timeline view.
     // This frame is arbitrary - the layout system will take it over when added.
     switch(event.type) {
+        case kNEW_TASK:
+            task = [event.results objectForKey:@"task"];
+            
+            // If the task is assigned, don't add an entry to the timeline container.
+            // This avoids cluttering it up with doubles when people create in
+            // the public timeline.
+            if(![task isAssigned]) {
+                break;
+            }
+
         case kUSER_JOINED_LOCATION:
         case kUSER_LEFT_LOCATION:
         case kUPDATE_TOPIC:
-        case kNEW_TASK:
         case kASSIGN_TASK:
         case kNEW_TOPIC:
 //        case kLOCATION_LEFT_MEETING:
 //        case kLOCATION_JOINED_MEETING:
-            NSLog(@"...");
+            NSLog(@"... stupid bug.");
+            
             EventView *eventView = [[EventView alloc] initWithFrame:CGRectMake(0, 0, 100, 100) withEvent:event];
-            NSLog(@"made the event view");
             [timelineView addEventView:eventView];
-            NSLog(@"added it to the timeline view");
             [timelineView setNeedsLayout];
             [timelineView setNeedsDisplay];
             
