@@ -10,6 +10,7 @@
 #import "Topic.h"
 #import "ConnectionManager.h"
 #import "UIColor+Util.h"
+#import "ManageTopicController.h"
 
 
 @implementation TopicView
@@ -46,6 +47,17 @@
 		
 		
 		[UIView commitAnimations];
+        
+        // Create the popover. 
+        // This is tremendously ineffecient because it means EVERY topic view has one
+        // of these controllers. We really only need 1, and have it owned by the
+        // meeting view controller, or something, but that's harder to write
+        // and it probably doesn't matter hugely, so doing it here for now.
+        ManageTopicController *controller = [[ManageTopicController alloc] initWithTopic:theTopic];
+        controller.delegate = self;
+        manageTopicPopover = [[UIPopoverController alloc] initWithContentViewController:controller];
+        [manageTopicPopover setPopoverContentSize:CGSizeMake(300, 100)];
+        
     }
     return self;
 }
@@ -240,52 +252,67 @@
     // up the option selection UI.
     
     // Accept any touch on the left side of the topic item.
-    UITouch *touch = [touches anyObject];
-    
-    CGPoint touchLoc = [touch locationInView:self];
-    
-    if(touchLoc.x < 40) {
-        NSLog(@"Got a touch in the right place.");
-        optionSliderX = touchLoc.x;
-        
-        [self setNeedsDisplay];
-    }    
+//    UITouch *touch = [touches anyObject];
+//    
+//    CGPoint touchLoc = [touch locationInView:self];
+//    
+//    if(touchLoc.x < 40) {
+//        NSLog(@"Got a touch in the right place.");
+//        optionSliderX = touchLoc.x;
+//        
+//        [self setNeedsDisplay];
+//    }    
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    if(optionSliderX != -1) {
-        // If we've already started moving from a valid position,
-        // update the location for the selector.
-        CGPoint touchLoc = [[touches anyObject] locationInView:self];
-        
-        optionSliderX = touchLoc.x;
-        [self setNeedsDisplay];
-    }
+//    if(optionSliderX != -1) {
+//        // If we've already started moving from a valid position,
+//        // update the location for the selector.
+//        CGPoint touchLoc = [[touches anyObject] locationInView:self];
+//        
+//        optionSliderX = touchLoc.x;
+//        [self setNeedsDisplay];
+//    }
 }
 
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 
 
-    int buttonSelected = [self getSelectedButton];
-    
-    if(buttonSelected == START_BUTTON_SELECTED) {
-        if (topic.status == kFUTURE){
-            NSLog(@"Future item touched - end the current item and make this one current.");
-            [[ConnectionManager sharedInstance] updateTopic:topic withStatus:kCURRENT];
-        }
-        else if(topic.status == kCURRENT){
-            NSLog(@"Current item touched - end it.");
-            [[ConnectionManager sharedInstance] updateTopic:topic withStatus:kPAST];
-        } else if (topic.status == kPAST) {
-            NSLog(@"Restarting item.");
-            [[ConnectionManager sharedInstance] restartTopic:topic];
-        }
-    }
-    
-    optionSliderX = -1;
-    [self setNeedsDisplay];
+//    int buttonSelected = [self getSelectedButton];
+//    
+//    if(buttonSelected == START_BUTTON_SELECTED) {
+//        if (topic.status == kFUTURE){
+//            NSLog(@"Future item touched - end the current item and make this one current.");
+//            [[ConnectionManager sharedInstance] updateTopic:topic withStatus:kCURRENT];
+//        }
+//        else if(topic.status == kCURRENT){
+//            NSLog(@"Current item touched - end it.");
+//            [[ConnectionManager sharedInstance] updateTopic:topic withStatus:kPAST];
+//        } else if (topic.status == kPAST) {
+//            NSLog(@"Restarting item.");
+//            [[ConnectionManager sharedInstance] restartTopic:topic];
+//        }
+//    }
+//    
+//    optionSliderX = -1;
+//    [self setNeedsDisplay];
+    [manageTopicPopover presentPopoverFromRect:self.frame inView:self permittedArrowDirections:UIPopoverArrowDirectionAny animated:TRUE];
 }
+
+- (void) startTopic {
+    NSLog(@"Got start topic message on topic %@", topic);
+}
+
+- (void) stopTopic {
+    NSLog(@"Got stop topic message on topic %@", topic);
+}
+
+- (void) deleteTopic {
+    NSLog(@"Got delete topic message on topic %@", topic);    
+}
+
+
 
 - (NSComparisonResult) compareByState:(TopicView *)view {
     

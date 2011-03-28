@@ -27,9 +27,9 @@
 }
 
 - (id)initWithTopic:(Topic *)theTopic;
-- (void) startButtonPressed;
-- (void) stopButtonPressed;
-- (void) deleteButtonPressed;
+- (void) startButtonPressed:(id)sender;
+- (void) stopButtonPressed:(id)sender;
+- (void) deleteButtonPressed:(id)sender;
 
 
 @property (nonatomic, assign) id <ManageTopicDelegate> delegate;

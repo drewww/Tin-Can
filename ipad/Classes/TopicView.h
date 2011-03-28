@@ -8,13 +8,16 @@
 
 #import <UIKit/UIKit.h>
 #import "Topic.h"
+#import "ManageTopicController.h"
 
-@interface TopicView : UIView {
+@interface TopicView : UIView <ManageTopicDelegate> {
 	Topic *topic;
 	bool isTouched; 
 	NSDateFormatter *timeFormat;
     
     CGFloat optionSliderX;
+    
+    UIPopoverController *manageTopicPopover;
 }
 
 @property (nonatomic, retain) Topic *topic;

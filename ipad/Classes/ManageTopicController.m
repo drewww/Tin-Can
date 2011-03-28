@@ -74,15 +74,15 @@
 }
 
 
-- (void) startButtonPressed {
+- (void) startButtonPressed:(id)sender {
     [self.delegate startTopic];
 }
 
-- (void) stopButtonPressed {
+- (void) stopButtonPressed:(id)sender {
     [self.delegate stopTopic];
 }
 
-- (void) deleteButtonPressed {
+- (void) deleteButtonPressed:(id)sender {
     [self.delegate deleteTopic];
 }
 
