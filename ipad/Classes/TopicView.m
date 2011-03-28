@@ -56,7 +56,7 @@
         ManageTopicController *controller = [[ManageTopicController alloc] initWithTopic:theTopic];
         controller.delegate = self;
         manageTopicPopover = [[UIPopoverController alloc] initWithContentViewController:controller];
-        [manageTopicPopover setPopoverContentSize:CGSizeMake(300, 100)];
+        [manageTopicPopover setPopoverContentSize:CGSizeMake(250, 50)];
         
     }
     return self;

@@ -43,9 +43,10 @@
 {
     // The details of this frame appear to not matter at all. It's set elsewhere. 
     self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    self.view.backgroundColor = [UIColor blackColor];
     
     startTopicButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-    startTopicButton.frame = CGRectMake(5, 5, 60, 30);
+    startTopicButton.frame = CGRectMake(5, 5, 70, 40);
     startTopicButton.backgroundColor = [UIColor clearColor];
     [startTopicButton setTitle:@"Start" forState:UIControlStateNormal];
     [startTopicButton setFont:[UIFont boldSystemFontOfSize:24.0f]];
@@ -53,7 +54,7 @@
     startTopicButton.enabled = YES;
         
     stopTopicButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-    stopTopicButton.frame = CGRectMake(65, 5, 60, 30);
+    stopTopicButton.frame = CGRectMake(80, 5, 70, 40);
     stopTopicButton.backgroundColor = [UIColor clearColor];
     [stopTopicButton setTitle:@"Stop" forState:UIControlStateNormal];
     [stopTopicButton setFont:[UIFont boldSystemFontOfSize:24.0f]];
@@ -61,7 +62,7 @@
     stopTopicButton.enabled = YES;
     
     deleteTopicButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-    deleteTopicButton.frame = CGRectMake(130, 5, 60, 30);
+    deleteTopicButton.frame = CGRectMake(155, 5, 90, 40);
     deleteTopicButton.backgroundColor = [UIColor clearColor];
     [deleteTopicButton setTitle:@"Delete" forState:UIControlStateNormal];
     [deleteTopicButton setFont:[UIFont boldSystemFontOfSize:24.0f]];
