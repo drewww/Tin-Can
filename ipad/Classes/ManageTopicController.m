@@ -38,9 +38,6 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
-#pragma mark - View lifecycle
-
-
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView
 {
@@ -48,14 +45,32 @@
     self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     
     startTopicButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-    startTopicButton.frame = CGRectMake(5, 5, 75, 30);
+    startTopicButton.frame = CGRectMake(5, 5, 60, 30);
     startTopicButton.backgroundColor = [UIColor clearColor];
     [startTopicButton setTitle:@"Start" forState:UIControlStateNormal];
     [startTopicButton setFont:[UIFont boldSystemFontOfSize:24.0f]];
     [startTopicButton addTarget:self action:@selector(startButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     startTopicButton.enabled = YES;
-
+        
+    stopTopicButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+    stopTopicButton.frame = CGRectMake(65, 5, 60, 30);
+    stopTopicButton.backgroundColor = [UIColor clearColor];
+    [stopTopicButton setTitle:@"Stop" forState:UIControlStateNormal];
+    [stopTopicButton setFont:[UIFont boldSystemFontOfSize:24.0f]];
+    [stopTopicButton addTarget:self action:@selector(stopButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    stopTopicButton.enabled = YES;
+    
+    deleteTopicButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+    deleteTopicButton.frame = CGRectMake(130, 5, 60, 30);
+    deleteTopicButton.backgroundColor = [UIColor clearColor];
+    [deleteTopicButton setTitle:@"Delete" forState:UIControlStateNormal];
+    [deleteTopicButton setFont:[UIFont boldSystemFontOfSize:24.0f]];
+    [deleteTopicButton addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    deleteTopicButton.enabled = YES;
+    
     [self.view addSubview:startTopicButton];
+    [self.view addSubview:stopTopicButton];
+    [self.view addSubview:deleteTopicButton];
 }
 
 
@@ -74,8 +89,9 @@
 - (void)viewDidUnload
 {
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
+    [startTopicButton release];
+    [stopTopicButton release];
+    [deleteTopicButton release];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
