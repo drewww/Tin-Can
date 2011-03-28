@@ -32,6 +32,7 @@
 - (void) deleteButtonPressed:(id)sender;
 
 - (void) updateButtonStates;
+- (void) manageButtonAlpha;
 
 @property (nonatomic, assign) id <ManageTopicDelegate> delegate;
 

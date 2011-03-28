@@ -96,6 +96,20 @@
             deleteTopicButton.enabled = NO;
             break;
     }
+    
+    [self manageButtonAlpha];
+}
+
+- (void) manageButtonAlpha {
+    for (UIButton *button in [NSArray arrayWithObjects:startTopicButton, stopTopicButton, deleteTopicButton, nil]) {
+        
+        if(button.enabled) {
+            button.alpha = 1.0;
+        } else {
+            button.alpha = 0.6;
+        }
+
+    }
 }
 
 
