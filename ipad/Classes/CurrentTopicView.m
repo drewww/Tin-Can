@@ -7,6 +7,7 @@
 //
 
 #import "CurrentTopicView.h"
+#import "UIColor+Util.h"
 
 
 @implementation CurrentTopicView
@@ -17,7 +18,6 @@
         topic = nil;
                 
 		[self setTransform:CGAffineTransformMakeRotation(M_PI/2)];	
-
     }
     return self;
 }
@@ -31,15 +31,11 @@
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect {
     CGContextRef ctx = UIGraphicsGetCurrentContext();
-
-    // need to wipe the background each time. Still have no idea why I have to do this sometimes
-    // but not always.
-    CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
-    CGContextFillRect(ctx, self.bounds);
     
     UIFont *f;
     CGSize size;
     if(topic==nil) {
+        self.backgroundColor = [UIColor clearColor];
         NSString *displayString = @"no current topic";
         f = [UIFont boldSystemFontOfSize:26];
         size = [displayString sizeWithFont:f];
@@ -47,6 +43,8 @@
 //        [displayString drawInRect:CGRectMake(3, 3, self.bounds.size.width, self.bounds.size.height-25) withFont:f];
         [displayString drawAtPoint:CGPointMake(self.frame.size.height/2 - size.width/2, 30) withFont:f];
     } else {
+        self.backgroundColor = [topic.color colorByChangingAlphaTo:0.3];
+        
         f = [UIFont boldSystemFontOfSize:18];
         CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:1.0 alpha:1.0].CGColor);
         [topic.text drawInRect:CGRectMake(3, 3, self.bounds.size.width, self.bounds.size.height-25) withFont:f];
