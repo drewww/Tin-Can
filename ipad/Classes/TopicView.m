@@ -247,57 +247,9 @@
     return buttonSelected;
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    // In this new system, when we get a touch (in the right area) we want to pull
-    // up the option selection UI.
-    
-    // Accept any touch on the left side of the topic item.
-//    UITouch *touch = [touches anyObject];
-//    
-//    CGPoint touchLoc = [touch locationInView:self];
-//    
-//    if(touchLoc.x < 40) {
-//        NSLog(@"Got a touch in the right place.");
-//        optionSliderX = touchLoc.x;
-//        
-//        [self setNeedsDisplay];
-//    }    
-}
-
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-//    if(optionSliderX != -1) {
-//        // If we've already started moving from a valid position,
-//        // update the location for the selector.
-//        CGPoint touchLoc = [[touches anyObject] locationInView:self];
-//        
-//        optionSliderX = touchLoc.x;
-//        [self setNeedsDisplay];
-//    }
-}
-
-
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-
-
-//    int buttonSelected = [self getSelectedButton];
-//    
-//    if(buttonSelected == START_BUTTON_SELECTED) {
-//        if (topic.status == kFUTURE){
-//            NSLog(@"Future item touched - end the current item and make this one current.");
-//            [[ConnectionManager sharedInstance] updateTopic:topic withStatus:kCURRENT];
-//        }
-//        else if(topic.status == kCURRENT){
-//            NSLog(@"Current item touched - end it.");
-//            [[ConnectionManager sharedInstance] updateTopic:topic withStatus:kPAST];
-//        } else if (topic.status == kPAST) {
-//            NSLog(@"Restarting item.");
-//            [[ConnectionManager sharedInstance] restartTopic:topic];
-//        }
-//    }
-//    
-//    optionSliderX = -1;
-//    [self setNeedsDisplay];
-    [manageTopicPopover presentPopoverFromRect:self.frame inView:self permittedArrowDirections:UIPopoverArrowDirectionAny animated:TRUE];
+    // Show the popover.
+    [manageTopicPopover presentPopoverFromRect:self.bounds inView:self permittedArrowDirections:UIPopoverArrowDirectionUp animated:TRUE];
 }
 
 - (void) startTopic {
