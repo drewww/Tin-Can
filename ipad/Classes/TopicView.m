@@ -157,7 +157,21 @@
 
     CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:1.0].CGColor);
     
-	[topic.text drawInRect:CGRectMake(54, 2, self.frame.size.width-54, self.frame.size.height-10) 
+    NSString *displayString;
+    
+    switch(topic.status) {
+        case kCURRENT:
+            displayString = [NSString stringWithFormat:@"%@ (%.0fm)", topic.text, floor([topic.startTime timeIntervalSinceNow]*-1/60.0), nil];
+            break;
+        case kPAST:
+            displayString = [NSString stringWithFormat:@"%@ (%.0fm)", topic.text, floor([topic.startTime timeIntervalSinceDate:topic.stopTime]*-1/60.0), nil];
+            break;
+        case kFUTURE:
+            displayString = topic.text;
+            break;
+    }
+    
+	[displayString drawInRect:CGRectMake(54, 2, self.frame.size.width-54, self.frame.size.height-10) 
 			withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
     
