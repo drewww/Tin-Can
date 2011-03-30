@@ -35,23 +35,23 @@ def init_test():
     """Initialize the internal state using test data."""
     
     """Initialize the internal state for demos"""
-    newUserEvent = Event("NEW_USER", params={"name":"Drew"})
+    newUserEvent = Event("NEW_USER", params={"name":"Drew", "email":"example@example.com"})
     newUserEvent.dispatch()
-    newUserEvent = Event("NEW_USER", params={"name":"Chris"})
+    newUserEvent = Event("NEW_USER", params={"name":"Chris", "email":"example@example.com"})
     newUserEvent.dispatch()
-    newUserEvent = Event("NEW_USER", params={"name":"Stephanie"})
+    newUserEvent = Event("NEW_USER", params={"name":"Stephanie", "email":"example@example.com"})
     newUserEvent.dispatch()
-    newUserEvent = Event("NEW_USER", params={"name":"Matt"})
+    newUserEvent = Event("NEW_USER", params={"name":"Matt", "email":"example@example.com"})
     newUserEvent.dispatch()
-    newUserEvent = Event("NEW_USER", params={"name":"Josh"})
+    newUserEvent = Event("NEW_USER", params={"name":"Josh", "email":"example@example.com"})
     newUserEvent.dispatch()
-    newUserEvent = Event("NEW_USER", params={"name":"Andrea"})
+    newUserEvent = Event("NEW_USER", params={"name":"Andrea", "email":"example@example.com"})
     newUserEvent.dispatch()
-    newUserEvent = Event("NEW_USER", params={"name":"Charlie"})
+    newUserEvent = Event("NEW_USER", params={"name":"Charlie", "email":"example@example.com"})
     newUserEvent.dispatch()
-    newUserEvent = Event("NEW_USER", params={"name":"Jaewoo"})
+    newUserEvent = Event("NEW_USER", params={"name":"Jaewoo", "email":"example@example.com"})
     newUserEvent.dispatch()
-    newUserEvent = Event("NEW_USER", params={"name":"Wu-Hsi"})
+    newUserEvent = Event("NEW_USER", params={"name":"Wu-Hsi", "email":"example@example.com"})
     newUserEvent.dispatch()
 
     
