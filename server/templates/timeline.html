@@ -18,7 +18,7 @@
 <div id="container">
 
 <div id="topics-container">
-<h1>Topics</h1>
+<h2>Topics</h2>
 {% if len(topicsDict)==0 %}
 <span id="no-topics">no topics in this meeting</span>
 {% end %}
@@ -65,6 +65,8 @@
 </div>
 {% end %}
 </div>
+
+<br class="clear">
 
 <div id="readable_history">
 {% for event in meeting.eventHistoryReadable %}

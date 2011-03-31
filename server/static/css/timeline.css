@@ -60,28 +60,6 @@ body {
     clear: both;
 }
 
-#participants {
-    float: left;
-    
-    width: 450px;
-}
-
-#participants ul {
-    list-style:none;
-    margin: 0;
-    padding: 0;
-    border: none;
-}
-
-#participants ul li {
-    display: inline;
-}
-
-#participants ul li:after {
-	content: ", ";
-}
-
-
 #readable_history {
     display: none;
 }
@@ -114,7 +92,9 @@ body {
 }
 
 #topics-container {
-    width: 100%;
+    width: 440px;
+    float: left;
+    margin-left: 5px;
 }
 
 #topics-container .topic {
@@ -126,7 +106,6 @@ body {
     background-color: #ccc;
     font-size: 1.2em;
     font-weight: bold;
-    width: 50%;
 }
 
 #topics-container .topic .ideas {
@@ -166,4 +145,38 @@ body {
 
 #topics-container td.text {
     width: 400px;
+}
+
+#users-container {
+    width: 440px;
+    float: left;
+    margin-left: 10px;
+}
+
+.user .header{
+    background-color: #ccc;
+    padding: 5px;
+}
+
+.user .name {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.user .idea-count {
+    float: right;
+    background-color: #eee;
+    padding: 2px;
+}
+
+.user .ideas ul {
+    list-style:none;
+    border: none;
+    margin-left: 20px;
+    margin-top: 5px;
+    padding-left: 0px;
+}
+
+.user .ideas li {
+    margin-top: 5px;
 }
