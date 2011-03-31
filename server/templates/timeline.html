@@ -9,6 +9,20 @@
 	
 	<link rel="stylesheet" href="../css/timeline.css" type="text/css" media="screen" title="no title" charset="utf-8">
 	
+	<script type="text/javascript" charset="utf-8">
+			$("document").ready(function() {
+				// Setup all the click handlers on participants
+				// and topics so they expand to show their contents.
+				$("#users-container .user .header, #topics-container .topic .header").each(function () {
+					// Add an on-click handler that toggles show/hide.
+					$(this).click(function() {
+						// toggle the visibility of the next item.
+						$(this).next().slideToggle();
+					});
+				});
+			});
+	</script>
+	
 </head>
 <body id="meeting_timeline" onload="">
 <div id="header"><span>Class Summary</span><span class="date">{{time.strftime("%m/%d/%y")}}</span>
@@ -28,10 +42,13 @@
 	<div>{{topic["topic"].text}}</div>
 	<div class="footer">
 		<span class="creator">created by {{topic["topic"].createdBy.name}}</span>
+		{% if topic["topic"].status!="FUTURE" %}
 		<span class="duration">lasted {{str(int(topic["topic"].stopTime - topic["topic"].startTime)/60)}} minutes</span>
+		{% end %}
+		<span class="idea-count">{{ len(topic["ideas"])}} ideas</span>
 	</div>
 	</div>
-	<div class="ideas">
+	<div class="ideas" style="display: none;">
 	<table>
 	{% for idea in topic["ideas"] %}
 	<tr>
@@ -53,7 +70,7 @@
 	<span class="name">{{ user.name }}</span>
 	<span class="idea-count">{{ len(user.tasks) }} ideas</span>
 	</div>
-	<div class="ideas">
+	<div class="ideas" style="display: none;">
 		<ul>
 			{% for task in user.tasks %}
 			<li>
