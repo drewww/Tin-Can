@@ -17,21 +17,11 @@
 
 <div id="container">
 
-
-<div id="participants">
-<h2>Participants</h2>
-<ul>
-{% for user in meeting.allParticipants %}
-<li>{{user.name}}</li>
-{% end %}
-</ul>
-</div>
-
-<br class="clear">
-
-<hr/>
-
 <div id="topics-container">
+<h1>Topics</h1>
+{% if len(topicsDict)==0 %}
+<span id="no-topics">no topics in this meeting</span>
+{% end %}
 {% for topic in topicsDict %}
 <div class="topic">
 	<div class="header">
@@ -50,6 +40,27 @@
 	</tr>
 	{% end %}
 	</table>
+	</div>
+</div>
+{% end %}
+</div>
+
+<div id="users-container">
+<h2>Participants</h2>
+{% for user in meeting.allParticipants %}
+<div class="user">
+	<div class="header">
+	<span class="name">{{ user.name }}</span>
+	<span class="idea-count">{{ len(user.tasks) }} ideas</span>
+	</div>
+	<div class="ideas">
+		<ul>
+			{% for task in user.tasks %}
+			<li>
+				{{ task.text }}
+			</li>
+			{% end %}
+		</ul>
 	</div>
 </div>
 {% end %}
