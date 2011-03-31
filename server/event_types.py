@@ -223,14 +223,16 @@ def _handleEndMeeting(endMeetingEvent):
 
     # we need to stop the current topic for data purity reasons
     currentTopic = meeting.getCurrentTopic()
-    endTopicEvent = e.Event("UPDATE_TOPIC", endMeetingEvent.actor.uuid,
-        meeting.uuid, 
-        params={"topicUUID":currentTopic.uuid, "status":"PAST"})
+    
+    if(currentTopic != None):
+        endTopicEvent = e.Event("UPDATE_TOPIC", endMeetingEvent.actor.uuid,
+            meeting.uuid, 
+            params={"topicUUID":currentTopic.uuid, "status":"PAST"})
 
-    # do this first so we don't have a current topic hanging around anymore
-    # which will cause lingering issues with the organize-ideas-by-topic
-    # code below.
-    endTopicEvent.dispatch()
+        # do this first so we don't have a current topic hanging around anymore
+        # which will cause lingering issues with the organize-ideas-by-topic
+        # code below.
+        endTopicEvent.dispatch()
 
     # do a few sideeffecting things that, if done first, will start breaking
     # any future events related to this meeting.
@@ -295,15 +297,25 @@ def _handleEndMeeting(endMeetingEvent):
     
     # we'll construct this by maintaining two separate lists. 
     
-    # start on the first topic
-    curTopic = pastTopics[0]
-    topicIndex = 0
-    topicsDict = []
-    
-    curTopicDict = {"topic":curTopic, "ideas":[]}
-    
-    done = False
+    # skip the whole assignment process if no topics actually were ever
+    # started.
+    if(len(pastTopics)==0):
+        done = True
+        topicsDict = []
+        for topic in futureTopics:
+            topicsDict.append({"topic":topic, "ideas":[]})
+    else:
+        done = False
+        topicsDict = []
+        curTopic = pastTopics[0]
+        curTopicDict = {"topic":curTopic, "ideas":[]}
+
+        
     eventIndex = 0
+
+    # start on the first topic
+    topicIndex = 0
+    
     
     # in retrospect, this is a really stupidly involved way to do this. it's
     # efficient, but who cares? I should have 
