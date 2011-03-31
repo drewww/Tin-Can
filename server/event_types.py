@@ -618,6 +618,12 @@ def _handleNewTask(event):
             newTask.deassign(event.params["assignedBy"])
         else:
             newTask.deassign(event.actor)
+            
+        # now check to see if the creator has a matching idea. if so, flip
+        # its shared flag.
+        if(isinstance(event.actor, model.User)):
+            [task.setShared(True) for task in event.actor.tasks if task.text==newTask.text]
+            logging.debug("checking for old matching tasks: " + str([str(task) for task in event.actor.tasks]))
     
     
     event.meeting.addTask(newTask)
