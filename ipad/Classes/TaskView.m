@@ -108,6 +108,11 @@
 	else {
 		CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1].CGColor );
 	}
+    
+    if(task.shared) {
+        NSLog(@"TASK IS SHARED");
+        self.alpha = 0.7f;
+    }
 
 	CGContextFillRect(ctx, CGRectMake(BAR_WIDTH, 0, self.frame.size.width-12, self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:1].CGColor);

@@ -458,6 +458,27 @@ static NSString *selectedServer = nil;
             
             [task unswizzle];
             
+            
+            // If this task is being created in the pool (eg isAssigned = YES) then
+            // check to see if it matches a task already owned by its creator. If so,
+            // flip the shared flag on that other task. 
+            if (![task isAssigned]) {
+                NSLog(@"found unassigned task to check");
+                if ([task.creator isKindOfClass:[User class]]) {
+                    NSLog(@"unassigned task has a user as creator");
+                    User *creatingUser = (User *)task.creator;
+                    for (Task *t in creatingUser.tasks) {
+                        NSLog(@"comparing to task %@", t);
+                        NSLog(@" %@ ?= %@", t.text, task.text);
+                        if([t.text isEqualToString:task.text]) {
+                            // if it is, flip the shared bit on t
+                            t.shared = YES;
+                            NSLog(@"FOUND A SHARED TASK! %@", t);
+                        }
+                    }   
+                }                
+            }
+            
             [e.results setValue:task forKey:@"task"];
             
             break;
@@ -612,7 +633,7 @@ static NSString *selectedServer = nil;
     if(assignedBy != nil) {
         [request setPostValue:assignedBy forKey:@"assignedBy"];
     }
-    NSLog(@" sending new task request with createdBy: %@ and assignedBy: %@", createdBy, assignedBy);
+    NSLog(@" sending new task request with createdBy: %@ and assignedBy: %@ andInPool: %@", createdBy, assignedBy, val);
     
     // Per the classroom "idea" model, don't move the idea over, just create a new one
     // that is unassigned.
