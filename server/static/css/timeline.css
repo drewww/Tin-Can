@@ -180,3 +180,7 @@ body {
 .user .ideas li {
     margin-top: 5px;
 }
+
+#users-container .user .header:hover, #topics-container .topic .header:hover {
+    background-color: #D2D5F5;
+}
