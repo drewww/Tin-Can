@@ -459,25 +459,40 @@ static NSString *selectedServer = nil;
             [task unswizzle];
             
             
+            
+            // Change this process up - search no matter what, just search the 
+            // other place. So if it's a pool idea, look for personal ones.
+            // If it's a personal idea, look through all the pool ideas.
+            
+            NSSet *tasksToCompareTo;
+            if([task isAssigned]) {
+                NSLog(@"comparing against pool tasks");
+                tasksToCompareTo = [[StateManager sharedInstance].meeting getUnassignedTasks];
+            } else {
+                if ([task.creator isKindOfClass:[User class]]) {
+                    NSLog(@"comparing against owned tasks");
+                    User *creatingUser = (User *)task.creator;
+                    tasksToCompareTo = creatingUser.tasks;
+                }
+            }
+
+            NSLog(@"comparing against tasks: %@", tasksToCompareTo);
+            
             // If this task is being created in the pool (eg isAssigned = YES) then
             // check to see if it matches a task already owned by its creator. If so,
             // flip the shared flag on that other task. 
-            if (![task isAssigned]) {
-                NSLog(@"found unassigned task to check");
-                if ([task.creator isKindOfClass:[User class]]) {
-                    NSLog(@"unassigned task has a user as creator");
-                    User *creatingUser = (User *)task.creator;
-                    for (Task *t in creatingUser.tasks) {
-                        NSLog(@"comparing to task %@", t);
-                        NSLog(@" %@ ?= %@", t.text, task.text);
-                        if([t.text isEqualToString:task.text]) {
-                            // if it is, flip the shared bit on t
-                            t.shared = YES;
-                            NSLog(@"FOUND A SHARED TASK! %@", t);
-                        }
-                    }   
-                }                
-            }
+            for (Task *t in tasksToCompareTo) {
+                NSLog(@"comparing to task %@", t);
+                NSLog(@" %@ ?= %@", t.text, task.text);
+                
+                // the note clause is to make sure we don't check against ourself accidently. 
+                if([t.text isEqualToString:task.text] && ![t.uuid isEqualToString:task.uuid]) {
+                    // if it is, flip the shared bit on t
+                    t.shared = YES;
+                    task.shared = YES;
+                    NSLog(@"FOUND A SHARED TASK! %@", t);
+                }
+            }   
             
             [e.results setValue:task forKey:@"task"];
             
