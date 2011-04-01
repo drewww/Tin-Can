@@ -765,6 +765,7 @@ class Task(MeetingObject):
             d["assignedBy"] = None
         
         d["color"] = self.color
+        d["shared"] = self.shared
 
         return d
     
