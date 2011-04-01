@@ -110,8 +110,7 @@
 	}
     
     if(task.shared) {
-        NSLog(@"TASK IS SHARED");
-        self.alpha = 0.7f;
+        self.alpha = 0.6f;
     }
 
 	CGContextFillRect(ctx, CGRectMake(BAR_WIDTH, 0, self.frame.size.width-12, self.frame.size.height));
@@ -129,7 +128,10 @@
     //              - TaskView 
     if([self.superview.superview.superview isKindOfClass:[TaskContainerView class]]) {
         TaskContainerView *taskContainer = (TaskContainerView *)self.superview.superview.superview;
-                
+
+        // Reset alpha to 1.0 if we're in a task container. We don't need to differentait
+        self.alpha = 1.0f;
+        
         if(taskContainer.isMainView) {
             
             if(task.assignedBy != nil && ![task.creator.uuid isEqual:task.assignedBy.uuid]) {
