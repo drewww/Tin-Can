@@ -138,6 +138,12 @@
                 self.text];
 }
 
+- (void) setShared:(_Bool)isShared {
+    shared = isShared;
+    
+    [[self getView] setNeedsDisplay];
+}
+
 - (UIView *)getView {
     
     if(view==nil) {

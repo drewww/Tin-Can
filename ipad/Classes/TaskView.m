@@ -109,10 +109,6 @@
 		CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1].CGColor );
 	}
     
-    if(task.shared) {
-        self.alpha = 0.6f;
-    }
-
 	CGContextFillRect(ctx, CGRectMake(BAR_WIDTH, 0, self.frame.size.width-12, self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:1].CGColor);
     
@@ -129,18 +125,20 @@
     if([self.superview.superview.superview isKindOfClass:[TaskContainerView class]]) {
         TaskContainerView *taskContainer = (TaskContainerView *)self.superview.superview.superview;
 
-        // Reset alpha to 1.0 if we're in a task container. We don't need to differentait
-        self.alpha = 1.0f;
         
         if(taskContainer.isMainView) {
-            
             if(task.assignedBy != nil && ![task.creator.uuid isEqual:task.assignedBy.uuid]) {
                 displayString = [task.text stringByAppendingFormat:@" (%@, added by %@)", task.creator.name, task.assignedBy.name, nil];                
             } else {
                 displayString = [task.text stringByAppendingFormat:@" (%@)", task.creator.name, nil];
             }
         } else {
-            displayString = task.text;
+            if(task.shared) {
+                displayString = [task.text stringByAppendingString:@" (shared)"];
+            } else {
+                displayString = task.text;
+            }
+            
         }
     } else {
         displayString = task.text;
