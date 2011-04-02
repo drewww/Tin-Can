@@ -148,6 +148,13 @@ static StateManager *sharedInstance = nil;
                                    assignedAt:date
                                     withColor:[UIColor colorWithHexString:[results objectForKey:@"color"]]];
             [task unswizzle];
+            
+            NSLog(@"results.shared: %@", [results objectForKey:@"shared"]);
+            NSLog(@"type: %@", [[results objectForKey:@"shared"] class]);
+//            if ([results objectForKey:@"shared"] isEq) {
+//                task.shared = YES;
+//            }
+
         }
         
         for(NSDictionary *results in [m objectForKey:@"topics"]) {

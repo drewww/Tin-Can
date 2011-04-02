@@ -458,8 +458,6 @@ static NSString *selectedServer = nil;
             
             [task unswizzle];
             
-            
-            
             // Change this process up - search no matter what, just search the 
             // other place. So if it's a pool idea, look for personal ones.
             // If it's a personal idea, look through all the pool ideas.
