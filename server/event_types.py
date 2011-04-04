@@ -618,7 +618,20 @@ def _handleNewTask(event):
             newTask.deassign(event.params["assignedBy"])
         else:
             newTask.deassign(event.actor)
+            
     
+    # now check to see if the creator has a matching idea. if so, flip
+    # its shared flag.
+    if(isinstance(event.actor, model.User)):
+        matchedTasks = [(task, newTask) for task in event.actor.tasks if task.text==newTask.text and task.uuid != newTask.uuid]
+        [matchedTasks.append((task, newTask)) for task in event.meeting.tasks if task.text==newTask.text and task.uuid != newTask.uuid]
+
+        logging.debug("Matched tasks: " + str(matchedTasks))
+        for taskPair in matchedTasks:
+            if(len(taskPair) > 0):
+                logging.debug("Found shared pair: " + str(taskPair))
+                taskPair[0].shared = True
+                taskPair[1].shared = True
     
     event.meeting.addTask(newTask)
     event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "created new idea", "time": newTask.createdAt}))

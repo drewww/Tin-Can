@@ -27,6 +27,8 @@
     UIView *view;
     
     UIColor *color;
+    
+    bool shared;
 }
 
 
@@ -56,5 +58,6 @@
 @property(nonatomic, retain) Actor *assignedBy;
 @property(nonatomic, retain) NSDate *assignedAt;
 @property(nonatomic, retain) UIColor *color;
+@property(assign, setter=setShared:) bool shared;
 
 @end

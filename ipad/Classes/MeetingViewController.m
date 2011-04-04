@@ -451,6 +451,7 @@
     
     if(controller == (UIViewController *)addIdeaController) {
         [addIdeaPopoverController dismissPopoverAnimated:true];
+
         [[ConnectionManager sharedInstance] addTaskWithText:text isInPool:false isCreatedBy:nil isAssignedBy:nil];
         
         if(isAltSubmit) {

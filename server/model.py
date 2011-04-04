@@ -742,6 +742,12 @@ class Task(MeetingObject):
         else:
             self.color = color
         
+        # this field tracks whether or not this idea(task) was shared.
+        # when a task is created, the system will check to see if it's
+        # a double. if it is, the non-public version of the task
+        # will get this flag set.
+        self.shared = False
+        
         
     def getDict(self):
         d = MeetingObject.getDict(self)
@@ -759,6 +765,7 @@ class Task(MeetingObject):
             d["assignedBy"] = None
         
         d["color"] = self.color
+        d["shared"] = self.shared
 
         return d
     
@@ -794,6 +801,9 @@ class Task(MeetingObject):
         
         self.assignedTo = None
 
+    def setShared(self, shared):
+        self.shared = shared
+
     def __str__(self):
         if(self.assignedTo!=None):
             assignedToName = self.assignedTo.name
@@ -810,8 +820,8 @@ class Task(MeetingObject):
         else:
             assignedAt = 0
 
-        return "[task.%s %s creator:%s assignedTo:%s, assignedBy:%s, assignedAt:%d]"%(self.uuid[0:6], 
-            self.text, self.createdBy.name, assignedToName, assignedByName, assignedAt)
+        return "[task.%s %s creator:%s assignedTo:%s, assignedBy:%s, assignedAt:%d shared:%s]"%(self.uuid[0:6], 
+            self.text, self.createdBy.name, assignedToName, assignedByName, assignedAt, self.shared)
 
 class Topic(MeetingObject):
     """Store information about a topic."""

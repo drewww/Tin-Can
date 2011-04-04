@@ -16,6 +16,7 @@
 @synthesize assignedBy;
 @synthesize assignedAt;
 @synthesize color;
+@synthesize shared;
 
 - (id) initWithUUID:(UUID *)myUUID
     withCreatorUUID:(UUID *)myCreatorUUID
@@ -40,6 +41,8 @@
         myColor = [UIColor colorWithWhite:0.5 alpha:1];
     }
     self.color = myColor;
+    
+    self.shared = NO;
     
     return self;
 }
@@ -133,6 +136,12 @@
     else
         return [NSString stringWithFormat:@"[task.%@ %@ for:null by:null]", [self.uuid substringToIndex:6],
                 self.text];
+}
+
+- (void) setShared:(_Bool)isShared {
+    shared = isShared;
+    
+    [[self getView] setNeedsDisplay];
 }
 
 - (UIView *)getView {

@@ -108,11 +108,10 @@
 	else {
 		CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1].CGColor );
 	}
-
+    
 	CGContextFillRect(ctx, CGRectMake(BAR_WIDTH, 0, self.frame.size.width-12, self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:1].CGColor);
     
-
     
 	[[self getDisplayString] drawInRect:CGRectMake(BAR_WIDTH + 5, 2, self.frame.size.width-16, self.frame.size.height) 
 			withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
@@ -490,7 +489,11 @@
                 displayString = [task.text stringByAppendingFormat:@" (%@)", task.creator.name, nil];
             }
         } else {
-            displayString = task.text;
+            if(task.shared) {
+                displayString = [task.text stringByAppendingString:@" (shared)"];
+            } else {
+                displayString = task.text;
+            }
         }
     } else {
         displayString = task.text;
