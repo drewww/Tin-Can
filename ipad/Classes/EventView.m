@@ -69,7 +69,7 @@
                                                     withType:[Location class]];
                 
                 user = (User *)[state getObjWithUUID:event.actorUUID withType:[User class]];
-                displayString = [NSString stringWithFormat:@"%@ joined %@.", user.name, location.name];
+                displayString = [NSString stringWithFormat:@"%@ joined.", user.name];
                 displayImage = [UIImage imageNamed:@"user_add.png"];
                 break;
             case kUSER_LEFT_LOCATION:
@@ -77,7 +77,7 @@
                                                     withType:[Location class]];
                 
                 user = (User *)[state getObjWithUUID:event.actorUUID withType:[User class]];
-                displayString = [NSString stringWithFormat:@"%@ is now browsing %@.", user.name, location.name];
+                displayString = [NSString stringWithFormat:@"%@ is now browsing.", user.name];
                 displayImage = [UIImage imageNamed:@"user_delete.png"];
                 break;
             case kUPDATE_TOPIC:
