@@ -488,33 +488,10 @@
 }
 
 - (float) getHeightForWidth:(float)width {
-    // Decide how tall we should be. For now, simply mimicing the current behavior. But eventually
-    // we'll be able to respond to touches and change the task size and the rendering will update
-    // appropriately.
-    CGSize size = [task.text sizeWithFont:[UIFont systemFontOfSize:16] forWidth:width lineBreakMode:UILineBreakModeTailTruncation];
+    // Decide how tall we should be. Figure it out by figuring out how much space we need based on the task text length.
+    CGSize size = [task.text sizeWithFont:[UIFont systemFontOfSize:16] constrainedToSize:CGSizeMake(width, 1000) lineBreakMode:UILineBreakModeTailTruncation];
     
-    NSLog(@"target size for text: %@ for width: %f", NSStringFromCGSize(size), width);
-    
-    return size.height+15;
-    
-//    if([self.superview isKindOfClass:[TaskContainerContentView class]]) {
-//        TaskContainerContentView *taskContainer = (TaskContainerContentView *)self.superview;
-//        if(taskContainer.isMainView) {
-//            if(expanded) {
-//                return 200;
-//            } else {
-//                return 100;
-//            }
-//        } else {
-//            if(expanded) {
-//                return 100;
-//            } else {
-//                return 50;
-//            }
-//        }
-//    } else {
-//        return 50;
-//    }
+    return size.height+5;
 }
 
 - (void)dealloc {
