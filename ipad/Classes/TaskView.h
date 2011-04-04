@@ -73,5 +73,6 @@
 - (void) handleLongPress: (UIGestureRecognizer *)sender;
 
 - (float) getHeightForWidth:(float)width;
+- (NSString *)getDisplayString;
 
 @end

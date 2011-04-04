@@ -112,35 +112,9 @@
 	CGContextFillRect(ctx, CGRectMake(BAR_WIDTH, 0, self.frame.size.width-12, self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:1].CGColor);
     
-    // Check and see if our parent view is the task container view. If it is, then we want to show
-    // the name of the person who created us. Otherwise, hide that because we're in that users'
-    // task container view so it's obvious.
-    NSString *displayString;
-
-    // The way the display hierarchy works here is:
-    //  - TaskContainerview
-    //      - UIScrollView
-    //          - TaskContainerContentView
-    //              - TaskView 
-    if([self.superview.superview.superview isKindOfClass:[TaskContainerView class]]) {
-        TaskContainerView *taskContainer = (TaskContainerView *)self.superview.superview.superview;
-                
-        if(taskContainer.isMainView) {
-            
-            if(task.assignedBy != nil && ![task.creator.uuid isEqual:task.assignedBy.uuid]) {
-                displayString = [task.text stringByAppendingFormat:@" (%@, added by %@)", task.creator.name, task.assignedBy.name, nil];                
-            } else {
-                displayString = [task.text stringByAppendingFormat:@" (%@)", task.creator.name, nil];
-            }
-        } else {
-            displayString = task.text;
-        }
-    } else {
-        displayString = task.text;
-    }
 
     
-	[displayString drawInRect:CGRectMake(BAR_WIDTH + 5, 2, self.frame.size.width-16, self.frame.size.height) 
+	[[self getDisplayString] drawInRect:CGRectMake(BAR_WIDTH + 5, 2, self.frame.size.width-16, self.frame.size.height) 
 			withFont:[UIFont systemFontOfSize:16] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentLeft];
 	
 	CGContextSetLineWidth(ctx,2);
@@ -489,9 +463,39 @@
 
 - (float) getHeightForWidth:(float)width {
     // Decide how tall we should be. Figure it out by figuring out how much space we need based on the task text length.
-    CGSize size = [task.text sizeWithFont:[UIFont systemFontOfSize:16] constrainedToSize:CGSizeMake(width, 1000) lineBreakMode:UILineBreakModeTailTruncation];
+    CGSize size = [[self getDisplayString] sizeWithFont:[UIFont systemFontOfSize:16] constrainedToSize:CGSizeMake(width, 1000) lineBreakMode:UILineBreakModeTailTruncation];
     
     return size.height+5;
+}
+
+- (NSString *)getDisplayString {
+    // Check and see if our parent view is the task container view. If it is, then we want to show
+    // the name of the person who created us. Otherwise, hide that because we're in that users'
+    // task container view so it's obvious.
+    NSString *displayString;
+    
+    // The way the display hierarchy works here is:
+    //  - TaskContainerview
+    //      - UIScrollView
+    //          - TaskContainerContentView
+    //              - TaskView 
+    if([self.superview.superview.superview isKindOfClass:[TaskContainerView class]]) {
+        TaskContainerView *taskContainer = (TaskContainerView *)self.superview.superview.superview;
+        
+        if(taskContainer.isMainView) {
+            
+            if(task.assignedBy != nil && ![task.creator.uuid isEqual:task.assignedBy.uuid]) {
+                displayString = [task.text stringByAppendingFormat:@" (%@, added by %@)", task.creator.name, task.assignedBy.name, nil];                
+            } else {
+                displayString = [task.text stringByAppendingFormat:@" (%@)", task.creator.name, nil];
+            }
+        } else {
+            displayString = task.text;
+        }
+    } else {
+        displayString = task.text;
+    }
+    return displayString;
 }
 
 - (void)dealloc {
