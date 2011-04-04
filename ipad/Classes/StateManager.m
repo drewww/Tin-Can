@@ -130,7 +130,6 @@ static StateManager *sharedInstance = nil;
         // as we make them. Their references only point to objects that will already
         // exist at this point.
         for(NSDictionary *results in [m objectForKey:@"tasks"]) {
-            NSLog(@"unpacking task: %@", results);
             
             if([[results objectForKey:@"assignedAt"] isKindOfClass:[NSNull class]]) {
                 date = nil;
@@ -148,12 +147,10 @@ static StateManager *sharedInstance = nil;
                                    assignedAt:date
                                     withColor:[UIColor colorWithHexString:[results objectForKey:@"color"]]];
             [task unswizzle];
-            
-            NSLog(@"results.shared: %@", [results objectForKey:@"shared"]);
-            NSLog(@"type: %@", [[results objectForKey:@"shared"] class]);
-//            if ([results objectForKey:@"shared"] isEq) {
-//                task.shared = YES;
-//            }
+                        
+            // Have to do this dance because booleans in objects like the results object are subclasses of NSNumber (NSCFBoolean, to be
+            // precise) which you can't just assign directly. Took forever to figure this out.
+            task.shared = [[results objectForKey:@"shared"] boolValue];
 
         }
         
