@@ -41,7 +41,7 @@
 //    int maxVisibleTasks = floor(self.bounds.size.height/(taskHeight + taskMargin*2));
 	for(TaskView *subview in [sortedArray reverseObjectEnumerator]){
 
-        taskHeight = [subview getHeight];
+        taskHeight = [subview getHeightForWidth:self.bounds.size.width-14];
 
         // Make sure lastParentViews are up to date.
         subview.lastParentView = self;

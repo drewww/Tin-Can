@@ -72,6 +72,6 @@
 
 - (void) handleLongPress: (UIGestureRecognizer *)sender;
 
-- (float) getHeight;
+- (float) getHeightForWidth:(float)width;
 
 @end
