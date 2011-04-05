@@ -405,25 +405,25 @@
 }
 
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    NSLog(@"touches moved");
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    NSLog(@"touches ENDED on task: %@", self.task);
-    
-    // Swap the expanded status.
-    expanded = !expanded;
-
-    
-    
-    [self.superview setNeedsLayout];
-    
-    if([self.superview isKindOfClass:[TaskContainerContentView class]]) {
-        TaskContainerContentView *container = (TaskContainerContentView *)self.superview;
-        [container taskViewExpanded:self];
-    }
-}
+//- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+//    NSLog(@"touches moved");
+//}
+//
+//- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+//    NSLog(@"touches ENDED on task: %@", self.task);
+//    
+//    // Swap the expanded status.
+//    expanded = !expanded;
+//
+//    
+//    
+//    [self.superview setNeedsLayout];
+//    
+//    if([self.superview isKindOfClass:[TaskContainerContentView class]]) {
+//        TaskContainerContentView *container = (TaskContainerContentView *)self.superview;
+//        [container taskViewExpanded:self];
+//    }
+//}
 
 - (NSComparisonResult) compareByPointer:(TaskView *)view {
     
@@ -463,7 +463,7 @@
 - (float) getHeightForWidth:(float)width {
     // Decide how tall we should be. Figure it out by figuring out how much space we need based on the task text length.
     CGSize size = [[self getDisplayString] sizeWithFont:[UIFont systemFontOfSize:16] constrainedToSize:CGSizeMake(width, 1000) lineBreakMode:UILineBreakModeTailTruncation];
-    
+
     return size.height+5;
 }
 

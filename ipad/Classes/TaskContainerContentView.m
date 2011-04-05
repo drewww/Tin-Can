@@ -67,14 +67,13 @@
         NSLog(@"accumulatedHeight: %f", accumulatedHeight);
 	}
 	
-    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, (taskHeight + taskMargin)*[[self subviews]count] + taskMargin);
+    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, accumulatedHeight);
     NSLog(@"Frame: %@",NSStringFromCGRect(self.frame));
     
     
     if([self.superview isKindOfClass:[UIScrollView class]]) {
         UIScrollView *parentScrollView = (UIScrollView *)self.superview;
         parentScrollView.contentSize = self.bounds.size;
-        
     }
 }
 
