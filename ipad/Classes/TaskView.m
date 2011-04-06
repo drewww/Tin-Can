@@ -462,7 +462,9 @@
 
 - (float) getHeightForWidth:(float)width {
     // Decide how tall we should be. Figure it out by figuring out how much space we need based on the task text length.
-    CGSize size = [[self getDisplayString] sizeWithFont:[UIFont systemFontOfSize:16] constrainedToSize:CGSizeMake(width, 1000) lineBreakMode:UILineBreakModeTailTruncation];
+    
+    // Subtract 16 from the width because the specified width is for the entire TaskView, not just the text area.
+    CGSize size = [[self getDisplayString] sizeWithFont:[UIFont systemFontOfSize:16] constrainedToSize:CGSizeMake(width-16, 1000) lineBreakMode:UILineBreakModeTailTruncation];
 
     return size.height+5;
 }
