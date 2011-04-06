@@ -90,6 +90,7 @@
 - (void) deassignTask:(Task *)theTask;
 - (void) addTaskWithText:(NSString *)newTaskText isInPool:(bool)isInPool isCreatedBy:(UUID *)createdBy isAssignedBy:(UUID *)assignedBy;
 - (void) deleteTask:(Task *)taskToDelete;
+- (void) likeTask:(Task *)theTask;
 
 - (void) updateTopic:(Topic *)theTopic withStatus:(TopicStatus)theStatus;
 - (void) restartTopic:(Topic *)theTopic;

@@ -633,6 +633,15 @@ static NSString *selectedServer = nil;
     [request startAsynchronous];         
 }
 
+- (void) likeTask:(Task *)theTask {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/tasks/like"]];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request setPostValue:theTask.uuid forKey:@"taskUUID"];    
+    [request setDelegate:self];
+    [request startAsynchronous];         
+}
+
+
 - (void) addTaskWithText:(NSString *)newTaskText isInPool:(bool)isInPool isCreatedBy:(UUID *)createdBy isAssignedBy:(UUID *)assignedBy {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/tasks/add"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
