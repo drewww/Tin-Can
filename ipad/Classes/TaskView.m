@@ -11,6 +11,7 @@
 #import "DragManager.h"
 #import "TaskContainerView.h"
 #import "TaskContainerContentView.h"
+#import "ConnectionManager.h"
 
 @implementation TaskView
 
@@ -132,7 +133,12 @@
     switch (sender.state) {
         case UIGestureRecognizerStateBegan:
             // Check and see if we're a task in the pool. If we are, ignore touches.
-            if(![self.task isAssigned]) return;
+            if(![self.task isAssigned]) {
+                // Send a "like!" message. 
+                NSLog(@"Liking this task based on a long press.");
+                [[ConnectionManager sharedInstance] likeTask:self.task];
+                return;
+            }
             
             NSLog(@"I have been LONG PRESSED");
             
@@ -224,9 +230,9 @@
     }
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    NSLog(@"TASK TOUCH BEGAN");
-}
+//- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+//    NSLog(@"TASK TOUCH BEGAN");
+//}
 
 
 - (void) startAssignToUser:(User *)toUser byActor:(Actor *)byActor atTime:(NSDate *)assignTime {
@@ -486,9 +492,9 @@
         if(taskContainer.isMainView) {
             
             if(task.assignedBy != nil && ![task.creator.uuid isEqual:task.assignedBy.uuid]) {
-                displayString = [task.text stringByAppendingFormat:@" (%@, added by %@)", task.creator.name, task.assignedBy.name, nil];                
+                displayString = [task.text stringByAppendingFormat:@" (%@, added by %@) +%d", task.creator.name, task.assignedBy.name, task.likes, nil];                
             } else {
-                displayString = [task.text stringByAppendingFormat:@" (%@)", task.creator.name, nil];
+                displayString = [task.text stringByAppendingFormat:@" (%@) +%d", task.creator.name, task.likes, nil];
             }
         } else {
             if(task.shared) {
