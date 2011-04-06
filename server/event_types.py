@@ -703,8 +703,10 @@ def _handleLikeTask(event):
     # multiple likes from the same person on a task).
     task.addLike(liker)
     
-    event.queue(e.Event("UPDATE_STATUS", assignedBy.uuid, None, {"status": "liked idea", "time": task.assignedAt}))
-    event.meeting.eventHistoryReadable.append(assignedBy.name + " liked idea \""+task.text+"\"")
+    # TODO need to make this time get saved properly, otherwise I worry that
+    # replaying will break on these kinds of events.
+    event.queue(e.Event("UPDATE_STATUS", liker.uuid, None, {"status": "liked idea", "time": time.time()}))
+    event.meeting.eventHistoryReadable.append(liker.name + " liked idea \""+task.text+"\"")
     
     return event
 

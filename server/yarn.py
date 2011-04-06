@@ -706,7 +706,7 @@ class LikeTaskHandler(BaseHandler):
             likeTaskEvent.dispatch()
         else:
             raise HTTPError(403, "You cannot like an idea more\
-            than once."%deviceUUID)
+            than once.")
         
 class AssignTaskHandler(BaseHandler):
     def post(self):

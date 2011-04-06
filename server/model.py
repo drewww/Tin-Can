@@ -819,7 +819,7 @@ class Task(MeetingObject):
             return False
 
     def getLikes(self):
-        return len(self.likes)
+        return len(self.likers)
 
     def __str__(self):
         if(self.assignedTo!=None):
