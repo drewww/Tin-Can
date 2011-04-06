@@ -697,10 +697,16 @@ class VoteTaskHandler(BaseHandler):
     def post(self):
         actor = self.get_current_actor()
 
-        voteTaskEvent = Event("VOTE_TASK", actor.uuid, 
-            actor.getMeeting().uuid,
-            params = {"taskUUID":self.get_argument("taskUUID")})
-        voteTaskEvent.dispatch()
+        task = state.get_obj(self.get_argument("taskUUID"), Task)
+        
+        if(actor not in task.voters):
+            voteTaskEvent = Event("VOTE_TASK", actor.uuid, 
+                actor.getMeeting().uuid,
+                params = {"taskUUID":self.get_argument("taskUUID")})
+            voteTaskEvent.dispatch()
+        else:
+            raise HTTPError(403, "You cannot vote on an idea more\
+            than once."%deviceUUID)
         
 class AssignTaskHandler(BaseHandler):
     def post(self):
