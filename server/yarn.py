@@ -70,6 +70,7 @@ class YarnApplication(tornado.web.Application):
             (r"/tasks/delete", DeleteTaskHandler),
             (r"/tasks/edit", EditTaskHandler),
             (r"/tasks/assign", AssignTaskHandler),
+            (r"/tasks/vote", VoteTaskHandler),
             
             (r"/users/", AllUsersHandler),
             (r"/users/add", AddUserHandler),
@@ -691,6 +692,15 @@ class EditTaskHandler(BaseHandler):
             params = {"taskUUID":self.get_argument("taskUUID"),
                 "text":self.get_argument("text")})
         editTaskEvent.dispatch()
+
+class VoteTaskHandler(BaseHandler):
+    def post(self):
+        actor = self.get_current_actor()
+
+        voteTaskEvent = Event("VOTE_TASK", actor.uuid, 
+            actor.getMeeting().uuid,
+            params = {"taskUUID":self.get_argument("taskUUID")})
+        voteTaskEvent.dispatch()
         
 class AssignTaskHandler(BaseHandler):
     def post(self):

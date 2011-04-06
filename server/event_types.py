@@ -671,7 +671,7 @@ def _handleEditTask(event):
     
     return event
 
-def _handleAssignTask(event):
+def _handleEditTask(event):
     task = state.get_obj(event.params["taskUUID"], model.Task)
     task.assignedAt = time.time()
     
@@ -694,6 +694,20 @@ def _handleAssignTask(event):
 
     event.params["assignedAt"]=task.assignedAt
     return event
+
+def _handleVoteTask(event):
+    task = state.get_obj(event.params["taskUUID"], model.Task)
+    voter = state.get_obj(event.actor.uuid, model.Actor)
+    
+    # edit the task itself to have another vote (or not - we don't allow 
+    # multiple votes from the same person on a task).
+    task.addVote(voter)
+    
+    event.queue(e.Event("UPDATE_STATUS", assignedBy.uuid, None, {"status": "voted for idea", "time": task.assignedAt}))
+    event.meeting.eventHistoryReadable.append(assignedBy.name + " voted for idea \""+task.text+"\"")
+
+    return event
+
     
 def _handleHandRaise(event):
     event.actor.handRaised =  not event.actor.handRaised
@@ -782,6 +796,7 @@ EventType("EDIT_TASK",   ["taskUUID", "text"],      _handleEditTask, True,
     True)
 EventType("ASSIGN_TASK", ["taskUUID"],_handleAssignTask, True,
     True)
+EventType("VOTE_TASK", ["taskUUID"], _handleVoteTask, True, True)
     
 EventType("HAND_RAISE", [], _handleHandRaise, True, True)
 EventType("UPDATE_STATUS", ["status", "time"], _handleUpdateStatus, True, True)
