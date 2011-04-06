@@ -507,6 +507,12 @@ static NSString *selectedServer = nil;
             NSString *text = [e.params objectForKey:@"text"];
             task.text = text;
             break;
+        case kLIKE_TASK:
+            // for now, we're not doing anything about keeping track of who liked things on the client
+            // just incrementing the counter.
+            task = (Task *)[state getObjWithUUID:[e.params objectForKey:@"taskUUID"] withType:[Task class]];
+            task.likes = task.likes+1;
+            break;
             
         case kASSIGN_TASK:
 

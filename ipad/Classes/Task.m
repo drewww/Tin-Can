@@ -17,6 +17,7 @@
 @synthesize assignedAt;
 @synthesize color;
 @synthesize shared;
+@synthesize likes;
 
 - (id) initWithUUID:(UUID *)myUUID
     withCreatorUUID:(UUID *)myCreatorUUID
@@ -43,6 +44,7 @@
     self.color = myColor;
     
     self.shared = NO;
+    self.likes = 0;
     
     return self;
 }

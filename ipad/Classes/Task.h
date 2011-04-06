@@ -29,6 +29,8 @@
     UIColor *color;
     
     bool shared;
+    
+    int likes;
 }
 
 
@@ -59,5 +61,6 @@
 @property(nonatomic, retain) NSDate *assignedAt;
 @property(nonatomic, retain) UIColor *color;
 @property(assign, setter=setShared:) bool shared;
+@property(assign) int likes;
 
 @end

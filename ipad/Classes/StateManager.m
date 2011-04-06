@@ -151,6 +151,7 @@ static StateManager *sharedInstance = nil;
             // Have to do this dance because booleans in objects like the results object are subclasses of NSNumber (NSCFBoolean, to be
             // precise) which you can't just assign directly. Took forever to figure this out.
             task.shared = [[results objectForKey:@"shared"] boolValue];
+            task.likes = [[results objectForKey:@"likes"] intValue];
 
         }
         

@@ -55,6 +55,7 @@
                                                      @"DELETE_TASK",
                                                      @"EDIT_TASK",
                                                      @"ASSIGN_TASK",
+                                                     @"LIKE_TASK",
                              
                                                      @"EDIT_MEETING", nil] retain];
     NSLog(@"%@ -> EventType %d", stringType, [enumMapping indexOfObject:stringType]);

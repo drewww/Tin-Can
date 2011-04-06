@@ -32,6 +32,7 @@ typedef enum {
     kDELETE_TASK,
     kEDIT_TASK,
     kASSIGN_TASK,
+    kLIKE_TASK,
     
     kEDIT_MEETING,
     
