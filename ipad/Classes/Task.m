@@ -143,7 +143,19 @@
 - (void) setShared:(_Bool)isShared {
     shared = isShared;
     
-    [[self getView] setNeedsDisplay];
+    // Don't construct a view if it's not there yet...
+    if(view!=nil) {
+        [[self getView] setNeedsDisplay];
+    }
+}
+
+- (void) setLikes:(int)newLikes {
+    likes = newLikes;
+    
+    // Don't construct a view if it's not there yet...
+    if(view!=nil) {
+        [[self getView] setNeedsDisplay];
+    }
 }
 
 - (UIView *)getView {

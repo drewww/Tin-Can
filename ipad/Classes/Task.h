@@ -60,7 +60,7 @@
 @property(nonatomic, retain) Actor *assignedBy;
 @property(nonatomic, retain) NSDate *assignedAt;
 @property(nonatomic, retain) UIColor *color;
-@property(assign, setter=setShared:) bool shared;
-@property(assign) int likes;
+@property(nonatomic, assign, setter=setShared:) bool shared;
+@property(nonatomic, assign, setter=setLikes:) int likes;
 
 @end
