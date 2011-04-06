@@ -72,7 +72,10 @@
 
 - (void) handleLongPress: (UIGestureRecognizer *)sender;
 
+- (void) likesUpdated;
+
 - (float) getHeightForWidth:(float)width;
 - (NSString *)getDisplayString;
+- (void) flashBlack: (NSTimer *)theTimer;
 
 @end

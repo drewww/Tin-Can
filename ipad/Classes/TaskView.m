@@ -52,7 +52,7 @@
 		[UIView commitAnimations];
         
         longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-        longPress.minimumPressDuration = 0.4;
+        longPress.minimumPressDuration = 0.6;
         
         [self addGestureRecognizer:longPress];
         
@@ -103,14 +103,14 @@
     
     
     
-	if(isTouched==FALSE){
-        CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
-	}
-	else {
-		CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1].CGColor );
-	}
+//	if(isTouched==FALSE){
+//        CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
+//	}
+//	else {
+//		CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:1].CGColor );
+//	}
     
-	CGContextFillRect(ctx, CGRectMake(BAR_WIDTH, 0, self.frame.size.width-12, self.frame.size.height));
+//	CGContextFillRect(ctx, CGRectMake(BAR_WIDTH, 0, self.frame.size.width-12, self.frame.size.height));
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1 green:1 blue:1 alpha:1].CGColor);
     
     
@@ -131,6 +131,13 @@
     
 
     switch (sender.state) {
+        case UIGestureRecognizerStatePossible:
+            // This state triggers when touches start but it's not clear if it's valid yet.
+            // In this case, start changing the background. 
+            NSLog(@"RECOGNIZER POSSIBLE");
+            [self setNeedsDisplay];
+            break;
+            
         case UIGestureRecognizerStateBegan:
             // Check and see if we're a task in the pool. If we are, ignore touches.
             if(![self.task isAssigned]) {
@@ -230,8 +237,38 @@
     }
 }
 
+
+- (void) likesUpdated {
+    NSLog(@"LIKES HAVE BEEN UPDATED, RESPONDING APPROPRIATELY");
+    // This is called by the Task object when its likes count gets updated. Trigger a pair of animations in response.
+
+    self.backgroundColor = [UIColor colorWithWhite:0.6 alpha:1.0];
+    
+    [NSTimer scheduledTimerWithTimeInterval:0.2f target:self selector:@selector(flashBlack:) userInfo:nil repeats:false];
+    
+    // This really genuinely should work and I have no idea why it doesn't. Aggravating.
+//    [UIView animateWithDuration:0.2f delay: 0.0f options:0 animations:^ {
+//        self.backgroundColor = [UIColor colorWithWhite:0.6 alpha:1.0];
+//    } completion: ^ (BOOL complete) {
+//        [UIView animateWithDuration:0.1f animations:^{
+//            self.backgroundColor = [UIColor blackColor];
+//        }];        
+//    }];
+}
+
+- (void) flashBlack: (NSTimer *)theTimer {
+    NSLog(@"flashing back to black");
+    self.backgroundColor = [UIColor blackColor];
+    [self setNeedsDisplay];
+}
+
+
 //- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-//    NSLog(@"TASK TOUCH BEGAN");
+//    // Kick off a color-change animation that animates the background color to half gray.
+//    NSLog(@"TOUCHES BEGAN");
+//    
+//    
+//    NSLog(@"ANIMATION COMMITED");
 //}
 
 

@@ -155,6 +155,7 @@
     // Don't construct a view if it's not there yet...
     if(view!=nil) {
         [[self getView] setNeedsDisplay];
+        [(TaskView *)[self getView] likesUpdated];
     }
 }
 
