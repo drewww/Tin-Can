@@ -70,7 +70,7 @@ class YarnApplication(tornado.web.Application):
             (r"/tasks/delete", DeleteTaskHandler),
             (r"/tasks/edit", EditTaskHandler),
             (r"/tasks/assign", AssignTaskHandler),
-            (r"/tasks/vote", VoteTaskHandler),
+            (r"/tasks/like", LikeTaskHandler),
             
             (r"/users/", AllUsersHandler),
             (r"/users/add", AddUserHandler),
@@ -693,19 +693,19 @@ class EditTaskHandler(BaseHandler):
                 "text":self.get_argument("text")})
         editTaskEvent.dispatch()
 
-class VoteTaskHandler(BaseHandler):
+class LikeTaskHandler(BaseHandler):
     def post(self):
         actor = self.get_current_actor()
 
         task = state.get_obj(self.get_argument("taskUUID"), Task)
         
-        if(actor not in task.voters):
-            voteTaskEvent = Event("VOTE_TASK", actor.uuid, 
+        if(actor not in task.likers):
+            likeTaskEvent = Event("LIKE_TASK", actor.uuid, 
                 actor.getMeeting().uuid,
                 params = {"taskUUID":self.get_argument("taskUUID")})
-            voteTaskEvent.dispatch()
+            likeTaskEvent.dispatch()
         else:
-            raise HTTPError(403, "You cannot vote on an idea more\
+            raise HTTPError(403, "You cannot like an idea more\
             than once."%deviceUUID)
         
 class AssignTaskHandler(BaseHandler):

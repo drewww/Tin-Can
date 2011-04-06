@@ -748,7 +748,7 @@ class Task(MeetingObject):
         # will get this flag set.
         self.shared = False
         
-        self.voters = set()
+        self.likers = set()
         
         
     def getDict(self):
@@ -768,7 +768,7 @@ class Task(MeetingObject):
         
         d["color"] = self.color
         d["shared"] = self.shared
-        d["votes"] = self.votes
+        d["likes"] = self.getLikes()
 
         return d
     
@@ -807,22 +807,19 @@ class Task(MeetingObject):
     def setShared(self, shared):
         self.shared = shared
 
-    def addVote(self, voter):
+    def addLike(self, liker):
         # don't strictly need to check here - we can just add it and the set
         # datatype will throw it out if it's a repeat, but it feels nice to 
         # return True and False here depending on whether it was valid?
         # dunno. 
-        if(voter not in self.voters):
-            self.voters.add(voter)
+        if(liker not in self.likers):
+            self.likers.add(liker)
             return True
         else
             return False
 
-    def getVotes(self):
-        return len(self.voters)
-    
-    def getVoters(self):
-        return self.voters
+    def getLikes(self):
+        return len(self.likes)
 
     def __str__(self):
         if(self.assignedTo!=None):
@@ -840,8 +837,8 @@ class Task(MeetingObject):
         else:
             assignedAt = 0
 
-        return "[task.%s %s creator:%s assignedTo:%s, assignedBy:%s, assignedAt:%d shared:%s votes:%d]"%(self.uuid[0:6], 
-            self.text, self.createdBy.name, assignedToName, assignedByName, assignedAt, self.shared, self.getVotes())
+        return "[task.%s %s creator:%s assignedTo:%s, assignedBy:%s, assignedAt:%d shared:%s likes:%d]"%(self.uuid[0:6], 
+            self.text, self.createdBy.name, assignedToName, assignedByName, assignedAt, self.shared, self.getLikes())
 
 class Topic(MeetingObject):
     """Store information about a topic."""
