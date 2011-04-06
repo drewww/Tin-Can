@@ -815,7 +815,7 @@ class Task(MeetingObject):
         if(liker not in self.likers):
             self.likers.add(liker)
             return True
-        else
+        else:
             return False
 
     def getLikes(self):
