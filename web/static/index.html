@@ -127,6 +127,9 @@
 		
 		#status
 		{
+			width: 825px;
+			
+		
 			background-color: #cccccc;
 			padding: 5px;
 			margin-top: 10px;
@@ -192,7 +195,6 @@
 			width: 390px;
 			float: left;
 			padding-left: 20px;
-			border-left: 1px solid #777777;
 		}
 		
 		#content h1
@@ -236,6 +238,54 @@
 			float: left;
 			margin-right: 10px;
 		}
+		
+		
+		#buttons
+		{
+			width: 100%;
+			margin-top: 10px;
+		}
+		
+		#buttons .button
+		{
+			-moz-border-radius: 5px;
+			-webkit-border-radius: 5px;
+			
+			width: 407px;
+			height: 50px;
+			
+			margin-button: 10px;
+			
+			float: left;
+			
+			background-size: 407px;
+		}
+		
+		#classroom {
+			background: url('img/classroom_background.png');
+			margin-left: 10px;
+		}
+		
+		#meeting {
+			background: url('img/classroom_background.png');
+		}
+		
+		.text {
+			font-size: 2em;
+			font-weight: bold;
+			color: white;
+			
+			width: 407px;
+			height: 50px;
+			
+			background-color: rgba(0,0,0,0.5);
+			
+			-moz-border-radius: 5px;
+			-webkit-border-radius: 5px;
+			
+			text-align: center;
+		}
+		
 		
 	</style>
 	
@@ -314,7 +364,7 @@
 			</div>
 			
 			<div id="credits">
-				A <a href="http://web.media.mit.edu/speech">Speech + Mobility</a> / <a href="http://media.mit.edu/">MIT Media Lab</a> project by <a href="http://web.media.mit.edu/~dharry/">Drew Harry</a>, <a href="http://mattdonahoe.com/">Matt Donahoe</a>, and <a href="http://web.media.mit.edu/~geek/">Chris Schmandt</a>.
+				A <a href="http://web.media.mit.edu/speech">Speech + Mobility</a> / <a href="http://media.mit.edu/">MIT Media Lab</a> project by <a href="http://web.media.mit.edu/~dharry/">Drew Harry</a> and <a href="http://web.media.mit.edu/~geek/">Chris Schmandt</a>.
 			</div>
 			
 		</div>
@@ -326,6 +376,19 @@
 			</ul>
 		</div>
 		<br class="clear"/>
+		
+		<div id="buttons">
+		<div id="meeting" class="button">
+			<div class="text">
+			FOR MEETINGS
+			</div>
+		</div>
+		<div id="classroom" class="button">
+			<div class="text">
+			FOR CLASSROOM
+			</div>
+		</div>
+		</div>
 		
 		<div id="content">
 			<div class="left-column">
