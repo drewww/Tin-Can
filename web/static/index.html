@@ -280,6 +280,15 @@
 			-moz-border-radius-bottomright: 0px;
 			-webkit-border-bottom-right-radius: 0px;
 		}
+		
+		#buttons .selected {
+			-moz-border-radius-bottomleft: 0px;
+			-webkit-border-bottom-left-radius: 0px;
+			
+			-moz-border-radius-bottomright: 0px;
+			-webkit-border-bottom-right-radius: 0px;
+		}
+		
 
 		#buttons div:hover 
 		{
@@ -332,7 +341,18 @@
 		}
 		
 		#buffer .selected {
-			background-color: #f0f0ff;
+			background-image: -webkit-gradient(
+			    linear,
+			    left bottom,
+			    left top,
+			    color-stop(1, rgba(50,50,150, 0.7)),
+			    color-stop(0, rgb(240,240,255))
+			);
+			background-image: -moz-linear-gradient(
+			    center bottom,
+			    rgba(50,50,150, 0.7) 100%,
+			    rgb(240,240,255) 0%
+			);
 		}
 		
 		
