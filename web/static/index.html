@@ -20,7 +20,7 @@
 		
 		#main-image 
 		{
-			overflow: hidden;
+			overflow: hif0f0ffn;
 			width: 825px;
 			height: 400px;
 			background: url('img/top-down.png');
@@ -173,14 +173,15 @@
 		
 		#content div
 		{
-			font-size: 1.2em;
+			font-size: 1.0em;
 			margin-top: 0px;
 			padding-top: 0px;
 		}
 		
 		#content
 		{
-			margin-top: 20px;
+			background-color: #f0f0ff;
+			width: 825px;
 		}
 		
 		.left-column
@@ -204,10 +205,9 @@
 			font-size: 1.5em;
 		}
 		
-		#content p, #features p
+		#content p
 		{
 			margin-top: 5px;
-			font-size: 0.9em;
 			line-height: 1.3em;
 		}
 		
@@ -215,8 +215,6 @@
 		{
 			margin-top: 10px;
 			
-/*			margin-left: 20px;*/
-			margin-right: 40px;
 			width: 390px;
 			float: left;
 		}
@@ -261,6 +259,24 @@
 			background-size: 407px;
 		}
 		
+		#buttons .selected > div
+		{
+			background-color: rgba(50,50,150,0.7);
+			
+			color: white;
+			-moz-border-radius-bottomleft: 0px;
+			-webkit-border-bottom-left-radius: 0px;
+			
+			-moz-border-radius-bottomright: 0px;
+			-webkit-border-bottom-right-radius: 0px;
+		}
+
+		#buttons div:hover 
+		{
+			color: #ddd;
+		}
+
+		
 		#classroom {
 			background: url('img/classroom_background.png');
 			margin-left: 10px;
@@ -273,18 +289,42 @@
 		.text {
 			font-size: 2em;
 			font-weight: bold;
-			color: white;
+			color: #666;
 			
 			width: 407px;
-			height: 50px;
+			height: 43px;
 			
-			background-color: rgba(0,0,0,0.5);
+			padding-top: 7px;
+			
+			background-color: rgba(0,0,0,0.7);
 			
 			-moz-border-radius: 5px;
 			-webkit-border-radius: 5px;
 			
 			text-align: center;
 		}
+		
+		
+		
+		
+		#buffer {
+			height: 10px;
+		}
+		
+		#buffer div {
+			width: 407px;
+			height:10px;
+			float: left;
+		}
+		
+		#classroom-buffer {
+			margin-left: 10px;
+		}
+		
+		#buffer .selected {
+			background-color: #f0f0ff;
+		}
+		
 		
 		
 	</style>
@@ -378,7 +418,7 @@
 		<br class="clear"/>
 		
 		<div id="buttons">
-		<div id="meeting" class="button">
+		<div id="meeting" class="button selected">
 			<div class="text">
 			FOR MEETINGS
 			</div>
@@ -388,6 +428,17 @@
 			FOR CLASSROOM
 			</div>
 		</div>
+		</div>
+		
+		<br class="clear">
+		
+		<div id="buffer">
+			<div id="meeting-buffer" class="selected">
+			</div>
+			
+			<div id="classroom-buffer">
+			</div>
+			<br class="clear">
 		</div>
 		
 		<div id="content">
@@ -401,7 +452,7 @@
 				<p>Tin Can connects remote meeting participants and gives everyone a better sense of what's happening in the meeting beyond just who's talking. The system collects and visualizes background tasks like taking notes, managing the agenda, sharing relevant content, tracking to-dos, and managing meeting process in a distributed interface.</p>
 				<p>The system uses meeting participants' phones and laptops as input devices and represents the meeting on an iPad in the center of the table in each meeting location. By publicly representing these background processes, we provide meeting attendees with new ways to participate without clogging up the audio channel.</p>
 			</div>
-		</div>
+
 		<br class="clear"/>
 		
 		
@@ -437,8 +488,9 @@
 				<p>Need to explain something with a quick sketch? Switch into Tin Can's sketching mode so everyone can see (and participate). </p>
 			</div> -->
 		</div>
-		
 		<br class="clear">
+		</div>
+		
 		
 		<div id="status">
 			<ul>
