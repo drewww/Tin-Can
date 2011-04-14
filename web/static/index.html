@@ -171,14 +171,14 @@
 			-webkit-border-radius: 5px;
 		}
 		
-		#content div
+		.content div
 		{
 			font-size: 1.0em;
 			margin-top: 0px;
 			padding-top: 0px;
 		}
 		
-		#content
+		.content
 		{
 			background-color: #f0f0ff;
 			width: 815px;
@@ -198,14 +198,14 @@
 			float: left;
 		}
 		
-		#content h1
+		.content h1
 		{
 			margin-top: 5px;
 			margin-bottom: 0px;
 			font-size: 1.5em;
 		}
 		
-		#content p
+		.content p
 		{
 			margin-top: 5px;
 			line-height: 1.3em;
@@ -333,7 +333,36 @@
 		
 	</style>
 	
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
+	
+	
 	<script type="text/javascript" charset="utf-8">
+		
+		var currentPrefix = "meeting";
+		
+		$("document").ready(function() {
+			
+			$("#classroom-content").toggle(false);
+			
+			// Setup a listener on the buttons.
+			$("#meeting, #classroom").click(function() {
+				
+				console.log("click!");
+			
+				toggleVisibility(currentPrefix);
+				toggleVisibility(this.id);
+				
+				currentPrefix = this.id;
+			});
+			
+		});
+	
+	
+		function toggleVisibility(prefix) {
+			$("#" + prefix).toggleClass("selected");
+			$("#"+prefix + "-buffer").toggleClass("selected");
+			$("#"+prefix + "-content").toggle();
+		}
 	
 		var offsetLeft = 0;
 		var animator;
@@ -445,7 +474,7 @@
 			<br class="clear">
 		</div>
 		
-		<div id="content">
+		<div id="meeting-content" class="content">
 			<div class="left-column">
 				<h1>Introduction</h1>
 				<p>Distributed meetings present a set of interesting challenges to staying engaged and involved. Because one person speaks at a time, it is easy (particularly for remote participants) to disengage form the meeting undetected. Meetings aren't just people talking, though. Participants have to remember future topics they want to discuss, tasks they promised to complete all while trying to judge the engagement of remote participants. By making these cognitive processes collaborative and visual, we can help manage the challenges of holding meetings with remote participants. Furthermore, there are a number of common challenges, like sharing whiteboard drawings, links, or documents that can make distributed meetings frustrating experiences.
@@ -492,9 +521,14 @@
 				<p>Need to explain something with a quick sketch? Switch into Tin Can's sketching mode so everyone can see (and participate). </p>
 			</div> -->
 		</div>
+		
 		<br class="clear">
 		</div>
 		
+		<div id="classroom-content" class="content">
+		<p>Classroom content here! </p>
+		</div>
+
 		
 		<div id="status">
 			<ul>
