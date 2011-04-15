@@ -385,6 +385,15 @@
 				currentPrefix = this.id;
 			});
 			
+			// Check and see if there's a hash - if there is, make sure
+			// to show that version of the page on load.
+			
+			if(location.hash=="#class") {
+				toggleVisibility(currentPrefix)
+				toggleVisibility("classroom");
+				currentPrefix = "classroom";
+			}
+			
 		});
 	
 	
