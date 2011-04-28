@@ -7,7 +7,9 @@ Tin Can connects remote meeting participants and gives everyone a better sense o
 
 The system uses meeting participants' phones and laptops as input devices and represents the meeting on an iPad in the center of the table in each meeting location. By publicly representing these background processes, we provide meeting attendees with new ways to participate without clogging up the audio channel.
 
-Read more: http://web.media.mit.edu/~dharry/tincan/
+Read more: http://tincan.it
+
+There is also a classroom-oriented version of this system available in the classroom branch. 
 
 Dependencies
 ------------
