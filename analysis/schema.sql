@@ -21,18 +21,18 @@ CREATE DATABASE tincan;
 USE tincan;
 
 
-CREATE TABLE event (
-    id INT              PRIMARY KEY,
+CREATE TABLE events (
+    id INT              PRIMARY KEY AUTO_INCREMENT,
     uuid CHAR(36)       NOT NULL UNIQUE,
-    user_id INT         NOT NULL,   -- references the users table. we don't use uuids for this because they shift between sessions.
-    meeting_id INT      NOT NULL,   -- references the meeting table.
+    user_id INT         ,   -- references the users table. we don't use uuids for this because they shift between sessions.
+    meeting_id INT      ,   -- references the meeting table.
     created DATETIME    NOT NULL,
     type VARCHAR(50)    NOT NULL   -- properly, this should be an enum of all the event types. 
 );
 
 
 CREATE TABLE meeting (
-    id INT              PRIMARY KEY,
+    id INT              PRIMARY KEY AUTO_INCREMENT,
     uuid CHAR(36)       NOT NULL UNIQUE,
     started             DATETIME,
     stopped             DATETIME
@@ -40,7 +40,7 @@ CREATE TABLE meeting (
 
 
 CREATE TABLE users (
-    id INT              PRIMARY KEY,
+    id INT              PRIMARY KEY AUTO_INCREMENT,
     uuid CHAR(36)       NOT NULL UNIQUE,
     name VARCHAR(255)   NOT NULL UNIQUE     -- We're lucky on this one, but we can ensure uniqueness on it because of the closed set of participants.
 );

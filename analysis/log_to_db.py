@@ -13,22 +13,44 @@ Copyright (c) 2011 MIT Media Lab. All rights reserved.
 """
 
 import MySQLdb
+import json
 
 # this will keep a reference to the database connection.
 db = None
-
+cursor = None
 
 def convert_log(path):
     f = open(path, 'r')
     
+    for line in f:
+        process_event(line)
     
     
+def process_event(event_string):
+    global cursor
+    
+    # first, unpack the string into a JSON object for easy management.
+    
+    if (event_string == "----server reset----\n"):
+        # for now, later we'll need to be careful about noting these.
+        print "SERVER RESET"
+        return
+    
+    #otherwise, carry on.
+    event = json.loads(event_string)
+    
+    # now, for each event we need to push it into the DB.
+    cursor.execute("INSERT INTO events (uuid, user_id, meeting_id, created, type)\
+        VALUES (%s, %s, %s, from_unixtime(%s), %s)", (event["uuid"], None, None, event["timestamp"], event["eventType"]))
+    
+    print event['uuid']
+
 
 
 if __name__ == '__main__':
     print "Opening database connection."
     db = MySQLdb.connect(host = "localhost", user="root", db="tincan")
-    
+    cursor = db.cursor()
     
     convert_log("emerson-logs/first_class.log")
     
