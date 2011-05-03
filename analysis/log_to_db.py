@@ -14,6 +14,7 @@ Copyright (c) 2011 MIT Media Lab. All rights reserved.
 
 import MySQLdb
 import json
+import os
 
 # this will keep a reference to the database connection.
 db = None
@@ -21,6 +22,9 @@ cursor = None
 
 name_map = {}
 uuid_map = {}
+
+meeting_map = {}
+current_meeting_id = None
 
 def convert_log(path):
     f = open(path, 'r')
@@ -30,9 +34,10 @@ def convert_log(path):
     
     
 def process_event(event_string):
-    global cursor
     global name_map
     global uuid_map
+    global meeting_map
+    global current_meeting_id
     
     # first, unpack the string into a JSON object for easy management.
     
@@ -43,6 +48,9 @@ def process_event(event_string):
     
     #otherwise, carry on.
     event = json.loads(event_string)
+    
+    
+    
     
     # first, check and see if there is any special processing we want to do.
     if(event["eventType"]=="NEW_USER" or event["eventType"]=="NEW_LOCATION"):
@@ -68,24 +76,49 @@ def process_event(event_string):
         print uuid_map
     
     
+    # there are some baked in assumptions here about the non-simultaneity of
+    # meetings. Be careful with this section if that changes.
+    if(event["eventType"]=="NEW_MEETING"):
+        print "NEW MEEEEEEEEEEEEEETING"
+        if(not meeting_map.has_key(event["results"]["meeting"]["uuid"])):
+            cursor.execute("INSERT INTO meetings (uuid, started) VALUES\
+            (%s, from_unixtime(%s))", 
+            (event["results"]["meeting"]["uuid"], event["timestamp"]))
+            
+            meeting_map[event["results"]["meeting"]["uuid"]] = cursor.lastrowid
+            
+            current_meeting_id = cursor.lastrowid
+    if(event["eventType"]=="END_MEETING"):
+        cursor.execute("UPDATE meetings SET stopped=from_unixtime(%s)\
+            where id=%s", (event["timestamp"],current_meeting_id))
+        current_meeting_id = None
+    
+    
     # unswizzle the uuid into a database-id for the user and meeting, if
     # they exist.
     actor_id = event["actorUUID"]
-    print "ACTOR ID INITIAL: " + str(actor_id)
     if(event["actorUUID"]!=None):
-        try:
-            actor_id = uuid_map[event["actorUUID"]]
-        except:
-            
-            print "ERRR----------" + str(event)
+        actor_id = uuid_map[event["actorUUID"]]
+    
+
+    # this approach, while reasonable, turns out not to work because many
+    # events don't actually have a meeting id associated with them, for some
+    # reason. I suspect it's a side effect of my on again/off again attempts
+    # to broadcast all events to all clients v. limit them to specific 
+    # recipients. 
+    # meeting_id = event["meetingUUID"]
+    # print "base meeting_id: " + str(meeting_id)
+    # if(event["meetingUUID"]!=None):
+    #     meeting_id = meeting_map[event["meetingUUID"]]
+    meeting_id = current_meeting_id
     
     
     # now, for each event we need to push it into the DB.
     cursor.execute("INSERT INTO events (uuid, actor_id, meeting_id, created,\
     type) VALUES (%s, %s, %s, from_unixtime(%s), %s)",
-        (event["uuid"], actor_id, None, event["timestamp"], event["eventType"]))
+        (event["uuid"], actor_id, meeting_id, event["timestamp"], event["eventType"]))
     
-    print event['uuid']
+    print event['uuid'] + " - " + event['eventType']
 
 
 
@@ -94,7 +127,8 @@ if __name__ == '__main__':
     db = MySQLdb.connect(host = "localhost", user="root", db="tincan")
     cursor = db.cursor()
     
-    convert_log("emerson-logs/first_class.log")
+    for filename in os.listdir("emerson-logs/"):
+        convert_log("emerson-logs" + os.sep + filename)
     
     print "Closing database connection."
     db.close()

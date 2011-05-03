@@ -11,4 +11,8 @@ SELECT type, count(*) from events group by type;
 -- distribution of events for all users.
 SELECT name, type, count(*) from events
     join actors on actors.id = events.actor_id
-    group by actors.id, type
+    group by actors.id, type;
+
+SELECT meetings.id, count(*) from events
+    join meetings on meetings.id = events.meeting_id
+    group by meetings.id;

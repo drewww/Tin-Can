@@ -31,7 +31,7 @@ CREATE TABLE events (
 );
 
 
-CREATE TABLE meeting (
+CREATE TABLE meetings (
     id INT              PRIMARY KEY AUTO_INCREMENT,
     uuid CHAR(36)       NOT NULL UNIQUE,
     started             DATETIME,
