@@ -34,8 +34,8 @@ CREATE TABLE events (
 CREATE TABLE meetings (
     id INT              PRIMARY KEY AUTO_INCREMENT,
     uuid CHAR(36)       NOT NULL UNIQUE,
-    started             DATETIME,
-    stopped             DATETIME
+    started DATETIME    NOT NULL,
+    stopped DATETIME
 );
 
 
@@ -46,5 +46,15 @@ CREATE TABLE actors (
 );
 
 
-
 -- These are the derivative tables that make life easier to manage. 
+CREATE TABLE topics (
+    id INT                  PRIMARY KEY AUTO_INCREMENT,
+    uuid CHAR(36)           NOT NULL UNIQUE,
+    text VARCHAR(255)       NOT NULL,
+    created DATETIME        NOT NULL,
+    created_by_actor_id INT NOT NULL,
+    started DATETIME                ,
+    started_by_actor_id INT         ,
+    stopped DATETIME                ,
+    stopped_by_actor_id INT
+);

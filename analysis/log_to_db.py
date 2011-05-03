@@ -82,8 +82,8 @@ def process_event(event_string):
         print "NEW MEEEEEEEEEEEEEETING"
         if(not meeting_map.has_key(event["results"]["meeting"]["uuid"])):
             cursor.execute("INSERT INTO meetings (uuid, started) VALUES\
-            (%s, from_unixtime(%s))", 
-            (event["results"]["meeting"]["uuid"], event["timestamp"]))
+                (%s, from_unixtime(%s))", 
+                (event["results"]["meeting"]["uuid"], event["timestamp"]))
             
             meeting_map[event["results"]["meeting"]["uuid"]] = cursor.lastrowid
             
@@ -92,6 +92,30 @@ def process_event(event_string):
         cursor.execute("UPDATE meetings SET stopped=from_unixtime(%s)\
             where id=%s", (event["timestamp"],current_meeting_id))
         current_meeting_id = None
+    
+    
+    if(event["eventType"]=="NEW_TOPIC"):
+        cursor.execute("INSERT INTO topics (uuid, text, created,\
+            created_by_actor_id) VALUES (%s, %s, from_unixtime(%s), %s)",
+            (event["results"]["topic"]["uuid"],
+            event["results"]["topic"]["text"],
+            event["timestamp"], uuid_map[event["actorUUID"]]))
+    if(event["eventType"]=="UPDATE_TOPIC"):
+        status = event["params"]["status"]
+        
+        if(status=="CURRENT"):
+            #started
+            cursor.execute("UPDATE topics SET started=from_unixtime(%s),\
+                started_by_actor_id=%s WHERE topics.uuid=%s",
+                (event["timestamp"], uuid_map[event["actorUUID"]], 
+                event["params"]["topicUUID"]))
+        elif(status=="PAST"):
+            #stopped
+            cursor.execute("UPDATE topics SET stopped=from_unixtime(%s),\
+                stopped_by_actor_id=%s WHERE topics.uuid=%s",
+                (event["timestamp"], uuid_map[event["actorUUID"]], 
+                event["params"]["topicUUID"]))
+    
     
     
     # unswizzle the uuid into a database-id for the user and meeting, if
