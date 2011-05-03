@@ -116,6 +116,14 @@ def process_event(event_string):
                 (event["timestamp"], uuid_map[event["actorUUID"]], 
                 event["params"]["topicUUID"]))
     
+    if(event["eventType"]=="NEW_TASK"):
+        task = event["results"]["task"]
+        cursor.execute("INSERT INTO tasks (uuid, text, created,\
+            created_by_actor_id, assigned_to_id, assigned_by_actor_id)\
+            VALUES (%s, %s, from_unixtime(%s), %s, %s, %s)",(task["uuid"],
+            task["text"], event["timestamp"], task["createdBy"],
+            task["assignedTo"], task["assignedBy"]))
+    
     
     
     # unswizzle the uuid into a database-id for the user and meeting, if

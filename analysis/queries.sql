@@ -18,3 +18,13 @@ SELECT meetings.id, count(*) from events
     join meetings on meetings.id = events.meeting_id
     group by meetings.id;
     
+    
+
+
+-- queries to be written
+    -- something to figure out the delay between ideas being created and
+    -- dragged. 
+    
+    -- something that sums up the total number of minutes of recording
+    -- we have.
+    

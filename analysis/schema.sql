@@ -58,3 +58,20 @@ CREATE TABLE topics (
     stopped DATETIME                ,
     stopped_by_actor_id INT
 );
+
+
+-- the model here is a little bit weird because of the way I hacked in the
+-- classroom mechanics - things go directly to a person if they're created
+-- with the assigned field set. Tasks that have no assignment are created
+-- publicly. Tasks that were dragged are created with no assignment, but 
+-- have an assigner other than the creator.
+
+CREATE TABLE tasks (
+    id INT                  PRIMARY KEY AUTO_INCREMENT,
+    uuid CHAR(36)           NOT NULL UNIQUE,
+    text TEXT               NOT NULL,
+    created DATETIME        NOT NULL,
+    created_by_actor_id INT NOT NULL,
+    assigned_to_id INT      ,
+    assigned_by_actor_id INT NOT NULL
+);
