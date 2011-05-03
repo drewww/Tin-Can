@@ -19,6 +19,9 @@ import json
 db = None
 cursor = None
 
+name_map = {}
+uuid_map = {}
+
 def convert_log(path):
     f = open(path, 'r')
     
@@ -28,6 +31,8 @@ def convert_log(path):
     
 def process_event(event_string):
     global cursor
+    global name_map
+    global uuid_map
     
     # first, unpack the string into a JSON object for easy management.
     
@@ -39,9 +44,46 @@ def process_event(event_string):
     #otherwise, carry on.
     event = json.loads(event_string)
     
+    # first, check and see if there is any special processing we want to do.
+    if(event["eventType"]=="NEW_USER" or event["eventType"]=="NEW_LOCATION"):
+        # check to see if that user has a database-assigned id yet.
+        # if they do, add that id to the map. Otherwise, push it into the db.
+        if(not name_map.has_key(event["params"]["name"])):
+            cursor.execute("INSERT INTO actors (name) VALUES (%s)",
+            event["params"]["name"])
+            
+            # set up a name mapping in memory, for ease of access.
+            name_map[event["params"]["name"]] = cursor.lastrowid
+            
+            print "NEW USER: " + str(cursor.lastrowid)
+            
+        
+        # whether we're creating a new, never-before-seen use or not,
+        # we need to create a uuid mapping. Check the name of this user to
+        # get the appropriate user id, and then map the uuid to that id so
+        # future events can make the connection easily.
+        
+        uuid_map[event["results"]["actor"]["uuid"]] = name_map[event["params"]["name"]]
+        
+        print uuid_map
+    
+    
+    # unswizzle the uuid into a database-id for the user and meeting, if
+    # they exist.
+    actor_id = event["actorUUID"]
+    print "ACTOR ID INITIAL: " + str(actor_id)
+    if(event["actorUUID"]!=None):
+        try:
+            actor_id = uuid_map[event["actorUUID"]]
+        except:
+            
+            print "ERRR----------" + str(event)
+    
+    
     # now, for each event we need to push it into the DB.
-    cursor.execute("INSERT INTO events (uuid, user_id, meeting_id, created, type)\
-        VALUES (%s, %s, %s, from_unixtime(%s), %s)", (event["uuid"], None, None, event["timestamp"], event["eventType"]))
+    cursor.execute("INSERT INTO events (uuid, actor_id, meeting_id, created,\
+    type) VALUES (%s, %s, %s, from_unixtime(%s), %s)",
+        (event["uuid"], actor_id, None, event["timestamp"], event["eventType"]))
     
     print event['uuid']
 

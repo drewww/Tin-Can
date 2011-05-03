@@ -24,7 +24,7 @@ USE tincan;
 CREATE TABLE events (
     id INT              PRIMARY KEY AUTO_INCREMENT,
     uuid CHAR(36)       NOT NULL UNIQUE,
-    user_id INT         ,   -- references the users table. we don't use uuids for this because they shift between sessions.
+    actor_id INT         ,   -- references the users table. we don't use uuids for this because they shift between sessions.
     meeting_id INT      ,   -- references the meeting table.
     created DATETIME    NOT NULL,
     type VARCHAR(50)    NOT NULL   -- properly, this should be an enum of all the event types. 
@@ -39,9 +39,9 @@ CREATE TABLE meeting (
 );
 
 
-CREATE TABLE users (
+CREATE TABLE actors (
     id INT              PRIMARY KEY AUTO_INCREMENT,
-    uuid CHAR(36)       NOT NULL UNIQUE,
+                                            -- Used to store the uuid, but this rapidly made no sense because users have many uuids. No particular reason to cache them here.
     name VARCHAR(255)   NOT NULL UNIQUE     -- We're lucky on this one, but we can ensure uniqueness on it because of the closed set of participants.
 );
 
