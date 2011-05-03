@@ -22,8 +22,8 @@ USE tincan;
 
 
 CREATE TABLE event (
-    id INT              NOT NULL AUTO_INCREMENT,
-    uuid CHAR(36)       NOT NULL,
+    id INT              PRIMARY KEY,
+    uuid CHAR(36)       NOT NULL UNIQUE,
     user_id INT         NOT NULL,   -- references the users table. we don't use uuids for this because they shift between sessions.
     meeting_id INT      NOT NULL,   -- references the meeting table.
     created DATETIME    NOT NULL,
@@ -32,17 +32,17 @@ CREATE TABLE event (
 
 
 CREATE TABLE meeting (
-    id INT              NOT NULL AUTO_INCREMENT,
-    uuid CHAR(36)       NOT NULL,
+    id INT              PRIMARY KEY,
+    uuid CHAR(36)       NOT NULL UNIQUE,
     started             DATETIME,
     stopped             DATETIME
-)
+);
 
 
 CREATE TABLE users (
-    id INT              NOT NULL AUTO_INCREMENT,
-    uuid CHAR(36)       NOT NULL,
-    name VARCHAR(255)   NOT NULL,
+    id INT              PRIMARY KEY,
+    uuid CHAR(36)       NOT NULL UNIQUE,
+    name VARCHAR(255)   NOT NULL UNIQUE     -- We're lucky on this one, but we can ensure uniqueness on it because of the closed set of participants.
 );
 
 
