@@ -53,6 +53,18 @@ select text, count(*) as shared from tasks
     join actors on actors.id = tasks.created_by_actor_id
     group by text;
 
+-- distribution per person of shared/unshared ideas
+select name, shared, count(*) from tasks 
+    join actors on actors.id = tasks.created_by_actor_id
+    group by name, shared;
+
+
+-- total amount of tin can time recorded
+-- where clause filters out some short/fake events.
+-- can add sum term to add it all up
+select *,sum((unix_timestamp(stopped)-unix_timestamp(started))/60) as mins_duration
+    from meetings
+    where mins_duration > 30;
 
 -- queries to be written
     -- something to figure out the delay between ideas being created and
