@@ -73,5 +73,7 @@ CREATE TABLE tasks (
     created DATETIME        NOT NULL,
     created_by_actor_id INT NOT NULL,
     assigned_to_actor_id INT      ,
-    assigned_by_actor_id INT NOT NULL
+    assigned_by_actor_id INT NOT NULL,
+    assigned DATETIME           ,
+    shared BOOLEAN          NOT NULL DEFAULT FALSE
 );

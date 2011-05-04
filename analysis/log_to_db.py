@@ -26,6 +26,11 @@ uuid_map = {}
 meeting_map = {}
 current_meeting_id = None
 
+
+# maps task text to a task id to help resolve the shared-task duplication
+# problem in the classroom data context.
+task_map = {}
+
 def convert_log(path):
     f = open(path, 'r')
     
@@ -38,6 +43,7 @@ def process_event(event_string):
     global uuid_map
     global meeting_map
     global current_meeting_id
+    global task_map
     
     # first, unpack the string into a JSON object for easy management.
     
@@ -48,9 +54,6 @@ def process_event(event_string):
     
     #otherwise, carry on.
     event = json.loads(event_string)
-    
-    
-    
     
     # first, check and see if there is any special processing we want to do.
     if(event["eventType"]=="NEW_USER" or event["eventType"]=="NEW_LOCATION"):
@@ -88,6 +91,11 @@ def process_event(event_string):
             meeting_map[event["results"]["meeting"]["uuid"]] = cursor.lastrowid
             
             current_meeting_id = cursor.lastrowid
+            
+            # reset the task map (probably doesn't matter, unless the same
+            # exact idea comes up in two meeitngs, but better safe)
+            task_map = {}
+            
     if(event["eventType"]=="END_MEETING"):
         cursor.execute("UPDATE meetings SET stopped=from_unixtime(%s)\
             where id=%s", (event["timestamp"],current_meeting_id))
@@ -125,11 +133,39 @@ def process_event(event_string):
             assignedTo = None
         
         
-        cursor.execute("INSERT INTO tasks (uuid, text, created,\
-            created_by_actor_id, assigned_to_actor_id, assigned_by_actor_id)\
-            VALUES (%s, %s, from_unixtime(%s), %s, %s, %s)",(task["uuid"],
-            task["text"], event["timestamp"], uuid_map[task["createdBy"]],
-            assignedTo, uuid_map[task["assignedBy"]]))
+        
+        
+        # in what order do the double tasks come? 
+        # it doesn't really matter, just make sure that the one with the
+        # assigner different from the creator is the one that gets entered
+        if(task_map.has_key(task["text"])):
+            # if it has the key, it's already in the db. for sure, we're
+            # going to update that record and mark is shared. the only
+            # question is whether we copy the assigner in.
+            if(task["assignedTo"]!=task["createdBy"]):
+                print "\t + in expected order sharing branch"
+                # then copy it in and set the time and set shared.
+                cursor.execute("UPDATE tasks SET shared=TRUE,\
+                assigned_by_actor_id=%s, assigned_to_actor_id=%s,\
+                assigned=from_unixtime(%s) WHERE id=%s",
+                (uuid_map[task["assignedBy"]], assignedTo, event["timestamp"],
+                task_map[task["text"]]))
+            else:
+                print "\t - in reverse sharing order branch"
+                # in this branch, the existing data is the one with the shared
+                # info that we don't want to overwrite, so just flip the bit.
+                cursor.execute("UPDATE tasks SET shared=TRUE\
+                WHERE id=%s", (task_map[task["text"]],))
+                
+        else:
+            cursor.execute("INSERT INTO tasks (uuid, text, created,\
+                created_by_actor_id, assigned_to_actor_id, assigned_by_actor_id,\
+                assigned) VALUES (%s, %s, from_unixtime(%s), %s, %s, %s,\
+                from_unixtime(%s))" ,(task["uuid"], task["text"],
+                event["timestamp"], uuid_map[task["createdBy"]], assignedTo,
+                uuid_map[task["assignedBy"]], event["timestamp"]))
+            
+            task_map[task["text"]] = cursor.lastrowid
     
     
     
