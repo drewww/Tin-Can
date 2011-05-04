@@ -72,6 +72,6 @@ CREATE TABLE tasks (
     text TEXT               NOT NULL,
     created DATETIME        NOT NULL,
     created_by_actor_id INT NOT NULL,
-    assigned_to_id INT      ,
+    assigned_to_actor_id INT      ,
     assigned_by_actor_id INT NOT NULL
 );

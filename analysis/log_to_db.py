@@ -118,11 +118,18 @@ def process_event(event_string):
     
     if(event["eventType"]=="NEW_TASK"):
         task = event["results"]["task"]
+        
+        if task["assignedTo"]!=None:
+            assignedTo = uuid_map[task["assignedTo"]]
+        else:
+            assignedTo = None
+        
+        
         cursor.execute("INSERT INTO tasks (uuid, text, created,\
-            created_by_actor_id, assigned_to_id, assigned_by_actor_id)\
+            created_by_actor_id, assigned_to_actor_id, assigned_by_actor_id)\
             VALUES (%s, %s, from_unixtime(%s), %s, %s, %s)",(task["uuid"],
-            task["text"], event["timestamp"], task["createdBy"],
-            task["assignedTo"], task["assignedBy"]))
+            task["text"], event["timestamp"], uuid_map[task["createdBy"]],
+            assignedTo, uuid_map[task["assignedBy"]]))
     
     
     
