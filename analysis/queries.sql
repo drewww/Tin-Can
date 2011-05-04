@@ -20,6 +20,31 @@ SELECT meetings.id, count(*) from events
     
     
 
+-- counts the number of dragged tasks
+SELECT tasks.created_by_actor_id=tasks.assigned_by_actor_id, count(*) from tasks
+    group by tasks.created_by_actor_id=tasks.assigned_by_actor_id;
+
+-- figures out who dragged how many tasks (change equality to get general
+-- idea distribution) beware that ideas are DOUBLE COUNTED IF THEY'RE PUBLICLY
+-- SHARED. 
+SELECT name, count(*) from tasks
+    join actors on actors.id = tasks.assigned_by_actor_id
+    where tasks.created_by_actor_id!=tasks.assigned_by_actor_id
+    group by name;
+
+--
+SELECT name, count(*) from tasks
+    join actors on actors.id = tasks.assigned_by_actor_id
+    where tasks.created_by_actor_id!=tasks.assigned_by_actor_id
+    group by name;
+
+-- this is a building block of sorts - if something is shared, the shared 
+-- column in this query is 2, otherwise it's 1. Need to use this as a sub-
+-- select or something. 
+select text, count(*) as shared from tasks 
+    join actors on actors.id = tasks.created_by_actor_id
+    group by text;
+
 
 -- queries to be written
     -- something to figure out the delay between ideas being created and
