@@ -32,6 +32,14 @@ SELECT name, count(*) from tasks
     where tasks.created_by_actor_id!=tasks.assigned_by_actor_id
     group by name;
 
+
+-- very much like the previous, except shows the drag-ee, not the drag-er
+SELECT name, count(*) from tasks
+    join actors on actors.id = tasks.created_by_actor_id
+    where tasks.created_by_actor_id!=tasks.assigned_by_actor_id
+    group by name;
+
+
 --
 SELECT name, count(*) from tasks
     join actors on actors.id = tasks.assigned_by_actor_id
