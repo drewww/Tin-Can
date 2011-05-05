@@ -26,6 +26,9 @@ uuid_map = {}
 meeting_map = {}
 current_meeting_id = None
 
+last_join = {}
+total_time = {}
+
 
 # maps task text to a task id to help resolve the shared-task duplication
 # problem in the classroom data context.
@@ -44,6 +47,8 @@ def process_event(event_string):
     global meeting_map
     global current_meeting_id
     global task_map
+    global last_join
+    global total_time
     
     # first, unpack the string into a JSON object for easy management.
     
@@ -100,6 +105,7 @@ def process_event(event_string):
         cursor.execute("UPDATE meetings SET stopped=from_unixtime(%s)\
             where id=%s", (event["timestamp"],current_meeting_id))
         current_meeting_id = None
+        last_join = {}
     
     
     if(event["eventType"]=="NEW_TOPIC"):
@@ -143,7 +149,7 @@ def process_event(event_string):
             # going to update that record and mark is shared. the only
             # question is whether we copy the assigner in.
             if(task["assignedTo"]!=task["createdBy"]):
-                print "\t + in expected order sharing branch"
+                # print "\t + in expected order sharing branch"
                 # then copy it in and set the time and set shared.
                 cursor.execute("UPDATE tasks SET shared=TRUE,\
                 assigned_by_actor_id=%s, assigned_to_actor_id=%s,\
@@ -151,7 +157,7 @@ def process_event(event_string):
                 (uuid_map[task["assignedBy"]], assignedTo, event["timestamp"],
                 task_map[task["text"]]))
             else:
-                print "\t - in reverse sharing order branch"
+                # print "\t - in reverse sharing order branch"
                 # in this branch, the existing data is the one with the shared
                 # info that we don't want to overwrite, so just flip the bit.
                 cursor.execute("UPDATE tasks SET shared=TRUE\
@@ -167,13 +173,24 @@ def process_event(event_string):
             
             task_map[task["text"]] = cursor.lastrowid
     
-    
+        
     
     # unswizzle the uuid into a database-id for the user and meeting, if
     # they exist.
     actor_id = event["actorUUID"]
     if(event["actorUUID"]!=None):
         actor_id = uuid_map[event["actorUUID"]]
+
+    if(event["eventType"]=="USER_JOINED_LOCATION"):
+        last_join[event["actorUUID"]] = event["timestamp"];
+
+    if(event["eventType"]=="USER_LEFT_LOCATION"):
+        if(not total_time.has_key(actor_id)):
+            total_time[actor_id] = 0
+        
+        total_time[actor_id] = total_time[actor_id] + (event["timestamp"] - last_join[event["actorUUID"]])
+        del last_join[event["actorUUID"]]
+
     
 
     # this approach, while reasonable, turns out not to work because many
@@ -193,7 +210,7 @@ def process_event(event_string):
     type) VALUES (%s, %s, %s, from_unixtime(%s), %s)",
         (event["uuid"], actor_id, meeting_id, event["timestamp"], event["eventType"]))
     
-    print event['uuid'] + " - " + event['eventType']
+    # print event['uuid'] + " - " + event['eventType']
 
 
 
@@ -204,6 +221,9 @@ if __name__ == '__main__':
     
     for filename in os.listdir("emerson-logs/"):
         convert_log("emerson-logs" + os.sep + filename)
+    
+    global total_time
+    print total_time
     
     print "Closing database connection."
     db.close()

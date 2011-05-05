@@ -75,6 +75,15 @@ SELECT name, tasks_created from actors
 order by name asc) as tasks_created_table on task_count_actor_id = actors.id
     order by name asc;
 
+-- set shared to 0 or 1 to get public/private
+SELECT name, tasks_shared from actors
+    left join (SELECT actors.id as task_count_actor_id, count(*) as tasks_shared
+    from actors
+    join tasks on tasks.created_by_actor_id=actors.id
+    where shared=0 and tasks.created_by_actor_id=tasks.assigned_by_actor_id
+    group by name
+order by name asc) as tasks_created_table on task_count_actor_id = actors.id
+    order by name asc;
 
 SELECT name, dragged_tasks from actors
     left join (SELECT actors.id as actor_id, count(*) as dragged_tasks
@@ -93,6 +102,15 @@ SELECT name, tasks_dragged from actors
         group by name
     ) as tasks_dragged_table on actor_id = actors.id
     order by name asc;
+
+SELECT name, topics_created from actors
+    left join (SELECT actors.id as actor_id, count(*) as topics_created
+        from actors
+        join topics on topics.stopped_by_actor_id=actors.id
+        group by actor_id
+    ) as subselect on actor_id = actors.id
+    order by name asc;
+
 
 
 
