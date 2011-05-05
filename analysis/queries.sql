@@ -35,7 +35,7 @@ SELECT name, count(*) from tasks
 
 -- very much like the previous, except shows the drag-ee, not the drag-er
 SELECT name, count(*) from tasks
-    join actors on actors.id = tasks.created_by_actor_id
+    right join actors on actors.id = tasks.created_by_actor_id
     where tasks.created_by_actor_id!=tasks.assigned_by_actor_id
     group by name;
 
@@ -59,12 +59,50 @@ select name, shared, count(*) from tasks
     group by name, shared;
 
 
+
+----------------------------------------------------------
+-- These queries are used to generate the main analysis spreadsheets.
+-- Every query has every actor, sorted by name ASC for easy combination
+-- Subselecting is the only real way to do this, as far as I can tell.
+-- Annoying.
+----------------------------------------------------------
+
+SELECT name, tasks_created from actors
+    left join (SELECT actors.id as task_count_actor_id, count(*) as tasks_created
+    from actors
+    join tasks on tasks.created_by_actor_id=actors.id
+    group by name
+order by name asc) as tasks_created_table on task_count_actor_id = actors.id
+    order by name asc;
+
+
+SELECT name, dragged_tasks from actors
+    left join (SELECT actors.id as actor_id, count(*) as dragged_tasks
+        from actors
+        left outer join tasks on tasks.assigned_by_actor_id=actors.id
+        where tasks.created_by_actor_id!=tasks.assigned_by_actor_id
+        group by name
+    ) as tasks_dragged_table on actor_id = actors.id
+    order by name asc;
+
+SELECT name, tasks_dragged from actors
+    left join (SELECT actors.id as actor_id, count(*) as tasks_dragged
+        from actors
+        left outer join tasks on tasks.created_by_actor_id=actors.id
+        where tasks.created_by_actor_id!=tasks.assigned_by_actor_id
+        group by name
+    ) as tasks_dragged_table on actor_id = actors.id
+    order by name asc;
+
+
+
+
 -- total amount of tin can time recorded
 -- where clause filters out some short/fake events.
 -- can add sum term to add it all up
 select *,sum((unix_timestamp(stopped)-unix_timestamp(started))/60) as mins_duration
     from meetings
-    where mins_duration > 30;
+    where (unix_timestamp(stopped)-unix_timestamp(started))/60 > 30;
 
 -- queries to be written
     -- something to figure out the delay between ideas being created and
