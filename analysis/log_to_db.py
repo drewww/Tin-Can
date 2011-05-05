@@ -81,7 +81,7 @@ def process_event(event_string):
         
         uuid_map[event["results"]["actor"]["uuid"]] = name_map[event["params"]["name"]]
         
-        print uuid_map
+        # print uuid_map
     
     
     # there are some baked in assumptions here about the non-simultaneity of
@@ -182,7 +182,8 @@ def process_event(event_string):
         actor_id = uuid_map[event["actorUUID"]]
 
     if(event["eventType"]=="USER_JOINED_LOCATION"):
-        last_join[event["actorUUID"]] = event["timestamp"];
+        if(not last_join.has_key(event["actorUUID"])):
+            last_join[event["actorUUID"]] = event["timestamp"];
 
     if(event["eventType"]=="USER_LEFT_LOCATION"):
         if(not total_time.has_key(actor_id)):
