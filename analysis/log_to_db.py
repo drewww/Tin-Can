@@ -34,6 +34,8 @@ total_time = {}
 # problem in the classroom data context.
 task_map = {}
 
+total_likes = 0
+
 def convert_log(path):
     f = open(path, 'r')
     
@@ -49,6 +51,7 @@ def process_event(event_string):
     global task_map
     global last_join
     global total_time
+    global total_likes
     
     # first, unpack the string into a JSON object for easy management.
     
@@ -71,7 +74,7 @@ def process_event(event_string):
             # set up a name mapping in memory, for ease of access.
             name_map[event["params"]["name"]] = cursor.lastrowid
             
-            print "NEW USER: " + str(cursor.lastrowid)
+            # print "NEW USER: " + str(cursor.lastrowid)
             
         
         # whether we're creating a new, never-before-seen use or not,
@@ -153,9 +156,9 @@ def process_event(event_string):
                 # then copy it in and set the time and set shared.
                 cursor.execute("UPDATE tasks SET shared=TRUE,\
                 assigned_by_actor_id=%s, assigned_to_actor_id=%s,\
-                assigned=from_unixtime(%s) WHERE id=%s",
+                assigned=from_unixtime(%s), alt_uuid=%s WHERE id=%s",
                 (uuid_map[task["assignedBy"]], assignedTo, event["timestamp"],
-                task_map[task["text"]]))
+                task["uuid"], task_map[task["text"]]))
             else:
                 # print "\t - in reverse sharing order branch"
                 # in this branch, the existing data is the one with the shared
@@ -173,7 +176,6 @@ def process_event(event_string):
             
             task_map[task["text"]] = cursor.lastrowid
     
-        
     
     # unswizzle the uuid into a database-id for the user and meeting, if
     # they exist.
@@ -183,7 +185,11 @@ def process_event(event_string):
 
     if(event["eventType"]=="USER_JOINED_LOCATION"):
         if(not last_join.has_key(event["actorUUID"])):
+            # print "fresh join " + str(actor_id)
             last_join[event["actorUUID"]] = event["timestamp"];
+        else:
+            pass
+            # print "+duplicate join " + str(actor_id)
 
     if(event["eventType"]=="USER_LEFT_LOCATION"):
         if(not total_time.has_key(actor_id)):
@@ -191,8 +197,17 @@ def process_event(event_string):
         
         total_time[actor_id] = total_time[actor_id] + (event["timestamp"] - last_join[event["actorUUID"]])
         del last_join[event["actorUUID"]]
+        # print "-deleting last_join " + str(actor_id)
 
-    
+    if(event["eventType"]=="LIKE_TASK"):
+        total_likes = total_likes+1
+        cursor.execute("UPDATE tasks SET likes=likes+1 WHERE uuid=%s OR\
+            alt_uuid=%s", (event["params"]["taskUUID"], event["params"]["taskUUID"]))
+        cursor.execute("SELECT * from tasks where UUID=%s", event["params"]["taskUUID"])
+        print "+++++++ " + event["params"]["taskUUID"]
+        print "------- " + str(cursor.fetchone())
+        
+        
 
     # this approach, while reasonable, turns out not to work because many
     # events don't actually have a meeting id associated with them, for some
@@ -222,6 +237,8 @@ if __name__ == '__main__':
     
     for filename in os.listdir("emerson-logs/"):
         convert_log("emerson-logs" + os.sep + filename)
+    
+    print "TOTAL LIKES: " + str(total_likes)
     
     global total_time
     print total_time

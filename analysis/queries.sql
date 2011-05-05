@@ -58,7 +58,29 @@ select name, shared, count(*) from tasks
     join actors on actors.id = tasks.created_by_actor_id
     group by name, shared;
 
+-- main ideas dump query. big enough that it needs to go into an outfile.
+select creator.name, shared, text, assigned_by.name, assigned_to.name, 
+    created, assigned, likes,
+    (unix_timestamp(assigned) - unix_timestamp(created)) as time_before_share
+    INTO OUTFILE '/tmp/ideas.csv'
+      FIELDS TERMINATED BY '\t' OPTIONALLY ENCLOSED BY '"'
+      LINES TERMINATED BY '\n'
+    from tasks
+    left join actors as creator on creator.id = tasks.created_by_actor_id
+    left join actors as assigned_by on assigned_by.id = tasks.assigned_by_actor_id
+    left join actors as assigned_to on assigned_to.id = tasks.assigned_to_actor_id
+    order by created asc;
 
+select name, sum(likes) from actors
+    join tasks on tasks.created_by_actor_id = actors.id
+    group by name
+    order by name asc;
+
+select name, count(*) from actors 
+    join events on events.actor_id = actors.id 
+    where type="LIKE_TASK"
+    group by name
+    order by name asc;
 
 ----------------------------------------------------------
 -- These queries are used to generate the main analysis spreadsheets.
@@ -112,8 +134,13 @@ SELECT name, topics_created from actors
     order by name asc;
 
 
-
-
+SELECT name, likes from actors
+    left join (select actors.id as actor_id, count(*) as likes from actors 
+        join events on events.actor_id = actors.id 
+        where type="LIKE_TASK"
+        group by actor_id
+    ) as subselect on actor_id = actors.id
+    order by name asc;
 
 -- total amount of tin can time recorded
 -- where clause filters out some short/fake events.

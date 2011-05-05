@@ -69,11 +69,13 @@ CREATE TABLE topics (
 CREATE TABLE tasks (
     id INT                  PRIMARY KEY AUTO_INCREMENT,
     uuid CHAR(36)           NOT NULL UNIQUE,
+    alt_uuid CHAR(36)       ,
     text TEXT               NOT NULL,
     created DATETIME        NOT NULL,
     created_by_actor_id INT NOT NULL,
     assigned_to_actor_id INT      ,
     assigned_by_actor_id INT NOT NULL,
     assigned DATETIME           ,
-    shared BOOLEAN          NOT NULL DEFAULT FALSE
+    shared BOOLEAN          NOT NULL DEFAULT FALSE,
+    likes INT               DEFAULT 0
 );
