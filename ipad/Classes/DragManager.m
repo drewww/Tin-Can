@@ -195,20 +195,18 @@ static DragManager *sharedInstance = nil;
                         
 //            [self animateTaskToHome:task];            
         } else if ([curTargetView isKindOfClass:[TaskContainerView class]]) {
-            NSLog(@"got a drop on a task container, copy the task now!");
-            NSLog(@"THE TASK: %@", task);
-            NSLog(@"task creator: %@ and UUID: %@", task.creator, task.creator.uuid);
-            NSLog(@"current user: %@ and UUID %@", [StateManager sharedInstance].user, [StateManager sharedInstance].user.uuid);
+//            NSLog(@"got a drop on a task container, copy the task now!");
+//            NSLog(@"THE TASK: %@", task);
+//            NSLog(@"task creator: %@ and UUID: %@", task.creator, task.creator.uuid);
+//            NSLog(@"current user: %@ and UUID %@", [StateManager sharedInstance].user, [StateManager sharedInstance].user.uuid);
             
             // This is our suspect addTask event.
             // I have a theory that tasks are created with the wrong creator when they arent' created locally or something
-            [[ConnectionManager sharedInstance] addTaskWithText:task.text isInPool:TRUE
-                                                    isCreatedBy:task.creator.uuid
-                                                   isAssignedBy:[StateManager sharedInstance].user.uuid];
-            
-            [self animateTaskToHome:task];
-            
-            [curTargetView setHoverState:false];
+//            [[ConnectionManager sharedInstance] addTaskWithText:task.text isInPool:TRUE
+//                                                    isCreatedBy:task.creator.uuid
+//                                                   isAssignedBy:[StateManager sharedInstance].user.uuid];
+            [[ConnectionManager sharedInstance] deassignTask:task];
+            [curTargetView setHoverState:false];            
         } else if ([curTargetView isKindOfClass:[TrashView class]]) {
             
             // Delete the task!

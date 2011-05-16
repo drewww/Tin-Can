@@ -334,10 +334,14 @@ failed" + str(self.params[paramKey]))
         elif self.eventType == EventType.types["DELETE_TASK"]:
             out = self.actor.name + " deleted an idea."
         elif self.eventType == EventType.types["ASSIGN_TASK"]:
-            assignedTo = state.get_obj(self.params["assignedTo"], model.User)
             task = state.get_obj(self.params["taskUUID"], model.Task)
-            out = self.actor.name + " assigned idea \"" + task.text +"\" to "\
-                + assignedTo.name + "."
+            
+            if(self.params["deassign"]):
+                out = self.actor.name + " deassigned idea \"" + task.text
+            else:
+                assignedTo = state.get_obj(self.params["assignedTo"], model.User)
+                out = self.actor.name + " assigned idea \"" + task.text +"\" to "\
+                    + assignedTo.name + "."
         else:
             out = "This event has no string representation."
         
