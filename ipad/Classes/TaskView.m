@@ -139,13 +139,15 @@
             break;
             
         case UIGestureRecognizerStateBegan:
-            // Check and see if we're a task in the pool. If we are, ignore touches.
-            if(![self.task isAssigned]) {
-                // Send a "like!" message. 
-                NSLog(@"Liking this task based on a long press.");
-                [[ConnectionManager sharedInstance] likeTask:self.task];
-                return;
-            }
+
+            // This code used long-presses for liking when it was assigned. Liking might
+            // be useful again at some point, so leaving this in for reference.
+//            if(![self.task isAssigned]) {
+//                // Send a "like!" message. 
+//                NSLog(@"Liking this task based on a long press.");
+//                [[ConnectionManager sharedInstance] likeTask:self.task];
+//                return;
+//            }
             
             NSLog(@"I have been LONG PRESSED");
             
@@ -174,7 +176,8 @@
             NSLog(@"got a move event and handling it");
             
             // Check and see if we're a task in the pool. If we are, ignore touches.
-            if(![self.task isAssigned]) return;
+            // (we stopped ignoring touches when we switched back to the meeting model)
+//            if(![self.task isAssigned]) return;
             
             // When we move, we want to know the delta from its previous location
             // and then we can adjust our position accordingly. 
@@ -197,7 +200,9 @@
             break;
         case UIGestureRecognizerStateEnded:
             // Check and see if we're a task in the pool. If we are, ignore touches.
-            if(![self.task isAssigned]) return;
+            // Knocking this out per earlier comments - turning dragging back on for unassigned
+            // tasks.
+//            if(![self.task isAssigned]) return;
             NSLog(@"Got touch ended.");
             
             // Including this to avoid handling touches that ended without an official

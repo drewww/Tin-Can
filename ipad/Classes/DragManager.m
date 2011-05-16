@@ -129,12 +129,6 @@ static DragManager *sharedInstance = nil;
     // Going to add a special check for the trash in a sec.
     
     
-    if([curDropTarget isKindOfClass:[UserView class]]) return;
-    
-    if([curDropTarget isKindOfClass:[TrashView class]]) {
-        NSLog(@"ON A TRASH VIEW");
-    }
-    
 	if(curDropTarget != nil) {
 		if (lastDropTarget == nil) {
 //            NSLog(@" entering new drop target");
@@ -195,14 +189,11 @@ static DragManager *sharedInstance = nil;
         
         if([curTargetView isKindOfClass:[UserView class]]) {
             
-            // Commenting this out to disable assigning ideas to other users (per classroom design spec)
-//            UserView *curTargetUserView = (UserView *)curTargetView;
-//            [[ConnectionManager sharedInstance] assignTask:task toUser:[curTargetUserView getUser]];
-//            [curTargetView setHoverState:false];
-            
-//            [self animateTaskToHome:task];
-            return false;
-            
+            UserView *curTargetUserView = (UserView *)curTargetView;
+            [[ConnectionManager sharedInstance] assignTask:task toUser:[curTargetUserView getUser]];
+            [curTargetView setHoverState:false];
+                        
+//            [self animateTaskToHome:task];            
         } else if ([curTargetView isKindOfClass:[TaskContainerView class]]) {
             NSLog(@"got a drop on a task container, copy the task now!");
             NSLog(@"THE TASK: %@", task);
