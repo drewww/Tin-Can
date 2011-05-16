@@ -39,13 +39,13 @@
     MeetingTimerView *meetingTimerView;
     NSTimer *clock;
     
-    UIPopoverController *addIdeaPopoverController;
+    UIPopoverController *addTaskPopoverController;
     UIPopoverController *addTopicPopoverController;
 
-    AddItemController *addIdeaController;
+    AddItemController *addTaskController;
     AddItemController *addTopicController;
     
-    UIButton *addIdeaButton;
+    UIButton *addTaskButton;
     UIButton *addTopicButton;
     
     // Not sure if this should live here or in AppDelegate,
@@ -72,7 +72,7 @@
 
 - (void) userTaskDrawerExtended:(UserView *)extendedView;
 
-- (void) addIdeaButtonPressed:(id) sender;
+- (void) addTaskButtonPressed:(id) sender;
 - (void) addTopicButtonPressed:(id) sender;
 
 - (void) backdropTouchedFrom: (id) sender;

@@ -90,20 +90,20 @@
 
     
     
-    // Add a pair of buttons for adding topics and adding ideas. This is instead of the + buttons on the 
+    // Add a pair of buttons for adding topics and adding tasks. This is instead of the + buttons on the 
     // container views for those types, which are absurdly hard to hit on an actual ipad.
-    addIdeaButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-    addIdeaButton.frame = CGRectMake(-15, 775, 240, 30);
-    addIdeaButton.backgroundColor = [UIColor clearColor];
-    [addIdeaButton setTitle:@"Add Idea" forState: UIControlStateNormal];
-    addIdeaButton.titleLabel.font = [UIFont boldSystemFontOfSize:24.0f];
-    [addIdeaButton addTarget:self action:@selector(addIdeaButtonPressed:)forControlEvents:UIControlEventTouchUpInside];
-    [addIdeaButton setEnabled: YES];
+    addTaskButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+    addTaskButton.frame = CGRectMake(-15, 775, 240, 30);
+    addTaskButton.backgroundColor = [UIColor clearColor];
+    [addTaskButton setTitle:@"Add Task" forState: UIControlStateNormal];
+    addTaskButton.titleLabel.font = [UIFont boldSystemFontOfSize:24.0f];
+    [addTaskButton addTarget:self action:@selector(addTaskButtonPressed:)forControlEvents:UIControlEventTouchUpInside];
+    [addTaskButton setEnabled: YES];
     
-    addIdeaButton.backgroundColor = [UIColor blackColor];
-    addIdeaButton.transform = CGAffineTransformMakeRotation(M_PI/2);
+    addTaskButton.backgroundColor = [UIColor blackColor];
+    addTaskButton.transform = CGAffineTransformMakeRotation(M_PI/2);
     
-    [self.view addSubview:addIdeaButton];
+    [self.view addSubview:addTaskButton];
 
     
     addTopicButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
@@ -121,11 +121,11 @@
     
     
     // Set up the two popover controllers.
-    addIdeaController = [[AddItemController alloc] initWithPlaceholder:@"new idea" withButtonText:@"Add Idea" withAltButtonText:@"Add Idea To Group"];
-    addIdeaController.delegate = self;
+    addTaskController = [[AddItemController alloc] initWithPlaceholder:@"new task" withButtonText:@"Add Task" withAltButtonText:nil];
+    addTaskController.delegate = self;
     
-    addIdeaPopoverController = [[UIPopoverController alloc] initWithContentViewController:addIdeaController];
-    [addIdeaPopoverController setPopoverContentSize:CGSizeMake(300, 130)];
+    addTaskPopoverController = [[UIPopoverController alloc] initWithContentViewController:addTaskController];
+    [addTaskPopoverController setPopoverContentSize:CGSizeMake(300, 130)];
 
     addTopicController = [[AddItemController alloc] initWithPlaceholder:@"new topic" withButtonText:@"Add Topic" withAltButtonText:nil];
     addTopicController.delegate = self;
@@ -432,10 +432,10 @@
     
 }
 
-- (void) addIdeaButtonPressed:(id) sender {
-    NSLog(@"In ADD IDEA BUTTON PRESSED.");
+- (void) addTaskButtonPressed:(id) sender {
+    NSLog(@"In ADD TASK BUTTON PRESSED.");
     [self userTaskDrawerExtended:nil];
-    [addIdeaPopoverController presentPopoverFromRect:addIdeaButton.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:true];
+    [addTaskPopoverController presentPopoverFromRect:addTaskButton.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:true];
 }
 
 - (void) addTopicButtonPressed:(id) sender {
@@ -449,8 +449,8 @@
 
     NSLog(@"item submitted! text: %@ fromController: %@", text, controller);
     
-    if(controller == (UIViewController *)addIdeaController) {
-        [addIdeaPopoverController dismissPopoverAnimated:true];
+    if(controller == (UIViewController *)addTaskController) {
+        [addTaskPopoverController dismissPopoverAnimated:true];
 
         [[ConnectionManager sharedInstance] addTaskWithText:text isInPool:false isCreatedBy:nil isAssignedBy:nil];
         
