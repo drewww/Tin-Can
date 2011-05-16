@@ -527,21 +527,23 @@
         TaskContainerView *taskContainer = (TaskContainerView *)self.superview.superview.superview;
         
         if(taskContainer.isMainView) {
-            
-            if(task.assignedBy != nil && ![task.creator.uuid isEqual:task.assignedBy.uuid]) {
-                
-                if(task.likes > 0) {
-                    displayString = [task.text stringByAppendingFormat:@" (%@, added by %@) +%d", task.creator.name, task.assignedBy.name, task.likes, nil];                
-                } else {
-                    displayString = [task.text stringByAppendingFormat:@" (%@, added by %@)", task.creator.name, task.assignedBy.name, nil];                
-                }
-            } else {
-                if(task.likes > 0) {
-                    displayString = [task.text stringByAppendingFormat:@" (%@) +%d", task.creator.name, task.likes, nil];
-                } else {
-                    displayString = [task.text stringByAppendingFormat:@" (%@)", task.creator.name, nil];                    
-                }
-            }
+    
+            displayString = task.text;
+//            
+//            if(task.assignedBy != nil && ![task.creator.uuid isEqual:task.assignedBy.uuid]) {
+//                
+//                if(task.likes > 0) {
+//                    displayString = [task.text stringByAppendingFormat:@" (%@, added by %@) +%d", task.creator.name, task.assignedBy.name, task.likes, nil];                
+//                } else {
+//                    displayString = [task.text stringByAppendingFormat:@" (%@, added by %@)", task.creator.name, task.assignedBy.name, nil];                
+//                }
+//            } else {
+//                if(task.likes > 0) {
+//                    displayString = [task.text stringByAppendingFormat:@" (%@) +%d", task.creator.name, task.likes, nil];
+//                } else {
+//                    displayString = [task.text stringByAppendingFormat:@" (%@)", task.creator.name, nil];                    
+//                }
+//            }
         } else {
             if(task.shared) {
                 displayString = [task.text stringByAppendingString:@" (shared)"];
