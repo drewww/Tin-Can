@@ -18,6 +18,8 @@
 		3A0B2C27127B5A69002C08A1 /* TimelineContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A0B2C26127B5A69002C08A1 /* TimelineContainerView.m */; };
 		3A0B2C2E127B6AC7002C08A1 /* EventView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A0B2C2C127B6AC7002C08A1 /* EventView.m */; };
 		3A12614812ADA1DC005D05FA /* AddItemController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A12614712ADA1DC005D05FA /* AddItemController.m */; };
+		3A242D1E1381C1F70060A039 /* LocationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A242D1D1381C1F70060A039 /* LocationCell.m */; };
+		3A242D211381C2210060A039 /* LocationCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A242D201381C2210060A039 /* LocationCellView.m */; };
 		3A2A6A3C11EE5ED300FF373C /* SynchronizedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A3B11EE5ED300FF373C /* SynchronizedObject.m */; };
 		3A2A6A3F11EE696000FF373C /* StateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A3E11EE696000FF373C /* StateManager.m */; };
 		3A2A6A5A11EE73F800FF373C /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A5911EE73F800FF373C /* User.m */; };
@@ -32,6 +34,7 @@
 		3A4941B8124D209B0068C6D6 /* DragManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4941B7124D209B0068C6D6 /* DragManager.m */; };
 		3A57217F11EB7515004C2687 /* MeetingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57217E11EB7515004C2687 /* MeetingViewController.m */; };
 		3A57237811EBDE0B004C2687 /* TinCanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57237711EBDE0B004C2687 /* TinCanViewController.m */; };
+		3A7EB0861381C00800B381A8 /* LocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A7EB0841381C00700B381A8 /* LocationViewController.m */; };
 		3A82D449126F9CD5007AFA3D /* LocationBorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A82D448126F9CD5007AFA3D /* LocationBorderView.m */; };
 		3A9304361337D54A00A83A44 /* BackdropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A9304351337D54900A83A44 /* BackdropView.m */; };
 		3A95E0631264B92700518580 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A95E0621264B92700518580 /* QuartzCore.framework */; };
@@ -116,6 +119,10 @@
 		3A0B2C2D127B6AC7002C08A1 /* EventView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventView.h; sourceTree = "<group>"; };
 		3A12614612ADA1DC005D05FA /* AddItemController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddItemController.h; sourceTree = "<group>"; };
 		3A12614712ADA1DC005D05FA /* AddItemController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddItemController.m; sourceTree = "<group>"; };
+		3A242D1C1381C1F70060A039 /* LocationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationCell.h; sourceTree = "<group>"; };
+		3A242D1D1381C1F70060A039 /* LocationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationCell.m; sourceTree = "<group>"; };
+		3A242D1F1381C2210060A039 /* LocationCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationCellView.h; sourceTree = "<group>"; };
+		3A242D201381C2210060A039 /* LocationCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationCellView.m; sourceTree = "<group>"; };
 		3A2A6A3A11EE5ED300FF373C /* SynchronizedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SynchronizedObject.h; sourceTree = "<group>"; };
 		3A2A6A3B11EE5ED300FF373C /* SynchronizedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SynchronizedObject.m; sourceTree = "<group>"; };
 		3A2A6A3D11EE696000FF373C /* StateManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StateManager.h; sourceTree = "<group>"; };
@@ -145,6 +152,8 @@
 		3A57217E11EB7515004C2687 /* MeetingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeetingViewController.m; sourceTree = "<group>"; };
 		3A57237611EBDE0B004C2687 /* TinCanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TinCanViewController.h; sourceTree = "<group>"; };
 		3A57237711EBDE0B004C2687 /* TinCanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TinCanViewController.m; sourceTree = "<group>"; };
+		3A7EB0841381C00700B381A8 /* LocationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationViewController.m; sourceTree = "<group>"; };
+		3A7EB0851381C00800B381A8 /* LocationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationViewController.h; sourceTree = "<group>"; };
 		3A82D447126F9CD5007AFA3D /* LocationBorderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationBorderView.h; sourceTree = "<group>"; };
 		3A82D448126F9CD5007AFA3D /* LocationBorderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationBorderView.m; sourceTree = "<group>"; };
 		3A9304341337D54800A83A44 /* BackdropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackdropView.h; sourceTree = "<group>"; };
@@ -535,6 +544,8 @@
 		DA96F10311EE526D00B64D3D /* Login */ = {
 			isa = PBXGroup;
 			children = (
+				3A7EB0841381C00700B381A8 /* LocationViewController.m */,
+				3A7EB0851381C00800B381A8 /* LocationViewController.h */,
 				DA7FD24812086F74007A9217 /* WebViewController.h */,
 				DA7FD24912086F74007A9217 /* WebViewController.m */,
 				DA96F0E211EE525500B64D3D /* HeaderView.h */,
@@ -559,6 +570,10 @@
 				DA96F0F511EE525500B64D3D /* RoomViewController.m */,
 				DA767ACA11F78D9D00184827 /* TimerBar.h */,
 				DA767ACB11F78D9D00184827 /* TimerBar.m */,
+				3A242D1C1381C1F70060A039 /* LocationCell.h */,
+				3A242D1D1381C1F70060A039 /* LocationCell.m */,
+				3A242D1F1381C2210060A039 /* LocationCellView.h */,
+				3A242D201381C2210060A039 /* LocationCellView.m */,
 			);
 			name = Login;
 			sourceTree = "<group>";
@@ -732,6 +747,9 @@
 				3AD6A1BE131D94BA00802D2D /* UIView+Rounded.m in Sources */,
 				3A9304361337D54A00A83A44 /* BackdropView.m in Sources */,
 				3A0479AF1340E15200011DB8 /* ManageTopicController.m in Sources */,
+				3A7EB0861381C00800B381A8 /* LocationViewController.m in Sources */,
+				3A242D1E1381C1F70060A039 /* LocationCell.m in Sources */,
+				3A242D211381C2210060A039 /* LocationCellView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
