@@ -474,24 +474,6 @@ static NSString *selectedServer = nil;
                 }
             }
 
-            NSLog(@"comparing against tasks: %@", tasksToCompareTo);
-            
-            // If this task is being created in the pool (eg isAssigned = YES) then
-            // check to see if it matches a task already owned by its creator. If so,
-            // flip the shared flag on that other task. 
-            for (Task *t in tasksToCompareTo) {
-                NSLog(@"comparing to task %@", t);
-                NSLog(@" %@ ?= %@", t.text, task.text);
-                
-                // the note clause is to make sure we don't check against ourself accidently. 
-                if([t.text isEqualToString:task.text] && ![t.uuid isEqualToString:task.uuid]) {
-                    // if it is, flip the shared bit on t
-                    t.shared = YES;
-                    task.shared = YES;
-                    NSLog(@"FOUND A SHARED TASK! %@", t);
-                }
-            }   
-            
             [e.results setValue:task forKey:@"task"];
             
             break;

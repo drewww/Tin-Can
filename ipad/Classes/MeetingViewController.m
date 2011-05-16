@@ -452,7 +452,7 @@
     if(controller == (UIViewController *)addTaskController) {
         [addTaskPopoverController dismissPopoverAnimated:true];
 
-        [[ConnectionManager sharedInstance] addTaskWithText:text isInPool:false isCreatedBy:nil isAssignedBy:nil];
+        [[ConnectionManager sharedInstance] addTaskWithText:text isInPool:true isCreatedBy:nil isAssignedBy:nil];
         
         if(isAltSubmit) {
             [[ConnectionManager sharedInstance] addTaskWithText:text isInPool:true isCreatedBy:nil isAssignedBy:nil];            
