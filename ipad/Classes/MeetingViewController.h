@@ -48,6 +48,8 @@
     UIButton *addTaskButton;
     UIButton *addTopicButton;
     
+    LocationBorderView *locBorderView;
+    
     // Not sure if this should live here or in AppDelegate,
     // but we'll start with here for now.
     NSOperationQueue *queue;
