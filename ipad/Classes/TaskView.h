@@ -78,4 +78,7 @@
 - (NSString *)getDisplayString;
 - (void) flashBlack: (NSTimer *)theTimer;
 
+- (void) startReturnToOrigin;
+- (void) returnToOriginStopped:(NSString *)animationID finished:(NSNumber *)finished context: (void *)context;
+
 @end

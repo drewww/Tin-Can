@@ -71,8 +71,8 @@
 
 	[self.view bringSubviewToFront:meetingTimerView];
 	[self.view bringSubviewToFront:topicContainer];
-    [self.view bringSubviewToFront:taskContainer];
     [self.view bringSubviewToFront:currentTopicView];
+    [self.view bringSubviewToFront:taskContainer];
 
     // Now setup the backdrop view. It'll sit ABOVE the major containers but BELOW the buttons and 
     // users, so you can still click on those directly. We'll make it, put it in place, then hide it

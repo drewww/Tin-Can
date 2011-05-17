@@ -35,6 +35,7 @@
 		task = theTask;
         [task retain];
         
+        // Doesn't this need to be updated at some point?
         initialOrigin = CGPointMake(self.frame.origin.x, self.frame.origin.y);//self.frame.origin;  
 		self.userInteractionEnabled = YES; 
 		isTouched= FALSE;
@@ -83,7 +84,7 @@
     // I'm not going to sweat it.
 	CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
     CGContextFillRect(ctx, self.bounds);
-	
+
     
     
 	CGContextSetFillColorWithColor(ctx, task.color.CGColor);
@@ -137,14 +138,14 @@
 
 - (void) handleLongPress: (UIGestureRecognizer *)sender{
     
-    NSLog(@"in LONG PRESS with state: %d and parent: %@", sender.state, self.superview);
+//    NSLog(@"in LONG PRESS with state: %d and parent: %@", sender.state, self.superview);
     
 
     switch (sender.state) {
         case UIGestureRecognizerStatePossible:
             // This state triggers when touches start but it's not clear if it's valid yet.
             // In this case, start changing the background. 
-            NSLog(@"RECOGNIZER POSSIBLE");
+//            NSLog(@"RECOGNIZER POSSIBLE");
             [self setNeedsDisplay];
             break;
             
@@ -159,7 +160,7 @@
 //                return;
 //            }
             
-            NSLog(@"I have been LONG PRESSED");
+//            NSLog(@"I have been LONG PRESSED");
             
             isTouched=TRUE;
             //self.frame=CGRectMake(self.frame.origin.x, self.frame.origin.y, self.bounds.size.width-100, 50);
@@ -183,7 +184,7 @@
                 NSLog(@"got a moved event, but we haven't officially been long pressed yet");
                 return;
             }
-            NSLog(@"got a move event and handling it");
+//            NSLog(@"got a move event and handling it");
             
             // Check and see if we're a task in the pool. If we are, ignore touches.
             // (we stopped ignoring touches when we switched back to the meeting model)
@@ -225,17 +226,17 @@
             
             if (![self.delegate taskDragEndedWithGesture:sender withTask:self.task]) {
                 
-                [UIView beginAnimations:@"snap_to_initial_position" context:nil];
-                
-                [UIView setAnimationDuration:1.0f];
-                
-                CGRect newFrame = self.frame;
-                newFrame.origin = CGPointMake(initialOrigin.x, initialOrigin.y);
-                self.frame = newFrame;
-                NSLog(@"animating to initialOrigin: %f, %f", initialOrigin.x, initialOrigin.y);
-                [self.superview setNeedsLayout];
-                [UIView commitAnimations];
-                [self.superview sendSubviewToBack:self];
+//                [UIView beginAnimations:@"snap_to_initial_position" context:nil];
+//                
+//                [UIView setAnimationDuration:1.0f];
+//                
+//                CGRect newFrame = self.frame;
+//                newFrame.origin = CGPointMake(initialOrigin.x, initialOrigin.y);
+//                self.frame = newFrame;
+//                NSLog(@"animating to initialOrigin: %f, %f", initialOrigin.x, initialOrigin.y);
+//                [self.superview setNeedsLayout];
+//                [UIView commitAnimations];
+//                [self.superview sendSubviewToBack:self];
             } else {
                 // We were dropped on an actual drop target. Something else will handle our
                 // animation at this point (although we should think about moving it here for
@@ -250,6 +251,35 @@
             NSLog(@"received a gesture state that I wasn't expecting: %d", sender.state);
             break;
     }
+}
+
+- (void) startReturnToOrigin {
+    
+    // When this starts, we're in draggedItemsContainer coordinate frame.
+    // To figure out where to go, we're going to have to do some math.
+    
+    [UIView beginAnimations:@"snap_to_initial_position" context:nil];
+    
+    [UIView setAnimationDuration:1.0f];
+    
+    CGRect newFrame = self.frame;
+    newFrame.origin = [self.superview convertPoint:CGPointMake(initialOrigin.x, initialOrigin.y) fromView:self.lastParentView];
+    self.frame = newFrame;
+    NSLog(@"animating to initialOrigin: %f, %f", initialOrigin.x, initialOrigin.y);
+    [self.superview setNeedsLayout];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(returnToOriginStopped:finished:context:)];
+    [UIView commitAnimations];
+    
+    
+    
+}
+
+- (void) returnToOriginStopped:(NSString *)animationID finished:(NSNumber *)finished context: (void *)context {
+    NSLog(@" IN RETURN TO ORIGIN STOPPED");
+    [self.lastParentView addSubview:self];
+    
+    //Want to hide the dragged items container, too, but can't do that from here.
 }
 
 
@@ -504,8 +534,8 @@
 }
 
 - (NSComparisonResult) compareByCreationDate:(TaskView *)view {
-    NSLog(@"in compare by creation date");
-    NSLog(@"about to compared based on creation times: %@ and %@", self.task.createdAt, view.task.createdAt);
+//    NSLog(@"in compare by creation date");
+//    NSLog(@"about to compared based on creation times: %@ and %@", self.task.createdAt, view.task.createdAt);
     NSComparisonResult retVal = [self.task.createdAt compare:view.task.createdAt];
     
     if(retVal==NSOrderedSame) {
