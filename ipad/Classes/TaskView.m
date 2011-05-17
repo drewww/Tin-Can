@@ -75,7 +75,17 @@
     // Drawing code
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	
+    // Turned back on this code that blanks the frame before re-drawing. This fixed
+    // issues when dragging the task triggered redraws that slowly killed the
+    // anti-aliasing of the text. Not sure why that happens or why this
+    // fixes it. I recall turning it off earlier because having it in broke
+    // something else, but until I re-find what that was (and it may have been a classroom feature)
+    // I'm not going to sweat it.
+	CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
+    CGContextFillRect(ctx, self.bounds);
 	
+    
+    
 	CGContextSetFillColorWithColor(ctx, task.color.CGColor);
     
     NSLog(@"TASK COLOR: %@", task.color);
