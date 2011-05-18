@@ -21,6 +21,7 @@ import logging
 import copy
 
 import tornado.ioloop
+from tornado.options import options
 
 import state
 import event
@@ -406,6 +407,13 @@ class Device(YarnBaseType):
                     params={"device":self.uuid})
                 deviceLeftEvent.dispatch()
 
+            # this is a bit of a weird exception, but otherwise when a demo
+            # client leaves it logs out the users in that location because
+            # there are no devices left attached to that location. That's
+            # annoying, so for demos just avoid doing this pruning.
+            if options.demoMode:
+                return
+                
             logging.debug("Done dispatching device left message, now checking\
 to see if we need to log out the user, too: " + str(actor))
             if isinstance(actor, User):
