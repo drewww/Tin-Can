@@ -324,7 +324,7 @@
 				// case ""
 				case "NEW_TOPIC":
 					// TODO replace with mustache templates
-					var topic = e["results"]["topic"];
+					var topic = state.getObj(e["results"]["topic"]["uuid"], Topic);
 					
 					var topicView = {
 						"topic_uuid":topic.uuid,
@@ -383,7 +383,7 @@
 					},3000);
 					break;
 				case "NEW_TASK":
-					var task = e["results"]["task"];
+					var task = state.getObj(e["results"]["task"]["uuid"], Task);
 					var taskView = {
 						"task_uuid":task.uuid,
 						"task_text":task.text,
