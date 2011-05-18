@@ -224,25 +224,7 @@
 
             // TODO think about multitouch for this!
             
-            if (![self.delegate taskDragEndedWithGesture:sender withTask:self.task]) {
-                
-//                [UIView beginAnimations:@"snap_to_initial_position" context:nil];
-//                
-//                [UIView setAnimationDuration:1.0f];
-//                
-//                CGRect newFrame = self.frame;
-//                newFrame.origin = CGPointMake(initialOrigin.x, initialOrigin.y);
-//                self.frame = newFrame;
-//                NSLog(@"animating to initialOrigin: %f, %f", initialOrigin.x, initialOrigin.y);
-//                [self.superview setNeedsLayout];
-//                [UIView commitAnimations];
-//                [self.superview sendSubviewToBack:self];
-            } else {
-                // We were dropped on an actual drop target. Something else will handle our
-                // animation at this point (although we should think about moving it here for
-                // consistency.
-                NSLog(@"dropped on drop target.");
-            }
+            [self.delegate taskDragEndedWithGesture:sender withTask:self.task];
             
             [self setNeedsDisplay];
             
@@ -271,8 +253,6 @@
     [UIView setAnimationDidStopSelector:@selector(returnToOriginStopped:finished:context:)];
     [UIView commitAnimations];
     
-    
-    
 }
 
 - (void) returnToOriginStopped:(NSString *)animationID finished:(NSNumber *)finished context: (void *)context {
@@ -280,6 +260,7 @@
     [self.lastParentView addSubview:self];
     
     //Want to hide the dragged items container, too, but can't do that from here.
+    [[DragManager sharedInstance] hideDragContainer];
 }
 
 

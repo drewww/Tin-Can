@@ -227,31 +227,15 @@ static DragManager *sharedInstance = nil;
     return false;
 }
 
+- (void) hideDragContainer {
+    [draggedItemsContainer setHidden:true];
+}
+
 - (void) animateTaskToHome:(Task *)task {
-    // This method is deceptive - it doesn't actually do any of the animation.
-    // the animatino is handled in UIGestureRecognizerStateEnded in TaskView.m,
-    // this is just doing some setup so when the view is transfered back to its
-    // previous parent it's in the right place.
-    
     // OKAY CHANGE OF PLAN.
     // For frame reasons, we need to animate FIRST (while still in the draggedItemsContainer)
-    // and then transfer ownership AT THE END. This is going to be a bit dicey.
-    
-    [[task getView] startReturnToOrigin];
-    
-//    NSLog(@"Adding the task back to its original parent view since dragging is done.");
-//    TaskView *taskView = (TaskView *)[task getView];
-//    
-//    // Do the position translation back again.
-//    CGPoint p = [taskView.lastParentView convertPoint:taskView.center fromView:draggedItemsContainer];
-//    taskView.center = p;
-//    
-//    [taskView.lastParentView addSubview:taskView];
-//    [[task getView].superview.superview bringSubviewToFront:[task getView].superview];
-//
-//    
-//    NSLog(@"setting draggedItemsContainer to hidden");
-//    [draggedItemsContainer setHidden:true];
+    // and then transfer ownership AT THE END. This is going to be a bit dicey.    
+    [[task getView] startReturnToOrigin];    
 }
 
 - (bool) moveTaskViewToDragContainer:(TaskView *)view {

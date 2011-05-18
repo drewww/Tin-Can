@@ -36,6 +36,7 @@
 - (void) taskDragAnimationComplete;
 - (bool) moveTaskViewToDragContainer:(TaskView *)view;
 - (void) animateTaskToHome:(Task *)theTask;
+- (void) hideDragContainer;
 
 
 @property (nonatomic, retain) UIView *rootView;
