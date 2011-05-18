@@ -384,6 +384,15 @@
 					break;
 				case "NEW_TASK":
 					var task = state.getObj(e["results"]["task"]["uuid"], Task);
+					
+					var assignedToName;
+					
+					if(task.assignedTo!=null) {
+						assignedToName = task.assignedTo.name;
+					} else {
+						assignedToName = "";
+					}
+					
 					var taskView = {
 						"task_uuid":task.uuid,
 						"task_text":task.text,

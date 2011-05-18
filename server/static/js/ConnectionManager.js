@@ -351,7 +351,7 @@ ConnectionManager.prototype = {
                     topicData["stopActor"], topicData["color"],
                     topicData["createdAt"]);
                 topic.unswizzle();
-
+                
                 console.log("Made a new topic!");
                 actor = state.getObj(ev.actorUUID, User)
                 actor.status = {type: "created new topic", 
@@ -812,7 +812,7 @@ ConnectionManager.prototype = {
             url: '/tasks/add',
             type: "POST",
             context: this,
-            data: {"text":text},
+            data: {"text":text, "createInPool": true},
             success: function () {
                 this.publishEvent(this.generateEvent("NEW_TASK_COMPLETE",
                     {}));
