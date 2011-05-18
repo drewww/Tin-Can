@@ -92,7 +92,7 @@ class YarnApplication(tornado.web.Application):
             (r"/rooms/",ChooseRoomsHandler),
             (r"/meeting/",MeetingHandler),
 
-			(r"/demo",DemoHandler)
+			(r"/",WebInterfaceHandler)
             ]
         
         settings = dict(
@@ -789,11 +789,11 @@ class MeetingHandler(tornado.web.RequestHandler):
     def get(self):
         self.render("meeting.html")
 
-class DemoHandler(tornado.web.RequestHandler):
+class WebInterfaceHandler(tornado.web.RequestHandler):
     def get(self):
-        logging.debug("In demo handler.")
+        logging.debug("In web interface handler.")
 
-        self.render("demo.html", users=state.get_users())
+        self.render("interface.html", users=state.get_users())
 
 # Set up the routing tables for the application.
 # For now, they're really simple - one for getting information about rooms,
