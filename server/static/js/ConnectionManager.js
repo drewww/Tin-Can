@@ -121,7 +121,7 @@ ConnectionManager.prototype = {
                     this.connections=tempConnections;
                     if (this.connections.length>10){
                         this.stopPersistentConnection();
-                        $('body').html("Connection failed. Please try again.")
+                        $('body').html("Connection to server lost. Please reload.")
                     }
                     
                 }
