@@ -70,6 +70,7 @@ CREATE TABLE tasks (
     id INT                  PRIMARY KEY AUTO_INCREMENT,
     uuid CHAR(36)           NOT NULL UNIQUE,
     alt_uuid CHAR(36)       ,
+    meeting_id INT          NOT NULL,
     text TEXT               NOT NULL,
     created DATETIME        NOT NULL,
     created_by_actor_id INT NOT NULL,

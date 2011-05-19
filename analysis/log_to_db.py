@@ -169,10 +169,11 @@ def process_event(event_string):
         else:
             cursor.execute("INSERT INTO tasks (uuid, text, created,\
                 created_by_actor_id, assigned_to_actor_id, assigned_by_actor_id,\
-                assigned) VALUES (%s, %s, from_unixtime(%s), %s, %s, %s,\
-                from_unixtime(%s))" ,(task["uuid"], task["text"],
+                assigned, meeting_id) VALUES (%s, %s, from_unixtime(%s), %s, %s, %s,\
+                from_unixtime(%s), %s)" ,(task["uuid"], task["text"],
                 event["timestamp"], uuid_map[task["createdBy"]], assignedTo,
-                uuid_map[task["assignedBy"]], event["timestamp"]))
+                uuid_map[task["assignedBy"]], event["timestamp"],
+                current_meeting_id))
             
             task_map[task["text"]] = cursor.lastrowid
     
