@@ -113,10 +113,12 @@ def process_event(event_string):
     
     if(event["eventType"]=="NEW_TOPIC"):
         cursor.execute("INSERT INTO topics (uuid, text, created,\
-            created_by_actor_id) VALUES (%s, %s, from_unixtime(%s), %s)",
+            created_by_actor_id, meeting_id) VALUES (%s, %s,\
+            from_unixtime(%s), %s, %s)",
             (event["results"]["topic"]["uuid"],
             event["results"]["topic"]["text"],
-            event["timestamp"], uuid_map[event["actorUUID"]]))
+            event["timestamp"], uuid_map[event["actorUUID"]],
+            current_meeting_id))
     if(event["eventType"]=="UPDATE_TOPIC"):
         status = event["params"]["status"]
         
