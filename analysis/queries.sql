@@ -149,6 +149,29 @@ select *,sum((unix_timestamp(stopped)-unix_timestamp(started))/60) as mins_durat
     from meetings
     where (unix_timestamp(stopped)-unix_timestamp(started))/60 > 30;
 
+
+-- queries for generating the per-meeting timeline charts
+select id, meeting_id, unix_timestamp(created), shared, likes, length(text), created_by_actor_id
+    INTO OUTFILE '/tmp/ideas.csv'
+         FIELDS TERMINATED BY '\t'
+         LINES TERMINATED BY '\n'
+    from tasks
+    where ;
+
+
+select id, meeting_id, unix_timestamp(created), unix_timestamp(started),unix_timestamp(stopped)
+    INTO OUTFILE '/tmp/topics.csv'
+         FIELDS TERMINATED BY '\t'
+         LINES TERMINATED BY '\n'
+    from topics;
+
+
+select id, unix_timestamp(started),unix_timestamp(stopped)
+    INTO OUTFILE '/tmp/meetings.csv'
+         FIELDS TERMINATED BY '\t'
+         LINES TERMINATED BY '\n'
+    from meetings;
+    
 -- queries to be written
     -- something to figure out the delay between ideas being created and
     -- dragged. 
