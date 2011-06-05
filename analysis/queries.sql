@@ -179,3 +179,14 @@ select id, unix_timestamp(started),unix_timestamp(stopped)
     -- something that sums up the total number of minutes of recording
     -- we have.
     
+    
+-- various counting queries for finding numbers I need for writing.
+
+
+select meetings.id, count(*) from meetings join topics on topics.meeting_id = meetings.id group by meetings.id;
+
+select meetings.id, count(*) from meetings join topics on topics.meeting_id = meetings.id where topics.started is not null group by meetings.id;
+
+
+
+    
