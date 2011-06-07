@@ -35,7 +35,7 @@ def sendmail(to, subject, body):
         msg['From'] = from_email
         msg['To'] = to
     
-        smtp_server.sendmail(from_email, [to], msg.as_string())
+        # smtp_server.sendmail(from_email, [to], msg.as_string())
     except Exception, e:
         logging.warning("Error sending email: " + str(e))
     
