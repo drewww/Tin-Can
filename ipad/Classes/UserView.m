@@ -27,7 +27,7 @@
 
 - (id) initWithUser:(User *)theUser {
 
-    self = [super initWithFrame:CGRectMake(0, 0, BASE_WIDTH, BASE_HEIGHT + HEIGHT_MARGIN) withDrawerView:[[TaskContainerView alloc] initWithFrame:CGRectMake(-[self getBaseWidth], +15, [self getBaseHeight]*2, 600) withRot:0.0 isMainView:NO]];
+    self = [super initWithFrame:CGRectMake(0, 0, BASE_WIDTH, BASE_HEIGHT + HEIGHT_MARGIN) withDrawerView:[[TaskContainerView alloc] initWithFrame:CGRectMake(-[self getBaseWidth], +15, [self getBaseWidth]*2, 600) withRot:0.0 isMainView:NO]];
 
     self.controller = nil;
     
