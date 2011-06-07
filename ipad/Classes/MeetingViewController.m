@@ -67,6 +67,9 @@
     trashView = [[[TrashView alloc] init] retain];
     [self.view addSubview:trashView];
     
+    // If we don't call this here, the trash won't get laid out properly unless there's another user in the room.
+    [self layoutUsers];
+    
     [[DragManager sharedInstance] setRootView:self.view andTaskContainer:taskContainer andTrashView:trashView];
 
 	[self.view bringSubviewToFront:meetingTimerView];
@@ -86,8 +89,8 @@
     queue = [[[NSOperationQueue alloc] init] retain];
     
     locBorderView = [[LocationBorderView alloc] initWithFrame:self.view.frame];
-    [self.view addSubview:locBorderView];
-    [self.view sendSubviewToBack:locBorderView];
+//    [self.view addSubview:locBorderView];
+//    [self.view sendSubviewToBack:locBorderView];
     
     timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(44, 409, 290, 208)];
     [self.view addSubview:timelineView];
