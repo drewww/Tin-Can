@@ -12,9 +12,9 @@
 @interface ExtendableDrawerView : UIView {
     UIViewController *controller;
     
-    TaskContainerView *taskContainerView;
+    UIView *drawerView;
     
-    bool taskDrawerExtended;
+    bool drawerExtended;
     bool userExtended;
     
     CGRect initialBounds;
@@ -26,6 +26,8 @@
 
     NSNumber *side;
 }
+
+- (id) initWithFrame:(CGRect)frame withDrawerView:(UIView *)theDrawerView;
 
 - (void) setDrawerExtended:(bool)extended;
 

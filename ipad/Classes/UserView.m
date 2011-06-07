@@ -27,7 +27,7 @@
 
 - (id) initWithUser:(User *)theUser {
 
-    self = [super initWithFrame:CGRectMake(0, 0, BASE_WIDTH, BASE_HEIGHT + HEIGHT_MARGIN)];
+    self = [super initWithFrame:CGRectMake(0, 0, BASE_WIDTH, BASE_HEIGHT + HEIGHT_MARGIN) withDrawerView:[[TaskContainerView alloc] initWithFrame:CGRectMake(-[self getBaseWidth], +15, [self getBaseHeight]*2, 600) withRot:0.0 isMainView:NO]];
 
     self.controller = nil;
     
@@ -57,7 +57,7 @@
 
 - (void) userTouched {
     // toggle draw extended state.
-    [self setDrawerExtended:!taskDrawerExtended];
+    [self setDrawerExtended:!drawerExtended];
     
     [controller userTaskDrawerExtended:self];
 }
@@ -67,7 +67,7 @@
     
     // Gonna need to do something about this - casting the drawer to what it's known to be
     // for this subclass. Or rather, we'll make it in the subclass. 
-    [taskContainerView addTaskView:[theTask getView]];
+    [(TaskContainerView *)drawerView addTaskView:[theTask getView]];
     
     [self setHoverState:false];
     [self setNeedsDisplay];
@@ -81,7 +81,6 @@
 - (void) setNeedsDisplay {
     [super setNeedsDisplay];
     [userRenderView setNeedsDisplay];
-    [taskContainerView setNeedsDisplay];
 }
 
 - (void) setHoverState:(bool)state {
@@ -179,7 +178,6 @@
 
 - (void)dealloc {    
     [userRenderView release];
-    [taskContainerView release];
     [super dealloc];
 }
 

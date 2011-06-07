@@ -20,27 +20,27 @@
 #define LEFT 3
 
 
-- (id) initWithFrame:(CGRect)frame {
+- (id) initWithFrame:(CGRect)frame withDrawerView:(UIView *)theDrawerView {
     self = [super initWithFrame:frame];
     
     self.controller = nil;
     
-    taskDrawerExtended = FALSE;
+    drawerExtended = FALSE;
 
     //the + 11 was to hide the container view well under the user
-    taskContainerView = [[[TaskContainerView alloc] initWithFrame:CGRectMake(-[self getBaseWidth], +15, [self getBaseHeight]*2, 600) withRot:0.0 isMainView:NO] retain];
-    [self addSubview:taskContainerView];
-    [taskContainerView setRot:0];
+    drawerView = [theDrawerView retain];
+    [self addSubview:drawerView];
+    [drawerView setRot:0];
 
     
-    [self sendSubviewToBack:taskContainerView];
+    [self sendSubviewToBack:drawerView];
     
-    taskContainerView.alpha = 0;
-	[UIView beginAnimations:@"fade_in" context:taskContainerView];
+    drawerView.alpha = 0;
+	[UIView beginAnimations:@"fade_in" context:drawerView];
 	
 	[UIView setAnimationDuration:.5f];
 	
-	taskContainerView.alpha = 1.0;
+	drawerView.alpha = 1.0;
 	
 	
 	[UIView commitAnimations];
@@ -60,13 +60,13 @@
 }
 
 - (void) setDrawerExtended:(bool)extended {
-    if(extended != taskDrawerExtended) {
+    if(extended != drawerExtended) {
         // If this is a change in the current state, trigger an animation
         // to update the situation.
         
         // This is implied by the previous if, but making it
         // explicit for readability.
-        if(taskDrawerExtended == false && extended==true) {
+        if(drawerExtended == false && extended==true) {
             [UIView beginAnimations:@"extend_drawer" context:nil];
             
             // Extend by the current height of the task drawer.
@@ -84,26 +84,26 @@
             switch([self.side intValue]) {
                 case 0:
                 case 2:
-                    yExtendAmount =  taskContainerView.bounds.size.height + [self getUserExtendHeight] + 50;
-                    xExtendAmount =  taskContainerView.bounds.size.width - self.bounds.size.width;
+                    yExtendAmount =  drawerView.bounds.size.height + [self getUserExtendHeight] + 50;
+                    xExtendAmount =  drawerView.bounds.size.width - self.bounds.size.width;
                     
-                    xOffsetAmount = ABS(taskContainerView.frame.origin.x - self.bounds.origin.x);
+                    xOffsetAmount = ABS(drawerView.frame.origin.x - self.bounds.origin.x);
                     
                     drawerExtendAmount = yExtendAmount;
                     
-                    taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y - yExtendAmount);
+                    drawerView.center = CGPointMake(drawerView.center.x, drawerView.center.y - yExtendAmount);
                     break;
                 case 1:
                 case 3:
-                    yExtendAmount =  taskContainerView.bounds.size.width + [self getUserExtendHeight] + 50;
-                    xExtendAmount =  taskContainerView.bounds.size.height - self.bounds.size.width;
+                    yExtendAmount =  drawerView.bounds.size.width + [self getUserExtendHeight] + 50;
+                    xExtendAmount =  drawerView.bounds.size.height - self.bounds.size.width;
                     
-                    xOffsetAmount = ABS(taskContainerView.frame.origin.x - self.bounds.origin.x);
+                    xOffsetAmount = ABS(drawerView.frame.origin.x - self.bounds.origin.x);
                     
                     drawerExtendAmount = yExtendAmount;
                     
                     
-                    taskContainerView.center = CGPointMake(taskContainerView.center.x, taskContainerView.center.y - yExtendAmount);
+                    drawerView.center = CGPointMake(drawerView.center.x, drawerView.center.y - yExtendAmount);
                     break;
                     
             }
@@ -157,7 +157,7 @@
             
             
             [UIView commitAnimations];
-            taskDrawerExtended = true;
+            drawerExtended = true;
             
             // Update the bounds of the UserView to include the task box.
             
@@ -173,14 +173,14 @@
             
             // We save this when we're laid out and the task container view
             // is put in its proper position. 
-            taskContainerView.frame = taskContainerViewInitialFrame;
+            drawerView.frame = taskContainerViewInitialFrame;
             
             self.frame = initialFrame;
             self.bounds = initialBounds;
             
             
             [UIView commitAnimations];        
-            taskDrawerExtended = false;
+            drawerExtended = false;
             
             [controller setBackdropHidden:TRUE];
         }
@@ -208,7 +208,7 @@
             newRot = -M_PI/2;
             break;
     }
-    taskContainerView.transform = CGAffineTransformMakeRotation(newRot);
+    drawerView.transform = CGAffineTransformMakeRotation(newRot);
     
     CGRect globalBounds;
     float distanceFromTop;
@@ -250,8 +250,8 @@
             break;
     }
     
-    taskContainerView.frame = initialDrawerFrame;
-    globalBounds = [self convertRect:taskContainerView.frame toView:self.superview];
+    drawerView.frame = initialDrawerFrame;
+    globalBounds = [self convertRect:drawerView.frame toView:self.superview];
     
     
     distanceFromLeft = CGRectGetMinY(globalBounds) - [self getContainerEdgeOffset];
@@ -272,14 +272,14 @@
         adjustment = distanceFromBottom * adjustDirection;
     }
     
-    taskContainerView.frame = CGRectMake(taskContainerView.frame.origin.x + adjustment,
-                                         taskContainerView.frame.origin.y,
-                                         taskContainerView.frame.size.width,
-                                         taskContainerView.frame.size.height);
+    drawerView.frame = CGRectMake(drawerView.frame.origin.x + adjustment,
+                                         drawerView.frame.origin.y,
+                                         drawerView.frame.size.width,
+                                         drawerView.frame.size.height);
     
-    globalBounds = [self convertRect:taskContainerView.frame toView:self.superview];
+    globalBounds = [self convertRect:drawerView.frame toView:self.superview];
     
-    taskContainerViewInitialFrame = taskContainerView.frame;
+    taskContainerViewInitialFrame = drawerView.frame;
 }
 
 
@@ -299,6 +299,10 @@
     return 180;
 }
 
+- (void)dealloc {    
+    [drawerView release];
+    [super dealloc];
+}
 
 
 
