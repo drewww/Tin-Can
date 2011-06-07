@@ -172,7 +172,7 @@
             
             // We save this when we're laid out and the task container view
             // is put in its proper position. 
-            drawerView.frame = taskContainerViewInitialFrame;
+            drawerView.frame = drawerInitialFrame;
             
             self.frame = initialFrame;
             self.bounds = initialBounds;
@@ -278,7 +278,7 @@
     
     globalBounds = [self convertRect:drawerView.frame toView:self.superview];
     
-    taskContainerViewInitialFrame = drawerView.frame;
+    drawerInitialFrame = drawerView.frame;
 }
 
 

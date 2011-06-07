@@ -20,7 +20,7 @@
     CGRect initialBounds;
     CGRect initialFrame;
     
-    CGRect taskContainerViewInitialFrame;
+    CGRect drawerInitialFrame;
     
     float drawerExtendAmount;
 

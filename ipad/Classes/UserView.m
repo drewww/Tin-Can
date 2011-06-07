@@ -46,9 +46,9 @@
 	
 	
     
-//    UIView *centerDot = [[UIView alloc] initWithFrame:CGRectMake(-3, -3, 6, 6)];
-//    centerDot.backgroundColor = [UIColor blackColor];
-//    [self addSubview:centerDot];
+    UIView *centerDot = [[UIView alloc] initWithFrame:CGRectMake(-3, -3, 6, 6)];
+    centerDot.backgroundColor = [UIColor blackColor];
+    [self addSubview:centerDot];
     
     return self;
 }

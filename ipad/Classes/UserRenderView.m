@@ -198,6 +198,8 @@
         xPos += TAB_MARGIN + TAB_WIDTH;
     }
     
+    CGContextSetStrokeColorWithColor(ctx, [UIColor whiteColor].CGColor);
+    CGContextStrokeRect(ctx, CGRectMake(-2, -2, 4, 4));
 
     // This is the right way to do it if we don't want any clumping. 
 //    for (int i=0; i<[user.tasks count]; i++) {
