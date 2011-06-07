@@ -11,6 +11,7 @@
 #import "TaskContainerView.h"
 #import "UserRenderView.h"
 #import "TaskDropTarget.h"
+#import "ExtendableDrawerView.h"
 
 #define BASE_HEIGHT 90
 #define BASE_WIDTH 180
@@ -31,41 +32,23 @@
 @class UserRenderView;
 @class MeetingViewController;
 
-@interface UserView : UIView <TaskDropTarget> {
 
-//    MeetingViewController *controller;
-    UIViewController *controller;
+@interface UserView : ExtendableDrawerView <TaskDropTarget> {
     
-    TaskContainerView *taskContainerView;
     UserRenderView *userRenderView;
     
-    bool taskDrawerExtended;
-    bool userExtended;
-        
-    CGRect initialBounds;
-    CGRect initialFrame;
-    
-    CGRect taskContainerViewInitialFrame;
-    
-    float drawerExtendAmount;
-    
-    bool doAutorevert;
-    
-    NSNumber *side;
+    bool doAutorevert;    
 }
 
 
-- (id) initWithUser:(User *)theUser withController:(MeetingViewController *)theController;
+- (id) initWithUser:(User *)theUser;
 
 - (void) userTouched;
-
-//- (UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event;
 
 - (void) taskAssigned:(Task *)theTask;
 - (void) taskRemoved:(Task *)theTask;
 
 - (void) setHoverState:(bool)state;
-- (void) setDrawerExtended:(bool)extended;
 
 - (void) setUserExtended:(bool)extended withAutorevert:(bool)autorevert;
 - (void) revertUserExtended;
@@ -75,10 +58,5 @@
 + (NSArray *) getAllUserViews;
 
 - (User *)getUser;
-
-- (void) wasLaidOut;
-
-@property (nonatomic, retain) NSNumber *side;
-@property (nonatomic, retain) UIViewController *controller;
 
 @end

@@ -40,6 +40,7 @@
 		3A95E0631264B92700518580 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A95E0621264B92700518580 /* QuartzCore.framework */; };
 		3AA06D1411AAD1C500C3D279 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AA06D1311AAD1C500C3D279 /* Icon.png */; };
 		3AA2DDE31261178800235573 /* full_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AA2DDE21261178800235573 /* full_logo.png */; };
+		3AAE2B3E139EC519008F2172 /* ExtendableDrawerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AAE2B3D139EC519008F2172 /* ExtendableDrawerView.m */; };
 		3AB0BC3811A5D73C003A91EB /* MeetingTimerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AB0BC3711A5D73C003A91EB /* MeetingTimerView.m */; };
 		3AC2B9D41198BB120071F912 /* UIColor+Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC2B9D31198BB120071F912 /* UIColor+Util.m */; };
 		3AC2BD8911A33DDE0071F912 /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC2BD7E11A33DDE0071F912 /* NSObject+SBJSON.m */; };
@@ -161,6 +162,8 @@
 		3A95E0621264B92700518580 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		3AA06D1311AAD1C500C3D279 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		3AA2DDE21261178800235573 /* full_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = full_logo.png; sourceTree = "<group>"; };
+		3AAE2B3C139EC519008F2172 /* ExtendableDrawerView.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = ExtendableDrawerView.h; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; wrapsLines = 1; };
+		3AAE2B3D139EC519008F2172 /* ExtendableDrawerView.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = ExtendableDrawerView.m; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; wrapsLines = 1; };
 		3AB0BC3611A5D73C003A91EB /* MeetingTimerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeetingTimerView.h; sourceTree = "<group>"; };
 		3AB0BC3711A5D73C003A91EB /* MeetingTimerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeetingTimerView.m; sourceTree = "<group>"; };
 		3AC2B9D21198BB120071F912 /* UIColor+Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+Util.h"; path = "Classes/UIColor+Util.h"; sourceTree = "<group>"; };
@@ -394,6 +397,8 @@
 				DA72601E1215A116008A0E0C /* LocationView.m */,
 				3A0B2C2D127B6AC7002C08A1 /* EventView.h */,
 				3A0B2C2C127B6AC7002C08A1 /* EventView.m */,
+				3AAE2B3C139EC519008F2172 /* ExtendableDrawerView.h */,
+				3AAE2B3D139EC519008F2172 /* ExtendableDrawerView.m */,
 				3AD66C4B120B0CBE00F974DA /* UserView.h */,
 				3AD66C4C120B0CBE00F974DA /* UserView.m */,
 				3AD66E59120B80C000F974DA /* UserRenderView.h */,
@@ -750,6 +755,7 @@
 				3A7EB0861381C00800B381A8 /* LocationViewController.m in Sources */,
 				3A242D1E1381C1F70060A039 /* LocationCell.m in Sources */,
 				3A242D211381C2210060A039 /* LocationCellView.m in Sources */,
+				3AAE2B3E139EC519008F2172 /* ExtendableDrawerView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
