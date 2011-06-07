@@ -64,8 +64,15 @@
 	[self.view addSubview:taskContainer];	
 	[self.view addSubview:topicContainer];
 
+    
+    // Manage some misc views that we'll want on the edges, too.
     trashView = [[[TrashView alloc] init] retain];
     [self.view addSubview:trashView];
+    
+    // Make sure to set the location later (it's just local location via StateManager, I suspect)
+    manageUsersView = [[ManageUsersView alloc] initWithLocation:nil];
+    manageUsersView.controller = self;
+    [self.view addSubview:manageUsersView];
     
     // If we don't call this here, the trash won't get laid out properly unless there's another user in the room.
     [self layoutUsers];
@@ -507,6 +514,7 @@
     NSMutableArray *finalSortedViews = [NSMutableArray arrayWithArray:sortedUserViews];
     
     [finalSortedViews addObject:trashView];
+    [finalSortedViews addObject:manageUsersView];
     sortedUserViews = finalSortedViews;
         
     int numViews = [sortedUserViews count];

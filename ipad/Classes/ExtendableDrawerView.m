@@ -30,7 +30,6 @@
     //the + 11 was to hide the container view well under the user
     drawerView = [theDrawerView retain];
     [self addSubview:drawerView];
-    [drawerView setRot:0];
 
     
     [self sendSubviewToBack:drawerView];
