@@ -27,14 +27,14 @@
 
 - (id) initWithUser:(User *)theUser {
 
-    self = [super initWithFrame:CGRectMake(0, 0, BASE_WIDTH, BASE_HEIGHT + HEIGHT_MARGIN) withDrawerView:[[TaskContainerView alloc] initWithFrame:CGRectMake(-[self getBaseWidth], +15, [self getBaseWidth]*2, 600) withRot:0.0 isMainView:NO]];
+    self = [super initWithFrame:CGRectMake(0, 0, [self getBaseWidth], [self getBaseHeight] + HEIGHT_MARGIN) withDrawerView:[[TaskContainerView alloc] initWithFrame:CGRectMake(-[self getBaseWidth], +15, [self getBaseWidth]*2, 600) withRot:0.0 isMainView:NO]];
 
     self.controller = nil;
     
     userRenderView = [[[UserRenderView alloc] initWithUser:theUser] retain];
     [self addSubview:userRenderView];
         
-    self.bounds = CGRectMake(-BASE_WIDTH/2, -(BASE_HEIGHT + HEIGHT_MARGIN)/2, BASE_WIDTH, BASE_HEIGHT + HEIGHT_MARGIN);
+    self.bounds = CGRectMake(-[self getBaseWidth]/2, -([self getBaseHeight] + HEIGHT_MARGIN)/2, [self getBaseWidth], [self getBaseHeight] + HEIGHT_MARGIN);
     //    self.center = CGPointMake(500, 500);
     
     userExtended = FALSE;
