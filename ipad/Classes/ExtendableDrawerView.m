@@ -59,6 +59,8 @@
 }
 
 - (void) setDrawerExtended:(bool)extended {
+    NSLog(@"setDrawerExtended: %d \t and we're on side: %d", extended, [self.side intValue]);
+    
     if(extended != drawerExtended) {
         // If this is a change in the current state, trigger an animation
         // to update the situation.
@@ -160,7 +162,8 @@
             
             // Update the bounds of the UserView to include the task box.
             
-            // Show the backdrop from the controller so 
+            // Show the backdrop from the controller so we can capture clicks outside the drawer
+            // and make the 
             [controller setBackdropHidden:FALSE];
             
         } else {

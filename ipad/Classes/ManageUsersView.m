@@ -48,36 +48,41 @@
     }
     
 
-    CGContextSetStrokeColorWithColor(ctx, [UIColor whiteColor].CGColor);
-    NSLog(@"bounds: %@", NSStringFromCGRect(self.bounds));
-    CGContextStrokeRect(ctx, self.bounds);
+//    CGContextSetStrokeColorWithColor(ctx, [UIColor whiteColor].CGColor);
+//    NSLog(@"bounds: %@", NSStringFromCGRect(self.bounds));
+//    CGContextStrokeRect(ctx, self.bounds);
+//    
+//    CGContextStrokeRect(ctx, CGRectMake(-2, -2, 4, 4));
     
-    CGContextStrokeRect(ctx, CGRectMake(-2, -2, 4, 4));
+    CGFloat topEdge;
     
-//    CGFloat topEdge;
-//    
-//    topEdge = -[self getBaseHeight]/2 +10;    
-//    CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.3 alpha:1.0].CGColor);
-//    
-//    [self fillRoundedRect:CGRectMake(-[self getBaseWidth]/2, topEdge, [self getBaseWidth], [self getBaseHeight]) withRadius:10 withRoundedBottom:true];        
-//    
-//    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-//    
-//    UIFont *f = [UIFont boldSystemFontOfSize:16];
-//    NSString *managerUsersTitle = @"Add Participant";
-//    
-//    CGSize stringSize = [[managerUsersTitle uppercaseString] sizeWithFont:f];
-//    
-//    CGContextSaveGState(ctx);
-//    if([self.side isEqualToNumber:[NSNumber numberWithInt:0]]) {
-//        CGContextRotateCTM(ctx, M_PI);
-//        [[managerUsersTitle uppercaseString] drawAtPoint:CGPointMake(-stringSize.width/2, 2) withFont:f];
-//    } else {
-//        [[managerUsersTitle uppercaseString] drawAtPoint:CGPointMake(-stringSize.width/2, -stringSize.height-2) withFont:f];
-//    }
-//    
+    topEdge = -[self getBaseHeight]/2 +10;    
+    CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.3 alpha:1.0].CGColor);
+    
+    [self fillRoundedRect:CGRectMake(-[self getBaseWidth]/2, topEdge, [self getBaseWidth], [self getBaseHeight]) withRadius:10 withRoundedBottom:true];        
+    
+    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+    
+    UIFont *f = [UIFont boldSystemFontOfSize:16];
+    NSString *managerUsersTitle = @"Add Participant";
+    
+    CGSize stringSize = [[managerUsersTitle uppercaseString] sizeWithFont:f];
+    
+    CGContextSaveGState(ctx);
+    if([self.side isEqualToNumber:[NSNumber numberWithInt:0]]) {
+        CGContextRotateCTM(ctx, M_PI);
+        [[managerUsersTitle uppercaseString] drawAtPoint:CGPointMake(-stringSize.width/2, 2) withFont:f];
+    } else {
+        [[managerUsersTitle uppercaseString] drawAtPoint:CGPointMake(-stringSize.width/2, -stringSize.height-2) withFont:f];
+    }
+    
 }
 
-
+- (void) wasLaidOut {
+    
+    NSLog(@"in WAS LAID OUT for MANAGE USERS VIEW. side: %d", [self.side intValue]);
+    
+    [super wasLaidOut];
+}
 
 @end

@@ -486,10 +486,16 @@
     // Send a message to all of them (except the one that actually extended)
     // to retract their own trask drawer.
     
+    // Going to need to add in the manage users view to this list eventually.
+    
     for (UserView *view in [UserView getAllUserViews]) {
             if(view != extendedView) {
                 [view setDrawerExtended:false];
         }
+    }
+    
+    if(extendedView != nil) {
+        [self setBackdropHidden:FALSE];
     }
 }
 
@@ -629,8 +635,8 @@
               
         [view setTransform:CGAffineTransformMakeRotation([[rotations objectAtIndex:viewIndex] floatValue])];
         
-        // The trash object is in here, too. 
-        if([view isKindOfClass:[UserView class]]) {
+        // The trash object is in here, too.
+        if([view isKindOfClass:[ExtendableDrawerView class]]) {
             view.side = [sidesList objectAtIndex:viewIndex];
             [view wasLaidOut];
         }
@@ -642,6 +648,7 @@
 }
 
 - (void) setBackdropHidden: (bool) hidden {
+    NSLog(@"Setting backdrop hidden: %d", hidden);
     backdropView.hidden = hidden;
 }
 
