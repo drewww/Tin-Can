@@ -74,7 +74,7 @@
 
 - (void) handleConnectionEvent:(Event *)event;
 
-- (void) userTaskDrawerExtended:(UserView *)extendedView;
+- (void) userTaskDrawerExtended:(UIView *)extendedView;
 
 - (void) addTaskButtonPressed:(id) sender;
 - (void) addTopicButtonPressed:(id) sender;

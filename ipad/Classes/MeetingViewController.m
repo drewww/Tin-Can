@@ -483,7 +483,7 @@
     }
 }
 
-- (void) userTaskDrawerExtended:(UserView *)extendedView {
+- (void) userTaskDrawerExtended:(UIView *)extendedView {
     
     // Loop through all our subviews and look for ones that are UserViews. 
     // Send a message to all of them (except the one that actually extended)
@@ -495,6 +495,10 @@
             if(view != extendedView) {
                 [view setDrawerExtended:false];
         }
+    }
+    
+    if(extendedView != manageUsersView) {
+        [manageUsersView setDrawerExtended:false];
     }
     
     if(extendedView != nil) {
