@@ -9,10 +9,10 @@
 #import <Foundation/Foundation.h>
 
 #import "ExtendableDrawerView.h"
-
+#import "ManageUsersRenderView.h"
 
 @interface ManageUsersView : ExtendableDrawerView {
-    
+    ManageUsersRenderView *renderView;
 }
 
 - (id) initWithLocation:(Location *)theLocation;

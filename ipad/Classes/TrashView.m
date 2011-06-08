@@ -67,10 +67,6 @@
     [self setNeedsDisplay];
 }
 
-- (void) wasLaidOut {
-    
-}
-
 - (void)dealloc {
     [super dealloc];
 }

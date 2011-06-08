@@ -80,6 +80,7 @@
 		3AD66E5B120B80C000F974DA /* UserRenderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD66E5A120B80C000F974DA /* UserRenderView.m */; };
 		3AD6A072131C55C900802D2D /* TrashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD6A071131C55C900802D2D /* TrashView.m */; };
 		3AD6A1BE131D94BA00802D2D /* UIView+Rounded.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AD6A1BD131D94BA00802D2D /* UIView+Rounded.m */; };
+		3AF7538C139FF147008ED26D /* ManageUsersRenderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AF7538B139FF147008ED26D /* ManageUsersRenderView.m */; };
 		DA707CCD1212F9C40057B509 /* TopicView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA707CCC1212F9C40057B509 /* TopicView.m */; };
 		DA707CD01212F9EB0057B509 /* TopicContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA707CCF1212F9EB0057B509 /* TopicContainerView.m */; };
 		DA72601F1215A116008A0E0C /* LocationView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA72601E1215A116008A0E0C /* LocationView.m */; };
@@ -237,6 +238,8 @@
 		3AD6A1BC131D94BA00802D2D /* UIView+Rounded.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+Rounded.h"; path = "Classes/UIView+Rounded.h"; sourceTree = "<group>"; };
 		3AD6A1BD131D94BA00802D2D /* UIView+Rounded.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+Rounded.m"; path = "Classes/UIView+Rounded.m"; sourceTree = "<group>"; };
 		3AE11A3D1253A49700A91BC8 /* TaskDropTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskDropTarget.h; sourceTree = "<group>"; };
+		3AF7538A139FF147008ED26D /* ManageUsersRenderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManageUsersRenderView.h; sourceTree = "<group>"; };
+		3AF7538B139FF147008ED26D /* ManageUsersRenderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageUsersRenderView.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* TinCan-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "TinCan-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		DA707CCB1212F9C40057B509 /* TopicView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicView.h; sourceTree = "<group>"; };
 		DA707CCC1212F9C40057B509 /* TopicView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicView.m; sourceTree = "<group>"; };
@@ -410,8 +413,6 @@
 				3AD2D0BB1294830A00C31515 /* CurrentTopicView.m */,
 				3AD6A070131C55C900802D2D /* TrashView.h */,
 				3AD6A071131C55C900802D2D /* TrashView.m */,
-				3AAE2B5D139EDDEC008F2172 /* ManageUsersView.h */,
-				3AAE2B5E139EDDED008F2172 /* ManageUsersView.m */,
 			);
 			name = "Type Views";
 			sourceTree = "<group>";
@@ -530,6 +531,17 @@
 			name = "Server Select";
 			sourceTree = "<group>";
 		};
+		3AF75389139FF11A008ED26D /* ManageUsers */ = {
+			isa = PBXGroup;
+			children = (
+				3AAE2B5D139EDDEC008F2172 /* ManageUsersView.h */,
+				3AAE2B5E139EDDED008F2172 /* ManageUsersView.m */,
+				3AF7538A139FF147008ED26D /* ManageUsersRenderView.h */,
+				3AF7538B139FF147008ED26D /* ManageUsersRenderView.m */,
+			);
+			name = ManageUsers;
+			sourceTree = "<group>";
+		};
 		DA96EFF811EE51E500B64D3D /* Meeting */ = {
 			isa = PBXGroup;
 			children = (
@@ -547,6 +559,7 @@
 				3A12613612AD4A63005D05FA /* Popovers */,
 				3A1260EB12AD3C4E005D05FA /* Containers */,
 				3A1260EA12AD3C34005D05FA /* Type Views */,
+				3AF75389139FF11A008ED26D /* ManageUsers */,
 			);
 			name = Meeting;
 			sourceTree = "<group>";
@@ -762,6 +775,7 @@
 				3A242D211381C2210060A039 /* LocationCellView.m in Sources */,
 				3AAE2B3E139EC519008F2172 /* ExtendableDrawerView.m in Sources */,
 				3AAE2B5F139EDDED008F2172 /* ManageUsersView.m in Sources */,
+				3AF7538C139FF147008ED26D /* ManageUsersRenderView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

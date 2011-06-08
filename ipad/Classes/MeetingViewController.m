@@ -635,7 +635,7 @@
               
         [view setTransform:CGAffineTransformMakeRotation([[rotations objectAtIndex:viewIndex] floatValue])];
         
-        // The trash object is in here, too.
+        // The trash object is in here, too.8
         if([view isKindOfClass:[ExtendableDrawerView class]]) {
             view.side = [sidesList objectAtIndex:viewIndex];
             [view wasLaidOut];
