@@ -104,6 +104,7 @@
 
     
     
+    
     // Add a pair of buttons for adding topics and adding tasks. This is instead of the + buttons on the 
     // container views for those types, which are absurdly hard to hit on an actual ipad.
     addTaskButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
@@ -156,6 +157,8 @@
     [self initUsers];
     [self initTasks];
     [self initTopics];
+    
+    [self.view bringSubviewToFront:manageUsersView];
     
     NSLog(@"Done loading view.");
     
