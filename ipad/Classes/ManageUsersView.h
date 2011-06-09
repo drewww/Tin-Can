@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "ManageUsersTableViewController.h"
 
 @interface ManageUsersView : UIView {
-    
+
+    ManageUsersTableViewController *tableController;
 }
 
 @end

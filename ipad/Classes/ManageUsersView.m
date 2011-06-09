@@ -15,9 +15,15 @@
 {
     self = [super initWithFrame:CGRectMake(0, 0, 984, 728)];
     if (self) {
-        self.backgroundColor = [UIColor redColor];
-        self.alpha = 0.8;
+        self.backgroundColor = [UIColor clearColor];
+        self.alpha = 1.0;
+    
+        tableController = [[ManageUsersTableViewController alloc] init];
+        [self addSubview:tableController.view];
+        tableController.view.center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
+    
     }
+    
     return self;
 }
 
@@ -26,9 +32,6 @@
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     
     CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-    
-    
-    [@"HELLO WORLD" drawInRect:self.bounds withFont:[UIFont boldSystemFontOfSize:72]];
     
 }
 

@@ -10,9 +10,10 @@
 #import "User.h"
 
 @interface ManageUsersTableViewController : UITableViewController {
-    NSArray *allUsers;
+    NSArray *userList;
 }
 
 - (void) extended;
+- (void) updateUsers;
 
 @end
