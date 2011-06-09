@@ -12,7 +12,7 @@
 #import "ManageUsersRenderView.h"
 #import "ManageUsersTableViewController.h"
 
-@interface ManageUsersView : ExtendableDrawerView {
+@interface ManageUsersContainerView : ExtendableDrawerView {
     ManageUsersRenderView *renderView;
     ManageUsersTableViewController *manageUsersViewController;
 }

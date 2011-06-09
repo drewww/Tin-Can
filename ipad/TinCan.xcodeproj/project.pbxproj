@@ -41,7 +41,7 @@
 		3AA06D1411AAD1C500C3D279 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AA06D1311AAD1C500C3D279 /* Icon.png */; };
 		3AA2DDE31261178800235573 /* full_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AA2DDE21261178800235573 /* full_logo.png */; };
 		3AAE2B3E139EC519008F2172 /* ExtendableDrawerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AAE2B3D139EC519008F2172 /* ExtendableDrawerView.m */; };
-		3AAE2B5F139EDDED008F2172 /* ManageUsersView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AAE2B5E139EDDED008F2172 /* ManageUsersView.m */; };
+		3AAE2B5F139EDDED008F2172 /* ManageUsersContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AAE2B5E139EDDED008F2172 /* ManageUsersContainerView.m */; };
 		3AB0BC3811A5D73C003A91EB /* MeetingTimerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AB0BC3711A5D73C003A91EB /* MeetingTimerView.m */; };
 		3AC2B9D41198BB120071F912 /* UIColor+Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC2B9D31198BB120071F912 /* UIColor+Util.m */; };
 		3AC2BD8911A33DDE0071F912 /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC2BD7E11A33DDE0071F912 /* NSObject+SBJSON.m */; };
@@ -167,8 +167,8 @@
 		3AA2DDE21261178800235573 /* full_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = full_logo.png; sourceTree = "<group>"; };
 		3AAE2B3C139EC519008F2172 /* ExtendableDrawerView.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = ExtendableDrawerView.h; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; wrapsLines = 1; };
 		3AAE2B3D139EC519008F2172 /* ExtendableDrawerView.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = ExtendableDrawerView.m; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; wrapsLines = 1; };
-		3AAE2B5D139EDDEC008F2172 /* ManageUsersView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManageUsersView.h; sourceTree = "<group>"; };
-		3AAE2B5E139EDDED008F2172 /* ManageUsersView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageUsersView.m; sourceTree = "<group>"; };
+		3AAE2B5D139EDDEC008F2172 /* ManageUsersContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; path = ManageUsersContainerView.h; sourceTree = "<group>"; };
+		3AAE2B5E139EDDED008F2172 /* ManageUsersContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageUsersContainerView.m; sourceTree = "<group>"; };
 		3AB0BC3611A5D73C003A91EB /* MeetingTimerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeetingTimerView.h; sourceTree = "<group>"; };
 		3AB0BC3711A5D73C003A91EB /* MeetingTimerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeetingTimerView.m; sourceTree = "<group>"; };
 		3AC2B9D21198BB120071F912 /* UIColor+Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+Util.h"; path = "Classes/UIColor+Util.h"; sourceTree = "<group>"; };
@@ -537,8 +537,8 @@
 		3AF75389139FF11A008ED26D /* ManageUsers */ = {
 			isa = PBXGroup;
 			children = (
-				3AAE2B5D139EDDEC008F2172 /* ManageUsersView.h */,
-				3AAE2B5E139EDDED008F2172 /* ManageUsersView.m */,
+				3AAE2B5D139EDDEC008F2172 /* ManageUsersContainerView.h */,
+				3AAE2B5E139EDDED008F2172 /* ManageUsersContainerView.m */,
 				3AF7538A139FF147008ED26D /* ManageUsersRenderView.h */,
 				3AF7538B139FF147008ED26D /* ManageUsersRenderView.m */,
 				3AF7538D13A00320008ED26D /* ManageUsersTableViewController.h */,
@@ -779,7 +779,7 @@
 				3A242D1E1381C1F70060A039 /* LocationCell.m in Sources */,
 				3A242D211381C2210060A039 /* LocationCellView.m in Sources */,
 				3AAE2B3E139EC519008F2172 /* ExtendableDrawerView.m in Sources */,
-				3AAE2B5F139EDDED008F2172 /* ManageUsersView.m in Sources */,
+				3AAE2B5F139EDDED008F2172 /* ManageUsersContainerView.m in Sources */,
 				3AF7538C139FF147008ED26D /* ManageUsersRenderView.m in Sources */,
 				3AF7538F13A00320008ED26D /* ManageUsersTableViewController.m in Sources */,
 			);

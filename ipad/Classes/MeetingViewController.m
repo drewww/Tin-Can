@@ -70,7 +70,7 @@
     [self.view addSubview:trashView];
     
     // Make sure to set the location later (it's just local location via StateManager, I suspect)
-    manageUsersView = [[ManageUsersView alloc] initWithLocation:nil];
+    manageUsersView = [[ManageUsersContainerView alloc] initWithLocation:nil];
     manageUsersView.controller = self;
     [self.view addSubview:manageUsersView];
     

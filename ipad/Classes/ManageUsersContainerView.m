@@ -6,11 +6,11 @@
 //  Copyright 2011 MIT Media Lab. All rights reserved.
 //
 
-#import "ManageUsersView.h"
+#import "ManageUsersContainerView.h"
 #import "UIView+Rounded.h"
 #import "ManageUsersTableViewController.h"
 
-@implementation ManageUsersView
+@implementation ManageUsersContainerView
 
 - (id) initWithLocation:(Location *)theLocation {
 

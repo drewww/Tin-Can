@@ -18,7 +18,7 @@
 #import "AddItemController.h"
 #import "TrashView.h"
 #import "BackdropView.h"
-#import "ManageUsersView.h"
+#import "ManageUsersContainerView.h"
 
 @class Todo;
 
@@ -56,7 +56,7 @@
     NSOperationQueue *queue;
     
     TrashView *trashView;
-    ManageUsersView *manageUsersView;
+    ManageUsersContainerView *manageUsersView;
     
     BackdropView *backdropView;
 }
