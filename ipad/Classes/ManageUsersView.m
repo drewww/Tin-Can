@@ -22,6 +22,12 @@
         [self addSubview:tableController.view];
         tableController.view.center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
     
+        UIView *transparentBackground = [[UIView alloc] initWithFrame:self.bounds];
+        transparentBackground.backgroundColor = [UIColor blackColor];
+        transparentBackground.alpha = 0.8;
+        
+        [self addSubview:transparentBackground];
+        [self sendSubviewToBack:transparentBackground];
     }
     
     return self;
