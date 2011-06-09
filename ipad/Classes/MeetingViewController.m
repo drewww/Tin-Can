@@ -498,6 +498,7 @@
     }
     
     if(extendedView != manageUsersView) {
+        NSLog(@"Setting MANAGE USERS VIEW to be retracted.");
         [manageUsersView setDrawerExtended:false];
     }
     
@@ -642,8 +643,13 @@
               
         [view setTransform:CGAffineTransformMakeRotation([[rotations objectAtIndex:viewIndex] floatValue])];
         
-        // The trash object is in here, too.8
+        // The trash object is in here, too.
         if([view isKindOfClass:[ExtendableDrawerView class]]) {
+            view.side = [sidesList objectAtIndex:viewIndex];
+            [view wasLaidOut];
+        }
+        
+        if([view isKindOfClass:[ManageUsersContainerView class]]) {
             view.side = [sidesList objectAtIndex:viewIndex];
             [view wasLaidOut];
         }

@@ -11,12 +11,27 @@
 #import "ExtendableDrawerView.h"
 #import "ManageUsersRenderView.h"
 #import "ManageUsersTableViewController.h"
+#import "ManageUsersView.h"
 
-@interface ManageUsersContainerView : ExtendableDrawerView {
+@interface ManageUsersContainerView : UIView {
+    ManageUsersView *mainView;
     ManageUsersRenderView *renderView;
-    ManageUsersTableViewController *manageUsersViewController;
+    
+    UIViewController *controller;
+    
+    NSNumber *side;
+
+    bool extended;
+    
+    CGPoint retractedCenter;
 }
 
 - (id) initWithLocation:(Location *)theLocation;
+- (void) wasLaidOut;
+- (void) setDrawerExtended:(bool)setExtended;
+
+@property (nonatomic, retain) UIViewController *controller;
+@property (nonatomic, retain) NSNumber *side;
+
 
 @end
