@@ -8,6 +8,7 @@
 
 #import "ManageUsersView.h"
 #import "UIView+Rounded.h"
+#import "ManageUsersTableViewController.h"
 
 @implementation ManageUsersView
 
@@ -15,7 +16,11 @@
 
     UIView *baseUIView = [[[UIView alloc] initWithFrame:CGRectMake(-[self getBaseWidth], +15, [self getBaseWidth]*2, 600)] autorelease];
     
-    self = [super initWithFrame:CGRectMake(0, 0, [self getBaseWidth], [self getBaseHeight]) withDrawerView:baseUIView];
+    manageUsersViewController = [[ManageUsersTableViewController alloc] init];
+    manageUsersViewController.view.frame = CGRectMake(-[self getBaseWidth], +15, [self getBaseWidth]*2, 600);
+    
+    
+    self = [super initWithFrame:CGRectMake(0, 0, [self getBaseWidth], [self getBaseHeight]) withDrawerView:manageUsersViewController.view];
     
     self.controller = nil;
     
@@ -36,8 +41,11 @@
     NSLog(@"Got a touch on the ManageUsersView!");
     
     [self setDrawerExtended:!drawerExtended];
+    [manageUsersViewController extended];
     
     [controller userTaskDrawerExtended:self];
+    
+    
 }
 
 - (void) wasLaidOut {

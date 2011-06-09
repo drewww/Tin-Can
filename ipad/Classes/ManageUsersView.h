@@ -10,9 +10,11 @@
 
 #import "ExtendableDrawerView.h"
 #import "ManageUsersRenderView.h"
+#import "ManageUsersTableViewController.h"
 
 @interface ManageUsersView : ExtendableDrawerView {
     ManageUsersRenderView *renderView;
+    ManageUsersTableViewController *manageUsersViewController;
 }
 
 - (id) initWithLocation:(Location *)theLocation;
