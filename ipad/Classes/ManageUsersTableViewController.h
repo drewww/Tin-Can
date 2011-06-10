@@ -15,5 +15,7 @@
 
 - (void) extended;
 - (void) updateUsers;
+- (void) setRow:(NSIndexPath *)indexPath toSelectedState:(bool) selected;
+- (void) setUser:(User *)user toSelectedState:(bool) selected;
 
 @end

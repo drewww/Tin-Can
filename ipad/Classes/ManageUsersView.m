@@ -39,6 +39,12 @@
     return self;
 }
 
+- (void) setExtended:(_Bool)toExtended {
+    extended = toExtended;
+    
+    [tableController updateUsers];
+}
+
 - (void) drawRect:(CGRect)rect {
     
     CGContextRef ctx = UIGraphicsGetCurrentContext();

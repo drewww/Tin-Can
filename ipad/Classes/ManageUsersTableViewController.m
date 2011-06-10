@@ -50,6 +50,15 @@
     
     [userList sortUsingDescriptors:descriptors];
     
+    // now loop through them and see if they're in our location. If they are, then mark them as such.
+    NSLog(@"IN UPDATE USERS");
+    Location *ourLocation = [StateManager sharedInstance].location;
+    for (User *user in ourLocation.users) {
+        // Check them off.
+        [self setUser:user toSelectedState:true];
+    }
+    
+    
 }
 
 //- (void)extended {
@@ -121,11 +130,35 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    NSLog(@"didSelectRowAtIndexPath: %@", indexPath);
+    UITableViewCell *thisCell = [tableView cellForRowAtIndexPath:indexPath];
+    
+    
+    if (thisCell.accessoryType == UITableViewCellAccessoryNone) {
+        [self setRow:indexPath toSelectedState:true];
+    }else{
+        [self setRow:indexPath toSelectedState:false];        
+    }
     
 //    if(_delegate != nil) {
 //        [self.delegate userSelected:[allUsers objectAtIndex:indexPath.row]];
 //    }
+}
+
+- (void)setUser:(User *)user toSelectedState:(bool) selected {
+    [self setRow:[NSIndexPath indexPathForRow:[userList indexOfObject:user] inSection:0] toSelectedState:selected];
+}
+
+- (void)setRow:(NSIndexPath *)indexPath toSelectedState:(bool) selected{
+    
+    UITableViewCell *thisCell = [self.view cellForRowAtIndexPath:indexPath];
+    
+    if (selected) {
+        thisCell.accessoryType = UITableViewCellAccessoryCheckmark;
+        
+    }else{
+        thisCell.accessoryType = UITableViewCellAccessoryNone;
+        
+    }
 }
 
 
