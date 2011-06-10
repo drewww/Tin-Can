@@ -12,6 +12,9 @@
 @interface ManageUsersView : UIView {
 
     ManageUsersTableViewController *tableController;
+    bool extended;
 }
+
+@property (assign) bool extended;
 
 @end

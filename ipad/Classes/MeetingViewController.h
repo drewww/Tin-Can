@@ -56,7 +56,10 @@
     NSOperationQueue *queue;
     
     TrashView *trashView;
-    ManageUsersContainerView *manageUsersView;
+    ManageUsersContainerView *manageUsersButtonView;
+    
+    ManageUsersView *manageUsersView;
+    CGPoint initialManageUsersCenter;
     
     BackdropView *backdropView;
 }
@@ -81,6 +84,9 @@
 
 - (void) backdropTouchedFrom: (id) sender;
 - (void) setBackdropHidden: (bool) hidden;
+
+- (void) setManageUsersView:(bool) extended;
+- (void) toggleManageUsers;
 
 @end
 

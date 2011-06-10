@@ -70,9 +70,9 @@
     [self.view addSubview:trashView];
     
     // Make sure to set the location later (it's just local location via StateManager, I suspect)
-    manageUsersView = [[ManageUsersContainerView alloc] initWithLocation:nil];
-    manageUsersView.controller = self;
-    [self.view addSubview:manageUsersView];
+    manageUsersButtonView = [[ManageUsersContainerView alloc] initWithLocation:nil];
+    manageUsersButtonView.controller = self;
+    [self.view addSubview:manageUsersButtonView];
     
     // If we don't call this here, the trash won't get laid out properly unless there's another user in the room.
     [self layoutUsers];
@@ -158,7 +158,7 @@
     [self initTasks];
     [self initTopics];
     
-    [self.view bringSubviewToFront:manageUsersView];
+    [self.view bringSubviewToFront:manageUsersButtonView];
     
     NSLog(@"Done loading view.");
     
@@ -178,6 +178,17 @@
     connectionInfoLabel.font = [UIFont boldSystemFontOfSize:30.0f];
     connectionInfoLabel.layer.cornerRadius = 8;    
     connectionInfoLabel.alpha = 0.9;
+    
+    
+    manageUsersView = [[ManageUsersView alloc] init];
+    
+    // Could maybe do something fancy with grabbing this on first storage in the manageUsersView
+    // class, but I'm so tired of this whole sequence that I don't want to add any complexity.
+    initialManageUsersCenter = CGPointMake(384+768, 512);
+    manageUsersView.center = initialManageUsersCenter;
+    manageUsersView.transform = CGAffineTransformMakeRotation(M_PI/2);
+    [self.view addSubview:manageUsersView];
+    [self.view bringSubviewToFront:manageUsersView];
     
 }
 
@@ -483,6 +494,36 @@
     }
 }
 
+
+- (void) toggleManageUsers {
+    [self setManageUsersView:!manageUsersView.extended];
+}
+
+- (void) setManageUsersView:(bool) extended {
+    
+    
+    CGPoint newCenter;
+    if(extended) {
+        // This will hide other drawers.
+        [self userTaskDrawerExtended:manageUsersButtonView];
+        newCenter = CGPointMake(384, 512);
+        manageUsersView.extended = true;
+    } else {
+        newCenter = initialManageUsersCenter;
+        manageUsersView.extended = false;
+    }
+    
+    
+    // now to actually extend the drawer.
+    [UIView beginAnimations:@"extend_manage_users" context:nil];
+    
+    manageUsersView.center = newCenter;
+    
+    [UIView commitAnimations];
+    
+    
+}
+
 - (void) userTaskDrawerExtended:(UIView *)extendedView {
     
     // Loop through all our subviews and look for ones that are UserViews. 
@@ -497,9 +538,9 @@
         }
     }
     
-    if(extendedView != manageUsersView) {
+    if(extendedView != manageUsersButtonView) {
         NSLog(@"Setting MANAGE USERS VIEW to be retracted.");
-        [manageUsersView setDrawerExtended:false];
+        [self setManageUsersView:FALSE];
     }
     
     if(extendedView != nil) {
@@ -528,7 +569,7 @@
     NSMutableArray *finalSortedViews = [NSMutableArray arrayWithArray:sortedUserViews];
     
     [finalSortedViews addObject:trashView];
-    [finalSortedViews addObject:manageUsersView];
+    [finalSortedViews addObject:manageUsersButtonView];
     sortedUserViews = finalSortedViews;
         
     int numViews = [sortedUserViews count];
@@ -651,7 +692,7 @@
         
         if([view isKindOfClass:[ManageUsersContainerView class]]) {
             view.side = [sidesList objectAtIndex:viewIndex];
-            [view wasLaidOut];
+//            [view wasLaidOut];
         }
         
         viewIndex++;

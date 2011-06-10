@@ -11,10 +11,14 @@
 
 @implementation ManageUsersView
 
+@synthesize extended;
+
 - (id)init
 {
     self = [super initWithFrame:CGRectMake(0, 0, 984, 728)];
     if (self) {
+        
+        NSLog(@"MAKING A MANAGE USERS VIEW@@@@@@@@@@@");
         self.backgroundColor = [UIColor clearColor];
         self.alpha = 1.0;
     
@@ -28,6 +32,8 @@
         
         [self addSubview:transparentBackground];
         [self sendSubviewToBack:transparentBackground];
+        
+        self.extended = false;
     }
     
     return self;

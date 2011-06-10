@@ -14,7 +14,6 @@
 #import "ManageUsersView.h"
 
 @interface ManageUsersContainerView : UIView {
-    ManageUsersView *mainView;
     ManageUsersRenderView *renderView;
     
     UIViewController *controller;
@@ -27,11 +26,10 @@
 }
 
 - (id) initWithLocation:(Location *)theLocation;
-- (void) wasLaidOut;
 - (void) setDrawerExtended:(bool)setExtended;
 
 @property (nonatomic, retain) UIViewController *controller;
 @property (nonatomic, retain) NSNumber *side;
-
+@property (assign) bool extended;
 
 @end
