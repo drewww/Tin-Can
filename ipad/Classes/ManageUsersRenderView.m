@@ -55,7 +55,7 @@
     
     UIFont *f = [UIFont boldSystemFontOfSize:16];
     
-    NSString *name = @"Add People";
+    NSString *name = @"MANAGE USERS";
     CGSize nameSize = [name sizeWithFont:f];
     
     [name drawAtPoint:CGPointMake(-nameSize.width/2, -nameSize.height-2) withFont:f];

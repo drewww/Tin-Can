@@ -15,7 +15,7 @@
 
 - (id)init
 {
-    self = [super initWithFrame:CGRectMake(0, 0, 984, 728)];
+    self = [super initWithFrame:CGRectMake(0, 0, 344, 668)];
     if (self) {
         
         NSLog(@"MAKING A MANAGE USERS VIEW@@@@@@@@@@@");
@@ -24,7 +24,7 @@
     
         tableController = [[ManageUsersTableViewController alloc] init];
         [self addSubview:tableController.view];
-        tableController.view.center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
+        tableController.view.center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2 + 35);
     
         UIView *transparentBackground = [[UIView alloc] initWithFrame:self.bounds];
         transparentBackground.backgroundColor = [UIColor blackColor];
@@ -49,7 +49,14 @@
     
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     
+    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.8 alpha:1.0].CGColor);
+    CGContextSetLineWidth(ctx, 5);
+    CGContextStrokeRect(ctx, self.bounds);
+    
+    CGContextSetStrokeColorWithColor(ctx, [UIColor whiteColor].CGColor);
     CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+    
+    [@"Tap names to mark them as in the room with you. Tap anywhere else to dismiss." drawInRect:CGRectMake(10, 10, self.bounds.size.width - 20, 80) withFont:[UIFont boldSystemFontOfSize:20]];
     
 }
 

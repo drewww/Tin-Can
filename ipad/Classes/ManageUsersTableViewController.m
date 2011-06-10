@@ -29,7 +29,7 @@
     
 //    [self addSubview:tableController.view];
 
-    self.view.bounds = CGRectMake(0, 0, 300, 600);
+    self.view.bounds = CGRectMake(0, 0, 300, 555);
     
     [self updateUsers];
     
@@ -54,6 +54,7 @@
     // now loop through them and see if they're in our location. If they are, then mark them as such.
     NSLog(@"IN UPDATE USERS");
     Location *ourLocation = [StateManager sharedInstance].location;
+    NSLog(@"Location users: %@", ourLocation.users);
     for (User *user in ourLocation.users) {
         // Check them off.
         [self setUser:user toSelectedState:true];
@@ -171,7 +172,7 @@
     if(selected==true && currentState == false) {
         // Then we need to have them join.
         [[ConnectionManager sharedInstance] joinLocation:[StateManager sharedInstance].location withUser:[userList objectAtIndex:indexPath.row]];
-    } else {
+    } else if(selected==false && currentState == true) {
         // have them leave!
         [[ConnectionManager sharedInstance] leaveLocation:[StateManager sharedInstance].location withUser:[userList objectAtIndex:indexPath.row]];
     }
