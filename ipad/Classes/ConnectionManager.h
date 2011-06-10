@@ -81,6 +81,8 @@
 #pragma mark State Manipulation Methods
 
 - (void) joinLocation:(Location *)locationToJoin withUser:(User *)userJoiningLocation;
+- (void) leaveLocation:(Location *)locationToLeave withUser:(User *)userLeavingLocation;
+
 - (void) joinRoomWithUUID:(UUID *)roomUUID;
 //- (void) leaveRoomWithUUID:(UUID *)roomUUID;
 

@@ -576,6 +576,15 @@ static NSString *selectedServer = nil;
     [request startAsynchronous];    
 }
 
+- (void) leaveLocation:(Location *)locationToLeave withUser:(User *)userLeavingLocation {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/locations/leave"]];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request setPostValue:locationToLeave.uuid forKey:@"locationUUID"];    
+    [request setPostValue:userLeavingLocation.uuid forKey:@"userUUID"];    
+    [request setDelegate:self];
+    [request startAsynchronous];    
+}
+
 - (void) joinRoomWithUUID:(UUID *)roomUUID {
     
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/rooms/join"]];

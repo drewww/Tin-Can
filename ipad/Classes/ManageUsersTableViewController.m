@@ -8,6 +8,7 @@
 
 #import "ManageUsersTableViewController.h"
 #import "StateManager.h"
+#import "ConnectionManager.h"
 
 @implementation ManageUsersTableViewController
 
@@ -152,6 +153,13 @@
     
     UITableViewCell *thisCell = [self.view cellForRowAtIndexPath:indexPath];
     
+    
+    bool currentState = false;
+    if(thisCell.accessoryType == UITableViewCellAccessoryCheckmark) {
+        // It's already selected. We want to detect transitions.
+        currentState = true;
+    }
+    
     if (selected) {
         thisCell.accessoryType = UITableViewCellAccessoryCheckmark;
         
@@ -159,6 +167,15 @@
         thisCell.accessoryType = UITableViewCellAccessoryNone;
         
     }
+    
+    if(selected==true && currentState == false) {
+        // Then we need to have them join.
+        [[ConnectionManager sharedInstance] joinLocation:[StateManager sharedInstance].location withUser:[userList objectAtIndex:indexPath.row]];
+    } else {
+        // have them leave!
+        [[ConnectionManager sharedInstance] leaveLocation:[StateManager sharedInstance].location withUser:[userList objectAtIndex:indexPath.row]];
+    }
+    
 }
 
 

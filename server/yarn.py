@@ -563,17 +563,31 @@ class LeaveLocationHandler(BaseHandler):
     def post(self):
         actor = self.get_current_actor()
         
-        locationUUID = self.get_argument("locationUUID")
-        location = state.get_obj(locationUUID, Location)
-        if(location==None):
-            raise HTTPError(400, "Specified location UUID %s\
-            didn't exist or wasn't a valid location."%locationUUID)
-            return None
+        if(isinstance(actor, model.User)):        
+            locationUUID = self.get_argument("locationUUID")
+            location = state.get_obj(locationUUID, Location)
+            if(location==None):
+                raise HTTPError(400, "Specified location UUID %s\
+                didn't exist or wasn't a valid location."%locationUUID)
+                return None
         
-        # Trigger the actual event.
-        leaveLocationEvent = Event("USER_LEFT_LOCATION", actor.uuid,
-            params={"location":location.uuid})
-        leaveLocationEvent.dispatch()
+            # Trigger the actual event.
+            leaveLocationEvent = Event("USER_LEFT_LOCATION", actor.uuid,
+                params={"location":location.uuid})
+            leaveLocationEvent.dispatch()
+        else:
+            locationUUID = self.get_argument("locationUUID")
+            location = state.get_obj(locationUUID, Location)
+            if(location==None):
+                raise HTTPError(400, "Specified location UUID %s\
+                didn't exist or wasn't a valid location."%locationUUID)
+                return None
+            
+            userUUID = self.get_argument("userUUID")
+            
+            leaveLocationEvent = Event("USER_LEFT_LOCATION", userUUID,
+                params={"location":location.uuid})
+            leaveLocationEvent.dispatch()
         
 
 class EditMeetingHandler(BaseHandler):
