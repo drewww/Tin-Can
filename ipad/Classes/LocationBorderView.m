@@ -34,7 +34,14 @@
     
     // Drawing code
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
-    NSLog(@"Redrawing the border view.");
+    
+    // We need to clear the view, so when we go from a state where there's something to draw to a state
+    // where there's nothing to draw, it's empty. 
+    
+    CGContextSetFillColorWithColor(ctx, [UIColor blackColor].CGColor);
+    CGContextFillRect(ctx, self.bounds);
+    
+    NSLog(@"Redrawing the border view!");
     
     // Okay, on each draw cycle we'll look at the list of user views
     // and draw lines between users that are in the same location.
@@ -42,6 +49,7 @@
     NSArray *locations = [[StateManager sharedInstance].meeting.locations allObjects];
     
     for (Location *loc in locations) {
+        NSLog(@"Handling location: %@", loc);
         
         // If there are no users in this location, skip it.
         if([loc.users count]==0) {
@@ -57,6 +65,9 @@
         for(int i=0; i<[users count]-1; i++) {
             User *user = [users objectAtIndex:i];
             User *nextUser = [users objectAtIndex:i+1];
+
+            NSLog(@"handling user: %d -> %@", i, user);
+            
             
             UIView *userView = [user getView];
             UIView *nextUserView = [nextUser getView];
