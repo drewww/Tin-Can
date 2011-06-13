@@ -635,9 +635,9 @@ def _handleNewTask(event):
     #                 taskPair[1].shared = True
     
     event.meeting.addTask(newTask)
-    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "created new idea", "time": newTask.createdAt}))
+    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "created new task", "time": newTask.createdAt}))
     
-    event.meeting.eventHistoryReadable.append(event.actor.name+" created a new idea ("+text+")")
+    event.meeting.eventHistoryReadable.append(event.actor.name+" created a new task ("+text+")")
     
     return event
 
@@ -648,11 +648,11 @@ def _handleDeleteTask(event):
     deletedAt = time.time()
     
     event.meeting.removeTask(task)
-    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "deleted idea", "time": deletedAt}))
+    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "deleted task", "time": deletedAt}))
     #needed to keep track of statuses on client-side
     event.params["deletedAt"] = deletedAt
     
-    event.meeting.eventHistoryReadable.append(event.actor.name+" deleted idea ("+task.text+")")
+    event.meeting.eventHistoryReadable.append(event.actor.name+" deleted task ("+task.text+")")
     
     return event
 
@@ -661,10 +661,10 @@ def _handleEditTask(event):
     task = state.get_obj(event.params["taskUUID"], model.Task)
     editedAt = time.time()
     
-    event.meeting.eventHistoryReadable.append(event.actor.name+" changed idea ("+task.text+") to idea ("+text+")")
+    event.meeting.eventHistoryReadable.append(event.actor.name+" changed task ("+task.text+") to task ("+text+")")
     
     task.setText(text)
-    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "edited idea", "time": editedAt}))
+    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "edited task", "time": editedAt}))
     #needed to keep track of statuses on client-side
     event.params["editedAt"] = editedAt
     
@@ -683,15 +683,15 @@ def _handleAssignTask(event):
     if(not deassign):
         assignedTo = state.get_obj(event.params["assignedTo"], model.User)
         task.assign(assignedBy,assignedTo, None)
-        event.queue(e.Event("UPDATE_STATUS", assignedBy.uuid, None, {"status": "moved idea", "time": task.assignedAt}))
-        event.queue(e.Event("UPDATE_STATUS", assignedTo.uuid, None, {"status": "claimed idea", "time": task.assignedAt}))
+        event.queue(e.Event("UPDATE_STATUS", assignedBy.uuid, None, {"status": "moved task", "time": task.assignedAt}))
+        event.queue(e.Event("UPDATE_STATUS", assignedTo.uuid, None, {"status": "claimed task", "time": task.assignedAt}))
         
-        event.meeting.eventHistoryReadable.append(assignedBy.name + " moved idea ("+task.text+") to "+assignedTo.name)
+        event.meeting.eventHistoryReadable.append(assignedBy.name + " moved task ("+task.text+") to "+assignedTo.name)
     else:
         task.deassign(assignedBy)
-        event.queue(e.Event("UPDATE_STATUS", assignedBy.uuid, None, {"status": "deassigned idea", "time": task.assignedAt}))
+        event.queue(e.Event("UPDATE_STATUS", assignedBy.uuid, None, {"status": "deassigned task", "time": task.assignedAt}))
         
-        event.meeting.eventHistoryReadable.append(assignedBy.name + " deassigned idea ("+task.text+")")
+        event.meeting.eventHistoryReadable.append(assignedBy.name + " deassigned task ("+task.text+")")
 
     event.params["assignedAt"]=task.assignedAt
     return event
@@ -706,8 +706,8 @@ def _handleLikeTask(event):
     
     # TODO need to make this time get saved properly, otherwise I worry that
     # replaying will break on these kinds of events.
-    event.queue(e.Event("UPDATE_STATUS", liker.uuid, None, {"status": "liked idea", "time": time.time()}))
-    event.meeting.eventHistoryReadable.append(liker.name + " liked idea \""+task.text+"\"")
+    event.queue(e.Event("UPDATE_STATUS", liker.uuid, None, {"status": "liked task", "time": time.time()}))
+    event.meeting.eventHistoryReadable.append(liker.name + " liked task \""+task.text+"\"")
     
     return event
 

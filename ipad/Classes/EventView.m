@@ -77,7 +77,7 @@
                                                     withType:[Location class]];
                 
                 user = (User *)[state getObjWithUUID:event.actorUUID withType:[User class]];
-                displayString = [NSString stringWithFormat:@"%@ is now browsing.", user.name];
+                displayString = [NSString stringWithFormat:@"%@ has left.", user.name];
                 displayImage = [UIImage imageNamed:@"user_delete.png"];
                 break;
             case kUPDATE_TOPIC:
@@ -98,7 +98,7 @@
             case kNEW_TASK:
                 actor = (Actor *)[state getObjWithUUID:event.actorUUID withType:[Actor class]];
                 task = [event.results objectForKey:@"task"];
-                displayString = [NSString stringWithFormat:@"%@ added idea \"%@\"", actor.name, [task.text excerptBeyondLength:25]];
+                displayString = [NSString stringWithFormat:@"%@ added task \"%@\"", actor.name, [task.text excerptBeyondLength:25]];
                 displayImage = [UIImage imageNamed:@"note_add.png"];
                 break;
             case kASSIGN_TASK:
