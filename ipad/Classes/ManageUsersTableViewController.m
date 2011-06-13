@@ -38,8 +38,24 @@
 
 
 - (void)updateUsers {
+    NSMutableArray *allUsers = [[NSMutableArray alloc] initWithArray:[[[StateManager sharedInstance] getUsers] allObjects]];
     
-    userList = [[NSMutableArray alloc] initWithArray:[[[StateManager sharedInstance] getUsers] allObjects]];
+    [userList release];
+    
+    userList = [[[NSMutableArray alloc] init] retain];
+    
+    // Now we need to remove people who are in locations other than ours.
+    for (User *user in allUsers) {
+        if(user.location != nil && user.location != [StateManager sharedInstance].location) {
+            // If a location is set and it's not our local location, leave them out.
+            NSLog(@"found a user in another location: %@", user);
+        } else {
+            NSLog(@"found a user not in any location (or in our location): %@", user);
+            [userList addObject:user];
+        }
+        
+    }
+    
     
     NSSortDescriptor *descriptor =
     [[[NSSortDescriptor alloc]
@@ -58,9 +74,7 @@
     for (User *user in ourLocation.users) {
         // Check them off.
         [self setUser:user toSelectedState:true];
-    }
-    
-    
+    }    
 }
 
 //- (void)extended {

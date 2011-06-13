@@ -10,7 +10,7 @@
 #import "User.h"
 
 @interface ManageUsersTableViewController : UITableViewController {
-    NSArray *userList;
+    NSMutableArray *userList;
 }
 
 - (void) updateUsers;
