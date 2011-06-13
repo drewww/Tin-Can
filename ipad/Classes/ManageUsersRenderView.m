@@ -7,6 +7,7 @@
 //
 
 #import "ManageUsersRenderView.h"
+#import "ManageUsersContainerView.h"
 #import "UIView+Rounded.h"
 
 // This is a bit of a convenience class. It renders the bit of the manage users interface
@@ -40,6 +41,8 @@
 
 
 - (void)drawRect:(CGRect)rect {
+    NSLog(@"In draw rect for ManageUsersRenderView with side: %@", ((ManageUsersContainerView *)self.superview).side);
+    
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     
     CGContextSetFillColorWithColor(ctx, COLOR.CGColor);
@@ -58,7 +61,17 @@
     NSString *name = @"MANAGE USERS";
     CGSize nameSize = [name sizeWithFont:f];
     
-    [name drawAtPoint:CGPointMake(-nameSize.width/2, -nameSize.height-2) withFont:f];
+    
+    CGContextSaveGState(ctx);
+    if([((ManageUsersContainerView *)self.superview).side isEqualToNumber:[NSNumber numberWithInt:0]]) {
+        CGContextRotateCTM(ctx, M_PI);
+        [[name uppercaseString] drawAtPoint:CGPointMake(-nameSize.width/2, 3) withFont:f];
+    } else {
+        [[name uppercaseString] drawAtPoint:CGPointMake(-nameSize.width/2, -nameSize.height-3) withFont:f];
+    }
+    
+    CGContextRestoreGState(ctx);
+
 }
 
 

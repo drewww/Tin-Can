@@ -70,7 +70,7 @@
     [self.view addSubview:trashView];
     
     // Make sure to set the location later (it's just local location via StateManager, I suspect)
-    manageUsersButtonView = [[ManageUsersContainerView alloc] initWithLocation:nil];
+    manageUsersButtonView = [[ManageUsersContainerView alloc] init];
     manageUsersButtonView.controller = self;
     [self.view addSubview:manageUsersButtonView];
     
@@ -102,8 +102,6 @@
     timelineView=[[TimelineContainerView alloc] initWithFrame:CGRectMake(44, 409, 290, 208)];
     [self.view addSubview:timelineView];
 
-    
-    
     
     // Add a pair of buttons for adding topics and adding tasks. This is instead of the + buttons on the 
     // container views for those types, which are absurdly hard to hit on an actual ipad.
@@ -147,12 +145,6 @@
     
     addTopicPopoverController = [[UIPopoverController alloc] initWithContentViewController:addTopicController];
     [addTopicPopoverController setPopoverContentSize:CGSizeMake(300, 100)];
-    
-    
-//    SetUserButton *setUserButton = [[SetUserButton alloc] init];
-//    setUserButton.center = CGPointMake(30, 945);
-//    [self.view addSubview:setUserButton];
-    
     
     [self initUsers];
     [self initTasks];
@@ -692,7 +684,7 @@
         
         if([view isKindOfClass:[ManageUsersContainerView class]]) {
             view.side = [sidesList objectAtIndex:viewIndex];
-//            [view wasLaidOut];
+            [view setNeedsDisplay];
         }
         
         viewIndex++;

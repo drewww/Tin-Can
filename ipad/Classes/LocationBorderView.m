@@ -34,7 +34,7 @@
     
     // Drawing code
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
-
+    NSLog(@"Redrawing the border view.");
     
     // Okay, on each draw cycle we'll look at the list of user views
     // and draw lines between users that are in the same location.

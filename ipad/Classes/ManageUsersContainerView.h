@@ -19,17 +19,13 @@
     UIViewController *controller;
     
     NSNumber *side;
-
-    bool extended;
     
     CGPoint retractedCenter;
 }
 
-- (id) initWithLocation:(Location *)theLocation;
-- (void) setDrawerExtended:(bool)setExtended;
+- (id) init;
 
 @property (nonatomic, retain) UIViewController *controller;
 @property (nonatomic, retain) NSNumber *side;
-@property (assign) bool extended;
 
 @end
