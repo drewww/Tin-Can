@@ -49,9 +49,24 @@
         
         // figure out the duration
         UIFont *durationFont = [UIFont boldSystemFontOfSize:42];
-        NSString *topicDurationString = [NSString stringWithFormat:@"for %.0fm", floor([curTopic.startTime timeIntervalSinceNow]*-1/60.0)];
+        
+        // TODO make a version of this that does seconds so the bar grows more continuously 
+        int duration = floor([curTopic.startTime timeIntervalSinceNow]*-1/60.0);
+        
+        NSLog(@"duration: %d", duration);
+        
+        // Now draw the growing rectangle depending on how long the topic has been going on.
+        float widthFraction = duration/60.0f;
+        
+        
+        // Need to set a reasonably high alpha on this color. 
+        CGContextSetFillColorWithColor(ctx, curTopic.color.CGColor);
+        CGContextFillRect(ctx, CGRectMake(934/2 - widthFraction*934/2, 209, widthFraction*934, 70));
+
+        CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+        NSString *topicDurationString = [NSString stringWithFormat:@"for %dm", duration];
         CGSize topicDurationSize = [topicDurationString sizeWithFont:durationFont];        
-        [topicDurationString drawInRect:CGRectMake(934/2 - topicDurationSize.width/2, 209, topicDurationSize.width, topicDurationSize.height) withFont:durationFont];
+        [topicDurationString drawInRect:CGRectMake(934/2 - topicDurationSize.width/2, 209, topicDurationSize.width, topicDurationSize.height) withFont:durationFont];        
     }
 }
 
