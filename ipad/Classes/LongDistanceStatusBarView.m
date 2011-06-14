@@ -7,6 +7,7 @@
 //
 
 #import "LongDistanceStatusBarView.h"
+#import "StateManager.h"
 
 // The status bar that sits in the middle of the long distance view
 // and shows the current time, number of upcoming topics, and 
@@ -45,12 +46,10 @@
     
     [clockString drawInRect:CGRectMake(934/2-clockSize.width/2, 120/2-clockSize.height/2, clockSize.width, clockSize.height) withFont:clockFont];
     
+    // Pull the task/topic count from state.    
+    NSString *numUnclaimedTasks = [NSString stringWithFormat:@"%d",[[[StateManager sharedInstance].meeting getUnassignedTasks] count],nil];
     
-    
-    
-    // 90 wide
-    NSString *numUnclaimedTasks = @"33";
-    NSString *numUpcomingTopics = @"33";
+    NSString *numUpcomingTopics = [NSString stringWithFormat:@"%d",[[[StateManager sharedInstance].meeting getUpcomingTopics] count],nil];
     
     [numUnclaimedTasks drawInRect:CGRectMake(0, 0, 130, 120) withFont:clockFont];
     [numUpcomingTopics drawInRect:CGRectMake(934-130, 0, 130, 120) withFont:clockFont lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentRight];

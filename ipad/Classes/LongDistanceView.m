@@ -41,6 +41,11 @@
     [statusBar clk];
 }
 
+- (void) setNeedsDisplay {
+    [statusBar setNeedsDisplay];
+    [topic setNeedsDisplay];
+    [recentEvents setNeedsDisplay];
+}
 
 - (void)dealloc
 {

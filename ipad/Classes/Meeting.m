@@ -99,6 +99,8 @@
             [unassignedTasks addObject:task];
         }
     }
+    
+    NSLog(@"returning unassignedTasks: %@", unassignedTasks);
     return unassignedTasks;
 }
 
@@ -111,6 +113,19 @@
     }
     
     return nil;
+}
+
+// Returns just topics that have not been started yet.
+- (NSSet *) getUpcomingTopics {
+    NSMutableSet *upcomingTopics = [NSMutableSet set];
+    
+    for (Topic *t in self.topics) {
+        if(t.status==kFUTURE) {
+            [upcomingTopics addObject:t];
+        }
+    }
+    
+    return [NSSet setWithSet:upcomingTopics];
 }
 
 - (void) unswizzle {

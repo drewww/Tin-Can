@@ -330,13 +330,14 @@
             NSLog(@"adding new topic");
             // Add the topic to the topic list.
             [topicContainer addTopicView:[[event.results objectForKey:@"topic"] getView]];
+            [longDistanceView setNeedsDisplay];
             break;
             
         case kUPDATE_TOPIC:
             [topicContainer setNeedsLayout];
             
             [currentTopicView setTopic:[state.meeting getCurrentTopic]];
-            
+            [longDistanceView setNeedsDisplay];            
             break;
             
         case kNEW_TASK:
@@ -356,7 +357,7 @@
             }
             
             // Is there a different way to do this? In this c
-            
+            [longDistanceView setNeedsDisplay];
             break;
             
         case kDELETE_TASK:
@@ -384,7 +385,7 @@
                 
                 [task startAssignToUser:assignedTo byActor:assignedBy atTime:assignedAt];
             }
-                        
+            [longDistanceView setNeedsDisplay];
             break;
             
         case kEDIT_MEETING:
