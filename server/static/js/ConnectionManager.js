@@ -812,7 +812,8 @@ ConnectionManager.prototype = {
             url: '/tasks/add',
             type: "POST",
             context: this,
-            data: {"text":text, "createInPool": true},
+            data: {"text":text, "createInPool": "1", "createdBy":
+                this.userUUID},
             success: function () {
                 this.publishEvent(this.generateEvent("NEW_TASK_COMPLETE",
                     {}));
