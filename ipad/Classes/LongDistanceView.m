@@ -32,9 +32,13 @@
         [self addSubview:topic];
         [self addSubview:recentEvents];
         
-        self.transform = CGAffineTransformMakeRotation(-M_PI/2);
+        self.transform = CGAffineTransformMakeRotation(M_PI/2);
     }
     return self;
+}
+
+- (void) clk {
+    [statusBar clk];
 }
 
 

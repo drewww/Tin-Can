@@ -20,4 +20,6 @@
     
 }
 
+- (void) clk;
+
 @end

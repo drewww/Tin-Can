@@ -17,19 +17,40 @@
 {
     self = [super initWithFrame:CGRectMake(0, 279, 934, 120)];
     if (self) {
-        self.backgroundColor = [UIColor redColor];
+        self.backgroundColor = [UIColor clearColor];
+        
+        formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"H:mm"];
     }
     return self;
 }
 
-/*
+
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
 {
-    // Drawing code
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    
+    // This has three sections - a clock in the center, and two indicators on 
+    // either side. We'll start by rendering the clock.
+    
+    // Make a string for the time.
+    NSString *clockString = [formatter stringFromDate:curTime];
+    
+    UIFont *clockFont = [UIFont boldSystemFontOfSize:110];
+    
+    CGSize clockSize = [clockString sizeWithFont:clockFont];
+    
+    [clockString drawInRect:CGRectMake(934/2-clockSize.width/2, 120/2-clockSize.height/2, clockSize.width, clockSize.height) withFont:clockFont];
 }
-*/
+
+- (void) clk {
+    [curTime release];
+    curTime = [[NSDate date] retain];
+    
+    [self setNeedsDisplay];
+}
 
 - (void)dealloc
 {

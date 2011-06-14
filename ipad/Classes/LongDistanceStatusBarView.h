@@ -10,7 +10,10 @@
 
 
 @interface LongDistanceStatusBarView : UIView {
-    
+    NSDate *curTime;
+    NSDateFormatter *formatter;
 }
+
+- (void) clk;
 
 @end

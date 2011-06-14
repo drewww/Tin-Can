@@ -760,6 +760,7 @@
     [meetingTimerView clk];
     [topicContainer setNeedsDisplay];
     [currentTopicView setNeedsDisplay];
+    [longDistanceView clk];
 }   
 
 
