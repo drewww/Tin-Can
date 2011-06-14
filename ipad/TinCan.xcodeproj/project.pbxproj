@@ -64,6 +64,10 @@
 		3AC6BB5A1200D4610002FD52 /* Topic.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC6BB591200D4610002FD52 /* Topic.m */; };
 		3AC6BB5F1200D6050002FD52 /* BaseMeetingObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC6BB5E1200D6050002FD52 /* BaseMeetingObject.m */; };
 		3AC6BB7C1200F0280002FD52 /* Task.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AC6BB7B1200F0280002FD52 /* Task.m */; };
+		3ACFA19113A7E50700DB527B /* LongDistanceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFA19013A7E50700DB527B /* LongDistanceView.m */; };
+		3ACFA19413A7E6D700DB527B /* LongDistanceStatusBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFA19313A7E6D700DB527B /* LongDistanceStatusBarView.m */; };
+		3ACFA19713A7E74100DB527B /* LongDistanceCurrentTopicView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFA19613A7E74100DB527B /* LongDistanceCurrentTopicView.m */; };
+		3ACFA19A13A7E79100DB527B /* LongDistanceRecentEventsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFA19913A7E79100DB527B /* LongDistanceRecentEventsView.m */; };
 		3AD2CFB41293198400C31515 /* note_add.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AD2CFAE1293198400C31515 /* note_add.png */; };
 		3AD2CFB51293198400C31515 /* note_go.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AD2CFAF1293198400C31515 /* note_go.png */; };
 		3AD2CFB61293198400C31515 /* time_add.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AD2CFB01293198400C31515 /* time_add.png */; };
@@ -214,6 +218,14 @@
 		3AC6BB5E1200D6050002FD52 /* BaseMeetingObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseMeetingObject.m; sourceTree = "<group>"; };
 		3AC6BB7A1200F0280002FD52 /* Task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Task.h; sourceTree = "<group>"; };
 		3AC6BB7B1200F0280002FD52 /* Task.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Task.m; sourceTree = "<group>"; };
+		3ACFA18F13A7E50700DB527B /* LongDistanceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LongDistanceView.h; sourceTree = "<group>"; };
+		3ACFA19013A7E50700DB527B /* LongDistanceView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LongDistanceView.m; sourceTree = "<group>"; };
+		3ACFA19213A7E6D700DB527B /* LongDistanceStatusBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LongDistanceStatusBarView.h; sourceTree = "<group>"; };
+		3ACFA19313A7E6D700DB527B /* LongDistanceStatusBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LongDistanceStatusBarView.m; sourceTree = "<group>"; };
+		3ACFA19513A7E74100DB527B /* LongDistanceCurrentTopicView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LongDistanceCurrentTopicView.h; sourceTree = "<group>"; };
+		3ACFA19613A7E74100DB527B /* LongDistanceCurrentTopicView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LongDistanceCurrentTopicView.m; sourceTree = "<group>"; };
+		3ACFA19813A7E79100DB527B /* LongDistanceRecentEventsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LongDistanceRecentEventsView.h; sourceTree = "<group>"; };
+		3ACFA19913A7E79100DB527B /* LongDistanceRecentEventsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LongDistanceRecentEventsView.m; sourceTree = "<group>"; };
 		3AD2CFAE1293198400C31515 /* note_add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = note_add.png; path = ../../../code/TinCan/ipad/note_add.png; sourceTree = SOURCE_ROOT; };
 		3AD2CFAF1293198400C31515 /* note_go.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = note_go.png; path = ../../../code/TinCan/ipad/note_go.png; sourceTree = SOURCE_ROOT; };
 		3AD2CFB01293198400C31515 /* time_add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = time_add.png; path = ../../../code/TinCan/ipad/time_add.png; sourceTree = SOURCE_ROOT; };
@@ -528,6 +540,21 @@
 			path = ASIHTTPRequest;
 			sourceTree = "<group>";
 		};
+		3ACFA18E13A7E42700DB527B /* LongDistance */ = {
+			isa = PBXGroup;
+			children = (
+				3ACFA18F13A7E50700DB527B /* LongDistanceView.h */,
+				3ACFA19013A7E50700DB527B /* LongDistanceView.m */,
+				3ACFA19213A7E6D700DB527B /* LongDistanceStatusBarView.h */,
+				3ACFA19313A7E6D700DB527B /* LongDistanceStatusBarView.m */,
+				3ACFA19513A7E74100DB527B /* LongDistanceCurrentTopicView.h */,
+				3ACFA19613A7E74100DB527B /* LongDistanceCurrentTopicView.m */,
+				3ACFA19813A7E79100DB527B /* LongDistanceRecentEventsView.h */,
+				3ACFA19913A7E79100DB527B /* LongDistanceRecentEventsView.m */,
+			);
+			name = LongDistance;
+			sourceTree = "<group>";
+		};
 		3AD2D2F91296F99200C31515 /* Server Select */ = {
 			isa = PBXGroup;
 			children = (
@@ -566,6 +593,7 @@
 				3A82D448126F9CD5007AFA3D /* LocationBorderView.m */,
 				3A9304341337D54800A83A44 /* BackdropView.h */,
 				3A9304351337D54900A83A44 /* BackdropView.m */,
+				3ACFA18E13A7E42700DB527B /* LongDistance */,
 				3A12613612AD4A63005D05FA /* Popovers */,
 				3A1260EB12AD3C4E005D05FA /* Containers */,
 				3A1260EA12AD3C34005D05FA /* Type Views */,
@@ -788,6 +816,10 @@
 				3AF7538C139FF147008ED26D /* ManageUsersRenderView.m in Sources */,
 				3AF7538F13A00320008ED26D /* ManageUsersTableViewController.m in Sources */,
 				3AF7539213A1234E008ED26D /* ManageUsersView.m in Sources */,
+				3ACFA19113A7E50700DB527B /* LongDistanceView.m in Sources */,
+				3ACFA19413A7E6D700DB527B /* LongDistanceStatusBarView.m in Sources */,
+				3ACFA19713A7E74100DB527B /* LongDistanceCurrentTopicView.m in Sources */,
+				3ACFA19A13A7E79100DB527B /* LongDistanceRecentEventsView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
