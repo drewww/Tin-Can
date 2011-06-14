@@ -15,7 +15,7 @@
 
 - (id)init
 {
-    self = [super initWithFrame:CGRectMake(0, 0, 934, 120)];
+    self = [super initWithFrame:CGRectMake(0, 279, 934, 120)];
     if (self) {
         self.backgroundColor = [UIColor redColor];
     }

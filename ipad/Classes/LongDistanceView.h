@@ -8,8 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+#import "LongDistanceStatusBarView.h"
+#import "LongDistanceRecentEventsView.h"
+#import "LongDistanceCurrentTopicView.h"
 
 @interface LongDistanceView : UIView {
+
+    LongDistanceStatusBarView *statusBar;
+    LongDistanceCurrentTopicView *topic;
+    LongDistanceRecentEventsView *recentEvents;
     
 }
 

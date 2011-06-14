@@ -19,6 +19,7 @@
 #import "TrashView.h"
 #import "BackdropView.h"
 #import "ManageUsersContainerView.h"
+#import "LongDistanceView.h"
 
 @class Todo;
 
@@ -62,6 +63,8 @@
     CGPoint initialManageUsersCenter;
     
     BackdropView *backdropView;
+    
+    LongDistanceView *longDistanceView;
 }
 
 

@@ -172,7 +172,7 @@
     connectionInfoLabel.alpha = 0.9;
     
     
-    manageUsersView = [[ManageUsersView alloc] init];
+    manageUsersView = [[[ManageUsersView alloc] init] retain];
     
     // Could maybe do something fancy with grabbing this on first storage in the manageUsersView
     // class, but I'm so tired of this whole sequence that I don't want to add any complexity.
@@ -182,6 +182,13 @@
     [self.view addSubview:manageUsersView];
     [self.view bringSubviewToFront:manageUsersView];
     
+    // Create the long distance view.
+    // In the final version, this will start hidden and appear later. But for now, we're going
+    // to create it and have it shown immediately.
+    longDistanceView = [[[LongDistanceView alloc] init] retain];
+    longDistanceView.frame = CGRectMake(45, 45, longDistanceView.frame.size.width, longDistanceView.frame.size.height);
+    [self.view addSubview:longDistanceView];
+    [self.view bringSubviewToFront:longDistanceView];
 }
 
 
@@ -737,6 +744,9 @@
     [taskViews release];
     
     [queue release];
+    
+    [longDistanceView release];
+    [manageUsersView release];
     
     [clock invalidate];
 }

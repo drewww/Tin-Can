@@ -14,7 +14,7 @@
 
 - (id)init
 {
-    self = [super initWithFrame:CGRectMake(0, 0, 934, 279)];
+    self = [super initWithFrame:CGRectMake(0, 399, 934, 279)];
     if (self) {
         self.backgroundColor = [UIColor blueColor];
     }
