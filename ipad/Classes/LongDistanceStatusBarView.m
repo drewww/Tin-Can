@@ -31,6 +31,7 @@
 - (void)drawRect:(CGRect)rect
 {
     CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
     
     // This has three sections - a clock in the center, and two indicators on 
     // either side. We'll start by rendering the clock.
@@ -43,6 +44,27 @@
     CGSize clockSize = [clockString sizeWithFont:clockFont];
     
     [clockString drawInRect:CGRectMake(934/2-clockSize.width/2, 120/2-clockSize.height/2, clockSize.width, clockSize.height) withFont:clockFont];
+    
+    
+    
+    
+    // 90 wide
+    NSString *numUnclaimedTasks = @"33";
+    NSString *numUpcomingTopics = @"33";
+    
+    [numUnclaimedTasks drawInRect:CGRectMake(0, 0, 130, 120) withFont:clockFont];
+    [numUpcomingTopics drawInRect:CGRectMake(934-130, 0, 130, 120) withFont:clockFont lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentRight];
+    
+    CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.7 alpha:1.0].CGColor);
+    
+    // Okay, now we need to handle the left and right side indicators. 
+    NSString *unclaimedTasks = @"unclaimed tasks";
+    NSString *upcomingTopics = @"upcoming topics";
+    
+    UIFont *labelFont = [UIFont boldSystemFontOfSize:36];
+    
+    [unclaimedTasks drawInRect:CGRectMake(130, 20, 200, 100) withFont:labelFont];
+    [upcomingTopics drawInRect:CGRectMake(934-200-130, 20, 200, 100) withFont:labelFont lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentRight];
 }
 
 - (void) clk {

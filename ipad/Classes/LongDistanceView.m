@@ -20,7 +20,7 @@
     self = [super initWithFrame:CGRectMake(0, 0, 934, 678)];
     if (self) {
 
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor blackColor];
 
         statusBar = [[[LongDistanceStatusBarView alloc] init] retain];
         topic = [[[LongDistanceCurrentTopicView alloc] init] retain];
