@@ -29,6 +29,8 @@
 
 @implementation MeetingViewController
 
+#define LONG_DISTANCE_VIEW_TIMEOUT 10
+
 #pragma mark Application Events
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
@@ -189,6 +191,10 @@
     longDistanceView.frame = CGRectMake(45, 45, longDistanceView.frame.size.width, longDistanceView.frame.size.height);
     [self.view addSubview:longDistanceView];
     [self.view bringSubviewToFront:longDistanceView];
+    longDistanceView.hidden = true;
+
+    lastTouch = [[NSDate date] retain];
+
 }
 
 
@@ -735,6 +741,25 @@
     meetingTimerView = nil;
 }
 
+- (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    [lastTouch release];
+    lastTouch = [[NSDate date] retain];
+    
+    [self setLongDistanceViewVisible:false];
+}
+
+- (void) setLongDistanceViewVisible:(bool) visible {
+    
+    if(longDistanceView.hidden && visible) {
+        // transition to visibility
+        longDistanceView.hidden = false;
+        
+    } else if (!longDistanceView.hidden && !visible) {
+        // transition to invisibility
+        longDistanceView.hidden = true;
+    }
+    
+}
 
 - (void)dealloc {
     [super dealloc];
@@ -763,6 +788,14 @@
     [topicContainer setNeedsDisplay];
     [currentTopicView setNeedsDisplay];
     [longDistanceView clk];
+    
+    
+    // Check to see if it's been more than the LONG_DISTANCE_VIEW_TIMEOUT
+    // If it has, bring in the long distance view.
+    NSLog(@"checking time since last touch: %@ -> %d", lastTouch, [lastTouch timeIntervalSinceNow]);
+    if(abs([lastTouch timeIntervalSinceNow]) > LONG_DISTANCE_VIEW_TIMEOUT) {
+        [self setLongDistanceViewVisible:true];
+    }
 }   
 
 

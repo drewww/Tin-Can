@@ -65,6 +65,8 @@
     BackdropView *backdropView;
     
     LongDistanceView *longDistanceView;
+    NSDate *lastTouch;
+    
 }
 
 
@@ -91,5 +93,6 @@
 - (void) setManageUsersView:(bool) extended;
 - (void) toggleManageUsers;
 
+- (void) setLongDistanceViewVisible:(bool) visible;
 @end
 
