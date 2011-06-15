@@ -751,12 +751,23 @@
 - (void) setLongDistanceViewVisible:(bool) visible {
     
     if(longDistanceView.hidden && visible) {
-        // transition to visibility
         longDistanceView.hidden = false;
+        [UIView animateWithDuration:1.0
+                         animations:^{ 
+                             longDistanceView.alpha = 1.0;
+                         } 
+                         completion:^(BOOL finished){
+                         }];
         
     } else if (!longDistanceView.hidden && !visible) {
         // transition to invisibility
-        longDistanceView.hidden = true;
+        [UIView animateWithDuration:1.0
+                         animations:^{ 
+                             longDistanceView.alpha = 0.0;
+                         } 
+                         completion:^(BOOL finished){
+                             longDistanceView.hidden = true;
+                         }];
     }
     
 }
@@ -792,7 +803,6 @@
     
     // Check to see if it's been more than the LONG_DISTANCE_VIEW_TIMEOUT
     // If it has, bring in the long distance view.
-    NSLog(@"checking time since last touch: %@ -> %d", lastTouch, [lastTouch timeIntervalSinceNow]);
     if(abs([lastTouch timeIntervalSinceNow]) > LONG_DISTANCE_VIEW_TIMEOUT) {
         [self setLongDistanceViewVisible:true];
     }
