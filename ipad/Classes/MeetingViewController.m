@@ -29,7 +29,7 @@
 
 @implementation MeetingViewController
 
-#define LONG_DISTANCE_VIEW_TIMEOUT 10
+#define LONG_DISTANCE_VIEW_TIMEOUT 45
 
 #pragma mark Application Events
 

@@ -32,7 +32,10 @@
         [self addSubview:topic];
         [self addSubview:recentEvents];
         
-        self.transform = CGAffineTransformMakeRotation(M_PI/2);
+        self.transform = CGAffineTransformMakeRotation(M_PI_2);
+        curRot = M_PI/2;
+        
+        [NSTimer scheduledTimerWithTimeInterval:60.0 target:self selector:@selector(flipView:) userInfo:nil repeats:true];
     }
     return self;
 }
@@ -50,6 +53,17 @@
 
 - (void) handleConnectionEvent:(Event *)event {
     [recentEvents newEvent:event];
+}
+
+- (void) flipView:(id)sender {
+    [UIView animateWithDuration:1.0 animations:^{
+        if(curRot > 0)
+            curRot = -M_PI_2;
+        else
+            curRot = M_PI_2;
+        
+        self.transform = CGAffineTransformMakeRotation(curRot);
+    }];
 }
 
 - (void)dealloc

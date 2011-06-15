@@ -17,10 +17,12 @@
     LongDistanceStatusBarView *statusBar;
     LongDistanceCurrentTopicView *topic;
     LongDistanceRecentEventsView *recentEvents;
-    
+
+    float curRot;
 }
 
 - (void) clk;
 - (void) handleConnectionEvent:(Event *)event;
+- (void) flipView:(id)sender;
 
 @end
