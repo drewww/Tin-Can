@@ -43,6 +43,7 @@
 - (void) clk {
     [statusBar clk];
     [topic setNeedsDisplay];
+    [recentEvents setNeedsDisplay];
 }
 
 - (void) setNeedsDisplay {

@@ -80,7 +80,6 @@
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
 {
-    NSLog(@"drawing RecentEventView!");
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
     
@@ -101,6 +100,7 @@
     NSString *text;
     Topic *topic;
     Task *task;
+    float ageFraction;
     
     if(mostRecentEvent == nil) {
         // Do nothing, for now.
@@ -115,6 +115,14 @@
             else
                 label = @"left meeting";
 
+            // Over 3 minutes fade to 0.6 from 1.0.
+            
+            ageFraction = abs([mostRecentEvent.timestamp timeIntervalSinceNow])/180.0;
+            
+            NSLog(@"ageFraction: %f", ageFraction);
+            CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.5+0.5*(1-ageFraction) alpha:1.0].CGColor);
+
+            
             [actor.name drawInRect:CGRectMake(5, 5, nameSize.width, nameSize.height) withFont:nameFont];
             
             labelSize = [label sizeWithFont:labelFont constrainedToSize:CGSizeMake(934-nameSize.width, INT_MAX)];
@@ -180,7 +188,12 @@
                     break;
                     
             }
-                        
+                      
+            
+            // Over 3 minutes fade to 0.6 from 1.0.
+            ageFraction = abs([mostRecentEvent.timestamp timeIntervalSinceNow])/180.0;
+            CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.5+0.5*(1-ageFraction) alpha:1.0].CGColor);
+            
             [actor.name drawInRect:CGRectMake(5, 5, nameSize.width, nameSize.height) withFont:nameFont];
             
             // With the label, we want a minimum width of 115, but allow it to be bigger if space permits. 
