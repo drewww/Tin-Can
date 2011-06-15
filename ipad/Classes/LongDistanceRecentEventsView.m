@@ -92,7 +92,7 @@
             
             labelSize = [label sizeWithFont:labelFont constrainedToSize:CGSizeMake(934-nameSize.width, INT_MAX)];
                         
-            [label drawInRect:CGRectMake(5+nameSize.width + 15, 5 + 50-labelSize.height/2, 934-nameSize.width, labelSize.height) withFont:labelFont];
+            [label drawInRect:CGRectMake(5+nameSize.width + 15, 5 + 50-labelSize.height/2, labelSize.width, labelSize.height) withFont:labelFont];
             
             break;
             
@@ -163,7 +163,7 @@
             // origin.            
             labelSize = [label sizeWithFont:labelFont constrainedToSize:CGSizeMake(934-nameSize.width, INT_MAX)];
             
-            [label drawInRect:CGRectMake(5+nameSize.width + 15, 5 + 50-labelSize.height/2, 934-nameSize.width, labelSize.height) withFont:labelFont];
+            [label drawInRect:CGRectMake(5+nameSize.width + 15, 5 + 50-labelSize.height/2, labelSize.width, labelSize.height) withFont:labelFont];
 
             [text drawInRect:CGRectMake(5, nameSize.height+10, 915, 120) withFont:labelFont];
             
