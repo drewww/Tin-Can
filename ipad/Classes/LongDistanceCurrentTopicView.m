@@ -58,13 +58,16 @@
         
         
         // Need to set a reasonably high alpha on this color. 
-        CGContextSetFillColorWithColor(ctx, curTopic.color.CGColor);
+        CGContextSetFillColorWithColor(ctx, [curTopic.color colorWithAlphaComponent:0.5].CGColor);
+        
+        
+        
         CGContextFillRect(ctx, CGRectMake(934/2 - widthFraction*934/2, 209, widthFraction*934, 70));
 
         CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
         NSString *topicDurationString = [NSString stringWithFormat:@"for %dm", duration];
         CGSize topicDurationSize = [topicDurationString sizeWithFont:durationFont];        
-        [topicDurationString drawInRect:CGRectMake(934/2 - topicDurationSize.width/2, 209, topicDurationSize.width, topicDurationSize.height) withFont:durationFont];        
+        [topicDurationString drawInRect:CGRectMake(934/2 - topicDurationSize.width/2, 218, topicDurationSize.width, topicDurationSize.height) withFont:durationFont];        
     }
 }
 
