@@ -14,5 +14,6 @@
 }
 
 - (void)newEvent:(Event *)newEvent;
+- (void) flash:(id)sender;
 
 @end

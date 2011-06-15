@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Topic.h"
 
 
 @interface LongDistanceCurrentTopicView : UIView {
-    
+    Topic *lastTopic;
 }
 
 @end

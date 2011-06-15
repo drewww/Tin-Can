@@ -8,7 +8,6 @@
 
 #import "LongDistanceCurrentTopicView.h"
 #import "StateManager.h"
-#import "Topic.h"
 
 // Shows the text of the current topic, as well as how long
 // the topic has been going on for.
@@ -20,6 +19,7 @@
     self = [super initWithFrame:CGRectMake(0, 0, 934, 279)];
     if (self) {
         self.backgroundColor = [UIColor blackColor];
+        lastTopic = nil;
     }
     return self;
 }
@@ -36,6 +36,24 @@
     
     // Drawing code
     Topic *curTopic = [[StateManager sharedInstance].meeting getCurrentTopic];
+    
+    if(curTopic!=lastTopic) {
+        // trigger a flash.
+        NSLog(@"FLASHING");
+        [UIView animateWithDuration:0.2 animations:^{
+            self.backgroundColor = [UIColor colorWithWhite:0.7 alpha:1.0];
+        } completion: ^(BOOL finished){
+            [UIView animateWithDuration:0.2 animations:^{
+                self.backgroundColor = [UIColor blackColor];
+            }];
+        }];
+        
+    }
+    
+    [lastTopic release];
+    lastTopic = curTopic;
+    [lastTopic retain];
+    
     UIFont *font = [UIFont boldSystemFontOfSize:85];
     
     if(curTopic==nil) {
