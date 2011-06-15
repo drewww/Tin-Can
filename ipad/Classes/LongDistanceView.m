@@ -43,9 +43,9 @@
 }
 
 - (void) setNeedsDisplay {
-    [statusBar setNeedsDisplay];
-    [topic setNeedsDisplay];
-    [recentEvents setNeedsDisplay];
+//    [statusBar setNeedsDisplay];
+//    [topic setNeedsDisplay];
+//    [recentEvents setNeedsDisplay];
 }
 
 - (void) handleConnectionEvent:(Event *)event {

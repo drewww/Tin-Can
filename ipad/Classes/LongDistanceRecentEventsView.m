@@ -67,6 +67,10 @@
     
     CGSize nameSize = [actor.name sizeWithFont:nameFont constrainedToSize:CGSizeMake(685, 260) lineBreakMode:UILineBreakModeTailTruncation];
     
+    CGSize labelSize;
+    
+    NSLog(@"nameSize: %@", NSStringFromCGSize(nameSize));
+    
     NSString *text;
     Topic *topic;
     Task *task;
@@ -85,7 +89,11 @@
                 label = @"left meeting";
 
             [actor.name drawInRect:CGRectMake(5, 5, nameSize.width, nameSize.height) withFont:nameFont];
-            [label drawInRect:CGRectMake(5+nameSize.width + 2, 5, 220, 115) withFont:labelFont];
+            
+            labelSize = [label sizeWithFont:labelFont constrainedToSize:CGSizeMake(934-nameSize.width, INT_MAX)];
+                        
+            [label drawInRect:CGRectMake(5+nameSize.width + 15, 5 + 50-labelSize.height/2, 934-nameSize.width, labelSize.height) withFont:labelFont];
+            
             break;
             
         case kUPDATE_TOPIC:
@@ -147,9 +155,17 @@
             }
                         
             [actor.name drawInRect:CGRectMake(5, 5, nameSize.width, nameSize.height) withFont:nameFont];
-            [label drawInRect:CGRectMake(5+nameSize.width + 2, 5, 220, 115) withFont:labelFont];
+            
+            // With the label, we want a minimum width of 115, but allow it to be bigger if space permits. 
+            // The minimum will be enforced by the constraint on the name rect.
+            
+            // Gotta do a bit of a dance here - if it's going to fit on one line, it needs to have a different
+            // origin.            
+            labelSize = [label sizeWithFont:labelFont constrainedToSize:CGSizeMake(934-nameSize.width, INT_MAX)];
+            
+            [label drawInRect:CGRectMake(5+nameSize.width + 15, 5 + 50-labelSize.height/2, 934-nameSize.width, labelSize.height) withFont:labelFont];
 
-            [text drawInRect:CGRectMake(5, nameSize.height+5, 270, 120) withFont:labelFont];
+            [text drawInRect:CGRectMake(5, nameSize.height+10, 915, 120) withFont:labelFont];
             
             break;
              
