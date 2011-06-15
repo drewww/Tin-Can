@@ -424,6 +424,7 @@
         default:
             NSLog(@"Received an unknown event type: %d", event.type);
             break;
+            
     }
     
     NSLog(@"done with event dispatch, gonna add it to the timeline now");
@@ -458,7 +459,7 @@
             break;
     }
     
-    
+    [longDistanceView handleConnectionEvent:event];
     
 }
 

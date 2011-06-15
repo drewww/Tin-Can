@@ -120,7 +120,7 @@
     }
     else {
         NSLog(@"printing without");
-        return [NSString stringWithFormat:@"[event.000000 %d meet:%@ actor:%@ params:%d results:%d]", [self.uuid substringToIndex:6],
+        return [NSString stringWithFormat:@"[event.000000 %d meet:%@ actor:%@ params:%d results:%d]",
                 self.type, self.meetingUUID, self.actorUUID, [self.params count], [self.results count]];
     }
 }

@@ -7,10 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Event.h"
 
 @interface LongDistanceRecentEventsView : UIView {
-    
+    Event *mostRecentEvent;
 }
+
+- (void)newEvent:(Event *)newEvent;
 
 @end

@@ -21,5 +21,6 @@
 }
 
 - (void) clk;
+- (void) handleConnectionEvent:(Event *)event;
 
 @end

@@ -48,6 +48,10 @@
     [recentEvents setNeedsDisplay];
 }
 
+- (void) handleConnectionEvent:(Event *)event {
+    [recentEvents newEvent:event];
+}
+
 - (void)dealloc
 {
     [statusBar release];
