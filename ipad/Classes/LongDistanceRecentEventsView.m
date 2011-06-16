@@ -44,25 +44,15 @@
             [mostRecentEvent retain];
             [self setNeedsDisplay];
             
-
-            [self performSelectorOnMainThread:@selector(flash:) withObject:nil waitUntilDone:false];
-//            [self flash:nil];
-//            NSLog(@"FLASHING! LONG!");
-//            [UIView animateWithDuration:1.0 animations:^{
-//                self.backgroundColor = [UIColor colorWithWhite:0.7 alpha:1.0];
-//            } completion: ^(BOOL finished){
-//                [UIView animateWithDuration:1.0 animations:^{
-//                    self.backgroundColor = [UIColor blackColor];
-//                }];
-//            }];
-
-            
             break;
         default:
             break;
     }    
 }
 
+
+// This is nice in theory, but for reasons I haven't been able to figure out,
+// it just doesn't work. 
 - (void) flash:(id)sender {
     NSLog(@"FLASHING ON METHOD");
     [UIView animateWithDuration:1.0 animations:^{

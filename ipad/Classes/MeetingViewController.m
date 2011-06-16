@@ -29,7 +29,7 @@
 
 @implementation MeetingViewController
 
-#define LONG_DISTANCE_VIEW_TIMEOUT 10
+#define LONG_DISTANCE_VIEW_TIMEOUT 30
 
 #pragma mark Application Events
 
@@ -195,6 +195,11 @@
 
     lastTouch = [[NSDate date] retain];
 
+    
+    // Turn on notifications of device orientation changes so we can dismiss the screen when someone picks it up.
+    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
+    animating = false;
 }
 
 
@@ -748,29 +753,46 @@
     [self setLongDistanceViewVisible:false];
 }
 
-- (void) setLongDistanceViewVisible:(bool) visible {
+- (void) setLongDistanceViewVisible:(bool) visible {    
+    // This helps filter out rapid requests to hide/show, which seem to
+    // interrupt the animation and force it to complete rapidly.
+    if(animating) {
+        return;
+    }
     
     if(longDistanceView.hidden && visible) {
         longDistanceView.hidden = false;
-        [UIView animateWithDuration:1.0
+        [UIView animateWithDuration:0.5
                          animations:^{ 
+                             animating = true;
                              longDistanceView.alpha = 1.0;
                          } 
                          completion:^(BOOL finished){
+                             animating = false;
                          }];
         
     } else if (!longDistanceView.hidden && !visible) {
         // transition to invisibility
-        [UIView animateWithDuration:1.0
+        [UIView animateWithDuration:0.5
                          animations:^{ 
+                             animating = true;
                              longDistanceView.alpha = 0.0;
                          } 
                          completion:^(BOOL finished){
+                             animating = false;
                              longDistanceView.hidden = true;
                          }];
     }
     
 }
+
+- (void) orientationChanged:(NSNotification *)notification {
+    [lastTouch release];
+    lastTouch = [[NSDate date] retain];
+    
+    [self setLongDistanceViewVisible:false];        
+}
+
 
 - (void)dealloc {
     [super dealloc];
@@ -803,7 +825,7 @@
     
     // Check to see if it's been more than the LONG_DISTANCE_VIEW_TIMEOUT
     // If it has, bring in the long distance view.
-    if(abs([lastTouch timeIntervalSinceNow]) > LONG_DISTANCE_VIEW_TIMEOUT) {
+    if(abs([lastTouch timeIntervalSinceNow]) > LONG_DISTANCE_VIEW_TIMEOUT && longDistanceView.hidden) {
         [self setLongDistanceViewVisible:true];
     }
 }   

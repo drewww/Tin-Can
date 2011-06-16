@@ -66,7 +66,7 @@
     
     LongDistanceView *longDistanceView;
     NSDate *lastTouch;
-    
+    bool animating;
 }
 
 
@@ -94,5 +94,7 @@
 - (void) toggleManageUsers;
 
 - (void) setLongDistanceViewVisible:(bool) visible;
+- (void) orientationChanged:(NSNotification *)notification;
+
 @end
 
