@@ -95,8 +95,6 @@
     
     CGSize labelSize;
     
-    NSLog(@"nameSize: %@", NSStringFromCGSize(nameSize));
-    
     NSString *text;
     Topic *topic;
     Task *task;
@@ -119,8 +117,7 @@
             
             ageFraction = abs([mostRecentEvent.timestamp timeIntervalSinceNow])/180.0;
             
-            NSLog(@"ageFraction: %f", ageFraction);
-            CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.5+0.5*(1-ageFraction) alpha:1.0].CGColor);
+            CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.6+0.4*(1-ageFraction) alpha:1.0].CGColor);
 
             
             [actor.name drawInRect:CGRectMake(5, 5, nameSize.width, nameSize.height) withFont:nameFont];
@@ -156,7 +153,10 @@
                 case kNEW_TOPIC:
                     label = @"created topic";
                     
-                    topic = (Topic *)[[StateManager sharedInstance] getObjWithUUID:[mostRecentEvent.params objectForKey:@"topicUUID"] withType:[Topic class]];
+                    UUID *topicUUID = ((Topic *)[mostRecentEvent.results objectForKey:@"topic"]).uuid;
+                    NSLog(@"topicUUID: %@", topicUUID);
+                    
+                    topic = (Topic *)[[StateManager sharedInstance] getObjWithUUID:topicUUID withType:[Topic class]];
                     
                     text = topic.text;
                     
@@ -174,7 +174,7 @@
                         label = @"assigned task";
                     }
                     
-                    task = [mostRecentEvent.results objectForKey:@"task"];
+                    task = (Task *)[[StateManager sharedInstance] getObjWithUUID:[mostRecentEvent.params objectForKey:@"taskUUID"] withType:[Task class]];
                     text = task.text;
                     
                     break;
@@ -186,13 +186,12 @@
                     
                     text = task.text;
                     break;
-                    
             }
                       
             
             // Over 3 minutes fade to 0.6 from 1.0.
             ageFraction = abs([mostRecentEvent.timestamp timeIntervalSinceNow])/180.0;
-            CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.5+0.5*(1-ageFraction) alpha:1.0].CGColor);
+            CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.6+0.4*(1-ageFraction) alpha:1.0].CGColor);
             
             [actor.name drawInRect:CGRectMake(5, 5, nameSize.width, nameSize.height) withFont:nameFont];
             
@@ -205,6 +204,8 @@
             
             [label drawInRect:CGRectMake(5+nameSize.width + 15, 5 + 50-labelSize.height/2, labelSize.width, labelSize.height) withFont:labelFont];
 
+            
+            NSLog(@"about to draw text: %@", text);
             [text drawInRect:CGRectMake(5, nameSize.height+10, 915, 120) withFont:labelFont];
             
             break;
