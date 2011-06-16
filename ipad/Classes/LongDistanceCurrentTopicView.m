@@ -70,9 +70,10 @@
         
         // TODO make a version of this that does seconds so the bar grows more continuously 
         int duration = floor([curTopic.startTime timeIntervalSinceNow]*-1/60.0);
+        int secDuration = floor([curTopic.startTime timeIntervalSinceNow]*-1);
                 
         // Now draw the growing rectangle depending on how long the topic has been going on.
-        float widthFraction = duration/60.0f;
+        float widthFraction = secDuration/3600.0f;
         
         
         // Need to set a reasonably high alpha on this color. 
