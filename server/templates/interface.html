@@ -594,11 +594,19 @@
 		
 		$("#submit_new_task").click(function() {
 			conn.addTask($("#new_task").val());
+			
+			// Clear the text field.
+			$("#new_task").val("");
+			
 			return false;
 		});
 		
 		$("#submit_new_topic").click(function() {
 			conn.addTopic($("#new_topic").val());
+			
+			// Clear the text field.
+			$("#new_topic").val("");
+			
 			return false;
 		});
 		
@@ -736,7 +744,7 @@
 	
 	#navbar {
 		text-align: center;
-		background-color: #EEE;
+		background-color: #BBB;
 	}
 	
 	#navbar h1 {
