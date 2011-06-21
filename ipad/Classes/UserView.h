@@ -36,6 +36,7 @@
 @interface UserView : ExtendableDrawerView <TaskDropTarget> {
     
     UserRenderView *userRenderView;
+    UIButton *thumbsUpButton;
     
     bool doAutorevert;    
 }
@@ -52,6 +53,8 @@
 
 - (void) setUserExtended:(bool)extended withAutorevert:(bool)autorevert;
 - (void) revertUserExtended;
+
+- (void) thumbsUpPressed: (id) sender;
 
 - (NSComparisonResult) compareByLocation:(UserView *)view;
 

@@ -9,6 +9,7 @@
 #import "UserView.h"
 #import "UIColor+Util.h"
 #import "StateManager.h"
+#import "ConnectionManager.h"
 
 
 @implementation UserView
@@ -27,10 +28,25 @@
 
 - (id) initWithUser:(User *)theUser {
 
-    TaskContainerView *taskContainerView = [[[TaskContainerView alloc] initWithFrame:CGRectMake(-[self getBaseWidth], +15, [self getBaseWidth]*2, 600) withRot:0.0 isMainView:NO] autorelease];
+//    TaskContainerView *taskContainerView = [[[TaskContainerView alloc] initWithFrame:CGRectMake(-[self getBaseWidth], +15, [self getBaseWidth]*2, 560) withRot:0.0 isMainView:NO] autorelease];
+    TaskContainerView *taskContainerView = [[[TaskContainerView alloc] initWithFrame:CGRectMake(0, 0, [self getBaseWidth]*2, 560) withRot:0.0 isMainView:NO] autorelease];
     [taskContainerView setRot:0.0];
     
-    self = [super initWithFrame:CGRectMake(0, 0, [self getBaseWidth], [self getBaseHeight] + HEIGHT_MARGIN) withDrawerView:taskContainerView];
+    // Make a container view and add a button in.
+    UIView *extendedViewContainer = [[UIView alloc] initWithFrame:CGRectMake(-[self getBaseWidth], 15, [self getBaseWidth]*2, 600)];
+
+    thumbsUpButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+    thumbsUpButton.frame = CGRectMake(0, 565, [self getBaseWidth]*2, 30);
+    thumbsUpButton.backgroundColor = [UIColor clearColor];
+    [thumbsUpButton setTitle:@"Thumbs Up" forState: UIControlStateNormal];
+    thumbsUpButton.titleLabel.font = [UIFont boldSystemFontOfSize:24.0f];
+    [thumbsUpButton addTarget:self action:@selector(thumbsUpPressed:)forControlEvents:UIControlEventTouchUpInside];
+    [thumbsUpButton setEnabled: YES];
+
+    [extendedViewContainer addSubview:taskContainerView];
+    [extendedViewContainer addSubview:thumbsUpButton];
+    
+    self = [super initWithFrame:CGRectMake(0, 0, [self getBaseWidth], [self getBaseHeight] + HEIGHT_MARGIN) withDrawerView:extendedViewContainer];
 
     self.controller = nil;
     
@@ -56,6 +72,10 @@
     NSLog(@"touches ended on parent view");
 }
 
+- (void) thumbsUpPressed: (id) sender {
+    [[ConnectionManager sharedInstance] thumbsUp:[self getUser]];
+}
+
 - (void) userTouched {
     // toggle draw extended state.
     [self setDrawerExtended:!drawerExtended];
@@ -68,7 +88,9 @@
     
     // Gonna need to do something about this - casting the drawer to what it's known to be
     // for this subclass. Or rather, we'll make it in the subclass. 
-    [(TaskContainerView *)drawerView addTaskView:[theTask getView]];
+    TaskContainerView *taskContainerView = (TaskContainerView *)[drawerView.subviews objectAtIndex:0];
+    
+    [taskContainerView addTaskView:[theTask getView]];
     
     [self setHoverState:false];
     [self setNeedsDisplay];
