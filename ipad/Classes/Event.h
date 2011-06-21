@@ -22,6 +22,7 @@ typedef enum {
     kADD_ACTOR_DEVICE,
     kNEW_LOCATION,
     kUPDATE_STATUS,
+    kTHUMBS_UP,
     
     kNEW_TOPIC,
     kDELETE_TOPIC,

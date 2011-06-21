@@ -514,6 +514,7 @@ static NSString *selectedServer = nil;
             
             meeting.title = title;
             break;
+            
         case kUPDATE_STATUS:
             NSLog(@"handling status update!");
             actor = (Actor *)[state getObjWithUUID:e.actorUUID withType:[Actor class]];
@@ -528,6 +529,13 @@ static NSString *selectedServer = nil;
             
             NSLog(@"actor status after update: %@ at time %@", actor.status, actor.statusDate);
             break;
+            
+        case kTHUMBS_UP:
+            actor = (Actor *)[state getObjWithUUID:e.actorUUID withType:[Actor class]];
+
+            NSLog(@"Received a thumbs up event for user %@!", actor);
+            break;
+            
         case kNEW_DEVICE:
             NSLog(@"received known event type, but am not doing anything about it");
             break;

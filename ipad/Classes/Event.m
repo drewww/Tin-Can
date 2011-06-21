@@ -45,6 +45,7 @@
                                                      @"ADD_ACTOR_DEVICE",
                                                      @"NEW_LOCATION",
                                                      @"UPDATE_STATUS",
+                                                     @"THUMBS_UP",
                              
                                                      @"NEW_TOPIC",
                                                      @"DELETE_TOPIC",

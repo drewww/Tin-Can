@@ -98,6 +98,7 @@
 - (void) restartTopic:(Topic *)theTopic;
 - (void) addTopicWithText:(NSString *)newTopicText;
 
+- (void) thumbsUp:(User *)byUser;
 
 #pragma mark -
 #pragma mark Static Fields
