@@ -75,6 +75,7 @@ class YarnApplication(tornado.web.Application):
             (r"/users/", AllUsersHandler),
             (r"/users/add", AddUserHandler),
             (r"/users/hand", HandRaiseHandler),
+            (r"/users/thumb", ThumbsUpHandler),
             
             (r"/connect/", ConnectionHandler),
             (r"/connect/test", ConnectTestHandler),
@@ -754,6 +755,22 @@ class HandRaiseHandler(BaseHandler):
             handRaiseEvent = Event("HAND_RAISE", actor.uuid, 
                 actor.getMeeting().uuid, params = {})
             handRaiseEvent.dispatch()
+
+# This looks basically exactly like Hand Raise, which is unsurprising because
+# they're super similar operations. For now, keeping them separate for 
+# semantic reasons. 
+class ThumbsUpHandler(BaseHandler):
+    def post(self):
+        actor = self.get_current_actor()
+        
+        # only users can thumbs up. ignore requests from locations
+        if isinstance(actor, model.User):
+            thumbsUpEvent = Event("THUMBS_UP", actor.uuid,
+                actor.getMeeting().uuid, params = {})
+            thumbsUpEvent.dispatch()
+            
+            
+            
 
 class ReplayHandler(tornado.web.RequestHandler):
     def get(self):

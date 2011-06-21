@@ -722,6 +722,17 @@ def _handleUpdateStatus(event):
     logging.debug("status now: " + str(event.actor.status))
     
     return event
+    
+def _handleThumbsUp(event):
+    # Is it important that this change some internal state? Or is it just a
+    # pulse? It's a display state thing, but it's not critical that it be
+    # represented in the server state. So we'll set a status and then 
+    # basically just move on.
+    
+    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "thumbs up!", "time": time.time()}))
+    event.meeting.eventHistoryReadable.append(event.actor.name + " thumbs up!")
+    
+    return event
 
 # This class just wraps the different features of an event into a nice 
 # container. Different events expect different parameters and are dispatched
@@ -803,4 +814,5 @@ EventType("LIKE_TASK", ["taskUUID"], _handleLikeTask, True, True)
     
 EventType("HAND_RAISE", [], _handleHandRaise, True, True)
 EventType("UPDATE_STATUS", ["status", "time"], _handleUpdateStatus, True, True)
+EventType("THUMBS_UP", [], _handleThumbsUp, True, True)
 
