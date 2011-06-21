@@ -34,6 +34,8 @@
     
     // Make a container view and add a button in.
     UIView *extendedViewContainer = [[UIView alloc] initWithFrame:CGRectMake(-[self getBaseWidth], 15, [self getBaseWidth]*2, 600)];
+    
+    extendedViewContainer.backgroundColor = [UIColor blackColor];
 
     thumbsUpButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
     thumbsUpButton.frame = CGRectMake(0, 565, [self getBaseWidth]*2, 30);
@@ -41,7 +43,6 @@
     [thumbsUpButton setTitle:@"Thumbs Up" forState: UIControlStateNormal];
     thumbsUpButton.titleLabel.font = [UIFont boldSystemFontOfSize:24.0f];
     [thumbsUpButton addTarget:self action:@selector(thumbsUpPressed:)forControlEvents:UIControlEventTouchUpInside];
-    [thumbsUpButton setEnabled: YES];
 
     [extendedViewContainer addSubview:taskContainerView];
     [extendedViewContainer addSubview:thumbsUpButton];
@@ -121,6 +122,16 @@
 
 
 - (void) setDrawerExtended:(bool)extended {
+    
+    if([[StateManager sharedInstance].location.users containsObject:[self getUser]]) {
+        [thumbsUpButton setEnabled: YES];
+        thumbsUpButton.alpha = 1.0;
+    } else {
+        [thumbsUpButton setEnabled: NO];
+        thumbsUpButton.alpha = 0.5;
+    }
+
+    
     [super setDrawerExtended:extended];
     [self setUserExtended:extended withAutorevert:false];
 }
