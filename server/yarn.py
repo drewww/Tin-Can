@@ -761,15 +761,28 @@ class HandRaiseHandler(BaseHandler):
 # semantic reasons. 
 class ThumbsUpHandler(BaseHandler):
     def post(self):
+        # have to do a bit of a dance to figure out who this is. 
+        
         actor = self.get_current_actor()
         
+        userUUID = None
         # only users can thumbs up. ignore requests from locations
         if isinstance(actor, model.User):
-            thumbsUpEvent = Event("THUMBS_UP", actor.uuid,
+            userUUID = actor.uuid
+        if isinstance(actor, model.Location):
+            # if it's a location, look at the userUUID field. 
+            user = state.get_obj(self.get_argument("userUUID"), model.User)
+            
+            # now double check that that user is in the location
+            if(user!=None and user in actor.users):
+                userUUID = userUUID
+        
+        if(userUUID != None):
+            thumbsUpEvent = Event("THUMBS_UP", userUUID,
                 actor.getMeeting().uuid, params = {})
             thumbsUpEvent.dispatch()
-            
-            
+        else:
+            logging.debug("Received a thumbs up call that went wrong.")
             
 
 class ReplayHandler(tornado.web.RequestHandler):
