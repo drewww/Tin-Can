@@ -304,6 +304,18 @@
 				conn.restartTopic(topicUUID);
 				return false;
 			});
+			
+			$('#thumbs_up').click(function() {
+				conn.thumbsUp();
+				return false;
+			});
+			
+			$('#leave_meeting').click(function() {
+				// Not 100% sure that this actually logs out. But seems like
+				// it might.
+				conn.stopPersistentConnection();
+				return false;
+			})
 		}
 
 		conn.addListener({connectionEvent: function(e) {
@@ -742,7 +754,17 @@
 		color: black;
 	}
 	
-	#navbar {
+	#actionsbar {
+		border-bottom: 1px solid #ddd;
+		padding-top: 3px;
+		padding-bottom: 3px;
+	}
+	
+	#actionsbar input {
+		margin-left: 20px;
+	}
+	
+	#navbar, #actionsbar {
 		text-align: center;
 		background-color: #BBB;
 	}
@@ -983,7 +1005,10 @@
 </div>
 
 <div id="maindivs">
-	
+	<div id="actionsbar">
+		<input type="button" name="thumbs_up" value="thumbs up" id="thumbs_up">
+		<input type="button" name="leave_meeting" value="leave meeting" id="leave_meeting">
+	</div>
 	<div id="navbar">	
 		<h1 class="current"><img src="{{static_url('images/comments.png')}}"/>&nbsp;TOPICS</h1>
 		<h1><img src="{{static_url('images/note.png')}}"/>&nbsp;TASKS</h1>
