@@ -709,6 +709,13 @@ static NSString *selectedServer = nil;
     [request startAsynchronous];
 }
 
+- (void) thumbsUp:(User *)byUser {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/users/thumb"]];
+    ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
+    [request setPostValue:byUser.uuid forKey:@"userUUID"];    
+    [request setDelegate:self];
+    [request startAsynchronous];
+}
 
 
 #pragma mark -
