@@ -32,9 +32,11 @@
 }
 
 - (void) setExtended:(_Bool)toExtended {
-    extended = toExtended;
     
-    [tableController updateUsers];
+    if(toExtended!=extended) {
+        extended = toExtended;
+        [tableController updateUsers];
+    }
 }
 
 - (void) drawRect:(CGRect)rect {

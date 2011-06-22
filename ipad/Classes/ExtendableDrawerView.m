@@ -185,6 +185,8 @@
             drawerExtended = false;
             
             [controller setBackdropHidden:TRUE];
+            
+            NSLog(@"retracting to initialFrame: %@ and initialBounds: %@", NSStringFromCGRect(initialFrame), NSStringFromCGRect(initialBounds));
         }
     }
 }
