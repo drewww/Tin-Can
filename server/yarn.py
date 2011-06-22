@@ -770,14 +770,16 @@ class ThumbsUpHandler(BaseHandler):
         if isinstance(actor, model.User):
             userUUID = actor.uuid
         if isinstance(actor, model.Location):
+            logging.debug("Got a thumbs up request from a Location")
             # if it's a location, look at the userUUID field. 
             user = state.get_obj(self.get_argument("userUUID"), model.User)
             
             # now double check that that user is in the location
             if(user!=None and user in actor.users):
-                userUUID = userUUID
+                userUUID = user.uuid
         
         if(userUUID != None):
+            logging.debug("handling thumbs up for userUUID: %s", str(userUUID))
             thumbsUpEvent = Event("THUMBS_UP", userUUID,
                 actor.getMeeting().uuid, params = {})
             thumbsUpEvent.dispatch()
