@@ -784,6 +784,8 @@
                          }];
     }
     
+    // Hide all user drawers.
+    [self userTaskDrawerExtended:nil];
 }
 
 - (void) orientationChanged:(NSNotification *)notification {

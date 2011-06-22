@@ -75,6 +75,9 @@
 
 - (void) thumbsUpPressed: (id) sender {
     [[ConnectionManager sharedInstance] thumbsUp:[self getUser]];
+    
+    [((MeetingViewController *)self.controller) userTaskDrawerExtended:nil];
+    
 }
 
 - (void) userTouched {
