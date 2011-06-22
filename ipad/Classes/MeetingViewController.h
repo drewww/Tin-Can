@@ -67,6 +67,9 @@
     LongDistanceView *longDistanceView;
     NSDate *lastTouch;
     bool animating;
+    
+    
+    NSDate *lastThumbsUp;
 }
 
 
@@ -95,6 +98,8 @@
 
 - (void) setLongDistanceViewVisible:(bool) visible;
 - (void) orientationChanged:(NSNotification *)notification;
+
+- (void) thumbsUpCallback;
 
 @end
 

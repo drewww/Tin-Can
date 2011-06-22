@@ -525,14 +525,15 @@ static NSString *selectedServer = nil;
                 date = [NSDate dateWithTimeIntervalSince1970:[[e.params objectForKey:@"time"] doubleValue]];
             }
             
-            [actor setStatus:[e.params objectForKey:@"status"] atDate:date];
+            [actor setStatusMessage:[e.params objectForKey:@"status"] atDate:date];
             
-            NSLog(@"actor status after update: %@ at time %@", actor.status, actor.statusDate);
+            NSLog(@"actor status after update: %@ at time %@", actor.statusMessage, actor.statusDate);
             break;
             
         case kTHUMBS_UP:
-            actor = (Actor *)[state getObjWithUUID:e.actorUUID withType:[Actor class]];
+            user = (User *)[state getObjWithUUID:e.actorUUID withType:[Actor class]];
 
+            user.statusType = kTHUMBS_UP_STATUS;
             NSLog(@"Received a thumbs up event for user %@!", actor);
             break;
             

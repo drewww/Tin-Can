@@ -12,7 +12,7 @@
 @implementation Actor
 
 @synthesize name;
-@synthesize status;
+@synthesize statusMessage;
 @synthesize statusDate;
 
 - (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withStatus:(NSString *)theStatus atDate:(NSDate *)theDate {
@@ -22,19 +22,19 @@
     self.name = myName;
     
     if([theStatus isKindOfClass:[NSNull class]]) {
-        self.status = nil;
+        self.statusMessage = nil;
         self.statusDate = nil;
     } else {
-        self.status = theStatus;
+        self.statusMessage = theStatus;
         self.statusDate = theDate;
     }
     
     return self;
 }
 
-- (void) setStatus:(NSString *)theStatus atDate:(NSDate *)theDate {
+- (void) setStatusMessage:(NSString *)theStatus atDate:(NSDate *)theDate {
     
-    self.status = theStatus;
+    self.statusMessage = theStatus;
     self.statusDate = theDate;
 }
 

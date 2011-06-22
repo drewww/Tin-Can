@@ -30,6 +30,7 @@
 @implementation MeetingViewController
 
 #define LONG_DISTANCE_VIEW_TIMEOUT 30
+#define THUMBS_UP_TIMEOUT 10.0
 
 #pragma mark Application Events
 
@@ -425,6 +426,23 @@
             }
             
             break;
+        case kTHUMBS_UP:
+            NSLog(@"bullshit case statement issue.");
+            
+            User *user = (User *)[state getObjWithUUID:event.actorUUID withType:[User class]];
+            
+            // force a nice animation to trigger here.
+            
+            // Update the global "last thumbs up" time and kick off a deferred check.
+            [lastThumbsUp release];
+            lastThumbsUp = [[NSDate date] retain];
+            
+            [self performSelector:@selector(thumbsUpCallback) withObject:self afterDelay:THUMBS_UP_TIMEOUT];
+            
+            // trigger a redraw.
+            [[user getView] setNeedsDisplay];
+            break;
+            
         case kCONNECTION_REQUEST_FAILED:
             
             connectionInfoLabel.text = @"Lost connection to the server.";
@@ -471,6 +489,24 @@
     }
     
     [longDistanceView handleConnectionEvent:event];
+    
+}
+
+- (void) thumbsUpCallback {
+    // Check and see if it's been the window distance (it will for sure have been at least that long, but
+    // another thumbs up may have arrived in that window)
+    
+    NSLog(@"Got thumbsUp callback! interval: %f > %d = %d", fabs([lastThumbsUp timeIntervalSinceNow]),THUMBS_UP_TIMEOUT, abs([lastThumbsUp timeIntervalSinceNow]) > THUMBS_UP_TIMEOUT);
+    if(fabs([lastThumbsUp timeIntervalSinceNow]) > THUMBS_UP_TIMEOUT) {
+        NSLog(@"removing thumbs up markers");
+        // Set everyone who has a thumbs up to EMPTY.
+        for (User *user in [StateManager sharedInstance].meeting.currentParticipants) {
+            if(user.statusType==kTHUMBS_UP_STATUS) {
+                user.statusType=kEMPTY_STATUS;
+                [[user getView] setNeedsDisplay];
+            }
+        }
+    }
     
 }
 

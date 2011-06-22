@@ -16,6 +16,7 @@
 
 @synthesize location;
 @synthesize tasks;
+@synthesize statusType;
 
 - (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withLocationUUID:(UUID *)myLocationUUID withStatus:(NSString *)theStatus atDate:(NSDate *)theDate {
     self = [super initWithUUID:myUuid withName:myName withStatus:theStatus atDate:theDate];

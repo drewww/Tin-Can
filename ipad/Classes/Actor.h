@@ -12,16 +12,16 @@
 @interface Actor : SynchronizedObject {
     NSString *name;
     
-    NSString *status;
+    NSString *statusMessage;
     NSDate *statusDate;
 }
 
 - (id) initWithUUID:(UUID *)myUuid withName:(NSString *)myName withStatus:(NSString *)theStatus atDate:(NSDate *)theDate;
 
-- (void) setStatus:(NSString *)theStatus atDate:(NSDate *)theDate;
+- (void) setStatusMessage:(NSString *)theStatus atDate:(NSDate *)theDate;
 
 @property(nonatomic, retain) NSString *name;
-@property(nonatomic, retain) NSString *status;
+@property(nonatomic, retain) NSString *statusMessage;
 @property(nonatomic, retain) NSDate *statusDate;
 
 @end

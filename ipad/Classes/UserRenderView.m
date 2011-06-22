@@ -16,6 +16,8 @@
 
 #define LOCAL_USER_GLOW 5
 
+#define BADGE_DIAMETER 30
+
 @implementation UserRenderView
 
 @synthesize user;
@@ -110,7 +112,7 @@
     // Draw the status block..
     f = [UIFont boldSystemFontOfSize:16];
 
-    NSString *statusString = user.status;
+    NSString *statusString = user.statusMessage;
     
     if(statusString != nil) {
         // We're also going to look at when it happened. If it was too long ago, don't show it
@@ -152,6 +154,7 @@
     }
     CGContextRestoreGState(ctx);
     
+
     
 
     // Now draw the location name. It'll only show when extended, but we just draw it
@@ -208,6 +211,20 @@
 //        
 //        xPos += TAB_MARGIN + TAB_WIDTH;
 //    }
+    
+    NSLog(@"About to check for badge... statusType: %d", user.statusType);
+    if(user.statusType != kEMPTY_STATUS) {
+        NSLog(@" -> DRAWING BADGE");
+        // Draw the badge, first.
+        CGContextSaveGState(ctx);
+        CGContextTranslateCTM(ctx, BASE_WIDTH/2-10, topEdge+10);
+        
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:191.0/255.0 green:101.0/255.0 blue:114.0/255.0 alpha:1.0].CGColor);
+        
+        CGContextFillEllipseInRect(ctx, CGRectMake(-BADGE_DIAMETER/2, -BADGE_DIAMETER/2, BADGE_DIAMETER, BADGE_DIAMETER));
+        
+        CGContextRestoreGState(ctx);
+    }
 
 }
 
