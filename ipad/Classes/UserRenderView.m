@@ -37,7 +37,7 @@
     showStatus = FALSE;
     animating = false;
     
-    badgeView = [[UserBadgeView alloc] init];
+    badgeView = [[UserBadgeView alloc] initWithUser:self.user];
     badgeView.center = CGPointMake(BASE_WIDTH/2-10, -BASE_HEIGHT/2+20);
     badgeView.hidden = true;
     [self addSubview:badgeView];
@@ -227,6 +227,7 @@
     
     if(badgeView.hidden && visible) {
         badgeView.hidden = false;
+        [badgeView setNeedsDisplay];
         [UIView animateWithDuration:0.5
                          animations:^{ 
                              animating = true;

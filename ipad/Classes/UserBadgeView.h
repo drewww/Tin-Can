@@ -7,10 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "User.h"
 
 @interface UserBadgeView : UIView {
-    
+    UIImageView *icon;
+    User *user;
 }
+
+- (id) initWithUser:(User *)theUser;
 
 @end

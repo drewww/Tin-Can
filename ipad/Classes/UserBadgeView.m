@@ -12,12 +12,17 @@
 
 @implementation UserBadgeView
 
-- (id)init
+- (id)initWithUser:(User *)theUser
 {
     self = [super initWithFrame:CGRectMake(-BADGE_DIAMETER/2, -BADGE_DIAMETER, BADGE_DIAMETER, BADGE_DIAMETER)];
     if (self) {
         // Initialization code
         self.backgroundColor = [UIColor clearColor];
+        user = [theUser retain];
+        
+        icon = [[[UIImageView alloc] initWithFrame:CGRectMake(-BADGE_DIAMETER/2 + 5, -BADGE_DIAMETER/2+5, BADGE_DIAMETER-10, BADGE_DIAMETER-10)] retain];
+        [self addSubview:icon];
+        icon.hidden = true;
     }
     return self;
 }
@@ -27,6 +32,21 @@
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
 {
+    // Queue off the setHidden so whenever this is shown
+    // we've updated the image to be proper.
+        // Now we're going to draw the icon (later)
+        if(user.statusType == kTHUMBS_UP_STATUS) {
+            [icon setImage:[UIImage imageNamed:@"thumbs_up.png"]];
+            icon.center = CGPointMake(0, 0);
+            [icon setNeedsDisplay];
+            [self bringSubviewToFront:icon];
+            icon.hidden = false;
+            NSLog(@"setting image to THUMBS UP!");
+        } else if (user.statusType == kEMPTY_STATUS) {
+            icon.hidden = true;
+        }
+
+    
     CGContextRef ctx = UIGraphicsGetCurrentContext();
         
     CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
@@ -35,12 +55,12 @@
     CGContextFillEllipseInRect(ctx, CGRectMake(0,0, BADGE_DIAMETER, BADGE_DIAMETER));
     CGContextStrokeEllipseInRect(ctx, CGRectMake(0,0, BADGE_DIAMETER, BADGE_DIAMETER));
     
-    // Now we're going to draw the icon (later)
 }
 
 
 - (void)dealloc
 {
+    [user retain];
     [super dealloc];
 }
 
