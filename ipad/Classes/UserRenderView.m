@@ -16,8 +16,6 @@
 
 #define LOCAL_USER_GLOW 5
 
-#define BADGE_DIAMETER 30
-
 @implementation UserRenderView
 
 @synthesize user;
@@ -37,6 +35,12 @@
     [self setBackgroundColor:[UIColor clearColor]];
     
     showStatus = FALSE;
+    animating = false;
+    
+    badgeView = [[UserBadgeView alloc] init];
+    badgeView.center = CGPointMake(BASE_WIDTH/2-10, -BASE_HEIGHT/2+20);
+    badgeView.hidden = true;
+    [self addSubview:badgeView];
     
     return self;
 }
@@ -212,22 +216,40 @@
 //        xPos += TAB_MARGIN + TAB_WIDTH;
 //    }
     
-    NSLog(@"About to check for badge... statusType: %d", user.statusType);
-    if(user.statusType != kEMPTY_STATUS) {
-        NSLog(@" -> DRAWING BADGE");
-        // Draw the badge, first.
-        CGContextSaveGState(ctx);
-        CGContextTranslateCTM(ctx, BASE_WIDTH/2-10, topEdge+10);
-        
-        CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:191.0/255.0 green:101.0/255.0 blue:114.0/255.0 alpha:1.0].CGColor);
-        
-        CGContextFillEllipseInRect(ctx, CGRectMake(-BADGE_DIAMETER/2, -BADGE_DIAMETER/2, BADGE_DIAMETER, BADGE_DIAMETER));
-        
-        CGContextRestoreGState(ctx);
-    }
 
 }
 
+- (void) setBadgeVisibile:(bool)visible {
+    
+    if(animating) {
+        return;
+    }
+    
+    if(badgeView.hidden && visible) {
+        badgeView.hidden = false;
+        [UIView animateWithDuration:0.5
+                         animations:^{ 
+                             animating = true;
+                             badgeView.alpha = 1.0;
+                         } 
+                         completion:^(BOOL finished){
+                             animating = false;
+                         }];
+        
+    } else if (!badgeView.hidden && !visible) {
+        // transition to invisibility
+        [UIView animateWithDuration:0.5
+                         animations:^{ 
+                             animating = true;
+                             badgeView.alpha = 0.0;
+                         } 
+                         completion:^(BOOL finished){
+                             animating = false;
+                             badgeView.hidden = true;
+                         }];
+    }
+    
+}
 
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     //    

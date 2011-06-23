@@ -55,6 +55,7 @@
 - (void) revertUserExtended;
 
 - (void) thumbsUpPressed: (id) sender;
+- (void) statusTypeChangedFrom:(StatusType)fromType toType:(StatusType)toType;
 
 - (NSComparisonResult) compareByLocation:(UserView *)view;
 

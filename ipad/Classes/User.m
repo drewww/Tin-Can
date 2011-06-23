@@ -80,6 +80,15 @@
     
 }
 
+- (void) setStatusType:(StatusType)newStatusType {
+    
+    StatusType oldType = statusType;
+    statusType = newStatusType;
+    if(view!=nil) {
+        [((UserView *)view) statusTypeChangedFrom:oldType toType:newStatusType];
+    }
+}
+
 - (UIView *)getView {
     if(view == nil) {
         view = [[UserView alloc] initWithUser:self];

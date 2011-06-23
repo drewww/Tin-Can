@@ -80,6 +80,15 @@
     
 }
 
+- (void) statusTypeChangedFrom:(StatusType)fromType toType:(StatusType)toType {
+    
+    if(toType==kEMPTY_STATUS) {
+        [userRenderView setBadgeVisibile:false];
+    } else {
+        [userRenderView setBadgeVisibile:true];
+    }
+}
+
 - (void) userTouched {
     // toggle draw extended state.
     [self setDrawerExtended:!drawerExtended];

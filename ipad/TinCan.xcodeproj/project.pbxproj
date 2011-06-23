@@ -20,6 +20,7 @@
 		3A12614812ADA1DC005D05FA /* AddItemController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A12614712ADA1DC005D05FA /* AddItemController.m */; };
 		3A242D1E1381C1F70060A039 /* LocationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A242D1D1381C1F70060A039 /* LocationCell.m */; };
 		3A242D211381C2210060A039 /* LocationCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A242D201381C2210060A039 /* LocationCellView.m */; };
+		3A26091913B39D7D00D7F508 /* UserBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A26091813B39D7D00D7F508 /* UserBadgeView.m */; };
 		3A2A6A3C11EE5ED300FF373C /* SynchronizedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A3B11EE5ED300FF373C /* SynchronizedObject.m */; };
 		3A2A6A3F11EE696000FF373C /* StateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A3E11EE696000FF373C /* StateManager.m */; };
 		3A2A6A5A11EE73F800FF373C /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2A6A5911EE73F800FF373C /* User.m */; };
@@ -132,6 +133,8 @@
 		3A242D1D1381C1F70060A039 /* LocationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationCell.m; sourceTree = "<group>"; };
 		3A242D1F1381C2210060A039 /* LocationCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationCellView.h; sourceTree = "<group>"; };
 		3A242D201381C2210060A039 /* LocationCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationCellView.m; sourceTree = "<group>"; };
+		3A26091713B39D7D00D7F508 /* UserBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserBadgeView.h; sourceTree = "<group>"; };
+		3A26091813B39D7D00D7F508 /* UserBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserBadgeView.m; sourceTree = "<group>"; };
 		3A2A6A3A11EE5ED300FF373C /* SynchronizedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SynchronizedObject.h; sourceTree = "<group>"; };
 		3A2A6A3B11EE5ED300FF373C /* SynchronizedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SynchronizedObject.m; sourceTree = "<group>"; };
 		3A2A6A3D11EE696000FF373C /* StateManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StateManager.h; sourceTree = "<group>"; };
@@ -431,6 +434,8 @@
 				3AD2D0BB1294830A00C31515 /* CurrentTopicView.m */,
 				3AD6A070131C55C900802D2D /* TrashView.h */,
 				3AD6A071131C55C900802D2D /* TrashView.m */,
+				3A26091713B39D7D00D7F508 /* UserBadgeView.h */,
+				3A26091813B39D7D00D7F508 /* UserBadgeView.m */,
 			);
 			name = "Type Views";
 			sourceTree = "<group>";
@@ -820,6 +825,7 @@
 				3ACFA19413A7E6D700DB527B /* LongDistanceStatusBarView.m in Sources */,
 				3ACFA19713A7E74100DB527B /* LongDistanceCurrentTopicView.m in Sources */,
 				3ACFA19A13A7E79100DB527B /* LongDistanceRecentEventsView.m in Sources */,
+				3A26091913B39D7D00D7F508 /* UserBadgeView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

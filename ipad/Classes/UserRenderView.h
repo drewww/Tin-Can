@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "User.h"
+#import "UserBadgeView.h"
 
 // This class shouldn't exist, but it's a way of coding around some view problems
 // we're having. The way views that contain other views work is:
@@ -33,11 +34,15 @@
     bool showStatus;
     bool taskDrawerExtended;
     
-    User *user;    
+    User *user;
+    
+    UserBadgeView *badgeView;
+    bool animating;
 }
 
 - (id) initWithUser:(User *)theUser;
 
+- (void) setBadgeVisibile:(bool)visible;
 
 @property (nonatomic, retain) User *user;
 @property bool hover;
