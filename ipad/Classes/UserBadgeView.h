@@ -10,7 +10,8 @@
 #import "User.h"
 
 @interface UserBadgeView : UIView {
-    UIImageView *icon;
+
+    UIImage *icon;
     User *user;
 }
 

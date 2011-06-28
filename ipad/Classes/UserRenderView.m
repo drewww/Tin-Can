@@ -41,7 +41,7 @@
     badgeView.center = CGPointMake(BASE_WIDTH/2-10, -BASE_HEIGHT/2+20);
     badgeView.hidden = true;
     [self addSubview:badgeView];
-    
+        
     return self;
 }
 
