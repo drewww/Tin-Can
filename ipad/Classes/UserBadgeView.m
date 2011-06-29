@@ -42,8 +42,10 @@
 //    CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:191.0/255.0 green:101.0/255.0 blue:114.0/255.0 alpha:1.0].CGColor);
     CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:112/255.0 green:185.0/255.0 blue:52/255.0 alpha:1.0].CGColor);
         
-    CGContextFillEllipseInRect(ctx, CGRectMake(0,0, BADGE_DIAMETER, BADGE_DIAMETER));
-    CGContextStrokeEllipseInRect(ctx, CGRectMake(0,0, BADGE_DIAMETER, BADGE_DIAMETER));
+    // Inset these so the outer stroke isn't cut off by the bounds. At the limits of the circle,
+    // it looked like it was chopped off by a pixel or two before.
+    CGContextFillEllipseInRect(ctx, CGRectInset(CGRectMake(0,0, BADGE_DIAMETER, BADGE_DIAMETER), 2, 2));
+    CGContextStrokeEllipseInRect(ctx, CGRectInset(CGRectMake(0,0, BADGE_DIAMETER, BADGE_DIAMETER), 2, 2));
     
     // We want to draw this upside down if the side we're on is the top one.
     // This turns out to be annoying. Not going to do it, since there's no thumbs down, anyway.
