@@ -20,22 +20,15 @@
         // Initialization code
         self.backgroundColor = [UIColor clearColor];
         user = [theUser retain];
-        
-//        icon = [[UIImage imageNamed:@"note_add.png"] retain];
-        
     }
     return self;
 }
 
-
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
 {
         if(user.statusType == kTHUMBS_UP_STATUS) {
             [icon release];
             icon = [[UIImage imageNamed:@"thumb_up.png"] retain];
-            NSLog(@"setting image to THUMBS UP!");
         } else if (user.statusType == kEMPTY_STATUS) {
             icon = nil;
         }
