@@ -42,7 +42,12 @@
     
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
-    CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:191.0/255.0 green:101.0/255.0 blue:114.0/255.0 alpha:1.0].CGColor);
+    
+    // This is a sort of reddish color, which felt badge-like originally.
+    // Switched to green to fit better with thumbs up.
+    
+//    CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:191.0/255.0 green:101.0/255.0 blue:114.0/255.0 alpha:1.0].CGColor);
+    CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:112/255.0 green:185.0/255.0 blue:52/255.0 alpha:1.0].CGColor);
         
     CGContextFillEllipseInRect(ctx, CGRectMake(0,0, BADGE_DIAMETER, BADGE_DIAMETER));
     CGContextStrokeEllipseInRect(ctx, CGRectMake(0,0, BADGE_DIAMETER, BADGE_DIAMETER));
@@ -54,7 +59,7 @@
 //    }
     
     if(icon!=nil) {
-        [icon drawInRect:CGRectInset(self.bounds, 5, 5)];
+        [icon drawInRect:CGRectInset(self.bounds, 8, 8)];
     }
 }
 
