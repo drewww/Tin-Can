@@ -260,8 +260,7 @@
     NSLog(@"touches ended on the user part of the userview");
     
     // animate the task drawer into position
-    [(UserView *)self.superview userTouched];
-    
+    [(UserView *)self.superview userTouched];    
 }
 
 - (void)dealloc {

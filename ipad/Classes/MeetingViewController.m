@@ -578,7 +578,8 @@
     // Send a message to all of them (except the one that actually extended)
     // to retract their own trask drawer.
     
-    // Going to need to add in the manage users view to this list eventually.
+    // Going to need to add in the manage users view to this list 
+    
     
     for (UserView *view in [UserView getAllUserViews]) {
             if(view != extendedView) {
@@ -593,6 +594,7 @@
     
     if(extendedView != nil) {
         [self setBackdropHidden:FALSE];
+        [self processTouch];
     }
 }
 
@@ -760,6 +762,8 @@
     
     // Hide the backdrop itself.
     backdropView.hidden = TRUE;
+    
+    [self processTouch];
 }
 
 // Override to allow orientations other than the default portrait orientation.
@@ -783,10 +787,16 @@
 }
 
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    NSLog(@"got a touch in the view controller");
+    [self processTouch];
+}
+
+- (void) processTouch {
+    NSLog(@"---------------------- PROCESS TOUCH --------------------------");
     [lastTouch release];
     lastTouch = [[NSDate date] retain];
     
-    [self setLongDistanceViewVisible:false];
+    [self setLongDistanceViewVisible:false];    
 }
 
 - (void) setLongDistanceViewVisible:(bool) visible {    
@@ -821,7 +831,9 @@
     }
     
     // Hide all user drawers.
-    [self userTaskDrawerExtended:nil];
+    if(visible) {
+        [self userTaskDrawerExtended:nil];
+    }
 }
 
 - (void) orientationChanged:(NSNotification *)notification {

@@ -100,6 +100,7 @@
 - (void) orientationChanged:(NSNotification *)notification;
 
 - (void) thumbsUpCallback;
+- (void) processTouch;
 
 @end
 

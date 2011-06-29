@@ -71,13 +71,14 @@
 - (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     
     NSLog(@"touches ended on parent view");
+    [self.controller touchesEnded:touches withEvent:event];
 }
 
 - (void) thumbsUpPressed: (id) sender {
     [[ConnectionManager sharedInstance] thumbsUp:[self getUser]];
     
+    // Hide the task drawer afterwards.
     [((MeetingViewController *)self.controller) userTaskDrawerExtended:nil];
-    
 }
 
 - (void) statusTypeChangedFrom:(StatusType)fromType toType:(StatusType)toType {
