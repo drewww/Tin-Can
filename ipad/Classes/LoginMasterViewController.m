@@ -61,7 +61,8 @@
         [actorTypeToggle insertSegmentWithTitle:@"User" atIndex:USER_INDEX animated:NO];
         actorTypeToggle.selectedSegmentIndex = ROOM_INDEX;
 		actorTypeToggle.transform = CGAffineTransformMakeRotation(M_PI_2);
-        actorTypeToggle.center = CGPointMake(userViewController.view.center.x - userViewController.view.frame.size.width/2 - 50, userViewController.view.center.y);
+//        actorTypeToggle.center = CGPointMake(userViewController.view.center.x + userViewController.view.frame.size.width/2 + 50, userViewController.view.center.y);
+        actorTypeToggle.frame = CGRectMake(self.view.frame.size.width/2.0+250,self.view.frame.size.height/2.0+400, 60,400);
         actorTypeToggle.momentary = NO;
 
         [actorTypeToggle setEnabled:true];
@@ -113,7 +114,7 @@
 		[self.view addSubview:roomViewController.view];
         [self.view addSubview:userViewController.view];
         [self.view addSubview:actorTypeToggle];
-		[self.view addSubview:headerLocation];
+//		[self.view addSubview:headerLocation];
 		[self.view addSubview:headerRoom];
 		[self.view setNeedsDisplay];
         
