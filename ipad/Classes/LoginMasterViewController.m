@@ -25,6 +25,8 @@
 #define ROOM_INDEX 0
 #define USER_INDEX 1
 
+#define FRAME_OFFSET 600
+
 @implementation LoginMasterViewController
 - (id)initWithController:(TinCanViewController *)control{
 	if ((self = [super init])) {
@@ -43,13 +45,12 @@
 	if(event.type==kGET_STATE_COMPLETE) {
 		// Elements in the Login page (Our Logo, Our Location Table and Our Room Table)
 		LogoView *picView= [[[LogoView alloc] initWithImage:[UIImage imageNamed:@"full_logo.png"] 
-												  withFrame: CGRectMake(self.view.frame.size.width/2.0-250, 100, 500, 500) ] retain];
+												  withFrame: CGRectMake(self.view.frame.size.width/2.0-250, 700, 500, 500) ] retain];
 		
 		roomViewController = [[[RoomViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250, 400,500) withController:self] retain];
 		
 		locViewController = [[[LocationViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600, 400,500) withController:self] retain];
-		
-        
+		        
         // Make a bonus user view controller that we can add and hide, to be swapped in based on the 
         // user/location switch. 
         userViewController = [[[UserViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600, 400,500) withController:self] retain]; 
@@ -101,8 +102,15 @@
 		// Headers
 		HeaderView *headerRoom =[[[HeaderView alloc] 
                                   initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0-30, 400,60) withTitle:@"Meetings"] retain];
-		HeaderView *headerLocation =[[[HeaderView alloc] 
+		headerLocation = [[[HeaderView alloc] 
                                       initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0+600-30, 400,60) withTitle:@"Rooms"] retain];
+        headerLocation.hidden = TRUE;
+        
+        chosenRoom = nil;
+        chosenLocation = nil;
+        chosenUser = nil;
+        
+        fourthPosition = false;
         
 		// Add Elements to View
 		//[self.view addSubview:wvTutorial];
@@ -114,7 +122,7 @@
 		[self.view addSubview:roomViewController.view];
         [self.view addSubview:userViewController.view];
         [self.view addSubview:actorTypeToggle];
-//		[self.view addSubview:headerLocation];
+		[self.view addSubview:headerLocation];
 		[self.view addSubview:headerRoom];
 		[self.view setNeedsDisplay];
         
@@ -165,7 +173,7 @@
 	ConnectionManager *conMan = [ConnectionManager sharedInstance];
 	[conMan addListener:self];
     
-	self.view= [[UIView alloc] initWithFrame:CGRectMake(0,0, 700.0, 2000.0) ];
+	self.view = [[UIView alloc] initWithFrame:CGRectMake(0,0, 700.0, 3200.0) ];
 	self.view.center= CGPointMake(768/2.0, 1024/2.0+600);
 	[self.view setBackgroundColor:[UIColor blackColor]]; 
 	currentPage=0;
@@ -204,11 +212,15 @@
     NSLog(@"location: %@; room: %@", chosenLocation, chosenRoom);
     
     ConnectionManager *connMan = [ConnectionManager sharedInstance];
-    
-    // Do the login work here.
+
     [connMan setLocation:chosenLocation.uuid];
-	[connMan connect];
+
+    if (actorTypeToggle == USER_INDEX) {
+        [connMan setUser:chosenUser.uuid];
+    }
     
+    [connMan connect];
+
     // Now we need to join a room, but we need to block on getting
     // an acknowedgement from the server that we've logged in 
     // successfully. So move this up to the handleConnectionEvent
@@ -249,16 +261,31 @@
     [self updateLoginButton];    
 }	
 
+- (void)chooseUser:(User *)user {
+    chosenUser = user;
+    
+    [userViewController setSelectedUser:user];
+    
+    [self updateLoginButton];
+}
+
 - (void) updateLoginButton {
     
     // Looks at the current state of selected room/location and
     // updates the login button and login instruction text
     // appropriately.
-    if(chosenRoom != nil && chosenLocation != nil) {
+    if(chosenRoom != nil && (chosenLocation != nil && actorTypeToggle.selectedSegmentIndex==ROOM_INDEX || (chosenUser!=nil && chosenLocation!=nil))) {
         [self setLoginButtonEnabled:true];
         loginInstructions.text = @"";
-        
-    } else if (chosenRoom != nil && chosenLocation==nil) {
+    } else if (chosenRoom != nil && chosenLocation==nil && actorTypeToggle.selectedSegmentIndex == ROOM_INDEX) {
+        [self setLoginButtonEnabled:false];
+        loginInstructions.text = @"Please select a room to join.";
+        loginInstructions.numberOfLines = 2;
+    } else if (chosenRoom != nil && chosenUser==nil && actorTypeToggle.selectedSegmentIndex == USER_INDEX) {
+        [self setLoginButtonEnabled:false];
+        loginInstructions.text = @"Please select your name.";
+        loginInstructions.numberOfLines = 2;
+    } else if (chosenRoom != nil && chosenLocation==nil && actorTypeToggle.selectedSegmentIndex == USER_INDEX) {
         [self setLoginButtonEnabled:false];
         loginInstructions.text = @"Please select a room to join.";
         loginInstructions.numberOfLines = 2;
@@ -274,6 +301,11 @@
 // Then updates the view and the currentPage variable to match those movements
 -(void)moveWithBegin:(CGFloat)begin withEnd:(CGFloat)end{
 	
+    // This whole setup is a bit of a horrorshow. Basically, for each
+    // position, we figure out far we've dragged and if it's in certain
+    // binned distances, we go to those specific pages. To adapt this to 
+    // add a fourth page, we have to add more potential slots in each case.
+    
 	[UIView beginAnimations:@"move_to_Left" context:NULL];
 	[UIView setAnimationDuration:.50f];
 	
@@ -290,6 +322,9 @@
 			self.view.center=CGPointMake(768/2.0,1024/2.0+600);
 			currentPage=0;
 		}
+        
+        // We're going to skip the 0->3 transition because
+        // it's just not possible.
 	}
     
 	else if(currentPage==1){
@@ -305,6 +340,9 @@
 			self.view.center=CGPointMake(768/2.0,1024/2.0);
 			currentPage=1;
 		}
+        
+        // Skip the 1->3 transition for now beacuse I thiiiink
+        // it's not possible.
 	}
 	
 	else if (currentPage==2){
@@ -316,12 +354,22 @@
 			self.view.center=CGPointMake(768/2.0,1024/2.0);
 			currentPage=1;
 		}
-		else{
+		else if ((begin-end) > 80 && fourthPosition) {
+			self.view.center=CGPointMake(768/2.0,1024/2.0-1200);
+			currentPage=3;
+		} else {
 			self.view.center=CGPointMake(768/2.0,1024/2.0-600);
 			currentPage=2;
-		}
-		
-	}
+        }
+	} else if (currentPage==3) {
+        if ((begin-end) < -80) {
+			self.view.center=CGPointMake(768/2.0,1024/2.0-600);
+            currentPage = 2;
+        } else {
+			self.view.center=CGPointMake(768/2.0,1024/2.0-1200);
+			currentPage=3;            
+        }
+    }
     
 	[self.view setNeedsDisplay];	
 	[UIView setAnimationDelegate:self.view];
@@ -332,28 +380,59 @@
     NSLog(@"Got toggle button pressed!");
     
     if(actorTypeToggle.selectedSegmentIndex==USER_INDEX) {
+        
+        // When we switch into user, we need to fade in the user view
+        // and slide over the location view, login button,
+        // and login lable. Will also require toggling the number
+        // of sticky spots the dragging mechanics have.
         userViewController.view.alpha = 0.0;
         userViewController.view.hidden = FALSE;
-        [UIView animateWithDuration:0.5 animations:^{
+        
+        headerLocation.hidden = false;
+        headerLocation.alpha = 0.0;
+       [UIView animateWithDuration:0.5 animations:^{
 
             userViewController.view.alpha = 1.0;
-            locViewController.view.alpha = 0.0;
+           headerLocation.alpha = 1.0;
+           
+            locViewController.view.center = CGPointMake(locViewController.view.center.x, locViewController.view.center.y + FRAME_OFFSET);;
+            loginButton.center = CGPointMake(loginButton.center.x, loginButton.center.y + FRAME_OFFSET);
+            loginInstructions.center = CGPointMake(loginInstructions.center.x, loginInstructions.center.y + FRAME_OFFSET);
+           headerLocation.center = CGPointMake(headerLocation.center.x, headerLocation.center.y + FRAME_OFFSET);
+                
         } completion:^(BOOL finished){
-            locViewController.view.hidden = TRUE;
+            fourthPosition = true;
         }];
         
     } else {
-        locViewController.view.alpha = 0.0;
-        locViewController.view.hidden = FALSE;
         [UIView animateWithDuration:0.5 animations:^{
             
-            locViewController.view.alpha = 1.0;
+            locViewController.view.center = CGPointMake(locViewController.view.center.x, locViewController.view.center.y - FRAME_OFFSET);
+            loginButton.center = CGPointMake(loginButton.center.x, loginButton.center.y - FRAME_OFFSET);
+            loginInstructions.center = CGPointMake(loginInstructions.center.x, loginInstructions.center.y - FRAME_OFFSET);
+            headerLocation.center = CGPointMake(headerLocation.center.x, headerLocation.center.y - FRAME_OFFSET);
+
+            
             userViewController.view.alpha = 0.0;
+            headerLocation.alpha = 0.0;
         } completion:^(BOOL finished){
             userViewController.view.hidden = TRUE;
+            headerLocation.hidden = TRUE;
+            fourthPosition = false;
         }];
 
     }
+    
+    if(!fourthPosition && currentPage == 3) {
+        // Then we need to transition back to the third page, ie page 2. We'll fake
+        // a call to movewithbegin for this.
+        
+        // (actually, this isn't really doable given the visibility when you're on
+        // page 3, but I'll leave it in anyway.)
+        [self moveWithBegin:0 withEnd:-100];
+    }
+    
+    [self updateLoginButton];
 }
 
 
@@ -385,7 +464,7 @@
 	
 	// If movement is within our range (so they don't go too far off screen), we want to shift the center
 	// the and statement allows for negitive direction.
-	if((self.view.center.y+(currentPoint-beginPoint)<1601) && (self.view.center.y+(currentPoint-beginPoint)>-800)){
+	if((self.view.center.y+(currentPoint-beginPoint)<2201) && (self.view.center.y+(currentPoint-beginPoint)>-800)){
         self.view.center=CGPointMake(self.view.center.x,self.view.center.y+(currentPoint-beginPoint));
 	}
 	

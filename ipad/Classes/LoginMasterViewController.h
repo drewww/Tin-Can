@@ -14,6 +14,8 @@
 #import "Location.h"
 #import "Room.h"
 #import "UserViewController.h"
+#import "User.h"
+#include "HeaderView.h"
 
 // Do we need all of these? Should check sometime. 
 @class LoginMasterViewController;
@@ -35,7 +37,8 @@
 	// These track the user selections
 	Location *chosenLocation;
 	Room *chosenRoom;
-	
+	User *chosenUser;
+    
 	// Text to appear on screen
 	UILabel *loginInstructions;
 	UILabel *roomInstructions;
@@ -48,6 +51,9 @@
     
     UISegmentedControl *actorTypeToggle;
     
+    HeaderView *headerLocation;
+    
+    bool fourthPosition;
     
 	LocationViewController *locViewController;
 	RoomViewController *roomViewController;
@@ -64,6 +70,7 @@
 
 - (void) chooseLocation:(Location *)loc;
 - (void) chooseRoom:(Room *)room;
+- (void) chooseUser:(User *)user;
 
 - (void) updateLoginButton;
 - (void) setLoginButtonEnabled:(bool) enabled;
