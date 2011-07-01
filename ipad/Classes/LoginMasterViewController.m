@@ -59,17 +59,13 @@
         actorTypeToggle = [[UISegmentedControl alloc] initWithItems:nil];
         [actorTypeToggle insertSegmentWithTitle:@"Room" atIndex:ROOM_INDEX animated:NO];
         [actorTypeToggle insertSegmentWithTitle:@"User" atIndex:USER_INDEX animated:NO];
-//        [actorTypeToggle setEnabled:true forSegmentAtIndex:ROOM_INDEX];
         actorTypeToggle.selectedSegmentIndex = ROOM_INDEX;
-                         
-        //CGRectMake(self.view.frame.size.width/2.0 + 300, self.view.frame.size.height/2.0 - 250 + 600, 150, 75)];
 		actorTypeToggle.transform = CGAffineTransformMakeRotation(M_PI_2);
         actorTypeToggle.center = CGPointMake(userViewController.view.center.x - userViewController.view.frame.size.width/2 - 50, userViewController.view.center.y);
         actorTypeToggle.momentary = NO;
 
         [actorTypeToggle setEnabled:true];
 
-//        NSLog(@"actorTypeToggle setup: %@", [actorTypeToggle get
         
         [actorTypeToggle addTarget:self action:@selector(actorTypeToggled:) forControlEvents:UIControlEventValueChanged];
         
@@ -334,10 +330,28 @@
 - (void) actorTypeToggled:(id)sender {
     NSLog(@"Got toggle button pressed!");
     
-    if(actorTypeToggle.selectedSegmentIndex==ROOM_INDEX) {
-        NSLog(@"Switching to room view!");
+    if(actorTypeToggle.selectedSegmentIndex==USER_INDEX) {
+        userViewController.view.alpha = 0.0;
+        userViewController.view.hidden = FALSE;
+        [UIView animateWithDuration:0.5 animations:^{
+
+            userViewController.view.alpha = 1.0;
+            locViewController.view.alpha = 0.0;
+        } completion:^(BOOL finished){
+            locViewController.view.hidden = TRUE;
+        }];
+        
     } else {
-        NSLog(@"Switching to user view!");
+        locViewController.view.alpha = 0.0;
+        locViewController.view.hidden = FALSE;
+        [UIView animateWithDuration:0.5 animations:^{
+            
+            locViewController.view.alpha = 1.0;
+            userViewController.view.alpha = 0.0;
+        } completion:^(BOOL finished){
+            userViewController.view.hidden = TRUE;
+        }];
+
     }
 }
 
