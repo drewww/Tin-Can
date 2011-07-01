@@ -13,11 +13,13 @@
 #import "TinCanViewController.h"
 #import "Location.h"
 #import "Room.h"
+#import "UserViewController.h"
 
 // Do we need all of these? Should check sometime. 
 @class LoginMasterViewController;
 @class LocationViewController;
 @class RoomViewController;
+@class UserViewController;
 @class LogoView;
 
 @interface LoginMasterViewController : UIViewController {
@@ -44,8 +46,12 @@
     
     UILabel *connectionInfoLabel;
     
+    UISegmentedControl *actorTypeToggle;
+    
+    
 	LocationViewController *locViewController;
 	RoomViewController *roomViewController;
+    UserViewController *userViewController;
 	TinCanViewController *controller;
 }
 
@@ -62,7 +68,7 @@
 - (void) updateLoginButton;
 - (void) setLoginButtonEnabled:(bool) enabled;
 
-
+- (void) actorTypeToggled:(id) sender;
 
 
 @end

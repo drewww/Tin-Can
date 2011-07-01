@@ -20,8 +20,10 @@
 #import "Location.h"
 #import "WebViewController.h"
 
-
 @class TinCanViewController;
+
+#define ROOM_INDEX 0
+#define USER_INDEX 1
 
 @implementation LoginMasterViewController
 - (id)initWithController:(TinCanViewController *)control{
@@ -47,7 +49,30 @@
 		
 		locViewController = [[[LocationViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600, 400,500) withController:self] retain];
 		
-		
+        
+        // Make a bonus user view controller that we can add and hide, to be swapped in based on the 
+        // user/location switch. 
+        userViewController = [[[UserViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600, 400,500) withController:self] retain]; 
+        userViewController.view.hidden = TRUE;
+        
+        // Make a UI switch to toggle between user and location modes for login.
+        actorTypeToggle = [[UISegmentedControl alloc] initWithItems:nil];
+        [actorTypeToggle insertSegmentWithTitle:@"Room" atIndex:ROOM_INDEX animated:NO];
+        [actorTypeToggle insertSegmentWithTitle:@"User" atIndex:USER_INDEX animated:NO];
+//        [actorTypeToggle setEnabled:true forSegmentAtIndex:ROOM_INDEX];
+        actorTypeToggle.selectedSegmentIndex = ROOM_INDEX;
+                         
+        //CGRectMake(self.view.frame.size.width/2.0 + 300, self.view.frame.size.height/2.0 - 250 + 600, 150, 75)];
+		actorTypeToggle.transform = CGAffineTransformMakeRotation(M_PI_2);
+        actorTypeToggle.center = CGPointMake(userViewController.view.center.x - userViewController.view.frame.size.width/2 - 50, userViewController.view.center.y);
+        actorTypeToggle.momentary = NO;
+
+        [actorTypeToggle setEnabled:true];
+
+//        NSLog(@"actorTypeToggle setup: %@", [actorTypeToggle get
+        
+        [actorTypeToggle addTarget:self action:@selector(actorTypeToggled:) forControlEvents:UIControlEventValueChanged];
+        
 		// Initializes Login Button
 		loginButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
 		[loginButton setTransform:CGAffineTransformMakeRotation(M_PI/2)];
@@ -90,6 +115,8 @@
 		[self.view addSubview:locationInstructions];
 		[self.view addSubview:locViewController.view];
 		[self.view addSubview:roomViewController.view];
+        [self.view addSubview:userViewController.view];
+        [self.view addSubview:actorTypeToggle];
 		[self.view addSubview:headerLocation];
 		[self.view addSubview:headerRoom];
 		[self.view setNeedsDisplay];
@@ -304,6 +331,15 @@
 	[UIView commitAnimations];
 }
 
+- (void) actorTypeToggled:(id)sender {
+    NSLog(@"Got toggle button pressed!");
+    
+    if(actorTypeToggle.selectedSegmentIndex==ROOM_INDEX) {
+        NSLog(@"Switching to room view!");
+    } else {
+        NSLog(@"Switching to user view!");
+    }
+}
 
 
 // Handling Touches
