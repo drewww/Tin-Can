@@ -43,6 +43,11 @@
 	
 	
 	if(event.type==kGET_STATE_COMPLETE) {
+        // Triggers when the login view is loading. Basically, once you hit connect on the previous
+        // server select screen, a get state request is sent out. We need all that information from
+        // the server to construct this screen, so we block on setting this screen up until we
+        // have all the pieces we need.
+        
 		// Elements in the Login page (Our Logo, Our Location Table and Our Room Table)
 		LogoView *picView= [[[LogoView alloc] initWithImage:[UIImage imageNamed:@"full_logo.png"] 
 												  withFrame: CGRectMake(self.view.frame.size.width/2.0-250, 700, 500, 500) ] retain];
@@ -127,8 +132,26 @@
 		[self.view setNeedsDisplay];
         
 	} else if (event.type==kADD_ACTOR_DEVICE) {
-        NSLog(@"In ADD_ACTOR_DEVICE callback. Doing room joining now.");
+        NSLog(@"In ADD_ACTOR_DEVICE callback.");
+        
+        // There are two ways this can happen - if we're joining as a user, then we need
+        // to join a location here. Once we've joined the location, then join the meeting. 
+        // We can't join the meeting right away, though - we need to wait for the message
+        // from the server confirmation that the user has joined the location first.
+        
+        if(actorTypeToggle.selectedSegmentIndex == USER_INDEX) {
+            [[ConnectionManager sharedInstance] joinLocation:chosenLocation withUser:[StateManager sharedInstance].user];
+        } else {
+            [[ConnectionManager sharedInstance] joinRoomWithUUID:chosenRoom.uuid];
+        }
+        
+    } else if (event.type==kUSER_JOINED_LOCATION) {
+        // This will only trigger in the join-as-user case, so no need for an if statement here.
         [[ConnectionManager sharedInstance] joinRoomWithUUID:chosenRoom.uuid];
+
+        // After this point, we'll be back on the normal path, and LOCATION_JOINED_MEETING
+        // will trigger and we'll be all set to login as normal.
+        
     } else if (event.type==kLOCATION_JOINED_MEETING) {
         
         NSLog(@"LOCATION_JOINED_MEETING");
@@ -213,10 +236,11 @@
     
     ConnectionManager *connMan = [ConnectionManager sharedInstance];
 
-    [connMan setLocation:chosenLocation.uuid];
 
-    if (actorTypeToggle == USER_INDEX) {
+    if (actorTypeToggle.selectedSegmentIndex == USER_INDEX) {
         [connMan setUser:chosenUser.uuid];
+    } else {
+        [connMan setLocation:chosenLocation.uuid];        
     }
     
     [connMan connect];
