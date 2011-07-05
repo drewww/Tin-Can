@@ -269,6 +269,8 @@
 -(void)chooseLocation:(Location *)loc{
 	
 	chosenLocation= loc;
+    [locViewController setSelectedLocation:loc];
+    
     [self updateLoginButton];	
 }		
 
@@ -289,6 +291,10 @@
     chosenUser = user;
     
     [userViewController setSelectedUser:user];
+    
+    if(user.location != nil) {
+        [self chooseLocation:user.location];
+    }
     
     [self updateLoginButton];
 }

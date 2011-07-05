@@ -10,6 +10,7 @@
 #import "ConnectionManager.h"
 #import "StateManager.h"
 #import "Room.h"
+#import "Location.h"
 
 @class LoginMasterViewController;
 
@@ -21,6 +22,7 @@
     
     
     Room *selectedRoom;
+    Location *selectedLocation;
 }
 
 - (id)initWithFrame:(CGRect)frame withController:(LoginMasterViewController *)control;
@@ -29,6 +31,8 @@
 
 - (void) setSelectedRoom:(Room *)theSelectedRoom;
 - (Room *) getSelectedRoom;
+
+- (void) setSelectedLocation:(Location *)theSelectedLocation;
 
 @property (nonatomic, retain) NSMutableArray *locList;
 

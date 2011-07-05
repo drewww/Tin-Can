@@ -100,6 +100,12 @@
     return selectedRoom;
 }
 
+- (void) setSelectedLocation:(Location *)theSelectedLocation {
+    [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:[locList indexOfObject:theSelectedLocation] inSection:0] animated:true scrollPosition:UITableViewScrollPositionMiddle];
+    
+    [self update];
+}
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath  {
     
