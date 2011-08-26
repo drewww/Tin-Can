@@ -150,8 +150,17 @@ def _handleJoinedLocation(event):
 def _handleLeftLocation(event):
     location = state.get_obj(event.params["location"], model.Location)
     location.userLeft(event.actor)
+
+
+    # loop through the remaining users and see if any of them have
+    # registered devices / if the location has a registered device.
+    # There are some weird conflicts at the moment where when an ipad is 
+    # logged into the system as a user, not as a location. So basically
+    # it's not enough to see that the location has no logged in users and
+    # then shutting it down.
     
-    if (len(location.getUsers())==0 and location.isInMeeting()):
+    if ((len(location.getUsers())==0 and location.isInMeeting()) or
+        len(location.getDevices())==0):
         locationLeftMeetingEvent = e.Event("LOCATION_LEFT_MEETING",
         location.uuid, None, {"meeting":location.meeting.uuid})
         event.queue(locationLeftMeetingEvent)
