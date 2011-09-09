@@ -54,18 +54,18 @@
 		
 		roomViewController = [[[RoomViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250, 400,500) withController:self] retain];
 		
-		locViewController = [[[LocationViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600, 400,500) withController:self] retain];
+		locViewController = [[[LocationViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600+FRAME_OFFSET, 400,500) withController:self] retain];
 		        
         // Make a bonus user view controller that we can add and hide, to be swapped in based on the 
         // user/location switch. 
         userViewController = [[[UserViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600, 400,500) withController:self] retain]; 
-        userViewController.view.hidden = TRUE;
+        userViewController.view.hidden = FALSE;
         
         // Make a UI switch to toggle between user and location modes for login.
         actorTypeToggle = [[UISegmentedControl alloc] initWithItems:nil];
         [actorTypeToggle insertSegmentWithTitle:@"Room" atIndex:ROOM_INDEX animated:NO];
         [actorTypeToggle insertSegmentWithTitle:@"User" atIndex:USER_INDEX animated:NO];
-        actorTypeToggle.selectedSegmentIndex = ROOM_INDEX;
+        actorTypeToggle.selectedSegmentIndex = USER_INDEX;
 		actorTypeToggle.transform = CGAffineTransformMakeRotation(M_PI_2);
 //        actorTypeToggle.center = CGPointMake(userViewController.view.center.x + userViewController.view.frame.size.width/2 + 50, userViewController.view.center.y);
         actorTypeToggle.frame = CGRectMake(self.view.frame.size.width/2.0+250,self.view.frame.size.height/2.0+400, 60,400);
@@ -79,7 +79,7 @@
 		// Initializes Login Button
 		loginButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
 		[loginButton setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-		loginButton.frame = CGRectMake(self.view.frame.size.width/2.0-200+150,self.view.frame.size.height/2.0-250+600+475, 100,150);
+		loginButton.frame = CGRectMake(self.view.frame.size.width/2.0-200+150,self.view.frame.size.height/2.0-250+600+475+FRAME_OFFSET, 100,150);
 		loginButton.backgroundColor = [UIColor clearColor];
 		[loginButton setTitle:@"Login" forState: UIControlStateNormal];
 		[loginButton setFont:[UIFont boldSystemFontOfSize:30.0f]];
@@ -92,7 +92,7 @@
 			
 			// sets user intructions for login
 			loginInstructions = [[UILabel alloc]
-								 initWithFrame:CGRectMake(self.view.frame.size.width/2.0-50-100,self.view.frame.size.height/2.0-250+600+250, 150,600)];
+								 initWithFrame:CGRectMake(self.view.frame.size.width/2.0-50-100,self.view.frame.size.height/2.0-250+600+250+FRAME_OFFSET, 150,600)];
 			[loginInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 			loginInstructions.text = @" ";
 			loginInstructions.numberOfLines = 2;
@@ -108,8 +108,8 @@
 		HeaderView *headerRoom =[[[HeaderView alloc] 
                                   initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0-30, 400,60) withTitle:@"Meetings"] retain];
 		headerLocation = [[[HeaderView alloc] 
-                                      initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0+600-30, 400,60) withTitle:@"Rooms"] retain];
-        headerLocation.hidden = TRUE;
+                                      initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0+600-30+FRAME_OFFSET, 400,60) withTitle:@"Rooms"] retain];
+        headerLocation.hidden = false;
         
         chosenRoom = nil;
         chosenLocation = nil;
@@ -126,10 +126,14 @@
 		[self.view addSubview:locViewController.view];
 		[self.view addSubview:roomViewController.view];
         [self.view addSubview:userViewController.view];
-        [self.view addSubview:actorTypeToggle];
+//        [self.view addSubview:actorTypeToggle];
 		[self.view addSubview:headerLocation];
 		[self.view addSubview:headerRoom];
 		[self.view setNeedsDisplay];
+        
+//        actorTypeToggle.selectedSegmentIndex = USER_INDEX;
+//        [self actorTypeToggled:actorTypeToggle];
+        fourthPosition = true;
         
 	} else if (event.type==kADD_ACTOR_DEVICE) {
         NSLog(@"In ADD_ACTOR_DEVICE callback.");
