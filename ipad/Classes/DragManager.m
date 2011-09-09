@@ -190,10 +190,23 @@ static DragManager *sharedInstance = nil;
         if([curTargetView isKindOfClass:[UserView class]]) {
             
             UserView *curTargetUserView = (UserView *)curTargetView;
-            [[ConnectionManager sharedInstance] assignTask:task toUser:[curTargetUserView getUser]];
+            
+            // We're now going to do a copy operation not an assign. 
+            // For now, allow copies to anyone. Later, we might restrict this to
+            // just dragging to yourself. 
+            
+//            [[ConnectionManager sharedInstance] assignTask:task toUser:[curTargetUserView getUser]];
+            
+            [[ConnectionManager sharedInstance] addTaskWithText:task.text isInPool:FALSE
+                                                    isCreatedBy:task.creator.uuid
+                                                   isAssignedBy:[StateManager sharedInstance].user.uuid];
+
+            [self animateTaskToHome:task];
             [curTargetView setHoverState:false];
                         
-//            [self animateTaskToHome:task];            
+            
+            
+            
         } else if ([curTargetView isKindOfClass:[TaskContainerView class]]) {
 //            NSLog(@"got a drop on a task container, copy the task now!");
 //            NSLog(@"THE TASK: %@", task);

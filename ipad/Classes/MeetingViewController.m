@@ -111,7 +111,7 @@
     addTaskButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
     addTaskButton.frame = CGRectMake(-15, 775, 240, 30);
     addTaskButton.backgroundColor = [UIColor clearColor];
-    [addTaskButton setTitle:@"Add Task" forState: UIControlStateNormal];
+    [addTaskButton setTitle:@"Add Comment" forState: UIControlStateNormal];
     addTaskButton.titleLabel.font = [UIFont boldSystemFontOfSize:24.0f];
     [addTaskButton addTarget:self action:@selector(addTaskButtonPressed:)forControlEvents:UIControlEventTouchUpInside];
     [addTaskButton setEnabled: YES];

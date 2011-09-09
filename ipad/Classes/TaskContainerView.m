@@ -96,7 +96,7 @@
     
     
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
-	[@"TASKS" drawInRect: headerLabelRect
+	[@"COMMENTS" drawInRect: headerLabelRect
                 withFont:[UIFont boldSystemFontOfSize:fontSize] lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
 
 	CGContextSetLineWidth(ctx,2);
