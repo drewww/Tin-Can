@@ -53,9 +53,13 @@
 		[UIView commitAnimations];
         
         longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-        longPress.minimumPressDuration = 0.6;
+        longPress.minimumPressDuration = 0.4;
+        
+        tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+        tap.numberOfTapsRequired = 2;
         
         [self addGestureRecognizer:longPress];
+        [self addGestureRecognizer:tap];
         
         expanded = false;
         
@@ -134,6 +138,19 @@
 	
 	[self setNeedsDisplay];
 
+}
+
+- (void) handleTap: (UIGestureRecognizer *)sender {
+    switch (sender.state) {
+        case UIGestureRecognizerStateRecognized:
+            // Like it!
+            if(![self.task isAssigned]) {
+                [[ConnectionManager sharedInstance] likeTask:self.task];
+            }
+            break;
+        default:
+            break;
+    }
 }
 
 - (void) handleLongPress: (UIGestureRecognizer *)sender{
@@ -555,7 +572,7 @@
         if(taskContainer.isMainView) {
     
             displayString = task.text;
-//            
+            
 //            if(task.assignedBy != nil && ![task.creator.uuid isEqual:task.assignedBy.uuid]) {
 //                
 //                if(task.likes > 0) {
@@ -564,11 +581,11 @@
 //                    displayString = [task.text stringByAppendingFormat:@" (%@, added by %@)", task.creator.name, task.assignedBy.name, nil];                
 //                }
 //            } else {
-//                if(task.likes > 0) {
-//                    displayString = [task.text stringByAppendingFormat:@" (%@) +%d", task.creator.name, task.likes, nil];
-//                } else {
-//                    displayString = [task.text stringByAppendingFormat:@" (%@)", task.creator.name, nil];                    
-//                }
+                if(task.likes > 0) {
+                    displayString = [task.text stringByAppendingFormat:@" (%@) +%d", task.creator.name, task.likes, nil];
+                } else {
+                    displayString = [task.text stringByAppendingFormat:@" (%@)", task.creator.name, nil];                    
+                }
 //            }
         } else {
             if(task.shared) {

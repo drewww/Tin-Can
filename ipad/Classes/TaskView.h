@@ -44,6 +44,8 @@
     CGPoint previousGesturePoint;
     
     UILongPressGestureRecognizer *longPress;
+    UITapGestureRecognizer *tap;
+    
     
     bool expanded;
 }
@@ -71,6 +73,7 @@
 -(void)setFrameWidthWithContainerWidth:(CGFloat )width;
 
 - (void) handleLongPress: (UIGestureRecognizer *)sender;
+- (void) tap: (UIGestureRecognizer *)sender;
 
 - (void) likesUpdated;
 
