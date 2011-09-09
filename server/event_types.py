@@ -644,9 +644,9 @@ def _handleNewTask(event):
     #                 taskPair[1].shared = True
     
     event.meeting.addTask(newTask)
-    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "created new task", "time": newTask.createdAt}))
+    event.queue(e.Event("UPDATE_STATUS", event.actor.uuid, None, {"status": "added comment", "time": newTask.createdAt}))
     
-    event.meeting.eventHistoryReadable.append(event.actor.name+" created a new task ("+text+")")
+    event.meeting.eventHistoryReadable.append(event.actor.name+" added comment ("+text+")")
     
     return event
 

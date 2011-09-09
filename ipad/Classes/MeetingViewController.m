@@ -70,12 +70,14 @@
     
     // Manage some misc views that we'll want on the edges, too.
     trashView = [[[TrashView alloc] init] retain];
-    [self.view addSubview:trashView];
+//    [self.view addSubview:trashView];
     
     // Make sure to set the location later (it's just local location via StateManager, I suspect)
     manageUsersButtonView = [[ManageUsersContainerView alloc] init];
     manageUsersButtonView.controller = self;
-    [self.view addSubview:manageUsersButtonView];
+    
+    // Disabling this for this version. 
+//    [self.view addSubview:manageUsersButtonView];
     
     // If we don't call this here, the trash won't get laid out properly unless there's another user in the room.
     [self layoutUsers];
@@ -190,9 +192,12 @@
     // to create it and have it shown immediately.
     longDistanceView = [[[LongDistanceView alloc] init] retain];
     longDistanceView.frame = CGRectMake(45, 45, longDistanceView.frame.size.width, longDistanceView.frame.size.height);
-    [self.view addSubview:longDistanceView];
-    [self.view bringSubviewToFront:longDistanceView];
-    longDistanceView.hidden = true;
+    
+    
+    // Commenting this out seems to be the easiest way to disable it.
+//    [self.view addSubview:longDistanceView];
+//    [self.view bringSubviewToFront:longDistanceView];
+//    longDistanceView.hidden = true;
 
     lastTouch = [[NSDate date] retain];
 
@@ -618,8 +623,8 @@
     
     NSMutableArray *finalSortedViews = [NSMutableArray arrayWithArray:sortedUserViews];
     
-    [finalSortedViews addObject:trashView];
-    [finalSortedViews addObject:manageUsersButtonView];
+//    [finalSortedViews addObject:trashView];
+//    [finalSortedViews addObject:manageUsersButtonView];
     sortedUserViews = finalSortedViews;
         
     int numViews = [sortedUserViews count];
