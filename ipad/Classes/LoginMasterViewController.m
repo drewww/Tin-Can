@@ -54,11 +54,11 @@
 		
 		roomViewController = [[[RoomViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250, 400,500) withController:self] retain];
 		
-		locViewController = [[[LocationViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600+FRAME_OFFSET, 400,500) withController:self] retain];
+		locViewController = [[[LocationViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600, 400,500) withController:self] retain];
 		        
         // Make a bonus user view controller that we can add and hide, to be swapped in based on the 
         // user/location switch. 
-        userViewController = [[[UserViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250+600, 400,500) withController:self] retain]; 
+        userViewController = [[[UserViewController alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.0-200,self.view.frame.size.height/2.0-250, 400,500) withController:self] retain]; 
         userViewController.view.hidden = FALSE;
         
         // Make a UI switch to toggle between user and location modes for login.
@@ -79,7 +79,7 @@
 		// Initializes Login Button
 		loginButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
 		[loginButton setTransform:CGAffineTransformMakeRotation(M_PI/2)];
-		loginButton.frame = CGRectMake(self.view.frame.size.width/2.0-200+150,self.view.frame.size.height/2.0-250+600+475+FRAME_OFFSET, 100,150);
+		loginButton.frame = CGRectMake(self.view.frame.size.width/2.0-200+150,self.view.frame.size.height/2.0-250+600+475, 100,150);
 		loginButton.backgroundColor = [UIColor clearColor];
 		[loginButton setTitle:@"Login" forState: UIControlStateNormal];
 		[loginButton setFont:[UIFont boldSystemFontOfSize:30.0f]];
@@ -92,7 +92,7 @@
 			
 			// sets user intructions for login
 			loginInstructions = [[UILabel alloc]
-								 initWithFrame:CGRectMake(self.view.frame.size.width/2.0-50-100,self.view.frame.size.height/2.0-250+600+250+FRAME_OFFSET, 150,600)];
+								 initWithFrame:CGRectMake(self.view.frame.size.width/2.0-50-100,self.view.frame.size.height/2.0-250+600+250, 150,600)];
 			[loginInstructions setTransform:CGAffineTransformMakeRotation(M_PI/2)];
 			loginInstructions.text = @" ";
 			loginInstructions.numberOfLines = 2;
@@ -106,9 +106,9 @@
 		
 		// Headers
 		HeaderView *headerRoom =[[[HeaderView alloc] 
-                                  initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0-30, 400,60) withTitle:@"Meetings"] retain];
+                                  initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0-30, 400,60) withTitle:@"Who are you?"] retain];
 		headerLocation = [[[HeaderView alloc] 
-                                      initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0+600-30+FRAME_OFFSET, 400,60) withTitle:@"Rooms"] retain];
+                                      initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0+600-30, 400,60) withTitle:@"Where are you?"] retain];
         headerLocation.hidden = false;
         
         chosenRoom = nil;
@@ -124,16 +124,18 @@
 		[self.view addSubview:roomInstructions];
 		[self.view addSubview:locationInstructions];
 		[self.view addSubview:locViewController.view];
-		[self.view addSubview:roomViewController.view];
+//		[self.view addSubview:roomViewController.view];
         [self.view addSubview:userViewController.view];
 //        [self.view addSubview:actorTypeToggle];
 		[self.view addSubview:headerLocation];
 		[self.view addSubview:headerRoom];
 		[self.view setNeedsDisplay];
         
-//        actorTypeToggle.selectedSegmentIndex = USER_INDEX;
-//        [self actorTypeToggled:actorTypeToggle];
-        fourthPosition = true;
+        
+        // In this demo situation, there's only ever one simultaneous event. So we're hiding
+        // the UI to choose a room and auto-selecting for the sake of simplicity.
+        chosenRoom = [[[[StateManager sharedInstance] getRooms] allObjects] objectAtIndex:0];
+        
         
 	} else if (event.type==kADD_ACTOR_DEVICE) {
         NSLog(@"In ADD_ACTOR_DEVICE callback.");
@@ -430,7 +432,7 @@
            headerLocation.alpha = 1.0;
            
             locViewController.view.center = CGPointMake(locViewController.view.center.x, locViewController.view.center.y + FRAME_OFFSET);;
-            loginButton.center = CGPointMake(loginButton.center.x, loginButton.center.y + FRAME_OFFSET);
+            loginButton.center = CGPointMake(loginButton.center.x, loginButton.center.y);
             loginInstructions.center = CGPointMake(loginInstructions.center.x, loginInstructions.center.y + FRAME_OFFSET);
            headerLocation.center = CGPointMake(headerLocation.center.x, headerLocation.center.y + FRAME_OFFSET);
                 
