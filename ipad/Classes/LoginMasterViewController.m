@@ -315,7 +315,7 @@
         loginInstructions.text = @"";
     } else if (chosenRoom != nil && chosenLocation==nil && actorTypeToggle.selectedSegmentIndex == ROOM_INDEX) {
         [self setLoginButtonEnabled:false];
-        loginInstructions.text = @"Please select a room to join.";
+        loginInstructions.text = @"Please select a location.";
         loginInstructions.numberOfLines = 2;
     } else if (chosenRoom != nil && chosenUser==nil && actorTypeToggle.selectedSegmentIndex == USER_INDEX) {
         [self setLoginButtonEnabled:false];
@@ -323,7 +323,7 @@
         loginInstructions.numberOfLines = 2;
     } else if (chosenRoom != nil && chosenLocation==nil && actorTypeToggle.selectedSegmentIndex == USER_INDEX) {
         [self setLoginButtonEnabled:false];
-        loginInstructions.text = @"Please select a room to join.";
+        loginInstructions.text = @"Please select a location.";
         loginInstructions.numberOfLines = 2;
     } else if (chosenLocation != nil && chosenRoom==nil) {
         [self setLoginButtonEnabled:false];
