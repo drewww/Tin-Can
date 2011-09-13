@@ -110,7 +110,7 @@
     CFPreferencesAppSynchronize(kCFPreferencesCurrentApplication);
     
     // Now transition to a new view.
-   UIViewController *nextViewController = [[[LoginMasterViewController alloc] initWithController:controller] retain];
+   UIViewController *nextViewController = [[[LoginMasterViewController alloc] initWithController:controller] autorelease];
    
    [controller switchToViewController:nextViewController];
 }

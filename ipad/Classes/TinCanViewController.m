@@ -13,6 +13,7 @@
 #import "Location.h"
 #import "StateManager.h"
 #import "ServerSelectViewController.h"
+#import "tincan.h"
 
 @class MeetingViewController;
 @class LoginMasterViewController;
@@ -23,20 +24,62 @@
     self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 768, 1024)];
     
     if(currentViewController == nil) {
-        // Make the initial one and load it. For now, that's just the MeetingView.        
-        currentViewController = [[[ServerSelectViewController alloc] initWithController:self] retain];        
+
+        // We have to decide what view to present here. There is some interesting flow at work:
+        //      - try the IP we have stored. If it's reachable, then check and see if our login credentials are still good.
+        //      - if the login credentials work, then do a get state with those go direct to the meetingviewcontroller. otherwise, present the login view
+        
+        CFStringRef lastServerRef = (CFStringRef)CFPreferencesCopyAppValue(CFSTR("SERVER"), kCFPreferencesCurrentApplication);
+        NSString *serverAddr = nil;
+        if(lastServerRef) {
+            serverAddr = (NSString *)lastServerRef;
+            CFRelease(lastServerRef);
+        } 
+
+        NSLog(@"serverAddr: %@", serverAddr);
+        bool reachable = false;
+        if(serverAddr != nil) {
+            Reachability *serverReachability = [Reachability reachabilityWithHostName:serverAddr];
+            NSLog(@"server reachability: %d", [serverReachability currentReachabilityStatus]);
+            if([serverReachability currentReachabilityStatus] == NotReachable) {
+                reachable = false;
+            } else {
+                
+                // Make a blocking call to something on the server to see if it's awake.
+                NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@/status/", serverAddr, PORT, nil]];
+                ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+                [request startSynchronous];
+                NSError *error = [request error];
+                if (!error) {
+                    reachable = true;
+                } else {
+                    reachable = false;
+                }
+            }
+        } 
+                
+        NSLog(@"Checking server reachability: %d for %@", reachable, serverAddr);
+        if(reachable) {
+            // present the meeting view controller.
+            [ConnectionManager setServer:serverAddr];
+            currentViewController = [[[LoginMasterViewController alloc] initWithController:self] retain];
+            [self.view setTransform:CGAffineTransformMakeRotation(-M_PI)];
+        } else {
+            currentViewController = [[[ServerSelectViewController alloc] initWithController:self] retain];        
+        }
     }
 
     [self.view addSubview:currentViewController.view];
-
     
 }
+
 
 // Per advice here: http://stackoverflow.com/questions/2270835/best-practices-for-displaying-new-view-controllers-iphone
 // This isn't beautiful, but since we have such a simple system I think it'll work.
 
 -(void) switchToViewController:(UIViewController *)c {
     NSLog(@"in switch to view controller, switching to controller: %@", c);
+    
     
     if(c == currentViewController) return;
 	c.view.alpha =0.0;
@@ -62,10 +105,6 @@
     [UIView setAnimationDidStopSelector:@selector(animateNewViewDidStop:finished:context:)];
     
     [UIView commitAnimations];
-}
-
-- (void) setServer: (NSString *)theServer {
-    server = theServer;
 }
 
 - (void) animateNewViewDidStop:(NSString *)animationId finished:(NSNumber *)finished context:(void *)context{
