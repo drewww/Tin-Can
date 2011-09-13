@@ -73,7 +73,10 @@ static NSString *selectedServer = nil;
     StateManager *state = [StateManager sharedInstance];
     
     state.location = (Location *)[state getObjWithUUID:locationUUID withType:[Location class]];
-    
+        
+    CFPreferencesSetAppValue(CFSTR("LOCATION_UUID"), newLocationUUID, kCFPreferencesCurrentApplication);
+    CFPreferencesAppSynchronize(kCFPreferencesCurrentApplication);
+
     NSLog(@"Set local location: %@", locationUUID);
 }
 
@@ -86,6 +89,10 @@ static NSString *selectedServer = nil;
     StateManager *state = [StateManager sharedInstance];
     
     state.user = (User *)[state getObjWithUUID:userUUID withType:[User class]];
+    
+    CFPreferencesSetAppValue(CFSTR("USER_UUID"), newUserUUID, kCFPreferencesCurrentApplication);
+    CFPreferencesAppSynchronize(kCFPreferencesCurrentApplication);
+    
     
     NSLog(@"Set local user: %@", userUUID);    
 }
@@ -323,7 +330,7 @@ static NSString *selectedServer = nil;
             [location userLeft:user];                  
             
             if(user.uuid == state.user.uuid) {
-                state.location = nil;
+                [self setLocation:nil];
             }            
             
             NSLog(@"USER_LEFT_LOCATION: %@ left %@", user, location);
@@ -349,7 +356,7 @@ static NSString *selectedServer = nil;
             [location userJoined:user]; 
             
             if(user.uuid == state.user.uuid) {
-                state.location = location;
+                [self setLocation:location.uuid];
             }
             
             NSLog(@"USER_JOINED_LOCATION: %@ joined %@", user, location);

@@ -48,6 +48,65 @@
         // the server to construct this screen, so we block on setting this screen up until we
         // have all the pieces we need.
         
+        // in this hard-coded version, we can set the chosenRoom up front.
+        chosenRoom = [[[[StateManager sharedInstance] getRooms] allObjects] objectAtIndex:0];
+
+        
+        // Decide if we're going to render the view or just insta-login.
+        // Do this by checking to see if the uuid for stored user / location 
+        // is in the set of legal uuids here. If it is, then login using it.
+        // Otherwise, load the whole UI here.
+
+        
+        CFStringRef lastUserUUIDRef = (CFStringRef)CFPreferencesCopyAppValue(CFSTR("USER_UUID"),
+                                                                          kCFPreferencesCurrentApplication);
+        CFStringRef lastLocationUUIDRef = (CFStringRef)CFPreferencesCopyAppValue(CFSTR("LOCATION_UUID"),
+                                                                          kCFPreferencesCurrentApplication);
+
+        UUID *lastUserUUID = nil;
+        UUID *lastLocationUUID = nil;
+        
+        if(lastUserUUIDRef) {
+            lastUserUUID = (NSString *)lastUserUUIDRef;
+            CFRelease(lastUserUUIDRef);
+        }
+        
+        if(lastLocationUUIDRef) {
+            lastLocationUUID = (NSString *)lastLocationUUIDRef;
+            CFRelease(lastLocationUUIDRef);
+        }
+        
+        NSLog(@"Loaded last user info: %@ in %@", lastUserUUID, lastLocationUUID);
+        
+        if(lastUserUUID != nil && lastLocationUUID != nil) {
+            
+            StateManager *stateManager = [StateManager sharedInstance];
+            
+            
+            
+            if([stateManager getObjWithUUID:lastUserUUID withType:[User class]]!=nil) {
+                if([stateManager getObjWithUUID:lastLocationUUID withType:[Location class]]!=nil) {
+                    // We're good to go! Auto-login.
+                    NSLog(@"Found a valid user and location. Logging in.");
+                    
+                    actorTypeToggle.selectedSegmentIndex = USER_INDEX;
+                    
+                    [[ConnectionManager sharedInstance] setUser:lastUserUUID];
+                    chosenLocation = (Location *)[stateManager getObjWithUUID:lastLocationUUID withType:[Location class]];
+                    [[ConnectionManager sharedInstance] connect];
+                    
+                    
+                    // Drop out of this load entirely.
+                    // TODO put something on the screen that says "connecting" if this process isn't nearly instant.
+                    return;
+                }
+            }
+
+            NSLog(@"Either the user or the location were not valid UUIDs. Onwards to loading!");
+        }
+        
+        
+        
 		// Elements in the Login page (Our Logo, Our Location Table and Our Room Table)
 		LogoView *picView= [[[LogoView alloc] initWithImage:[UIImage imageNamed:@"full_logo.png"] 
 												  withFrame: CGRectMake(self.view.frame.size.width/2.0-250, 700, 500, 500) ] retain];
@@ -134,7 +193,6 @@
         
         // In this demo situation, there's only ever one simultaneous event. So we're hiding
         // the UI to choose a room and auto-selecting for the sake of simplicity.
-        chosenRoom = [[[[StateManager sharedInstance] getRooms] allObjects] objectAtIndex:0];
         
         
 	} else if (event.type==kADD_ACTOR_DEVICE) {
@@ -145,11 +203,13 @@
         // We can't join the meeting right away, though - we need to wait for the message
         // from the server confirmation that the user has joined the location first.
         
-        if(actorTypeToggle.selectedSegmentIndex == USER_INDEX) {
+//        NSLog(@"actorTypeToggle.selectedSegmentIndex: %@", actorTypeToggle.selectedSegmentIndex);
+        
+//        if(actorTypeToggle.selectedSegmentIndex == USER_INDEX) {
             [[ConnectionManager sharedInstance] joinLocation:chosenLocation withUser:[StateManager sharedInstance].user];
-        } else {
-            [[ConnectionManager sharedInstance] joinRoomWithUUID:chosenRoom.uuid];
-        }
+//        } else {
+//            [[ConnectionManager sharedInstance] joinRoomWithUUID:chosenRoom.uuid];
+//          }
         
     } else if (event.type==kUSER_JOINED_LOCATION) {
         // This will only trigger in the join-as-user case, so no need for an if statement here.
@@ -194,7 +254,9 @@
     
 }		
 - (void)loadView {
-	
+	// This is the main entry-point to this view.
+    
+    
 	//NSLog(@"View is being called");
 	// Initializers
 	// Sets the frame and then sets the center of the view to be at the location our our Logo.
@@ -245,6 +307,7 @@
 
     if (actorTypeToggle.selectedSegmentIndex == USER_INDEX) {
         [connMan setUser:chosenUser.uuid];
+        
     } else {
         [connMan setLocation:chosenLocation.uuid];        
     }
