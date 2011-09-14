@@ -121,11 +121,7 @@
                 NSLog(@"Either the user or the location were not valid UUIDs. Onwards to loading!");
             }
         }
-        
-        
-        
-        
-        
+                
 		// Elements in the Login page (Our Logo, Our Location Table and Our Room Table)
 		LogoView *picView= [[[LogoView alloc] initWithImage:[UIImage imageNamed:@"full_logo.png"] 
 												  withFrame: CGRectMake(self.view.frame.size.width/2.0-250, 700, 500, 500) ] retain];
@@ -255,14 +251,13 @@
     } else if (event.type==kCONNECTION_REQUEST_FAILED) {
         connectionInfoLabel.text = [NSString stringWithFormat:@"Could not connect to '%@'. The server is down.", [ConnectionManager sharedInstance].server];        
         
-        [self.view addSubview:connectionInfoLabel];
+        [self showConnectionInfoLabel];
     } else if (event.type == kCONNECTION_STATE_CHANGED) {
         
         // Check and see if we're disconnected now.
         if([[ConnectionManager sharedInstance].serverReachability currentReachabilityStatus]==NotReachable) {
             connectionInfoLabel.text = [NSString stringWithFormat:@"Lost wireless connectivity.", [ConnectionManager sharedInstance].server];                    
-            [self.view addSubview:connectionInfoLabel];
-        }
+            [self showConnectionInfoLabel];        }
     }
     
 	if(self.view != nil) {
@@ -306,12 +301,17 @@
         // put up a UI notification that we can't start because the network
         // connection is down.
         connectionInfoLabel.text = [NSString stringWithFormat:@"Could not reach server '%@'. Wireless is not connected.", SERVER];        
-        [self.view addSubview:connectionInfoLabel];
-        
+        [self showConnectionInfoLabel];
     } else {
         // we can see the server, so we're all good. 
         [conMan getState];
     }
+}
+
+- (void) showConnectionInfoLabel {
+    connectionInfoLabel.center = [self.view convertPoint:CGPointMake(384, 512) fromView:self.view.superview];
+    [self.view addSubview:connectionInfoLabel];
+    
 }
 
 // Dictates what action to take when a User makes a selection

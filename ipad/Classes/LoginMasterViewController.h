@@ -77,5 +77,6 @@
 
 - (void) actorTypeToggled:(id) sender;
 
+- (void) showConnectionInfoLabel;
 
 @end
