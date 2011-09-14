@@ -58,52 +58,71 @@
         // Otherwise, load the whole UI here.
 
         
-        CFStringRef lastUserUUIDRef = (CFStringRef)CFPreferencesCopyAppValue(CFSTR("USER_UUID"),
-                                                                          kCFPreferencesCurrentApplication);
-        CFStringRef lastLocationUUIDRef = (CFStringRef)CFPreferencesCopyAppValue(CFSTR("LOCATION_UUID"),
-                                                                          kCFPreferencesCurrentApplication);
-
-        UUID *lastUserUUID = nil;
-        UUID *lastLocationUUID = nil;
-        
-        if(lastUserUUIDRef) {
-            lastUserUUID = (NSString *)lastUserUUIDRef;
-            CFRelease(lastUserUUIDRef);
+        CFStringRef lastLogoutRef = (CFStringRef)CFPreferencesCopyAppValue(CFSTR("LOGOUT_TIMESTAMP"),
+                                                                           kCFPreferencesCurrentApplication);
+        double lastLogout = -1;
+        if(lastLogoutRef) {
+            NSString *lastLogoutString = (NSString *)lastLogoutRef;
+            NSLog(@"lastLogoutString: %@", lastLogoutString);
+            lastLogout = [lastLogoutString doubleValue];
         }
         
-        if(lastLocationUUIDRef) {
-            lastLocationUUID = (NSString *)lastLocationUUIDRef;
-            CFRelease(lastLocationUUIDRef);
-        }
-        
-        NSLog(@"Loaded last user info: %@ in %@", lastUserUUID, lastLocationUUID);
-        
-        if(lastUserUUID != nil && lastLocationUUID != nil) {
+        // Expire the data if it's old, since people could move around and I don't have a way
+        // to go back and change your selection once you're in the main UI.
+        // (checking lastLogoutRef will shortcircuit this if it's not set)
+        NSLog(@"lastLogout: %@ currentTime: %f", [NSString stringWithFormat:@"%f", lastLogout, nil], [[NSDate date] timeIntervalSince1970]);
+        if(!lastLogoutRef || (lastLogoutRef && [[NSDate date] timeIntervalSince1970] - lastLogout < 60 * 15)) {
+            NSLog(@"Last login data is within the last 24 hours - use it!");
             
-            StateManager *stateManager = [StateManager sharedInstance];
+            CFStringRef lastUserUUIDRef = (CFStringRef)CFPreferencesCopyAppValue(CFSTR("USER_UUID"),
+                                                                                 kCFPreferencesCurrentApplication);
+            CFStringRef lastLocationUUIDRef = (CFStringRef)CFPreferencesCopyAppValue(CFSTR("LOCATION_UUID"),
+                                                                                     kCFPreferencesCurrentApplication);
             
+            UUID *lastUserUUID = nil;
+            UUID *lastLocationUUID = nil;
             
-            
-            if([stateManager getObjWithUUID:lastUserUUID withType:[User class]]!=nil) {
-                if([stateManager getObjWithUUID:lastLocationUUID withType:[Location class]]!=nil) {
-                    // We're good to go! Auto-login.
-                    NSLog(@"Found a valid user and location. Logging in.");
-                    
-                    actorTypeToggle.selectedSegmentIndex = USER_INDEX;
-                    
-                    [[ConnectionManager sharedInstance] setUser:lastUserUUID];
-                    chosenLocation = (Location *)[stateManager getObjWithUUID:lastLocationUUID withType:[Location class]];
-                    [[ConnectionManager sharedInstance] connect];
-                    
-                    
-                    // Drop out of this load entirely.
-                    // TODO put something on the screen that says "connecting" if this process isn't nearly instant.
-                    return;
-                }
+            if(lastUserUUIDRef) {
+                lastUserUUID = (NSString *)lastUserUUIDRef;
+                CFRelease(lastUserUUIDRef);
             }
-
-            NSLog(@"Either the user or the location were not valid UUIDs. Onwards to loading!");
+            
+            if(lastLocationUUIDRef) {
+                lastLocationUUID = (NSString *)lastLocationUUIDRef;
+                CFRelease(lastLocationUUIDRef);
+            }
+            
+            NSLog(@"Loaded last user info: %@ in %@", lastUserUUID, lastLocationUUID);
+            
+            if(lastUserUUID != nil && lastLocationUUID != nil) {
+                
+                StateManager *stateManager = [StateManager sharedInstance];
+                
+                
+                
+                if([stateManager getObjWithUUID:lastUserUUID withType:[User class]]!=nil) {
+                    if([stateManager getObjWithUUID:lastLocationUUID withType:[Location class]]!=nil) {
+                        // We're good to go! Auto-login.
+                        NSLog(@"Found a valid user and location. Logging in.");
+                        
+                        actorTypeToggle.selectedSegmentIndex = USER_INDEX;
+                        
+                        [[ConnectionManager sharedInstance] setUser:lastUserUUID];
+                        chosenLocation = (Location *)[stateManager getObjWithUUID:lastLocationUUID withType:[Location class]];
+                        [[ConnectionManager sharedInstance] connect];
+                        
+                        
+                        // Drop out of this load entirely.
+                        // TODO put something on the screen that says "connecting" if this process isn't nearly instant.
+                        return;
+                    }
+                }
+                
+                NSLog(@"Either the user or the location were not valid UUIDs. Onwards to loading!");
+            }
         }
+        
+        
         
         
         
@@ -170,7 +189,8 @@
                                       initWithFrame:CGRectMake(self.view.frame.size.width/2.0+80,self.view.frame.size.height/2.0+600-30, 400,60) withTitle:@"Where are you?"] retain];
         headerLocation.hidden = false;
         
-        chosenRoom = nil;
+        // We hard-code it above for this version for simplicity.
+//        chosenRoom = nil;
         chosenLocation = nil;
         chosenUser = nil;
         

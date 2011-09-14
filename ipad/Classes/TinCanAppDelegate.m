@@ -42,6 +42,29 @@
 }
 
 
+- (void)applicationWillTerminate:(UIApplication *)application
+{
+    /*
+     Called when the application is about to terminate.
+     Save data if appropriate.
+     See also applicationDidEnterBackground:.
+     */
+    
+    
+    // Write the current time to a preferences field. This will allow us to check, on startup, how long it's been
+    // since we left. If it's a short amount of time, relogin with the old settings. Otherwise, force
+    // a re-identification.
+    CFPreferencesSetAppValue(CFSTR("LOGOUT_TIMESTAMP"), [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970], nil], kCFPreferencesCurrentApplication);
+    CFPreferencesAppSynchronize(kCFPreferencesCurrentApplication);
+    NSLog(@"Wrote timestamp to preferences on terminate.");
+}
+
+
+
+
+
+
+
 - (void)dealloc {
     [viewController release];
     [window release];
