@@ -48,8 +48,10 @@
                 // Make a blocking call to something on the server to see if it's awake.
                 NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@/status/", serverAddr, PORT, nil]];
                 ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+                request.timeOutSeconds = 2;
                 [request startSynchronous];
                 NSError *error = [request error];
+                NSLog(@"error: %@", error);
                 if (!error) {
                     reachable = true;
                 } else {
