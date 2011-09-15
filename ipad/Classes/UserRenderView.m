@@ -98,7 +98,7 @@
     CGContextSetRGBFillColor(ctx, 1.0, 1.0, 1.0, 1.0);
     CGContextSetRGBStrokeColor(ctx, 1.0, 0.0, 0.0, 1.0);
     
-    UIFont *f = [UIFont boldSystemFontOfSize:16];
+    UIFont *f = [UIFont boldSystemFontOfSize:12];
     CGSize nameSize = [[self.user.name uppercaseString] sizeWithFont:f];
     
     CGContextSaveGState(ctx);
@@ -114,7 +114,7 @@
 
     
     // Draw the status block..
-    f = [UIFont boldSystemFontOfSize:16];
+    f = [UIFont systemFontOfSize:11];
 
     NSString *statusString = user.statusMessage;
     

@@ -10,8 +10,8 @@
 #import "UIView+Rounded.h"
 #import "ManageUsersTableViewController.h"
 
-#define BASE_HEIGHT 90
-#define BASE_WIDTH 180
+#define BASE_HEIGHT 70
+#define BASE_WIDTH 90
 
 @implementation ManageUsersContainerView
 

@@ -13,8 +13,8 @@
 #import "TaskDropTarget.h"
 #import "ExtendableDrawerView.h"
 
-#define BASE_HEIGHT 90
-#define BASE_WIDTH 180
+#define BASE_HEIGHT 70
+#define BASE_WIDTH 90
 
 // Messing with this also works for debugging. Set it huge to have max height visibility.
 #define HEIGHT_MARGIN 50

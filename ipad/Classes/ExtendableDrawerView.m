@@ -300,7 +300,7 @@
 }
 
 - (int)getBaseWidth {
-    return 180;
+    return 130;
 }
 
 - (void)dealloc {    
