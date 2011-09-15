@@ -19,6 +19,7 @@
 #import "ConnectionManager.h"
 #import "Location.h"
 #import "WebViewController.h"
+#import "TestFlight.h"
 
 @class TinCanViewController;
 
@@ -205,12 +206,7 @@
 		[self.view addSubview:headerLocation];
 		[self.view addSubview:headerRoom];
 		[self.view setNeedsDisplay];
-        
-        
-        // In this demo situation, there's only ever one simultaneous event. So we're hiding
-        // the UI to choose a room and auto-selecting for the sake of simplicity.
-        
-        
+                
 	} else if (event.type==kADD_ACTOR_DEVICE) {
         NSLog(@"In ADD_ACTOR_DEVICE callback.");
         
@@ -306,6 +302,7 @@
         // we can see the server, so we're all good. 
         [conMan getState];
     }
+
 }
 
 - (void) showConnectionInfoLabel {

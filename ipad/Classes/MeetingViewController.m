@@ -24,6 +24,7 @@
 #import "AddItemController.h"
 #import "TrashView.h"
 #import "BackdropView.h"
+#import "TestFlight.h"
 
 @class UserView;
 
@@ -218,7 +219,6 @@
     [clock retain];    
     
     // Push an update into the queue.
-    
     NSLog(@"viewDidLoad");
 }
 

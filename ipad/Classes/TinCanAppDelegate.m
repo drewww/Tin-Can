@@ -10,6 +10,7 @@
 #import "TinCanViewController.h"
 #import "LoginMasterViewController.h"
 #import "UIApplication+ScreenMirroring.h"
+#import "TestFlight.h"
 
 @implementation TinCanAppDelegate
 
@@ -35,6 +36,10 @@
     // It doesn't SEEM to represent a performance problem if you're not plugged in at all,
     // so I'm going to just leave it here for now and see what happens.
     [[UIApplication sharedApplication] setupScreenMirroring];
+    
+    
+    // Kick off the test flight API: https://testflightapp.com/sdk/
+    [TestFlight takeOff:@"aad01e895149f7afa56a1fd8d33b62b8_NjEyMzIwMTEtMDktMTQgMTc6NTE6NTkuMzgyNTkz"];
     
 	return YES;
 	

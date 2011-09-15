@@ -37,6 +37,7 @@
 		3A4941B8124D209B0068C6D6 /* DragManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4941B7124D209B0068C6D6 /* DragManager.m */; };
 		3A57217F11EB7515004C2687 /* MeetingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57217E11EB7515004C2687 /* MeetingViewController.m */; };
 		3A57237811EBDE0B004C2687 /* TinCanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A57237711EBDE0B004C2687 /* TinCanViewController.m */; };
+		3A74AEA2142158E7005AA7E7 /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A74AEA1142158E7005AA7E7 /* libTestFlight.a */; };
 		3A7EB0861381C00800B381A8 /* LocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A7EB0841381C00700B381A8 /* LocationViewController.m */; };
 		3A82D449126F9CD5007AFA3D /* LocationBorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A82D448126F9CD5007AFA3D /* LocationBorderView.m */; };
 		3A9304361337D54A00A83A44 /* BackdropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A9304351337D54900A83A44 /* BackdropView.m */; };
@@ -168,6 +169,8 @@
 		3A57217E11EB7515004C2687 /* MeetingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeetingViewController.m; sourceTree = "<group>"; };
 		3A57237611EBDE0B004C2687 /* TinCanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TinCanViewController.h; sourceTree = "<group>"; };
 		3A57237711EBDE0B004C2687 /* TinCanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TinCanViewController.m; sourceTree = "<group>"; };
+		3A74AEA1142158E7005AA7E7 /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
+		3A74AEA3142158F3005AA7E7 /* TestFlight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
 		3A7EB0841381C00700B381A8 /* LocationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationViewController.m; sourceTree = "<group>"; };
 		3A7EB0851381C00800B381A8 /* LocationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationViewController.h; sourceTree = "<group>"; };
 		3A82D447126F9CD5007AFA3D /* LocationBorderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationBorderView.h; sourceTree = "<group>"; };
@@ -321,6 +324,7 @@
 				3AC2C22B11A5B7520071F912 /* libz.1.2.3.dylib in Frameworks */,
 				3AC2C25A11A5BA500071F912 /* CFNetwork.framework in Frameworks */,
 				3A95E0631264B92700518580 /* QuartzCore.framework in Frameworks */,
+				3A74AEA2142158E7005AA7E7 /* libTestFlight.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -330,6 +334,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				3A74AEA014215824005AA7E7 /* TestFlight */,
 				3A2A6A3211EE5CD600FF373C /* Model */,
 				3AC2BD7B11A33DDE0071F912 /* JSON */,
 				3AC2C20411A5B62C0071F912 /* ASIHTTPRequest */,
@@ -505,6 +510,15 @@
 				3AC6BB7B1200F0280002FD52 /* Task.m */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		3A74AEA014215824005AA7E7 /* TestFlight */ = {
+			isa = PBXGroup;
+			children = (
+				3A74AEA3142158F3005AA7E7 /* TestFlight.h */,
+				3A74AEA1142158E7005AA7E7 /* libTestFlight.a */,
+			);
+			name = TestFlight;
 			sourceTree = "<group>";
 		};
 		3AC2BD7B11A33DDE0071F912 /* JSON */ = {
@@ -854,6 +868,10 @@
 				GCC_PREFIX_HEADER = TinCan_Prefix.pch;
 				INFOPLIST_FILE = "TinCan-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Classes\"",
+				);
 				PRODUCT_NAME = TinCan;
 				PROVISIONING_PROFILE = "";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -871,6 +889,10 @@
 				GCC_PREFIX_HEADER = TinCan_Prefix.pch;
 				INFOPLIST_FILE = "TinCan-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Classes\"",
+				);
 				PRODUCT_NAME = TinCan;
 				PROVISIONING_PROFILE = "";
 				VALIDATE_PRODUCT = YES;
@@ -911,6 +933,10 @@
 				GCC_PREFIX_HEADER = TinCan_Prefix.pch;
 				INFOPLIST_FILE = "TinCan-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Classes\"",
+				);
 				PRODUCT_NAME = TinCan;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "57D57CD4-AD43-4B3C-B1AD-DDC1F3866A22";
