@@ -649,7 +649,8 @@ static NSString *selectedServer = nil;
 }
 
 
-- (void) addTaskWithText:(NSString *)newTaskText isInPool:(bool)isInPool isCreatedBy:(UUID *)createdBy isAssignedBy:(UUID *)assignedBy {
+- (void) addTaskWithText:(NSString *)newTaskText isInPool:(_Bool)isInPool isCreatedBy:(NSString *)createdBy isAssignedBy:(NSString *)assignedBy isAssignedTo:(NSString *)assignedTo {
+    
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@%@", server, PORT, @"/tasks/add"]];
     ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setPostValue:newTaskText forKey:@"text"];    
@@ -668,6 +669,11 @@ static NSString *selectedServer = nil;
     if(assignedBy != nil) {
         [request setPostValue:assignedBy forKey:@"assignedBy"];
     }
+    
+    if(assignedTo != nil) {
+        [request setPostValue:assignedTo forKey:@"assignedTo"];
+    }
+    
     NSLog(@" sending new task request with createdBy: %@ and assignedBy: %@ andInPool: %@", createdBy, assignedBy, val);
     
     // Per the classroom "idea" model, don't move the idea over, just create a new one
@@ -681,9 +687,17 @@ static NSString *selectedServer = nil;
     if(theColor != nil) {
         [request setPostValue:[theColor toHexString] forKey:@"color"];
     }
-
+    
     [request setDelegate:self];
     [request startAsynchronous];
+
+}
+
+- (void) addTaskWithText:(NSString *)newTaskText isInPool:(bool)isInPool isCreatedBy:(UUID *)createdBy isAssignedBy:(UUID *)assignedBy {
+    
+    // This method is syntactic sugar to auto-assign to ourselves if nothing else is specified. This is the way assignment was done
+    // in the classroom version of the app, and 
+    [self addTaskWithText:newTaskText isInPool:isInPool isCreatedBy:createdBy isAssignedBy:assignedBy isAssignedTo:assignedBy];
 }
 
 - (void) deleteTask:(Task *)taskToDelete {

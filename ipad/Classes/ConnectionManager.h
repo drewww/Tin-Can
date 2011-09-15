@@ -90,6 +90,7 @@
 
 - (void) assignTask:(Task *)theTask toUser:(User *)theUser;
 - (void) deassignTask:(Task *)theTask;
+- (void) addTaskWithText:(NSString *)newTaskText isInPool:(_Bool)isInPool isCreatedBy:(NSString *)createdBy isAssignedBy:(NSString *)assignedBy isAssignedTo:(NSString *)assignedTo;
 - (void) addTaskWithText:(NSString *)newTaskText isInPool:(bool)isInPool isCreatedBy:(UUID *)createdBy isAssignedBy:(UUID *)assignedBy;
 - (void) deleteTask:(Task *)taskToDelete;
 - (void) likeTask:(Task *)theTask;

@@ -682,6 +682,7 @@ class AddTaskHandler(BaseHandler):
                 "createInPool": self.get_argument("createInPool")=="1",
                 "createdBy": state.get_obj(self.get_argument("createdBy", None), Actor),
                 "assignedBy": state.get_obj(self.get_argument("assignedBy", None), Actor),
+                "assignedTo": state.get_obj(self.get_argument("assignedTo", None), Actor),
                 "color": self.get_argument("color", None)})
         
         newTaskEvent.dispatch()

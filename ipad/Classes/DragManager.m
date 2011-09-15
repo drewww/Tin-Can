@@ -197,9 +197,11 @@ static DragManager *sharedInstance = nil;
             
 //            [[ConnectionManager sharedInstance] assignTask:task toUser:[curTargetUserView getUser]];
             
+            
             [[ConnectionManager sharedInstance] addTaskWithText:task.text isInPool:FALSE
                                                     isCreatedBy:task.creator.uuid
-                                                   isAssignedBy:[StateManager sharedInstance].user.uuid];
+                                                   isAssignedBy:[StateManager sharedInstance].user.uuid
+                                                   isAssignedTo:[curTargetUserView getUser].uuid];
 
             [self animateTaskToHome:task];
             [curTargetView setHoverState:false];

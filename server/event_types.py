@@ -617,7 +617,14 @@ def _handleNewTask(event):
     # (ie the old way of doing things). otherwise, make it in the box
     # of the user who created it. 
     if(not event.params["createInPool"]):
-        newTask.assign(newTask.createdBy, newTask.createdBy, None)
+        
+        if("assignedTo" in event.params.keys()):
+            newTask.assign(newTask.createdBy, event.params["assignedTo"], None)
+        else:
+            # default to assigning it to the person who created the task
+            # originally. This was a shortcut for the classroom version.
+            # It should be executed otherwise. 
+            newTask.assign(newTask.createdBy, newTask.createdBy, None)
     else:
         # if we're creating in the pool, then we're going to call deassign
         # to make sure it's not owned by anyone.
