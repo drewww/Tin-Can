@@ -39,11 +39,11 @@
 		}
 		
 		#paper-header a {
-			color: #ccc;
+			color: #aaa;
 		}
 		
 		#paper-header a:active {
-			color: #ddd;
+			color: #ccc;
 		}
 		
 		#main-image 
@@ -330,11 +330,11 @@
 		
 		#classroom {
 			background: url('img/classroom_background.png');
-			margin-left: 10px;
 		}
 		
 		#meeting {
 			background: url('img/fingers.png');
+			margin-left: 10px;
 		}
 		
 		.text {
@@ -368,7 +368,7 @@
 			float: left;
 		}
 		
-		#classroom-buffer {
+		#meeting-buffer {
 			margin-left: 10px;
 		}
 		
@@ -396,11 +396,14 @@
 	
 	<script type="text/javascript" charset="utf-8">
 		
-		var currentPrefix = "meeting";
+		var currentPrefix = "classroom";
 		
 		$("document").ready(function() {
 			
-			$("#classroom-content").toggle(false);
+			$("#meeting-content").toggle(false);
+			// $("#classroom-content").toggle(true);
+			// 
+			// toggleVisibility("classroom");
 			
 			// Setup a listener on the buttons.
 			$("#meeting, #classroom").click(function() {
@@ -416,10 +419,10 @@
 			// Check and see if there's a hash - if there is, make sure
 			// to show that version of the page on load.
 			
-			if(location.hash=="#class") {
+			if(location.hash=="#meeting") {
 				toggleVisibility(currentPrefix)
-				toggleVisibility("classroom");
-				currentPrefix = "classroom";
+				toggleVisibility("meeting");
+				currentPrefix = "meeting";
 			}
 			
 		});
@@ -532,14 +535,14 @@
 		
 		
 		<div id="buttons">
-		<div id="meeting" class="button selected">
-			<div class="text">
-			FOR MEETINGS
-			</div>
-		</div>
-		<div id="classroom" class="button">
+		<div id="classroom" class="button selected">
 			<div class="text">
 			FOR THE CLASSROOM
+			</div>
+		</div>
+		<div id="meeting" class="button">
+			<div class="text">
+			FOR MEETINGS
 			</div>
 		</div>
 		</div>
@@ -547,10 +550,10 @@
 		<br class="clear">
 		
 		<div id="buffer">
-			<div id="meeting-buffer" class="selected">
-			</div>
 			
-			<div id="classroom-buffer">
+			<div id="classroom-buffer" class="selected">
+			</div>
+			<div id="meeting-buffer">
 			</div>
 			<br class="clear">
 		</div>
